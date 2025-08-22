@@ -1,0 +1,165 @@
+# Configurazione Home Page - Campus Virtual Training Morbidelli X400
+title=Campus Virtual Training Morbidelli X400
+subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione
+
+[Livellamento macchina]
+description=Si esegue regolando basamento, tavolo carico e scarico, mantenendo possibilmente il pantografo alla quota indicata nel manuale per il corretto allineamento con il tavolo di carico.
+image=menuimages/livellamento.png
+model=robot_arm_kuka.mtl
+model=conveyor_belt.obj
+model=conveyor_belt.mtl
+model=car_chassis.obj
+animation=pickup_component.txt
+animation=welding_sequence.txt
+animation=assembly_main.txt
+animation=quality_check.txt
+
+[Manutenzione pompa del vuoto]
+description=Prevede controlli periodici, pulizia filtri, sostituzione olio e lubrificazione parti secondo modello BUSCH o Becker.
+image=https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=250&fit=crop
+model=mobile_robot_kiva.obj
+model=mobile_robot_kiva.mtl
+model=warehouse_shelf.obj
+model=warehouse_shelf.mtl
+model=package_box.obj
+animation=navigate_to_shelf.txt
+animation=pickup_package.txt
+animation=transport_to_station.txt
+animation=unload_package.txt
+
+[Regolazione campi di lavoro]
+description=Definizione delle aree operative macchina, impostando origini, quote di sicurezza e limiti assi su HMI.
+image=https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&h=250&fit=crop
+model=laser_scanner.obj
+model=laser_scanner.mtl
+model=inspection_table.obj
+model=component_sample.obj
+animation=scan_initialization.txt
+animation=surface_scanning.txt
+animation=defect_analysis.txt
+animation=classification.txt
+
+[Ridefinizione zone di vuoto]
+description=Il piano può essere diviso in 8–30 zone, gestibili manualmente o automaticamente tramite paddle.
+image=https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop
+model=collaborative_robot.obj
+model=collaborative_robot.mtl
+model=workstation.obj
+model=electronic_component.obj
+animation=human_detection.txt
+animation=collaborative_assembly.txt
+animation=safety_override.txt
+
+[RTCP Automatico]
+description=Regolazione del cinematismo che mantiene l'orientamento utensile durante lavorazioni 5 assi, compensando rotazioni testa operatrice.
+image=https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=250&fit=crop
+model=welding_robot.obj
+model=welding_robot.mtl
+model=welding_table.obj
+model=metal_structure.obj
+animation=setup_welding.txt
+animation=welding_process.txt
+animation=quality_inspection.txt
+
+[Regolazione ortogonalità]
+description=Allineamento assi X-Y-Z, garantendo perpendicolarità dei movimenti con correzioni software e meccaniche.
+image=https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=250&fit=crop
+model=delta_robot.obj
+model=delta_robot.mtl
+model=pcb_board.obj
+model=electronic_parts.obj
+animation=vision_alignment.txt
+animation=high_speed_picking.txt
+animation=precision_placement.txt
+
+[Sostituzione elettromandrino]
+description=Procedura con blocco macchina, scollegamento elettrico/pneumatico, rimozione unità e montaggio nuovo mandrino.
+image=menuimages/livellamento.png
+model=robot_arm_kuka.mtl
+model=conveyor_belt.obj
+model=conveyor_belt.mtl
+model=car_chassis.obj
+animation=pickup_component.txt
+animation=welding_sequence.txt
+animation=assembly_main.txt
+animation=quality_check.txt
+
+[Regolazione offset elettromandrino - foratrice]
+description=PImpostazione coordinate relative tra mandrino principale e unità di foratura per precisione fori/lavorazioni combinate.
+image=https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=250&fit=crop
+model=mobile_robot_kiva.obj
+model=mobile_robot_kiva.mtl
+model=warehouse_shelf.obj
+model=warehouse_shelf.mtl
+model=package_box.obj
+animation=navigate_to_shelf.txt
+animation=pickup_package.txt
+animation=transport_to_station.txt
+animation=unload_package.txt
+
+[Sostituzione fuso foratrice]
+description=Si rimuove l’unità, si sostituisce il fuso danneggiato e si riallineano le quote macchina.
+image=https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&h=250&fit=crop
+model=laser_scanner.obj
+model=laser_scanner.mtl
+model=inspection_table.obj
+model=component_sample.obj
+animation=scan_initialization.txt
+animation=surface_scanning.txt
+animation=defect_analysis.txt
+animation=classification.txt
+
+[Sostituzione testine foratrice]
+description=Richiede smontaggio unità, installazione nuove testine e regolazione parametri su CN.
+image=https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop
+model=collaborative_robot.obj
+model=collaborative_robot.mtl
+model=workstation.obj
+model=electronic_component.obj
+animation=human_detection.txt
+animation=collaborative_assembly.txt
+animation=safety_override.txt
+
+[Squadro cassa foratrice]
+description=Controllo e regolazione per garantire ortogonalità contenitore foratrice rispetto al piano macchina.
+image=https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=250&fit=crop
+model=welding_robot.obj
+model=welding_robot.mtl
+model=welding_table.obj
+model=metal_structure.obj
+animation=setup_welding.txt
+animation=welding_process.txt
+animation=quality_inspection.txt
+
+[Squadro fusi foratrice]
+description=Regolazione singoli fusi per mantenere parallelismo e perpendicolarità rispetto al piano martire.
+image=https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=250&fit=crop
+model=delta_robot.obj
+model=delta_robot.mtl
+model=pcb_board.obj
+model=electronic_parts.obj
+animation=vision_alignment.txt
+animation=high_speed_picking.txt
+animation=precision_placement.txt
+
+[Regolazione sensore conteggio piano di carico]
+description=Setup sensore induttivo per corretta movimentazione del piano di carico ovvero dei pannelli caricati.
+image=https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=250&fit=crop
+model=welding_robot.obj
+model=welding_robot.mtl
+model=welding_table.obj
+model=metal_structure.obj
+animation=setup_welding.txt
+animation=welding_process.txt
+animation=quality_inspection.txt
+
+[Sostituzione e regolazione tastatore]
+description=Cambio tastatore usurato e riallineamento coordinate utensile per misurazione corretta lunghezza.
+image=https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=250&fit=crop
+model=delta_robot.obj
+model=delta_robot.mtl
+model=pcb_board.obj
+model=electronic_parts.obj
+animation=vision_alignment.txt
+animation=high_speed_picking.txt
+animation=precision_placement.txt
