@@ -41,7 +41,7 @@ animation=classification.txt
 
 [Ridefinizione zone di vuoto]
 description=Il piano può essere diviso in 8–30 zone, gestibili manualmente o automaticamente tramite paddle.
-image=https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop
+image=menuimages/zonevuoto.png
 model=collaborative_robot.obj
 model=collaborative_robot.mtl
 model=workstation.obj
