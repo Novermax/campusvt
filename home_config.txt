@@ -28,7 +28,7 @@ animation=transport_to_station.txt
 animation=unload_package.txt
 
 [Regolazione campi di lavoro]
-description=Definizione delle aree operative macchina, impostando origini, quote di sicurezza e limiti assi su HMI.
+description=Definizione delle aree operative macchina, impostando origini locali.
 image=https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&h=250&fit=crop
 model=laser_scanner.obj
 model=laser_scanner.mtl
