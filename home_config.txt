@@ -16,7 +16,7 @@ animation=quality_check.txt
 
 [Manutenzione pompa del vuoto]
 description=Prevede controlli periodici, pulizia filtri, sostituzione olio e lubrificazione parti secondo modello BUSCH o Becker.
-image=https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=250&fit=crop
+image=menuimages/pompavuoto.png
 model=mobile_robot_kiva.obj
 model=mobile_robot_kiva.mtl
 model=warehouse_shelf.obj
