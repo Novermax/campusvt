@@ -168,8 +168,7 @@
     }
     
     #status {
-        width: 100%;
-        max-width: 300px;
+        display: none !important;
     }
     
     /* Nascondi le istruzioni su mobile per risparmiare spazio */

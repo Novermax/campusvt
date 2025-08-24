@@ -385,15 +385,9 @@ button:disabled, .button:disabled {
         justify-content: center;
     }
     
-    /* Rendi il pannello di visibilità modelli più compatto */
+    /* Nascondi completamente il pannello di visibilità modelli su mobile */
     #modelsVisibilityPanel {
-        gap: 3px;
-    }
-    
-    #modelsVisibilityPanel button {
-        padding: 4px 6px;
-        font-size: 10px;
-        min-width: auto;
+        display: none !important;
     }
 }
 
@@ -464,54 +458,43 @@ button:disabled, .button:disabled {
     }
 }
 
-/* Media query specifiche per orientamento */
-@media screen and (max-width: 768px) and (orientation: landscape) {
-    /* Orientamento landscape - controlli più compatti */
+/* Semplificare le media query per orientamento */
+@media screen and (max-width: 768px) {
+    /* Un solo set di regole mobile per evitare conflitti */
     #mobileTouchControls {
-        top: 90px !important;
-        left: 5px !important;
-        padding: 5px !important;
-        gap: 6px !important;
+        top: 110px !important;
+        left: 10px !important;
+        padding: 8px !important;
+        gap: 10px !important;
+        position: absolute !important;
     }
     
     .mobile-mode-label {
-        padding: 3px 6px !important;
-        font-size: 8px !important;
+        padding: 6px 10px !important;
+        font-size: 11px !important;
     }
     
     #toggleControlsBtn {
-        top: -25px !important;
-        padding: 3px 6px !important;
-        font-size: 10px !important;
-    }
-}
-
-@media screen and (max-width: 768px) and (orientation: portrait) {
-    /* Orientamento portrait - controlli normali */
-    #mobileTouchControls {
-        top: 110px;
-        left: 10px;
-        padding: 8px;
-        gap: 10px;
-    }
-    
-    .mobile-mode-label {
-        padding: 6px 10px;
-        font-size: 11px;
-    }
-}
-
-/* Regola specifica per prevenire problemi di layout durante rotazione */
-@media screen and (max-width: 768px) {
-    /* Forza riapplicazione dello stile durante rotazione */
-    body.mobile-controls-hidden #advancedControls {
         display: none !important;
-        transition: none !important;
     }
     
-    .mobile-only {
-        display: block !important;
-        transition: none !important;
+    /* Forza dimensioni consistenti per tutti i controlli */
+    #controls button,
+    #controls .file-label,
+    .btn-blue, .btn-green, .btn-red {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        width: auto !important;
+        min-height: 44px !important;
+        display: inline-block !important;
+    }
+    
+    #controls {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: center !important;
+        width: 100% !important;
     }
 }
 
@@ -794,12 +777,6 @@ button:disabled, .button:disabled {
 /* ===== RESPONSIVE ===== */
 /* Adattamenti per dispositivi mobili */
 @media (max-width: 768px) {
-    /* Pulsanti più grandi su mobile per facilità di tocco */
-    button, .button, .file-label {
-        padding: 15px 20px;
-        font-size: 16px; /* Previene lo zoom su iOS */
-    }
-    
     /* Loader più piccolo su mobile */
     #loader {
         padding: 20px;
@@ -812,11 +789,5 @@ button:disabled, .button:disabled {
         max-width: 300px;
         margin: 0 20px;
         padding: 15px;
-    }
-    
-    /* Status bar responsive */
-    #status {
-        min-width: auto;
-        font-size: 12px;
     }
 }

@@ -68,6 +68,7 @@ body {
     background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #feca57 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
+    background-attachment: fixed;
     
     /* Nasconde la scrollbar per un aspetto più pulito */
     overflow: hidden;
@@ -75,6 +76,10 @@ body {
     /* Miglioramento del rendering del testo */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
+    /* Previene problemi di ridimensionamento su mobile */
+    min-height: 100vh;
+    min-width: 100vw;
 }
 
 @keyframes gradientShift {
