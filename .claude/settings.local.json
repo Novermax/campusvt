@@ -11,6 +11,9 @@
       "WebFetch(domain:docs.anthropic.com)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\c\\Users\\mloffredo"
+    ]
   }
 }

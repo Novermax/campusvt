@@ -1,0 +1,313 @@
+/**
+ * PAGES.CSS - Stili specifici per le diverse pagine
+ * 
+ * Questo file contiene gli stili per:
+ * - Home page con griglia degli scenari
+ * - Scenario page con viewer 3D
+ * - Transizioni tra le pagine
+ * - Card degli scenari
+ */
+
+/* ===== HOME PAGE ===== */
+/* Pagina principale con la lista degli scenari disponibili */
+
+#homePage {
+    width: 100%;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Permette scroll verticale se necessario */
+    background: var(--gradient-primary);
+    
+    /* Animazione di entrata */
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+}
+
+/* Header della home page */
+#homeHeader {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+    
+    /* Animazione di entrata ritardata */
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.2s forwards;
+}
+
+#homeHeader h1 {
+    font-size: 48px;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    
+    /* Layout per emoji e testo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-medium);
+    
+    /* Animazione di entrata dal basso */
+    transform: translateY(30px);
+    animation: slideUp 0.8s ease 0.3s forwards;
+}
+
+#homeHeader .logo {
+    height: 60px;
+    width: auto;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+}
+
+#homeHeader p {
+    font-size: 20px;
+    margin: 0 0 30px 0;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* ===== GRIGLIA SCENARI ===== */
+/* Container per la griglia delle card degli scenari */
+
+#scenariosList {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); /* Responsive grid */
+    gap: var(--gap-large);
+    padding: 0 20px;
+    
+    /* Animazione di entrata progressiva */
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.4s forwards;
+}
+
+/* ===== CARD SCENARI ===== */
+/* Singola card che rappresenta uno scenario */
+
+.scenario-card {
+    background: var(--background-overlay);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-heavy);
+    transition: var(--transition-fast);
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    min-height: 180px;
+    
+    /* Effetto hover elevato */
+    transform: translateY(0);
+}
+
+.scenario-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-floating);
+}
+
+/* Card placeholder (quando non ci sono scenari caricati) */
+.scenario-card.placeholder {
+    cursor: default;
+    opacity: 0.8;
+    border: 2px dashed #dee2e6;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.scenario-card.placeholder:hover {
+    transform: none;
+    box-shadow: var(--shadow-medium);
+}
+
+/* ===== IMMAGINE SCENARIO ===== */
+/* Sezione immagine della card scenario */
+
+.scenario-image {
+    width: 200px;
+    min-width: 200px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.scenario-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-fast);
+}
+
+.scenario-card:hover .scenario-image img {
+    transform: scale(1.05); /* Leggero zoom sull'hover */
+}
+
+/* Placeholder quando non c'è immagine */
+.placeholder-image {
+    font-size: 60px;
+    color: #dee2e6;
+    opacity: 0.6;
+}
+
+/* ===== INFO SCENARIO ===== */
+/* Sezione informazioni della card scenario */
+
+.scenario-info {
+    flex: 1;
+    padding: var(--gap-medium);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.scenario-info h3 {
+    margin: 0 0 15px 0;
+    color: var(--text-dark);
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.scenario-info p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limita a 3 righe */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===== SCENARIO PAGE ===== */
+/* Pagina del viewer 3D */
+
+#scenarioPage {
+    width: 100%;
+    height: 100vh;
+    
+    /* Animazione di entrata */
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* ===== ANIMAZIONI PERSONALIZZATE ===== */
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes cardEntry {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animazione progressiva per le card */
+.scenario-card:nth-child(1) { animation: cardEntry 0.6s ease 0.1s forwards; opacity: 0; }
+.scenario-card:nth-child(2) { animation: cardEntry 0.6s ease 0.2s forwards; opacity: 0; }
+.scenario-card:nth-child(3) { animation: cardEntry 0.6s ease 0.3s forwards; opacity: 0; }
+.scenario-card:nth-child(4) { animation: cardEntry 0.6s ease 0.4s forwards; opacity: 0; }
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    #scenariosList {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+    }
+    
+    .scenario-image {
+        width: 150px;
+        min-width: 150px;
+    }
+    
+    .scenario-info h3 {
+        font-size: 20px;
+    }
+    
+    .scenario-info p {
+        font-size: 14px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #homePage {
+        padding: 15px;
+    }
+    
+    #homeHeader {
+        margin-bottom: 30px;
+    }
+    
+    #homeHeader h1 {
+        font-size: 36px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #homeHeader p {
+        font-size: 18px;
+    }
+    
+    #scenariosList {
+        grid-template-columns: 1fr;
+        padding: 0 10px;
+        gap: 20px;
+    }
+    
+    .scenario-card {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .scenario-image {
+        width: 100%;
+        height: 150px;
+    }
+    
+    .scenario-info {
+        padding: 15px;
+    }
+    
+    .scenario-info h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .scenario-info p {
+        font-size: 14px;
+    }
+}
+
+/* Mobile piccoli */
+@media (max-width: 480px) {
+    #homeHeader h1 {
+        font-size: 28px;
+    }
+    
+    #homeHeader p {
+        font-size: 16px;
+    }
+    
+    .scenario-card {
+        margin: 0 5px;
+    }
+    
+    .scenario-info {
+        padding: 12px;
+    }
+}

@@ -1,0 +1,294 @@
+/**
+ * COMPONENTS.CSS - Componenti riutilizzabili
+ * 
+ * Questo file contiene gli stili per:
+ * - Pulsanti (buttons) con diverse varianti di colore
+ * - Indicatori di stato e caricamento
+ * - Input file personalizzati
+ * - Messaggi di errore
+ * - Loader e spinner
+ */
+
+/* ===== PULSANTI ===== */
+/* Stile base per tutti i pulsanti */
+button, .button {
+    /* Layout e spaziatura */
+    padding: var(--padding-medium);
+    border: none;
+    border-radius: var(--border-radius);
+    
+    /* Tipografia */
+    font-weight: 500;
+    font-size: 14px;
+    font-family: inherit;
+    
+    /* Interazione */
+    cursor: pointer;
+    transition: var(--transition-fast);
+    
+    /* Accessibilità */
+    outline: none;
+    
+    /* Previene la selezione del testo */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ===== VARIANTI COLORE PULSANTI ===== */
+
+/* Pulsante blu (azione principale) */
+.btn-blue {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-blue:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-2px); /* Effetto "sollevamento" */
+}
+
+.btn-blue:active {
+    transform: translateY(0); /* Ritorna alla posizione normale quando premuto */
+}
+
+/* Pulsante verde (azioni positive/successo) */
+.btn-green {
+    background: var(--success-green);
+    color: white;
+}
+
+.btn-green:hover {
+    background: var(--success-green-dark);
+    transform: translateY(-2px);
+}
+
+.btn-green:active {
+    transform: translateY(0);
+}
+
+/* Pulsante rosso (azioni pericolose/cancellazione) */
+.btn-red {
+    background: var(--danger-red);
+    color: white;
+}
+
+.btn-red:hover {
+    background: var(--danger-red-dark);
+    transform: translateY(-2px);
+}
+
+.btn-red:active {
+    transform: translateY(0);
+}
+
+/* Pulsante disabilitato */
+button:disabled, .button:disabled {
+    background: #bdc3c7 !important;
+    cursor: not-allowed;
+    transform: none !important;
+    opacity: 0.6;
+}
+
+/* ===== INPUT FILE PERSONALIZZATI ===== */
+/* Gli input file di default sono brutti, li nascondiamo e usiamo etichette personalizzate */
+
+.file-input {
+    /* Nasconde completamente l'input file originale */
+    display: none;
+}
+
+.file-label {
+    /* Fa sembrare l'etichetta come un pulsante */
+    background: var(--primary-blue);
+    color: white;
+    padding: var(--padding-medium);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-weight: 500;
+    border: none;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+}
+
+.file-label:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.file-label:active {
+    transform: translateY(0);
+}
+
+/* ===== PULSANTE HELP ===== */
+/* Pulsante circolare per mostrare le istruzioni */
+
+#showInstructionsBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow-medium);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    transition: var(--transition-fast);
+}
+
+#showInstructionsBtn:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-floating);
+}
+
+#showInstructionsBtn:active {
+    transform: translateY(0);
+}
+
+/* Responsive per il pulsante help */
+@media (max-width: 768px) {
+    #showInstructionsBtn {
+        display: none; /* Nascosto su mobile dove le istruzioni sono già nascoste */
+    }
+}
+
+/* ===== INDICATORI DI STATO ===== */
+/* Elemento che mostra lo stato corrente dell'applicazione */
+#status {
+    background: var(--background-overlay);
+    padding: var(--padding-small);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    color: var(--text-dark);
+    font-family: 'Courier New', monospace; /* Font monospace per un aspetto "tecnico" */
+    min-width: 200px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* ===== LOADER E SPINNER ===== */
+/* Componenti per mostrare stati di caricamento */
+
+/* Container principale del loader */
+#loader {
+    /* Posizionamento centrato */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Styling */
+    background: var(--background-overlay);
+    padding: 30px;
+    border-radius: var(--border-radius-large);
+    text-align: center;
+    box-shadow: var(--shadow-heavy);
+    z-index: 200; /* Sopra tutti gli altri elementi */
+    
+    /* Effetto blur sullo sfondo */
+    backdrop-filter: blur(5px);
+}
+
+/* Spinner rotante */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--background-light);
+    border-top: 4px solid var(--primary-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px auto;
+}
+
+/* Testo del loader */
+#loader p {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* ===== MESSAGGI DI ERRORE ===== */
+/* Container per messaggi di errore */
+#error {
+    /* Posizionamento centrato come il loader */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Styling con tema rosso per errori */
+    background: rgba(231, 76, 60, 0.95);
+    color: white;
+    padding: var(--padding-large);
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--shadow-heavy);
+    z-index: 200;
+    max-width: 400px;
+    
+    /* Effetto blur sullo sfondo */
+    backdrop-filter: blur(5px);
+}
+
+#error p {
+    margin: 0 0 15px 0;
+    font-weight: 500;
+}
+
+/* Pulsante di chiusura errore */
+#error button {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: var(--padding-small);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: var(--transition-fast);
+}
+
+#error button:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* ===== RESPONSIVE ===== */
+/* Adattamenti per dispositivi mobili */
+@media (max-width: 768px) {
+    /* Pulsanti più grandi su mobile per facilità di tocco */
+    button, .button, .file-label {
+        padding: 15px 20px;
+        font-size: 16px; /* Previene lo zoom su iOS */
+    }
+    
+    /* Loader più piccolo su mobile */
+    #loader {
+        padding: 20px;
+        max-width: 300px;
+        margin: 0 20px;
+    }
+    
+    /* Messaggi di errore più piccoli */
+    #error {
+        max-width: 300px;
+        margin: 0 20px;
+        padding: 15px;
+    }
+    
+    /* Status bar responsive */
+    #status {
+        min-width: auto;
+        font-size: 12px;
+    }
+}

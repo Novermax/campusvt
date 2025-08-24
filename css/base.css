@@ -1,0 +1,182 @@
+/**
+ * BASE.CSS - Stili di base e reset
+ * 
+ * Questo file contiene:
+ * - Reset CSS di base per uniformare l'aspetto tra i browser
+ * - Variabili CSS per colori e dimensioni riutilizzabili
+ * - Stili di base per l'intero documento
+ * - Utility classes per nascondere/mostrare elementi
+ */
+
+/* ===== VARIABILI CSS GLOBALI ===== */
+/* Queste variabili possono essere riutilizzate in tutto il progetto */
+:root {
+    /* Palette colori principale */
+    --primary-blue: #3498db;
+    --primary-blue-dark: #2980b9;
+    --success-green: #27ae60;
+    --success-green-dark: #229954;
+    --danger-red: #e74c3c;
+    --danger-red-dark: #c0392b;
+    --text-dark: #2c3e50;
+    --text-secondary: #5a6c7d;
+    --background-light: #ecf0f1;
+    --background-overlay: rgba(255, 255, 255, 0.95);
+    
+    /* Gradienti per sfondi */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
+    /* Ombre e effetti */
+    --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+    --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
+    --shadow-heavy: 0 8px 24px rgba(0,0,0,0.2);
+    --shadow-floating: 0 12px 40px rgba(0,0,0,0.3);
+    
+    /* Dimensioni e spaziature */
+    --border-radius: 6px;
+    --border-radius-large: 12px;
+    --padding-small: 8px 15px;
+    --padding-medium: 12px 20px;
+    --padding-large: 15px;
+    --gap-small: 15px;
+    --gap-medium: 20px;
+    --gap-large: 30px;
+    
+    /* Transizioni standard */
+    --transition-fast: all 0.3s ease;
+    --transition-medium: all 0.5s ease;
+}
+
+/* ===== RESET CSS DI BASE ===== */
+/* Rimuove margini e padding di default e imposta box-sizing uniforme */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* ===== STILI BASE DEL DOCUMENTO ===== */
+body {
+    /* Font di sistema per migliori performance */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    
+    /* Sfondo gradiente principale */
+    background: var(--gradient-primary);
+    
+    /* Nasconde la scrollbar per un aspetto più pulito */
+    overflow: hidden;
+    
+    /* Miglioramento del rendering del testo */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== CONTAINER PRINCIPALE ===== */
+/* Il contenitore principale che occupa tutto lo schermo */
+#container {
+    width: 100vw;    /* 100% della larghezza viewport */
+    height: 100vh;   /* 100% dell'altezza viewport */
+    position: relative; /* Permette il posizionamento assoluto dei figli */
+}
+
+/* ===== UTILITY CLASSES ===== */
+/* Classi di utilità per mostrare/nascondere elementi */
+
+/* Nasconde completamente un elemento */
+.hidden {
+    display: none !important;
+}
+
+/* Rende un elemento invisibile ma mantiene lo spazio */
+.invisible {
+    visibility: hidden;
+}
+
+/* Classe per transizioni fluide */
+.smooth-transition {
+    transition: var(--transition-fast);
+}
+
+/* Classe per ombre fluttuanti */
+.floating-shadow {
+    box-shadow: var(--shadow-floating);
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+/* Utilities per gestire la responsività */
+
+/* Nasconde su dispositivi mobili */
+@media (max-width: 768px) {
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+/* Nasconde su desktop */
+@media (min-width: 769px) {
+    .hide-desktop {
+        display: none !important;
+    }
+}
+
+/* ===== ACCESSIBILITÀ ===== */
+/* Miglioramenti per l'accessibilità */
+
+/* Focus visibile per navigazione da tastiera */
+*:focus {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+/* Rimuove l'outline quando si clicca con il mouse */
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ===== ANIMAZIONI GLOBALI ===== */
+/* Animazioni riutilizzabili in tutto il progetto */
+
+/* Keyframes per effetti di caricamento */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Classe per animazione di entrata */
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.slide-in-top {
+    animation: slideInFromTop 0.5s ease forwards;
+}

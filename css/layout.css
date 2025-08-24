@@ -1,0 +1,222 @@
+/**
+ * LAYOUT.CSS - Layout principale e posizionamento
+ * 
+ * Questo file contiene:
+ * - Layout del canvas 3D
+ * - Header e barra di controlli
+ * - Sistema di navigazione
+ * - Layout responsive per diversi dispositivi
+ */
+
+/* ===== CANVAS 3D ===== */
+/* Il canvas dove viene renderizzata la scena 3D */
+#canvas3d {
+    display: block;
+    width: 100%;
+    height: 100%;
+    
+    /* Assicura che il canvas sia sempre visibile sotto gli altri elementi */
+    position: relative;
+    z-index: 1;
+    
+    /* Previene la selezione del canvas */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ===== HEADER PRINCIPALE ===== */
+/* Barra superiore che contiene i controlli principali */
+#header {
+    /* Posizionamento fisso nella parte superiore */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    
+    /* Styling */
+    background: var(--background-overlay);
+    padding: var(--padding-large);
+    z-index: 100; /* Sopra il canvas ma sotto modal/loader */
+    box-shadow: var(--shadow-light);
+    
+    /* Effetto blur moderno */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* Animazione di entrata */
+    animation: slideInFromTop 0.5s ease;
+}
+
+/* ===== BARRA DI NAVIGAZIONE ===== */
+/* Contiene il pulsante Home e il titolo dello scenario */
+#navBar {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-medium);
+    margin-bottom: 15px;
+}
+
+/* Titolo dello scenario nella navbar */
+#navBar #title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin: 0;
+    flex-grow: 1; /* Occupa tutto lo spazio disponibile */
+}
+
+/* ===== AREA CONTROLLI ===== */
+/* Contiene tutti i pulsanti e controlli dell'applicazione */
+#controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-small);
+    flex-wrap: wrap; /* Permette ai controlli di andare a capo su schermi piccoli */
+}
+
+/* ===== ISTRUZIONI UTENTE ===== */
+/* Pannello con le istruzioni per l'uso (attualmente commentato nell'HTML) */
+#instructions {
+    position: absolute;
+    bottom: 80px; /* Posizionato sopra il pulsante help (50px altezza + 30px margine) */
+    left: 20px;
+    background: var(--background-overlay);
+    padding: var(--padding-large);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    max-width: 300px;
+    box-shadow: var(--shadow-medium);
+    backdrop-filter: blur(5px);
+    
+    /* Animazione di entrata dal basso */
+    animation: fadeIn 0.8s ease;
+}
+
+#instructions h3 {
+    margin: 0 0 10px 0;
+    color: var(--text-dark);
+    font-size: 16px;
+}
+
+#instructions ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+#instructions li {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+#instructions p {
+    margin: 8px 0 0 0;
+    font-size: 12px;
+    line-style: italic;
+}
+
+/* ===== LAYOUT RESPONSIVE ===== */
+
+/* Tablet e schermi medi (768px - 1024px) */
+@media (max-width: 1024px) {
+    #header {
+        padding: 12px;
+    }
+    
+    #controls {
+        gap: 10px;
+    }
+    
+    #instructions {
+        max-width: 250px;
+        font-size: 13px;
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+/* Dispositivi mobili (fino a 768px) */
+@media (max-width: 768px) {
+    #header {
+        padding: 10px;
+        position: fixed; /* Fixed invece di absolute per mobile */
+    }
+    
+    #navBar {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    #navBar #title {
+        font-size: 18px;
+        text-align: center;
+    }
+    
+    #controls {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    /* I controlli occupano tutta la larghezza disponibile su mobile */
+    #controls button,
+    #controls .file-label {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    #status {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    /* Nascondi le istruzioni su mobile per risparmiare spazio */
+    #instructions {
+        display: none;
+    }
+    
+    /* Aggiungi padding top al canvas per compensare header fisso */
+    #canvas3d {
+        padding-top: 140px; /* Ajustare in base all'altezza dell'header */
+    }
+}
+
+/* Schermi molto piccoli (fino a 480px) */
+@media (max-width: 480px) {
+    #header {
+        padding: 8px;
+    }
+    
+    #navBar #title {
+        font-size: 16px;
+    }
+    
+    #controls button,
+    #controls .file-label {
+        font-size: 14px;
+        padding: 12px 16px;
+    }
+    
+    /* Canvas con padding aggiustato per header più piccolo */
+    #canvas3d {
+        padding-top: 120px;
+    }
+}
+
+/* ===== OTTIMIZZAZIONI PER PRESTAZIONI ===== */
+
+/* Accelerazione hardware per elementi che subiscono trasformazioni */
+#header, #canvas3d, #controls button, .file-label {
+    will-change: transform;
+    transform: translateZ(0); /* Forza l'accelerazione hardware */
+}
+
+/* Migliora il rendering su dispositivi ad alta densità */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #canvas3d {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
