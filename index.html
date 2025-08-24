@@ -216,6 +216,21 @@
                 <!-- ===== AREA CONTROLLI ===== -->
                 <!-- Contiene tutti i pulsanti e controlli dell'applicazione -->
                 <div id="controls" role="toolbar" aria-label="Controlli applicazione">
+                
+                    <!-- Pulsante per mostrare/nascondere controlli avanzati su mobile -->
+                    <button 
+                        id="toggleControlsBtn" 
+                        class="btn-blue mobile-only hidden" 
+                        onclick="UI.toggleMobileControls()"
+                        aria-label="Mostra/nascondi controlli avanzati"
+                        title="Mostra o nascondi i controlli avanzati"
+                        style="position: absolute; top: -35px; right: 10px; padding: 5px 10px; font-size: 12px; z-index: 1000;"
+                    >
+                        ⚙️
+                    </button>
+                
+                    <!-- Controlli avanzati (nascosti su mobile durante scenario) -->
+                    <div id="advancedControls">
                     
                     <!-- ===== CONTROLLI SCENARIO ===== -->
                     <!-- Pulsante per eseguire scenario automatico -->
@@ -291,6 +306,12 @@
                         ▶️ Avvia Animazione
                     </button>
                     
+                    <!-- ===== CONTROLLI VISIBILITÀ MODELLI ===== -->
+                    <!-- Pannello per controllare la visibilità dei singoli modelli -->
+                    <div id="modelsVisibilityPanel" class="hidden" style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <!-- I pulsanti vengono generati dinamicamente -->
+                    </div>
+                    
                     <!-- ===== INDICATORE STATO ===== -->
                     <!-- Mostra lo stato corrente dell'applicazione -->
                     <div 
@@ -302,6 +323,8 @@
                     >
                         Pronto
                     </div>
+                    
+                    </div> <!-- Fine advancedControls -->
                 </div>
             </header>
         </div>

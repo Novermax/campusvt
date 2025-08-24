@@ -305,14 +305,22 @@ window.Scene3D = {
             this.mouseControls.lastPosition.x = event.touches[0].clientX;
             this.mouseControls.lastPosition.y = event.touches[0].clientY;
         } else if (event.touches.length === 2) {
-            // Due diti: pinch per zoom
+            // Due diti: setup per pinch zoom e rotazione
             this.mouseControls.isMouseDown = false;
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
+            
+            // Salva distanza per pinch zoom
             this.mouseControls.lastPinchDistance = Math.sqrt(
                 Math.pow(touch2.clientX - touch1.clientX, 2) + 
                 Math.pow(touch2.clientY - touch1.clientY, 2)
             );
+            
+            // Salva centro delle due dita per rotazione
+            this.mouseControls.lastTwoFingerCenter = {
+                x: (touch1.clientX + touch2.clientX) / 2,
+                y: (touch1.clientY + touch2.clientY) / 2
+            };
         }
         event.preventDefault();
     },
@@ -328,26 +336,58 @@ window.Scene3D = {
             this.mouseControls.lastPosition.x = event.touches[0].clientX;
             this.mouseControls.lastPosition.y = event.touches[0].clientY;
         } else if (event.touches.length === 2) {
-            // Due diti: pinch zoom
+            // Due diti: pinch zoom + rotazione
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
+            
+            // Calcola distanza corrente per zoom
             const pinchDistance = Math.sqrt(
                 Math.pow(touch2.clientX - touch1.clientX, 2) + 
                 Math.pow(touch2.clientY - touch1.clientY, 2)
             );
             
-            if (this.mouseControls.lastPinchDistance) {
-                const delta = (this.mouseControls.lastPinchDistance - pinchDistance) * 0.01;
-                this.zoomCamera(delta);
+            // Calcola centro corrente per rotazione
+            const currentCenter = {
+                x: (touch1.clientX + touch2.clientX) / 2,
+                y: (touch1.clientY + touch2.clientY) / 2
+            };
+            
+            if (this.mouseControls.lastPinchDistance && this.mouseControls.lastTwoFingerCenter) {
+                // ZOOM: Gestisce il cambiamento di distanza tra le dita
+                const distanceDelta = (this.mouseControls.lastPinchDistance - pinchDistance) * 0.01;
+                if (Math.abs(distanceDelta) > 0.5) { // Solo se il pinch è significativo
+                    this.zoomCamera(distanceDelta);
+                }
+                
+                // ROTAZIONE: Gestisce il movimento del centro delle due dita
+                const centerDeltaX = currentCenter.x - this.mouseControls.lastTwoFingerCenter.x;
+                const centerDeltaY = currentCenter.y - this.mouseControls.lastTwoFingerCenter.y;
+                
+                // Solo se il movimento del centro è significativo e non è principalmente un pinch
+                const centerMovement = Math.sqrt(centerDeltaX * centerDeltaX + centerDeltaY * centerDeltaY);
+                const distanceChange = Math.abs(pinchDistance - this.mouseControls.lastPinchDistance);
+                
+                if (centerMovement > 5 && centerMovement > distanceChange * 0.5) {
+                    this.rotateCamera(centerDeltaX, centerDeltaY);
+                }
             }
             
+            // Aggiorna valori per il prossimo frame
             this.mouseControls.lastPinchDistance = pinchDistance;
+            this.mouseControls.lastTwoFingerCenter = currentCenter;
         }
         event.preventDefault();
     },
     
     onTouchEnd: function(event) {
         this.mouseControls.isMouseDown = false;
+        
+        // Reset valori touch quando non ci sono più dita sullo schermo
+        if (event.touches.length === 0) {
+            this.mouseControls.lastPinchDistance = null;
+            this.mouseControls.lastTwoFingerCenter = null;
+        }
+        
         event.preventDefault();
     },
     
@@ -569,6 +609,61 @@ window.Scene3D = {
         });
     },
     
+    /* ===== CONTROLLO VISIBILITÀ MODELLI ===== */
+    
+    /**
+     * Mostra/nasconde un modello specifico
+     */
+    toggleModelVisibility: function(modelIndex) {
+        if (modelIndex < 0 || modelIndex >= this.loadedModels.length) {
+            console.warn(`Indice modello non valido: ${modelIndex}`);
+            return;
+        }
+        
+        const model = this.loadedModels[modelIndex];
+        model.visible = !model.visible;
+        
+        console.log(`🔄 Modello ${modelIndex + 1} ${model.visible ? 'visibile' : 'nascosto'}`);
+        return model.visible;
+    },
+    
+    /**
+     * Imposta la visibilità di un modello specifico
+     */
+    setModelVisibility: function(modelIndex, visible) {
+        if (modelIndex < 0 || modelIndex >= this.loadedModels.length) {
+            console.warn(`Indice modello non valido: ${modelIndex}`);
+            return;
+        }
+        
+        const model = this.loadedModels[modelIndex];
+        model.visible = visible;
+        
+        console.log(`👁️ Modello ${modelIndex + 1} ${visible ? 'mostrato' : 'nascosto'}`);
+        return model.visible;
+    },
+    
+    /**
+     * Restituisce informazioni sui modelli caricati
+     */
+    getModelsInfo: function() {
+        return this.loadedModels.map((model, index) => {
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+            
+            return {
+                index: index,
+                visible: model.visible,
+                name: model.name || `Modello ${index + 1}`,
+                position: model.position,
+                size: size,
+                center: center,
+                boundingBox: { min: box.min, max: box.max }
+            };
+        });
+    },
+
     /* ===== VISTA E RESET ===== */
     
     /**

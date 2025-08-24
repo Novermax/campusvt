@@ -12,8 +12,10 @@ description=Prevede controlli periodici, pulizia filtri, sostituzione olio e lub
 image=menuimages/pompavuoto.png
 model=scenes/Test/becker250.obj
 model=scenes/Test/becker250.mtl
+position=0,0,0
 model=scenes/Test/culatta.obj
 model=scenes/Test/culatta.mtl
+position=0,0,1
 
 [Regolazione campi di lavoro]
 description=Definizione delle aree operative macchina, impostando origini locali.

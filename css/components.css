@@ -247,6 +247,74 @@ button:disabled, .button:disabled {
     font-weight: 500;
 }
 
+/* ===== CONTROLLI MOBILE ===== */
+/* Regole per nascondere controlli su dispositivi mobili */
+
+/* Pulsante toggle visibile solo su mobile */
+.mobile-only {
+    display: none;
+}
+
+/* Media query per dispositivi mobili */
+@media screen and (max-width: 768px) {
+    /* Mostra il pulsante toggle su mobile */
+    .mobile-only {
+        display: block !important;
+    }
+    
+    /* Nasconde i controlli avanzati su mobile quando è attiva la classe mobile-hidden */
+    body.mobile-controls-hidden #advancedControls {
+        display: none !important;
+    }
+    
+    /* Quando i controlli sono visibili su mobile, rendili più compatti */
+    #advancedControls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    #advancedControls button {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-height: 36px;
+    }
+    
+    #advancedControls .file-label {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Rendi il pannello di visibilità modelli più compatto */
+    #modelsVisibilityPanel {
+        gap: 3px;
+    }
+    
+    #modelsVisibilityPanel button {
+        padding: 4px 6px;
+        font-size: 10px;
+        min-width: auto;
+    }
+}
+
+/* Media query per schermi molto piccoli (smartphone piccoli) */
+@media screen and (max-width: 480px) {
+    #advancedControls button {
+        padding: 6px 10px;
+        font-size: 11px;
+        min-height: 32px;
+    }
+    
+    #advancedControls .file-label {
+        padding: 6px 10px;
+        font-size: 11px;
+        min-height: 32px;
+    }
+}
+
 /* Pulsante di chiusura errore */
 #error button {
     background: rgba(255,255,255,0.2);

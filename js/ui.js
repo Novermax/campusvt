@@ -145,9 +145,13 @@ window.UI = {
         if (page === 'home' && this.elements.homePage) {
             this.elements.homePage.classList.remove('hidden');
             this.currentPage = 'home';
+            // Pulisce controlli mobile
+            this.cleanupMobileControls();
         } else if (page === 'scenario' && this.elements.scenarioPage) {
             this.elements.scenarioPage.classList.remove('hidden');
             this.currentPage = 'scenario';
+            // Inizializza controlli mobile
+            this.initMobileControls();
         }
         
         // Callback per pagina specifica
@@ -280,7 +284,8 @@ window.UI = {
                     name: scenarioName,
                     description: '',
                     image: '',
-                    files: []
+                    files: [],
+                    positions: []
                 };
                 
                 if (window.AppConfig) {
@@ -298,6 +303,17 @@ window.UI = {
                 } else if (line.startsWith('image=')) {
                     currentScenario.image = line.substring(6);
                     AppConfig.log(3, `  🖼️ Immagine: ${currentScenario.image}`);
+                    
+                } else if (line.startsWith('position=')) {
+                    // Posizione modello (formato: position=x,y,z)
+                    const positionStr = line.substring(9);
+                    const coords = positionStr.split(',').map(n => parseFloat(n.trim()));
+                    if (coords.length === 3) {
+                        currentScenario.positions.push({ x: coords[0], y: coords[1], z: coords[2] });
+                        AppConfig.log(3, `  📍 Posizione: (${coords[0]}, ${coords[1]}, ${coords[2]})`);
+                    } else {
+                        AppConfig.log(1, `  ❌ Posizione non valida: ${positionStr}`);
+                    }
                     
                 } else if (line.includes('=')) {
                     // File da caricare (formato: label=path)
@@ -670,14 +686,25 @@ window.UI = {
         
         AppConfig.log(2, `Modelli caricati con successo: ${models.length}`);
         
-        // Aggiungi modelli alla scena
-        models.forEach(model => {
+        // Aggiungi modelli alla scena con posizioni configurate
+        models.forEach((model, index) => {
             if (window.Scene3D) {
+                // Applica posizione se configurata
+                if (this.currentScenario && this.currentScenario.positions && this.currentScenario.positions[index]) {
+                    const pos = this.currentScenario.positions[index];
+                    model.position.set(pos.x, pos.y, pos.z);
+                    console.log(`📍 Applicata posizione configurata al modello ${index + 1}: (${pos.x}, ${pos.y}, ${pos.z})`);
+                }
                 window.Scene3D.addModel(model);
             }
         });
         
         this.updateStatus(`${models.length} modello(i) caricato(i)`);
+        
+        // Crea controlli visibilità per modelli multipli
+        if (models.length > 1) {
+            this.createModelVisibilityControls();
+        }
         
         // Reset input file
         this.elements.fileInput.value = '';
@@ -800,6 +827,156 @@ window.UI = {
         
         this.updateStatus('Scena pulita');
         AppConfig.log(2, 'Scena pulita dall\'utente');
+        
+        // Nasconde i controlli di visibilità
+        this.hideModelVisibilityControls();
+    },
+    
+    /**
+     * Crea i controlli per la visibilità dei modelli
+     */
+    createModelVisibilityControls: function() {
+        const panel = document.getElementById('modelsVisibilityPanel');
+        if (!panel) {
+            console.warn('Pannello controlli visibilità modelli non trovato');
+            return;
+        }
+        
+        // Ottieni informazioni sui modelli dalla scena
+        const modelsInfo = window.Scene3D ? window.Scene3D.getModelsInfo() : [];
+        
+        // Pulisci pannello esistente
+        panel.innerHTML = '';
+        
+        if (modelsInfo.length > 1) {
+            // Aggiungi titolo
+            const title = document.createElement('span');
+            title.textContent = '👁️ Visibilità:';
+            title.style.cssText = 'color: white; font-size: 12px; margin-right: 5px; align-self: center;';
+            panel.appendChild(title);
+            
+            // Crea pulsante per ogni modello
+            modelsInfo.forEach((info, index) => {
+                const button = document.createElement('button');
+                button.className = 'btn-blue';
+                button.style.cssText = 'padding: 4px 8px; font-size: 11px; min-width: auto;';
+                button.textContent = `📦 ${info.name === `Modello ${index + 1}` ? `M${index + 1}` : info.name.substring(0, 8)}`;
+                button.title = `Mostra/Nascondi ${info.name}`;
+                
+                // Aggiorna stile in base alla visibilità
+                this.updateVisibilityButtonStyle(button, info.visible);
+                
+                // Aggiungi click handler
+                button.onclick = () => this.toggleModelVisibility(index);
+                
+                panel.appendChild(button);
+            });
+            
+            // Mostra il pannello
+            panel.classList.remove('hidden');
+            panel.style.display = 'flex';
+        }
+    },
+    
+    /**
+     * Nasconde i controlli di visibilità modelli
+     */
+    hideModelVisibilityControls: function() {
+        const panel = document.getElementById('modelsVisibilityPanel');
+        if (panel) {
+            panel.classList.add('hidden');
+            panel.style.display = 'none';
+            panel.innerHTML = '';
+        }
+    },
+    
+    /**
+     * Alterna la visibilità di un modello
+     */
+    toggleModelVisibility: function(modelIndex) {
+        if (!window.Scene3D) {
+            console.warn('Scene3D non disponibile');
+            return;
+        }
+        
+        const visible = window.Scene3D.toggleModelVisibility(modelIndex);
+        
+        // Aggiorna il pulsante corrispondente
+        const panel = document.getElementById('modelsVisibilityPanel');
+        if (panel) {
+            const buttons = panel.querySelectorAll('button');
+            if (buttons[modelIndex + 1]) { // +1 per saltare il titolo
+                this.updateVisibilityButtonStyle(buttons[modelIndex + 1], visible);
+            }
+        }
+    },
+    
+    /**
+     * Aggiorna lo stile del pulsante in base alla visibilità
+     */
+    updateVisibilityButtonStyle: function(button, visible) {
+        if (visible) {
+            button.style.opacity = '1';
+            button.style.backgroundColor = 'var(--primary-blue)';
+            button.title = button.title.replace('Mostra/', 'Nascondi ');
+        } else {
+            button.style.opacity = '0.5';
+            button.style.backgroundColor = '#666';
+            button.title = button.title.replace('Nascondi ', 'Mostra/');
+        }
+    },
+    
+    /**
+     * Gestisce il toggle dei controlli su dispositivi mobili
+     */
+    toggleMobileControls: function() {
+        const body = document.body;
+        const toggleBtn = document.getElementById('toggleControlsBtn');
+        
+        if (body.classList.contains('mobile-controls-hidden')) {
+            // Mostra controlli
+            body.classList.remove('mobile-controls-hidden');
+            if (toggleBtn) {
+                toggleBtn.innerHTML = '⚙️';
+                toggleBtn.title = 'Nascondi controlli avanzati';
+            }
+            console.log('📱 Controlli mobile mostrati');
+        } else {
+            // Nascondi controlli
+            body.classList.add('mobile-controls-hidden');
+            if (toggleBtn) {
+                toggleBtn.innerHTML = '⚙️';
+                toggleBtn.title = 'Mostra controlli avanzati';
+            }
+            console.log('📱 Controlli mobile nascosti');
+        }
+    },
+    
+    /**
+     * Inizializza i controlli mobile quando si entra in uno scenario
+     */
+    initMobileControls: function() {
+        // Rileva se siamo su mobile
+        const isMobile = window.innerWidth <= 768;
+        const toggleBtn = document.getElementById('toggleControlsBtn');
+        
+        if (isMobile && toggleBtn) {
+            // Mostra il pulsante toggle e nascondi i controlli di default
+            toggleBtn.classList.remove('hidden');
+            document.body.classList.add('mobile-controls-hidden');
+            console.log('📱 Modalità mobile attivata - controlli nascosti');
+        }
+    },
+    
+    /**
+     * Pulisce i controlli mobile quando si torna alla home
+     */
+    cleanupMobileControls: function() {
+        const toggleBtn = document.getElementById('toggleControlsBtn');
+        if (toggleBtn) {
+            toggleBtn.classList.add('hidden');
+        }
+        document.body.classList.remove('mobile-controls-hidden');
     },
     
     /**
