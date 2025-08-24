@@ -43,17 +43,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
     <!-- Meta tags per SEO e condivisione social -->
-    <meta name="description" content="Visualizzatore 3D interattivo per modelli OBJ, STL, GLTF con supporto materiali e animazioni">
-    <meta name="keywords" content="3D, visualizzatore, modelli, OBJ, STL, GLTF, Three.js, WebGL">
-    <meta name="author" content="Visualizzatore 3D Team">
+    <meta name="description" content="Campus Virtual Training - Sistema di formazione virtuale per Campus SCM">
+    <meta name="keywords" content="training, campus, virtuale, formazione, SCM, 3D">
+    <meta name="author" content="Campus Virtual Training Team">
     
     <!-- Meta tags Open Graph per condivisione social -->
-    <meta property="og:title" content="Visualizzatore Modelli 3D">
-    <meta property="og:description" content="Visualizza e interagisci con modelli 3D direttamente nel browser">
+    <meta property="og:title" content="Campus Virtual Training">
+    <meta property="og:description" content="Sistema di training virtuale per Campus SCM">
     <meta property="og:type" content="website">
     
     <!-- Titolo della pagina (mostrato nella tab del browser) -->
-    <title>🎯 Visualizzatore Modelli 3D - Versione Ottimizzata</title>
+    <title>🎯 Campus Virtual Training - Versione Ottimizzata</title>
     
     <!-- ===== FAVICON ===== -->
     <!-- Icona mostrata nella tab del browser -->
@@ -63,7 +63,7 @@
     <!-- Caricamento modulare dei CSS per migliori performance e organizzazione -->
     
     <!-- 1. Stili base e reset CSS -->
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/base.css?v=2">
     
     <!-- 2. Componenti riutilizzabili (pulsanti, loader, etc.) -->
     <link rel="stylesheet" href="css/components.css">
@@ -93,7 +93,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #cad4ff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -123,14 +123,52 @@
     <div id="init-loader">
         <div style="text-align: center;">
             <div class="init-spinner"></div>
-            <h2>🎯 Visualizzatore 3D</h2>
+            <h2>🎯 Campus Virtual Training</h2>
             <p>Caricamento in corso...</p>
+        </div>
+    </div>
+
+    <!-- ===== PAGINA DI LOGIN ===== -->
+    <!-- Pagina iniziale per l'autenticazione -->
+    <div id="loginPage">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🎯 Campus Virtual Training</h1>
+                <div class="login-subtitle">Sistema di Formazione Virtuale</div>
+            </div>
+            
+            <div class="login-form-section">
+                <h2>🔐 Accesso al Sistema</h2>
+                <p>Inserisci le tue credenziali per accedere alla piattaforma</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Nome Utente:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn-login">Accedi</button>
+            </form>
+            
+            <div id="loginError" class="login-error hidden">
+                ❌ Credenziali non valide. Riprova.
+            </div>
+            </div>
+            
+            <div class="login-footer">
+                <small>© 2024 Campus SCM - Sistema di Training Virtuale</small>
+            </div>
         </div>
     </div>
 
     <!-- ===== CONTENITORE PRINCIPALE ===== -->
     <!-- Wrapper principale che contiene tutte le pagine dell'applicazione -->
-    <div id="container">
+    <div id="container" class="hidden">
         
         <!-- ===== HOME PAGE ===== -->
         <!-- Pagina iniziale con la selezione degli scenari -->
@@ -171,7 +209,7 @@
                     </div>
                     <div class="scenario-info">
                         <h3>Modalità Manuale</h3>
-                        <p>Carica direttamente i tuoi modelli 3D senza utilizzare scenari predefiniti. Supporta OBJ, STL, GLTF/GLB con materiali e texture.</p>
+                        <p>Modalità libera per l'utilizzo di Campus Virtual Training senza scenari predefiniti.</p>
                     </div>
                 </div>
                 
@@ -187,7 +225,7 @@
             <canvas 
                 id="canvas3d" 
                 role="img" 
-                aria-label="Vista 3D interattiva del modello caricato"
+                aria-label="Vista interattiva del training virtuale"
                 tabindex="0"
             ></canvas>
             
@@ -249,78 +287,13 @@
                     <div id="advancedControls">
                     
                     <!-- ===== CONTROLLI SCENARIO ===== -->
-                    <!-- Pulsante per eseguire scenario automatico -->
-                    <button 
-                        class="btn-blue" 
-                        onclick="UI.executeScenario()" 
-                        id="scenarioBtn" 
-                        disabled
-                        aria-label="Esegui scenario automatico"
-                        title="Avvia la sequenza automatica del scenario"
-                    >
-                        🎬 Esegui Scenario
-                    </button>
                     
-                    <!-- ===== CONTROLLI CARICAMENTO FILE ===== -->
-                    <!-- Input per modelli 3D multipli -->
-                    <input 
-                        type="file" 
-                        id="fileInput" 
-                        accept=".obj,.stl,.gltf,.glb,.mtl,.jpg,.jpeg,.png,.bmp,.tga" 
-                        class="file-input" 
-                        multiple
-                        aria-label="Seleziona file modelli 3D e texture"
-                    >
-                    <label for="fileInput" class="file-label" title="Carica modelli 3D con materiali e texture">
-                        📁 Carica Modelli 3D
-                    </label>
-                    
-                    <!-- Input per file animazione -->
-                    <input 
-                        type="file" 
-                        id="animationInput" 
-                        accept=".txt,.csv" 
-                        class="file-input"
-                        aria-label="Seleziona file animazione"
-                    >
-                    <label for="animationInput" class="file-label" title="Carica file di animazione">
-                        🎬 Carica Animazione
-                    </label>
                     
                     <!-- ===== CONTROLLI AZIONI ===== -->
                     <!-- Pulsanti per azioni sulla scena -->
                     
-                    <!-- Pulisci tutto -->
-                    <button 
-                        class="btn-green" 
-                        onclick="UI.clearAll()"
-                        aria-label="Rimuovi tutti i modelli dalla scena"
-                        title="Rimuove tutti i modelli caricati"
-                    >
-                        🗑️ Pulisci Tutto
-                    </button>
                     
-                    <!-- Reset vista -->
-                    <button 
-                        class="btn-red" 
-                        onclick="UI.resetView()"
-                        aria-label="Reimposta vista camera"
-                        title="Riporta la camera alla posizione iniziale"
-                    >
-                        🔄 Reset Vista
-                    </button>
                     
-                    <!-- Avvia animazione -->
-                    <button 
-                        class="btn-blue" 
-                        onclick="UI.startAnimation()" 
-                        id="animationBtn" 
-                        disabled
-                        aria-label="Avvia animazione caricata"
-                        title="Riproduce l'animazione caricata"
-                    >
-                        ▶️ Avvia Animazione
-                    </button>
                     
                     <!-- ===== CONTROLLI VISIBILITÀ MODELLI ===== -->
                     <!-- Pannello per controllare la visibilità dei singoli modelli -->
@@ -442,6 +415,57 @@
             "three/addons/": "https://unpkg.com/three@0.155.0/examples/jsm/"
         }
     }
+    </script>
+    
+    <!-- Script per gestione login -->
+    <script>
+        // Gestione del login
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                try {
+                    // Fetch del file Users.txt
+                    const response = await fetch('Users.txt');
+                    const text = await response.text();
+                    
+                    // Parse delle righe del file
+                    const lines = text.split('\n').filter(line => line.trim() !== '');
+                    let authenticated = false;
+                    
+                    // Verifica credenziali
+                    for (const line of lines) {
+                        const [fileUsername, filePassword] = line.trim().split(';');
+                        if (username === fileUsername && password === filePassword) {
+                            authenticated = true;
+                            break;
+                        }
+                    }
+                    
+                    if (authenticated) {
+                        // Login riuscito - nascondi login e mostra applicazione
+                        document.getElementById('loginPage').classList.add('hidden');
+                        document.getElementById('container').classList.remove('hidden');
+                        document.getElementById('init-loader').classList.add('hidden');
+                    } else {
+                        // Login fallito - mostra errore
+                        loginError.classList.remove('hidden');
+                        document.getElementById('password').value = '';
+                    }
+                    
+                } catch (error) {
+                    console.error('Errore durante il login:', error);
+                    loginError.textContent = '❌ Errore di connessione. Riprova.';
+                    loginError.classList.remove('hidden');
+                }
+            });
+        });
     </script>
     
     <!-- Caricamento moduli in ordine di dipendenza -->

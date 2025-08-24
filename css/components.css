@@ -528,6 +528,205 @@ button:disabled, .button:disabled {
     background: rgba(255,255,255,0.3);
 }
 
+/* ===== LOGIN STYLES ===== */
+/* Stili per la pagina di login */
+
+#loginPage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #feca57 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    overflow: hidden;
+}
+
+.login-header {
+    background: transparent;
+    color: var(--text-dark);
+    padding: 40px 40px 20px 40px;
+    margin: 0;
+}
+
+.login-header h1 {
+    margin: 0 0 8px 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.login-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.login-form-section {
+    padding: 20px 40px 40px 40px;
+}
+
+.login-form-section h2 {
+    margin: 0 0 8px 0;
+    color: var(--text-dark);
+    font-size: 24px;
+}
+
+.login-form-section p {
+    margin: 0 0 30px 0;
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.login-footer {
+    background: transparent;
+    padding: 15px 20px 20px 20px;
+    color: var(--text-secondary);
+}
+
+.login-footer small {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-size: 16px;
+    transition: var(--transition-fast);
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-login {
+    width: 100%;
+    background: var(--primary-blue);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.login-error {
+    background: #ffe6e6;
+    color: var(--danger-red);
+    padding: 12px;
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+    border: 1px solid #ffcccc;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ===== RESPONSIVE LOGIN ===== */
+/* Adattamenti per dispositivi mobili */
+@media (max-width: 768px) {
+    .login-container {
+        max-width: 95%;
+        margin: 20px auto;
+    }
+    
+    .login-header {
+        padding: 25px 30px;
+    }
+    
+    .login-header h1 {
+        font-size: 28px;
+    }
+    
+    .login-subtitle {
+        font-size: 14px;
+    }
+    
+    .login-form-section {
+        padding: 30px;
+    }
+    
+    .login-form-section h2 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-header {
+        padding: 20px 25px;
+    }
+    
+    .login-header h1 {
+        font-size: 24px;
+    }
+    
+    .login-form-section {
+        padding: 25px;
+    }
+}
+
 /* ===== RESPONSIVE ===== */
 /* Adattamenti per dispositivi mobili */
 @media (max-width: 768px) {
