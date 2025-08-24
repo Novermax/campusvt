@@ -40,7 +40,7 @@
     
     <!-- Configurazione viewport per dispositivi mobili -->
     <!-- Assicura che la pagina si adatti correttamente agli schermi mobili -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <!-- Meta tags per SEO e condivisione social -->
     <meta name="description" content="Campus Virtual Training - Sistema di formazione virtuale per Campus SCM">
@@ -63,13 +63,13 @@
     <!-- Caricamento modulare dei CSS per migliori performance e organizzazione -->
     
     <!-- 1. Stili base e reset CSS -->
-    <link rel="stylesheet" href="css/base.css?v=3">
+    <link rel="stylesheet" href="css/base.css?v=4">
     
     <!-- 2. Componenti riutilizzabili (pulsanti, loader, etc.) -->
-    <link rel="stylesheet" href="css/components.css?v=4">
+    <link rel="stylesheet" href="css/components.css?v=5">
     
     <!-- 3. Layout e posizionamento elementi -->
-    <link rel="stylesheet" href="css/layout.css?v=2">
+    <link rel="stylesheet" href="css/layout.css?v=3">
     
     <!-- 4. Stili specifici per le diverse pagine -->
     <link rel="stylesheet" href="css/pages.css">
@@ -295,23 +295,6 @@
                     
                     
                     
-                    <!-- ===== CONTROLLI VISIBILITÀ MODELLI ===== -->
-                    <!-- Pannello per controllare la visibilità dei singoli modelli -->
-                    <div id="modelsVisibilityPanel" class="hidden" style="display: flex; gap: 5px; flex-wrap: wrap;">
-                        <!-- I pulsanti vengono generati dinamicamente -->
-                    </div>
-                    
-                    <!-- ===== INDICATORE STATO ===== -->
-                    <!-- Mostra lo stato corrente dell'applicazione -->
-                    <div 
-                        id="status" 
-                        role="status" 
-                        aria-live="polite"
-                        aria-label="Stato applicazione"
-                        title="Stato corrente dell'applicazione"
-                    >
-                        Pronto
-                    </div>
                     
                     </div> <!-- Fine advancedControls -->
                 </div>

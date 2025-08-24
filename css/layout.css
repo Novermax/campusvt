@@ -167,9 +167,7 @@
         max-width: 300px;
     }
     
-    #status {
-        display: none !important;
-    }
+    /* Status è stato rimosso dall'HTML */
     
     /* Nascondi le istruzioni su mobile per risparmiare spazio */
     #instructions {

@@ -164,19 +164,7 @@ button:disabled, .button:disabled {
     }
 }
 
-/* ===== INDICATORI DI STATO ===== */
-/* Elemento che mostra lo stato corrente dell'applicazione */
-#status {
-    background: var(--background-overlay);
-    padding: var(--padding-small);
-    border-radius: var(--border-radius);
-    font-size: 14px;
-    color: var(--text-dark);
-    font-family: 'Courier New', monospace; /* Font monospace per un aspetto "tecnico" */
-    min-width: 200px;
-    text-align: center;
-    border: 1px solid rgba(0,0,0,0.1);
-}
+/* ===== INDICATORI DI STATO RIMOSSI ===== */
 
 /* ===== LOADER E SPINNER ===== */
 /* Componenti per mostrare stati di caricamento */
@@ -385,10 +373,7 @@ button:disabled, .button:disabled {
         justify-content: center;
     }
     
-    /* Nascondi completamente il pannello di visibilità modelli su mobile */
-    #modelsVisibilityPanel {
-        display: none !important;
-    }
+    /* I pannelli sono stati rimossi dall'HTML */
 }
 
 /* Media query per schermi molto piccoli (smartphone piccoli) */
@@ -466,7 +451,7 @@ button:disabled, .button:disabled {
         left: 10px !important;
         padding: 8px !important;
         gap: 10px !important;
-        position: absolute !important;
+        position: fixed !important;
     }
     
     .mobile-mode-label {
@@ -478,6 +463,21 @@ button:disabled, .button:disabled {
         display: none !important;
     }
     
+    /* Impedisci il ridimensionamento durante rotazione */
+    html {
+        -webkit-text-size-adjust: 100% !important;
+        -moz-text-size-adjust: 100% !important;
+        -ms-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+    }
+    
+    body {
+        -webkit-text-size-adjust: 100% !important;
+        zoom: 1 !important;
+        transform: scale(1) !important;
+        transform-origin: 0 0 !important;
+    }
+    
     /* Forza dimensioni consistenti per tutti i controlli */
     #controls button,
     #controls .file-label,
@@ -487,6 +487,9 @@ button:disabled, .button:disabled {
         width: auto !important;
         min-height: 44px !important;
         display: inline-block !important;
+        box-sizing: border-box !important;
+        transform: none !important;
+        zoom: 1 !important;
     }
     
     #controls {
@@ -495,6 +498,13 @@ button:disabled, .button:disabled {
         gap: 10px !important;
         align-items: center !important;
         width: 100% !important;
+        transform: none !important;
+        zoom: 1 !important;
+    }
+    
+    #header {
+        transform: none !important;
+        zoom: 1 !important;
     }
 }
 
