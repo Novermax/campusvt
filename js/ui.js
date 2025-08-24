@@ -959,13 +959,35 @@ window.UI = {
         // Rileva se siamo su mobile
         const isMobile = window.innerWidth <= 768;
         const toggleBtn = document.getElementById('toggleControlsBtn');
+        const touchControls = document.getElementById('mobileTouchControls');
         
-        if (isMobile && toggleBtn) {
-            // Mostra il pulsante toggle e nascondi i controlli di default
-            toggleBtn.classList.remove('hidden');
-            document.body.classList.add('mobile-controls-hidden');
-            console.log('📱 Modalità mobile attivata - controlli nascosti');
+        if (isMobile) {
+            if (toggleBtn) {
+                // Mostra il pulsante toggle e nascondi i controlli avanzati di default
+                toggleBtn.classList.remove('hidden');
+                document.body.classList.add('mobile-controls-hidden');
+            }
+            
+            if (touchControls) {
+                // Mostra i controlli touch per la modalità
+                touchControls.classList.remove('hidden');
+                this.setupMobileTouchListeners();
+            }
+            
+            console.log('📱 Modalità mobile attivata - controlli touch mostrati');
         }
+    },
+    
+    /**
+     * Configura i listener per i controlli touch mobile
+     */
+    setupMobileTouchListeners: function() {
+        const radioButtons = document.querySelectorAll('input[name="mobileMode"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                console.log(`📱 Modalità touch cambiata a: ${this.value}`);
+            });
+        });
     },
     
     /**
@@ -973,9 +995,16 @@ window.UI = {
      */
     cleanupMobileControls: function() {
         const toggleBtn = document.getElementById('toggleControlsBtn');
+        const touchControls = document.getElementById('mobileTouchControls');
+        
         if (toggleBtn) {
             toggleBtn.classList.add('hidden');
         }
+        
+        if (touchControls) {
+            touchControls.classList.add('hidden');
+        }
+        
         document.body.classList.remove('mobile-controls-hidden');
     },
     

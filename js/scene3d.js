@@ -297,13 +297,25 @@ window.Scene3D = {
     
     /* ===== CONTROLLI TOUCH (MOBILE) ===== */
     
+    /**
+     * Ottiene la modalità touch corrente dai radio button
+     */
+    getMobileMode: function() {
+        const checkedRadio = document.querySelector('input[name="mobileMode"]:checked');
+        return checkedRadio ? checkedRadio.value : 'pan';
+    },
+    
     onTouchStart: function(event) {
         if (event.touches.length === 1) {
-            // Un dito: equivale a mouse sinistro (pan)
+            // Un dito: comportamento basato sulla modalità selezionata
             this.mouseControls.isMouseDown = true;
-            this.mouseControls.mouseButton = 0;
             this.mouseControls.lastPosition.x = event.touches[0].clientX;
             this.mouseControls.lastPosition.y = event.touches[0].clientY;
+            
+            // Ottieni modalità corrente dai radio button
+            const mobileMode = this.getMobileMode();
+            this.mouseControls.mobileMode = mobileMode;
+            
         } else if (event.touches.length === 2) {
             // Due diti: setup per pinch zoom e rotazione
             this.mouseControls.isMouseDown = false;
@@ -327,11 +339,25 @@ window.Scene3D = {
     
     onTouchMove: function(event) {
         if (event.touches.length === 1 && this.mouseControls.isMouseDown) {
-            // Un dito: pan
+            // Un dito: comportamento basato sulla modalità selezionata
             const deltaX = event.touches[0].clientX - this.mouseControls.lastPosition.x;
             const deltaY = event.touches[0].clientY - this.mouseControls.lastPosition.y;
             
-            this.panCamera(deltaX, deltaY);
+            const mode = this.mouseControls.mobileMode || 'pan';
+            
+            switch (mode) {
+                case 'pan':
+                    this.panCamera(deltaX, deltaY);
+                    break;
+                case 'rotate':
+                    this.rotateCamera(deltaX, deltaY);
+                    break;
+                case 'zoom':
+                    // Per zoom con un dito, usa il movimento verticale
+                    const zoomDelta = -deltaY * 0.01;
+                    this.zoomCamera(zoomDelta);
+                    break;
+            }
             
             this.mouseControls.lastPosition.x = event.touches[0].clientX;
             this.mouseControls.lastPosition.y = event.touches[0].clientY;

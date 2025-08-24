@@ -228,6 +228,22 @@
                     >
                         ⚙️
                     </button>
+                    
+                    <!-- Controlli modalità touch per mobile -->
+                    <div id="mobileTouchControls" class="mobile-only hidden" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 10px; border-radius: 8px; display: flex; gap: 15px; z-index: 1000;">
+                        <label class="mobile-mode-option">
+                            <input type="radio" name="mobileMode" value="pan" checked>
+                            <span class="mobile-mode-label">📱 Sposta</span>
+                        </label>
+                        <label class="mobile-mode-option">
+                            <input type="radio" name="mobileMode" value="rotate">
+                            <span class="mobile-mode-label">🔄 Ruota</span>
+                        </label>
+                        <label class="mobile-mode-option">
+                            <input type="radio" name="mobileMode" value="zoom">
+                            <span class="mobile-mode-label">🔍 Zoom</span>
+                        </label>
+                    </div>
                 
                     <!-- Controlli avanzati (nascosti su mobile durante scenario) -->
                     <div id="advancedControls">

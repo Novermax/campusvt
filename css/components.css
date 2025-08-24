@@ -315,6 +315,57 @@ button:disabled, .button:disabled {
     }
 }
 
+/* ===== CONTROLLI TOUCH MOBILE ===== */
+/* Stili per i radio button della modalità touch */
+
+.mobile-mode-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.mobile-mode-option:hover {
+    color: var(--primary-blue);
+}
+
+.mobile-mode-option input[type="radio"] {
+    display: none;
+}
+
+.mobile-mode-label {
+    padding: 8px 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.mobile-mode-option input[type="radio"]:checked + .mobile-mode-label {
+    border-color: var(--primary-blue);
+    background: var(--primary-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+/* Responsive per schermi molto piccoli */
+@media screen and (max-width: 480px) {
+    #mobileTouchControls {
+        bottom: 10px !important;
+        padding: 8px !important;
+        gap: 10px !important;
+    }
+    
+    .mobile-mode-label {
+        padding: 6px 8px !important;
+        font-size: 10px !important;
+    }
+}
+
 /* Pulsante di chiusura errore */
 #error button {
     background: rgba(255,255,255,0.2);
