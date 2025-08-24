@@ -538,6 +538,9 @@ window.UI = {
         }
         
         AppConfig.log(2, `Caricamento ${modelFiles.length} modelli per scenario: ${scenario.name}`);
+        
+        // Mostra progress bar
+        this.showModelProgressBar(modelFiles.length);
         this.updateStatus(`Caricamento ${modelFiles.length} modelli...`);
         
         // Converte i path in URL per il fetch
@@ -564,8 +567,14 @@ window.UI = {
     loadModelsFromUrls: function(modelUrls) {
         console.log('🌐 Avvio fetch per:', modelUrls);
         
+        let completedFiles = 0;
+        const totalFiles = modelUrls.length;
+        
         const loadPromises = modelUrls.map(model => {
             console.log(`🌐 Fetching: ${model.path}`);
+            // Aggiorna progress bar - fetch iniziato
+            this.updateModelProgress(completedFiles, totalFiles, model.name);
+            
             return fetch(model.path)
                 .then(response => {
                     console.log(`🌐 Response per ${model.path}:`, response.status, response.statusText);
@@ -576,6 +585,11 @@ window.UI = {
                 })
                 .then(blob => {
                     console.log(`🌐 Blob creato per ${model.name}:`, blob.size, 'bytes');
+                    
+                    // Aggiorna progress bar - file completato
+                    completedFiles++;
+                    this.updateModelProgress(completedFiles, totalFiles, model.name);
+                    
                     // Crea un File object dal blob
                     const file = new File([blob], model.name, { type: blob.type });
                     return { file, model };
@@ -673,6 +687,16 @@ window.UI = {
      */
     onModelLoadProgress: function(message, progress) {
         this.updateStatus(message);
+        
+        // Aggiorna anche la progress bar se visibile
+        const progressBar = document.getElementById('modelProgressBar');
+        if (progressBar && !progressBar.classList.contains('hidden')) {
+            // Estrai informazioni dal messaggio se possibile
+            const currentFile = message.includes('Caricamento ') ? message.replace('Caricamento ', '').replace('...', '') : message;
+            const percentage = Math.round(progress * 100);
+            this.updateModelProgress(null, null, currentFile, percentage);
+        }
+        
         AppConfig.log(3, `Progresso caricamento: ${message} (${Math.round(progress * 100)}%)`);
     },
     
@@ -710,6 +734,9 @@ window.UI = {
             this.createModelVisibilityControls();
         }
         
+        // Nascondi progress bar al completamento
+        this.hideModelProgressBar();
+        
         // Reset input file
         this.elements.fileInput.value = '';
     },
@@ -719,6 +746,7 @@ window.UI = {
      */
     onModelLoadError: function(error) {
         this.hideLoader();
+        this.hideModelProgressBar(); // Nascondi progress bar anche in caso di errore
         this.showError('Errore caricamento modelli: ' + error);
         this.updateStatus('Errore caricamento');
         
@@ -794,6 +822,73 @@ window.UI = {
     hideError: function() {
         if (this.elements.error) {
             this.elements.error.classList.add('hidden');
+        }
+    },
+    
+    /* ===== PROGRESS BAR MODELLI ===== */
+    
+    /**
+     * Mostra la progress bar per il caricamento modelli
+     */
+    showModelProgressBar: function(totalFiles = 0) {
+        const progressBar = document.getElementById('modelProgressBar');
+        if (progressBar) {
+            // Reset elementi
+            this.updateModelProgress(0, totalFiles, 'Preparazione...');
+            
+            // Mostra la progress bar
+            progressBar.classList.remove('hidden');
+            
+            console.log('📊 Progress bar modelli mostrata');
+        }
+    },
+    
+    /**
+     * Aggiorna la progress bar
+     */
+    updateModelProgress: function(currentFile, totalFiles, fileName = '', percentage = null) {
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const progressCurrentFile = document.getElementById('progress-current-file');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const progressFilesCount = document.getElementById('progress-files-count');
+        
+        // Calcola percentuale se non fornita
+        if (percentage === null) {
+            percentage = totalFiles > 0 ? Math.round((currentFile / totalFiles) * 100) : 0;
+        }
+        
+        // Aggiorna elementi
+        if (progressBarFill) {
+            progressBarFill.style.width = `${percentage}%`;
+        }
+        
+        if (progressCurrentFile) {
+            if (fileName) {
+                // Estrai solo il nome del file senza percorso
+                const cleanFileName = fileName.split('/').pop() || fileName;
+                progressCurrentFile.textContent = cleanFileName;
+            }
+        }
+        
+        if (progressPercentage) {
+            progressPercentage.textContent = `${percentage}%`;
+        }
+        
+        if (progressFilesCount) {
+            progressFilesCount.textContent = `${currentFile} / ${totalFiles} file`;
+        }
+        
+        console.log(`📊 Progress aggiornato: ${percentage}% - ${fileName}`);
+    },
+    
+    /**
+     * Nasconde la progress bar
+     */
+    hideModelProgressBar: function() {
+        const progressBar = document.getElementById('modelProgressBar');
+        if (progressBar) {
+            progressBar.classList.add('hidden');
+            console.log('📊 Progress bar modelli nascosta');
         }
     },
     

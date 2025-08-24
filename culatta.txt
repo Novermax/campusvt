@@ -1,4 +1,0 @@
-  # Animazione cubo che si muove in cerchio
-  0,culatta.obj,0,0,0
-  1000,culatta.obj,0,-1,0
-  

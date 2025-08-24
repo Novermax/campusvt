@@ -195,7 +195,7 @@ window.App = {
             await this.loadModule('./js/config.js?nocache=999999');
             await this.loadModule('./js/scene3d.js?nocache=1000007');  
             await this.loadModule('./js/modelloader.js?nocache=1000005');
-            await this.loadModule('./js/ui.js?nocache=1000005');
+            await this.loadModule('./js/ui.js?nocache=1000006');
             
             console.log('✅ Tutti i moduli caricati');
         } catch (error) {

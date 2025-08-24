@@ -398,6 +398,24 @@
         <p id="loader-text">Caricamento in corso...</p>
     </div>
     
+    <!-- ===== PROGRESS BAR MODELLI ===== -->
+    <!-- Barra di avanzamento per caricamento modelli scenario -->
+    <div id="modelProgressBar" class="hidden" role="dialog" aria-labelledby="progress-text" aria-modal="true">
+        <div class="progress-container">
+            <h3 id="progress-text">🔄 Caricamento Scenario</h3>
+            <div class="progress-details">
+                <span id="progress-current-file">Preparazione...</span>
+                <span id="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar-track">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-info">
+                <small id="progress-files-count">0 / 0 file</small>
+            </div>
+        </div>
+    </div>
+    
     <!-- ===== MESSAGGIO ERRORE ===== -->
     <!-- Popup per mostrare errori all'utente -->
     <div id="error" class="hidden" role="alert" aria-live="assertive">
