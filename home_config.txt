@@ -3,7 +3,7 @@ title=Campus Virtual Training Morbidelli X400
 subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione
 
 [Livellamento macchina]
-description=Regolazione dei piedini del basamento, tavolo carico e scarico, mantenendo il pantografo alla quota indicata nel manuale per il corretto allineamento con il tavolo di carico.
+description=Regolazione dei piedini del basamento, tavolo carico e scarico, mantenendo il pantografo alla giusta quota per il corretto allineamento con il tavolo di carico.
 image=menuimages/1.png
 
 
@@ -16,7 +16,9 @@ position=0,0,0
 model=scenes/Test/culatta.obj
 model=scenes/Test/culatta.mtl
 position=0,0,1
-
+model=scenes/Test/filtro.obj
+model=scenes/Test/filtro.mtl
+position=-1,0,0
 [Regolazione campi di lavoro]
 description=Definizione delle aree operative macchina, impostazione origini locali.
 image=menuimages/3.png

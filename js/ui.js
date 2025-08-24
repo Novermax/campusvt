@@ -1055,8 +1055,8 @@ window.UI = {
      * Inizializza i controlli mobile quando si entra in uno scenario
      */
     initMobileControls: function() {
-        // Rileva se siamo su mobile
-        const isMobile = window.innerWidth <= 768;
+        // Rileva se siamo su mobile (considera sia larghezza che altezza per rotazione)
+        const isMobile = (window.innerWidth <= 768 || window.innerHeight <= 768);
         const toggleBtn = document.getElementById('toggleControlsBtn');
         const touchControls = document.getElementById('mobileTouchControls');
         
@@ -1068,8 +1068,12 @@ window.UI = {
             }
             
             if (touchControls) {
-                // Mostra i controlli touch per la modalità
+                // Mostra i controlli touch per la modalità - SEMPRE visibili su mobile
                 touchControls.classList.remove('hidden');
+                touchControls.style.display = 'flex';
+                touchControls.style.flexDirection = 'column';
+                touchControls.style.visibility = 'visible';
+                touchControls.style.opacity = '1';
                 this.setupMobileTouchListeners();
             }
             
@@ -1086,6 +1090,24 @@ window.UI = {
             radio.addEventListener('change', function() {
                 console.log(`📱 Modalità touch cambiata a: ${this.value}`);
             });
+        });
+        
+        // Listener per rotazione schermo - mantiene controlli visibili
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                const touchControls = document.getElementById('mobileTouchControls');
+                const isMobile = (window.innerWidth <= 768 || window.innerHeight <= 768);
+                
+                if (isMobile && touchControls) {
+                    touchControls.classList.remove('hidden');
+                    touchControls.style.display = 'flex';
+                    touchControls.style.flexDirection = 'column';
+                    touchControls.style.visibility = 'visible';
+                    touchControls.style.opacity = '1';
+                    touchControls.style.position = 'fixed';
+                    console.log('📱 Controlli touch ripristinati dopo rotazione');
+                }
+            }, 100); // Piccolo delay per attendere il completamento della rotazione
         });
     },
     
