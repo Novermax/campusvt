@@ -268,18 +268,18 @@
                     </button>
                     
                     <!-- Controlli modalità touch per mobile -->
-                    <div id="mobileTouchControls" class="mobile-only hidden" style="position: absolute; top: 110px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 8px; display: flex; gap: 10px; z-index: 1000;">
+                    <div id="mobileTouchControls" class="mobile-only hidden" style="position: fixed; top: 110px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; z-index: 1000;">
                         <label class="mobile-mode-option">
                             <input type="radio" name="mobileMode" value="pan" checked>
-                            <span class="mobile-mode-label">📱 Sposta</span>
+                            <span class="mobile-mode-label">Sposta</span>
                         </label>
                         <label class="mobile-mode-option">
                             <input type="radio" name="mobileMode" value="rotate">
-                            <span class="mobile-mode-label">🔄 Ruota</span>
+                            <span class="mobile-mode-label">Ruota</span>
                         </label>
                         <label class="mobile-mode-option">
                             <input type="radio" name="mobileMode" value="zoom">
-                            <span class="mobile-mode-label">🔍 Zoom</span>
+                            <span class="mobile-mode-label">Zoom</span>
                         </label>
                     </div>
                 
@@ -301,47 +301,6 @@
             </header>
         </div>
         
-        <!-- ===== PANNELLO ISTRUZIONI ===== -->
-        <!-- Guida per l'utente (mostrato solo quando necessario) -->
-        <aside id="instructions" class="hidden" role="complementary" aria-labelledby="instructions-title">
-            <h3 id="instructions-title">🎮 Controlli Interattivi:</h3>
-            <ul role="list">
-                <li><strong>Tasto sinistro + trascina:</strong> Sposta la vista (Pan)</li>
-                <li><strong>Tasto destro + trascina:</strong> Ruota intorno al modello</li>
-                <li><strong>Rotella mouse / Pinch:</strong> Zoom avanti/indietro</li>
-            </ul>
-            
-            <h3>🎨 File Supportati:</h3>
-            <ul role="list">
-                <li><strong>Modelli:</strong> OBJ, STL, GLTF, GLB</li>
-                <li><strong>Materiali:</strong> MTL (per file OBJ)</li>
-                <li><strong>Texture:</strong> JPG, PNG, BMP, TGA</li>
-                <li><strong>Animazioni:</strong> TXT, CSV</li>
-            </ul>
-            
-            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">
-                💡 <strong>Suggerimento:</strong> Per risultati migliori, assicurati che i file abbiano nomi corrispondenti (es: model.obj + model.mtl + texture.jpg)
-            </p>
-            
-            <!-- Pulsante per nascondere le istruzioni -->
-            <button 
-                onclick="this.parentElement.classList.add('hidden')" 
-                style="background: var(--primary-blue); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-top: 10px;"
-                aria-label="Nascondi istruzioni"
-            >
-                ❌ Nascondi
-            </button>
-        </aside>
-        
-        <!-- Pulsante per mostrare istruzioni (fisso nell'angolo) -->
-        <button 
-            id="showInstructionsBtn"
-            onclick="document.getElementById('instructions').classList.remove('hidden')"
-            aria-label="Mostra istruzioni"
-            title="Mostra guida controlli"
-        >
-            ❓
-        </button>
     </div>
 
     <!-- ===== ELEMENTI UI OVERLAY ===== -->

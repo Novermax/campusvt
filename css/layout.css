@@ -75,45 +75,7 @@
     flex-wrap: wrap; /* Permette ai controlli di andare a capo su schermi piccoli */
 }
 
-/* ===== ISTRUZIONI UTENTE ===== */
-/* Pannello con le istruzioni per l'uso (attualmente commentato nell'HTML) */
-#instructions {
-    position: absolute;
-    bottom: 80px; /* Posizionato sopra il pulsante help (50px altezza + 30px margine) */
-    left: 20px;
-    background: var(--background-overlay);
-    padding: var(--padding-large);
-    border-radius: var(--border-radius);
-    font-size: 14px;
-    max-width: 300px;
-    box-shadow: var(--shadow-medium);
-    backdrop-filter: blur(5px);
-    
-    /* Animazione di entrata dal basso */
-    animation: fadeIn 0.8s ease;
-}
-
-#instructions h3 {
-    margin: 0 0 10px 0;
-    color: var(--text-dark);
-    font-size: 16px;
-}
-
-#instructions ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-#instructions li {
-    margin: 5px 0;
-    line-height: 1.4;
-}
-
-#instructions p {
-    margin: 8px 0 0 0;
-    font-size: 12px;
-    line-style: italic;
-}
+/* ===== ISTRUZIONI RIMOSSE ===== */
 
 /* ===== LAYOUT RESPONSIVE ===== */
 
@@ -125,13 +87,6 @@
     
     #controls {
         gap: 10px;
-    }
-    
-    #instructions {
-        max-width: 250px;
-        font-size: 13px;
-        bottom: 15px;
-        left: 15px;
     }
 }
 
@@ -169,10 +124,7 @@
     
     /* Status è stato rimosso dall'HTML */
     
-    /* Nascondi le istruzioni su mobile per risparmiare spazio */
-    #instructions {
-        display: none;
-    }
+    /* Istruzioni rimosse */
     
     /* Aggiungi padding top al canvas per compensare header fisso */
     #canvas3d {

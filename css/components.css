@@ -123,46 +123,7 @@ button:disabled, .button:disabled {
     transform: translateY(0);
 }
 
-/* ===== PULSANTE HELP ===== */
-/* Pulsante circolare per mostrare le istruzioni */
-
-#showInstructionsBtn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: var(--primary-blue);
-    color: white;
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: var(--shadow-medium);
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    transition: var(--transition-fast);
-}
-
-#showInstructionsBtn:hover {
-    background: var(--primary-blue-dark);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-floating);
-}
-
-#showInstructionsBtn:active {
-    transform: translateY(0);
-}
-
-/* Responsive per il pulsante help */
-@media (max-width: 768px) {
-    #showInstructionsBtn {
-        display: none; /* Nascosto su mobile dove le istruzioni sono già nascoste */
-    }
-}
+/* ===== PULSANTE HELP RIMOSSO ===== */
 
 /* ===== INDICATORI DI STATO RIMOSSI ===== */
 
@@ -452,6 +413,8 @@ button:disabled, .button:disabled {
         padding: 8px !important;
         gap: 10px !important;
         position: fixed !important;
+        flex-direction: column !important;
+        display: flex !important;
     }
     
     .mobile-mode-label {
