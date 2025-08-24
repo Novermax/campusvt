@@ -4,7 +4,7 @@ subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione
 
 [Livellamento macchina]
 description=Regolazione dei piedini del basamento, tavolo carico e scarico, mantenendo il pantografo alla quota indicata nel manuale per il corretto allineamento con il tavolo di carico.
-image=menuimages/rr.jpg
+image=menuimages/1.png
 
 
 [Manutenzione pompa del vuoto]
@@ -19,7 +19,7 @@ position=0,0,1
 
 [Regolazione campi di lavoro]
 description=Definizione delle aree operative macchina, impostazione origini locali.
-image=menuimages/rr.jpg
+image=menuimages/3.png
 model=laser_scanner.obj
 model=laser_scanner.mtl
 model=inspection_table.obj
@@ -31,7 +31,7 @@ animation=classification.txt
 
 [Ridefinizione zone di vuoto]
 description=Il piano può essere diviso in 8–30 zone, gestibili manualmente o automaticamente tramite paddle.
-image=menuimages/rr.jpg
+image=menuimages/4.png
 model=collaborative_robot.obj
 model=collaborative_robot.mtl
 model=workstation.obj
@@ -42,7 +42,7 @@ animation=safety_override.txt
 
 [RTCP Automatico]
 description=Regolazione del cinematismo RTCP della testa Prisma.
-image=menuimages/rr.jpg
+image=menuimages/5.png
 model=welding_robot.obj
 model=welding_robot.mtl
 model=welding_table.obj
@@ -53,7 +53,7 @@ animation=quality_inspection.txt
 
 [Regolazione ortogonalità]
 description=Allineamento assi X-Y-Z, perpendicolarità dei movimenti ottenuta con correzioni meccaniche e regolazioni parametri
-image=menuimages/rr.jpg
+image=menuimages/6.png
 model=delta_robot.obj
 model=delta_robot.mtl
 model=pcb_board.obj
@@ -64,7 +64,7 @@ animation=precision_placement.txt
 
 [Sostituzione elettromandrino]
 description=Procedura con blocco macchina, scollegamento elettrico/pneumatico, rimozione unità e montaggio nuovo elettromandrino.
-image=menuimages/rr.jpg
+image=menuimages/7.png
 model=robot_arm_kuka.mtl
 model=conveyor_belt.obj
 model=conveyor_belt.mtl
@@ -76,7 +76,7 @@ animation=quality_check.txt
 
 [Regolazione offset elettromandrino - foratrice]
 description=Impostazione coordinate relative tra mandrino principale e unità di foratura per mantenere precise i fori/lavorazioni combinate.
-image=menuimages/rr.jpg
+image=menuimages/8.png
 model=mobile_robot_kiva.obj
 model=mobile_robot_kiva.mtl
 model=warehouse_shelf.obj
@@ -89,7 +89,7 @@ animation=unload_package.txt
 
 [Sostituzione fuso foratrice]
 description=Sostituzione del il fuso danneggiato e riallineamento le quote macchina.
-image=menuimages/rr.jpg
+image=menuimages/9.png
 model=laser_scanner.obj
 model=laser_scanner.mtl
 model=inspection_table.obj
@@ -101,7 +101,7 @@ animation=classification.txt
 
 [Sostituzione testine foratrice]
 description=Richiede smontaggio unità, installazione nuove testine e regolazione parametri su CN.
-image=menuimages/rr.jpg
+image=menuimages/10.png
 model=collaborative_robot.obj
 model=collaborative_robot.mtl
 model=workstation.obj
@@ -112,7 +112,7 @@ animation=safety_override.txt
 
 [Squadro cassa foratrice]
 description=Controllo e regolazioni per l'ortogonalità del gruppo foratrice rispetto al piano macchina.
-image=menuimages/rr.jpg
+image=menuimages/11.png
 model=welding_robot.obj
 model=welding_robot.mtl
 model=welding_table.obj
@@ -123,7 +123,7 @@ animation=quality_inspection.txt
 
 [Squadro fusi foratrice]
 description=Regolazione singoli fusi per mantenere parallelismo e perpendicolarità rispetto al piano macchina.
-image=menuimages/rr.jpg
+image=menuimages/12.png
 model=delta_robot.obj
 model=delta_robot.mtl
 model=pcb_board.obj
@@ -134,7 +134,7 @@ animation=precision_placement.txt
 
 [Regolazione sensore conteggio piano di carico]
 description=Setup sensore induttivo per corretta movimentazione del piano di carico.
-image=menuimages/rr.jpg
+image=menuimages/13.png
 model=welding_robot.obj
 model=welding_robot.mtl
 model=welding_table.obj
@@ -145,7 +145,7 @@ animation=quality_inspection.txt
 
 [Sostituzione e regolazione tastatore]
 description=Sostituzione tastatore usurato e riallineamento coordinate per la corretta misura della lunghezza utensile
-image=menuimages/rr.jpg
+image=menuimages/14.png
 model=delta_robot.obj
 model=delta_robot.mtl
 model=pcb_board.obj
