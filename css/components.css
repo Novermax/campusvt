@@ -308,6 +308,15 @@ button:disabled, .button:disabled {
         display: block !important;
     }
     
+    /* Forza visibilità controlli touch in ogni orientamento */
+    #mobileTouchControls.mobile-only {
+        display: flex !important;
+        flex-direction: column !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+    }
+    
     /* Nasconde i controlli avanzati su mobile quando è attiva la classe mobile-hidden */
     body.mobile-controls-hidden #advancedControls {
         display: none !important;
@@ -392,14 +401,17 @@ button:disabled, .button:disabled {
 /* Responsive per schermi molto piccoli */
 @media screen and (max-width: 480px) {
     #mobileTouchControls {
-        top: 105px !important;
+        top: 90px !important;
         left: 5px !important;
         padding: 6px !important;
-        gap: 8px !important;
+        gap: 6px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        position: fixed !important;
     }
     
     .mobile-mode-label {
-        padding: 5px 6px !important;
+        padding: 4px 6px !important;
         font-size: 9px !important;
     }
 }
@@ -415,6 +427,9 @@ button:disabled, .button:disabled {
         position: fixed !important;
         flex-direction: column !important;
         display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 9999 !important;
     }
     
     .mobile-mode-label {
@@ -422,9 +437,7 @@ button:disabled, .button:disabled {
         font-size: 11px !important;
     }
     
-    #toggleControlsBtn {
-        display: none !important;
-    }
+    /* Toggle button rimosso dall'HTML */
     
     /* Impedisci il ridimensionamento durante rotazione */
     html {
