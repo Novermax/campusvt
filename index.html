@@ -431,18 +431,17 @@
                 const password = document.getElementById('password').value;
                 
                 try {
-                    // Fetch del file Users.txt
-                    const response = await fetch('Users.txt');
-                    const text = await response.text();
+                    // Credenziali hardcoded per funzionamento online
+                    const validUsers = [
+                        { username: 'pippo', password: '1234' },
+                        { username: 'pluto', password: '5678' }
+                    ];
                     
-                    // Parse delle righe del file
-                    const lines = text.split('\n').filter(line => line.trim() !== '');
                     let authenticated = false;
                     
                     // Verifica credenziali
-                    for (const line of lines) {
-                        const [fileUsername, filePassword] = line.trim().split(';');
-                        if (username === fileUsername && password === filePassword) {
+                    for (const user of validUsers) {
+                        if (username === user.username && password === user.password) {
                             authenticated = true;
                             break;
                         }
@@ -461,7 +460,7 @@
                     
                 } catch (error) {
                     console.error('Errore durante il login:', error);
-                    loginError.textContent = '❌ Errore di connessione. Riprova.';
+                    loginError.textContent = '❌ Errore di sistema. Riprova.';
                     loginError.classList.remove('hidden');
                 }
             });
