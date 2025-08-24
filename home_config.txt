@@ -18,7 +18,7 @@ model=scenes/Test/culatta.mtl
 position=0,0,1
 model=scenes/Test/filtro.obj
 model=scenes/Test/filtro.mtl
-position=-1,0,0
+position=-0.5,0,0
 [Regolazione campi di lavoro]
 description=Definizione delle aree operative macchina, impostazione origini locali.
 image=menuimages/3.png
