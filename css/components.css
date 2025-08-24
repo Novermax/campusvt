@@ -366,6 +366,55 @@ button:disabled, .button:disabled {
     }
 }
 
+/* Media query specifiche per orientamento */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    /* Orientamento landscape - controlli più compatti */
+    #mobileTouchControls {
+        bottom: 5px !important;
+        padding: 6px !important;
+        gap: 8px !important;
+    }
+    
+    .mobile-mode-label {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+    }
+    
+    #toggleControlsBtn {
+        top: -25px !important;
+        padding: 3px 6px !important;
+        font-size: 10px !important;
+    }
+}
+
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    /* Orientamento portrait - controlli normali */
+    #mobileTouchControls {
+        bottom: 20px;
+        padding: 10px;
+        gap: 15px;
+    }
+    
+    .mobile-mode-label {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Regola specifica per prevenire problemi di layout durante rotazione */
+@media screen and (max-width: 768px) {
+    /* Forza riapplicazione dello stile durante rotazione */
+    body.mobile-controls-hidden #advancedControls {
+        display: none !important;
+        transition: none !important;
+    }
+    
+    .mobile-only {
+        display: block !important;
+        transition: none !important;
+    }
+}
+
 /* Pulsante di chiusura errore */
 #error button {
     background: rgba(255,255,255,0.2);

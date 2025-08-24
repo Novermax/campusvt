@@ -121,6 +121,10 @@ window.UI = {
             });
         }
         
+        // Event listener per rotazione schermo mobile
+        window.addEventListener('orientationchange', this.onOrientationChange.bind(this));
+        window.addEventListener('resize', this.onWindowResize.bind(this));
+        
         AppConfig.log(3, 'Event listeners configurati');
     },
     
@@ -1006,6 +1010,64 @@ window.UI = {
         }
         
         document.body.classList.remove('mobile-controls-hidden');
+    },
+    
+    /**
+     * Gestisce il cambio di orientamento dello schermo mobile
+     */
+    onOrientationChange: function() {
+        // Piccolo ritardo per permettere al browser di completare la rotazione
+        setTimeout(() => {
+            console.log('📱 Orientamento cambiato, riapplicando controlli mobile...');
+            this.handleMobileControlsRefresh();
+        }, 300);
+    },
+    
+    /**
+     * Gestisce il resize della finestra
+     */
+    onWindowResize: function() {
+        // Debounce per evitare troppi eventi durante resize
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+            console.log('📱 Finestra ridimensionata, controllo mobile...');
+            this.handleMobileControlsRefresh();
+        }, 200);
+    },
+    
+    /**
+     * Riapplica le impostazioni dei controlli mobile dopo orientamento/resize
+     */
+    handleMobileControlsRefresh: function() {
+        // Solo se siamo nella pagina scenario
+        if (this.currentPage !== 'scenario') return;
+        
+        const isMobile = window.innerWidth <= 768;
+        const toggleBtn = document.getElementById('toggleControlsBtn');
+        const touchControls = document.getElementById('mobileTouchControls');
+        
+        if (isMobile) {
+            // Modalità mobile: mostra controlli touch, nascondi controlli avanzati
+            if (toggleBtn) {
+                toggleBtn.classList.remove('hidden');
+            }
+            if (touchControls) {
+                touchControls.classList.remove('hidden');
+            }
+            document.body.classList.add('mobile-controls-hidden');
+            console.log('📱 Controlli mobile riattivati dopo orientamento');
+            
+        } else {
+            // Modalità desktop: mostra tutto, nascondi controlli touch
+            if (toggleBtn) {
+                toggleBtn.classList.add('hidden');
+            }
+            if (touchControls) {
+                touchControls.classList.add('hidden');
+            }
+            document.body.classList.remove('mobile-controls-hidden');
+            console.log('🖥️ Controlli desktop riattivati dopo orientamento');
+        }
     },
     
     /**
