@@ -1172,6 +1172,14 @@ window.UI = {
             }
             if (touchControls) {
                 touchControls.classList.remove('hidden');
+                // Forza gli stili necessari per garantire visibilità
+                touchControls.style.display = 'flex';
+                touchControls.style.flexDirection = 'column';
+                touchControls.style.visibility = 'visible';
+                touchControls.style.opacity = '1';
+                touchControls.style.position = 'fixed';
+                touchControls.style.zIndex = '100000';
+                console.log('📱 Controlli touch forzati a essere visibili');
             }
             document.body.classList.add('mobile-controls-hidden');
             console.log('📱 Controlli mobile riattivati dopo orientamento');
