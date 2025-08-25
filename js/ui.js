@@ -738,7 +738,9 @@ window.UI = {
         this.hideModelProgressBar();
         
         // Reset input file
-        this.elements.fileInput.value = '';
+        if (this.elements.fileInput) {
+            this.elements.fileInput.value = '';
+        }
     },
     
     /**

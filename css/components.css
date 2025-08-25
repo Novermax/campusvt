@@ -301,6 +301,11 @@ button:disabled, .button:disabled {
     display: none;
 }
 
+/* Eccezione specifica per i controlli touch mobile */
+#mobileTouchControls.mobile-only {
+    display: block;
+}
+
 /* Media query per dispositivi mobili */
 @media screen and (max-width: 768px) {
     /* Mostra il pulsante toggle su mobile */
