@@ -1167,18 +1167,18 @@ window.UI = {
             touchControls.style.padding = '8px !important';
             touchControls.style.gap = '10px !important';
             
-            // Posizionamento dinamico basato su orientamento
-            if (isLandscape) {
-                // In landscape, posiziona più in alto e verifica che sia dentro lo schermo
-                touchControls.style.top = Math.min(80, screenHeight * 0.1) + 'px !important';
-                touchControls.style.left = Math.min(10, screenWidth * 0.02) + 'px !important';
-                console.log('📱 LANDSCAPE: Posizionamento adattato per orientamento orizzontale');
-            } else {
-                // In portrait, usa il posizionamento standard
-                touchControls.style.top = '110px !important';
-                touchControls.style.left = '10px !important';
-                console.log('📱 PORTRAIT: Posizionamento standard');
-            }
+            // POSIZIONAMENTO TEST: Centro schermo per debug
+            const centerX = (screenWidth / 2) - 100; // Sottrai metà larghezza stimata controlli
+            const centerY = (screenHeight / 2) - 75;  // Sottrai metà altezza stimata controlli
+            
+            touchControls.style.top = centerY + 'px !important';
+            touchControls.style.left = centerX + 'px !important';
+            
+            console.log('🎯 TEST: Controlli posizionati al CENTRO schermo', {
+                screen: { width: screenWidth, height: screenHeight },
+                center: { x: centerX, y: centerY },
+                isLandscape: isLandscape
+            });
             
             console.log('📱 Posizionamento applicato:', {
                 isLandscape: isLandscape,
