@@ -724,6 +724,12 @@ window.UI = {
                     console.log(`📍 Applicata posizione configurata al modello ${index + 1}: (${pos.x}, ${pos.y}, ${pos.z})`);
                 }
                 window.Scene3D.addModel(model);
+                
+                // DEBUG: Controlla i controlli touch dopo l'aggiunta del modello
+                setTimeout(() => {
+                    console.log('🔍 DEBUG: Controllo stato controlli touch dopo addModel');
+                    this.debugTouchControlsState();
+                }, 100);
             }
         });
         
@@ -741,6 +747,14 @@ window.UI = {
         if (this.elements.fileInput) {
             this.elements.fileInput.value = '';
         }
+        
+        // DEBUG: Stato finale dei controlli touch dopo caricamento completo
+        setTimeout(() => {
+            console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');
+            this.debugTouchControlsState();
+            // Forza nuovamente i controlli per sicurezza
+            this.forceShowTouchControls();
+        }, 500);
     },
     
     /**
@@ -1210,6 +1224,46 @@ window.UI = {
                     }
                 });
             }, 50);
+        }
+    },
+    
+    /**
+     * Debug dello stato dei controlli touch
+     */
+    debugTouchControlsState: function() {
+        const touchControls = document.getElementById('mobileTouchControls');
+        if (touchControls) {
+            const rect = touchControls.getBoundingClientRect();
+            const computed = window.getComputedStyle(touchControls);
+            
+            console.log('🔍 STATO CONTROLLI TOUCH:', {
+                exists: !!touchControls,
+                classList: Array.from(touchControls.classList),
+                style: {
+                    display: touchControls.style.display,
+                    visibility: touchControls.style.visibility,
+                    opacity: touchControls.style.opacity,
+                    zIndex: touchControls.style.zIndex,
+                    position: touchControls.style.position
+                },
+                computed: {
+                    display: computed.display,
+                    visibility: computed.visibility,
+                    opacity: computed.opacity,
+                    zIndex: computed.zIndex,
+                    position: computed.position
+                },
+                rect: {
+                    top: rect.top,
+                    left: rect.left,
+                    width: rect.width,
+                    height: rect.height,
+                    inScreen: rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+                },
+                parent: touchControls.parentElement ? touchControls.parentElement.id : 'no parent'
+            });
+        } else {
+            console.log('🚨 CONTROLLI TOUCH NON TROVATI NEL DOM!');
         }
     },
     
