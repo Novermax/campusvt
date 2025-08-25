@@ -1150,29 +1150,64 @@ window.UI = {
             touchControls.classList.remove('hidden');
             touchControls.classList.remove('mobile-only');
             
+            // Determina il posizionamento in base all'orientamento
+            const isLandscape = window.innerWidth > window.innerHeight;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            
             // Forza tutti gli stili necessari
             touchControls.style.display = 'flex !important';
             touchControls.style.flexDirection = 'column';
             touchControls.style.visibility = 'visible !important';
             touchControls.style.opacity = '1 !important';
             touchControls.style.position = 'fixed !important';
-            touchControls.style.top = '110px !important';
-            touchControls.style.left = '10px !important';
             touchControls.style.zIndex = '999999 !important';
             touchControls.style.background = 'rgba(0, 0, 0, 0.8) !important';
             touchControls.style.borderRadius = '8px !important';
             touchControls.style.padding = '8px !important';
             touchControls.style.gap = '10px !important';
             
+            // Posizionamento dinamico basato su orientamento
+            if (isLandscape) {
+                // In landscape, posiziona più in alto e verifica che sia dentro lo schermo
+                touchControls.style.top = Math.min(80, screenHeight * 0.1) + 'px !important';
+                touchControls.style.left = Math.min(10, screenWidth * 0.02) + 'px !important';
+                console.log('📱 LANDSCAPE: Posizionamento adattato per orientamento orizzontale');
+            } else {
+                // In portrait, usa il posizionamento standard
+                touchControls.style.top = '110px !important';
+                touchControls.style.left = '10px !important';
+                console.log('📱 PORTRAIT: Posizionamento standard');
+            }
+            
+            console.log('📱 Posizionamento applicato:', {
+                isLandscape: isLandscape,
+                screen: { width: screenWidth, height: screenHeight },
+                position: { top: touchControls.style.top, left: touchControls.style.left }
+            });
+            
             // Verifica dopo l'applicazione
             setTimeout(() => {
+                const rect = touchControls.getBoundingClientRect();
                 const computed = window.getComputedStyle(touchControls);
                 console.log('📱 Controlli touch dopo FORCE:', {
                     display: computed.display,
                     visibility: computed.visibility,
                     opacity: computed.opacity,
                     zIndex: computed.zIndex,
-                    position: computed.position
+                    position: computed.position,
+                    rect: {
+                        top: rect.top,
+                        left: rect.left,
+                        width: rect.width,
+                        height: rect.height,
+                        inScreen: rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+                    },
+                    screen: {
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                        orientation: screen.orientation ? screen.orientation.angle : 'unknown'
+                    }
                 });
             }, 50);
         }
@@ -1186,11 +1221,37 @@ window.UI = {
         console.log('🔄 ORIENTAMENTO CAMBIATO - INIZIO');
         const touchControls = document.getElementById('mobileTouchControls');
         if (touchControls) {
+            const rect = touchControls.getBoundingClientRect();
+            const computed = window.getComputedStyle(touchControls);
             console.log('📱 Stato controlli PRIMA rotazione:', {
                 display: touchControls.style.display,
                 visibility: touchControls.style.visibility,
                 opacity: touchControls.style.opacity,
-                className: touchControls.className
+                className: touchControls.className,
+                // Posizione e dimensioni
+                rect: {
+                    top: rect.top,
+                    left: rect.left,
+                    width: rect.width,
+                    height: rect.height,
+                    bottom: rect.bottom,
+                    right: rect.right
+                },
+                style: {
+                    top: touchControls.style.top,
+                    left: touchControls.style.left,
+                    position: touchControls.style.position
+                },
+                computed: {
+                    top: computed.top,
+                    left: computed.left,
+                    position: computed.position
+                },
+                screen: {
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    orientation: screen.orientation ? screen.orientation.angle : 'unknown'
+                }
             });
         }
         
@@ -1224,10 +1285,31 @@ window.UI = {
             
             if (isMobile && touchControls && this.currentPage === 'scenario') {
                 const computed = window.getComputedStyle(touchControls);
+                const rect = touchControls.getBoundingClientRect();
                 
-                // Se i controlli sono nascosti o non visibili, forzali
-                if (computed.display === 'none' || computed.visibility === 'hidden' || computed.opacity === '0') {
-                    console.log('🚨 WATCHDOG: Controlli touch nascosti, li forzo!');
+                // Controlla se sono nascosti o fuori schermo
+                const isHidden = computed.display === 'none' || computed.visibility === 'hidden' || computed.opacity === '0';
+                const isOffScreen = rect.top < 0 || rect.left < 0 || rect.bottom > window.innerHeight || rect.right > window.innerWidth;
+                const isEmpty = rect.width === 0 || rect.height === 0;
+                
+                if (isHidden || isOffScreen || isEmpty) {
+                    console.log('🚨 WATCHDOG: Controlli touch problematici!', {
+                        isHidden: isHidden,
+                        isOffScreen: isOffScreen,
+                        isEmpty: isEmpty,
+                        rect: {
+                            top: rect.top,
+                            left: rect.left,
+                            width: rect.width,
+                            height: rect.height,
+                            bottom: rect.bottom,
+                            right: rect.right
+                        },
+                        screen: {
+                            width: window.innerWidth,
+                            height: window.innerHeight
+                        }
+                    });
                     this.forceShowTouchControls();
                 }
             }
