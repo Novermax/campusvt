@@ -379,8 +379,8 @@ window.Scene3D = {
             };
             
             if (this.mouseControls.lastPinchDistance && this.mouseControls.lastTwoFingerCenter) {
-                // ZOOM: Gestisce il cambiamento di distanza tra le dita
-                const distanceDelta = (this.mouseControls.lastPinchDistance - pinchDistance) * 0.01;
+                // ZOOM: Gestisce il cambiamento di distanza tra le dita (invertito per movimento naturale)
+                const distanceDelta = (pinchDistance - this.mouseControls.lastPinchDistance) * 0.01;
                 if (Math.abs(distanceDelta) > 0.5) { // Solo se il pinch è significativo
                     this.zoomCamera(distanceDelta);
                 }

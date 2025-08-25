@@ -428,9 +428,9 @@ button:disabled, .button:disabled {
     }
 }
 
-/* Semplificare le media query per orientamento */
+/* Regole unificate per mobile - funzionano in tutti gli orientamenti */
 @media screen and (max-width: 768px) {
-    /* Un solo set di regole mobile per evitare conflitti */
+    /* Controlli touch sempre visibili e nella stessa posizione */
     #mobileTouchControls {
         top: 110px !important;
         left: 10px !important;
@@ -441,11 +441,16 @@ button:disabled, .button:disabled {
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
-        z-index: 99999 !important;
-        background: rgba(0, 0, 0, 0.7) !important;
+        z-index: 100000 !important;
+        background: rgba(0, 0, 0, 0.8) !important;
         border-radius: 8px !important;
         backdrop-filter: blur(10px) !important;
         -webkit-backdrop-filter: blur(10px) !important;
+        /* Evita problemi di posizionamento durante rotazione */
+        transform: translateZ(0) !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+        will-change: transform !important;
     }
     
     .mobile-mode-label {
@@ -509,34 +514,8 @@ button:disabled, .button:disabled {
     }
 }
 
-/* Media query specifica per orientamento landscape */
-@media screen and (max-width: 768px) and (orientation: landscape) {
-    #mobileTouchControls {
-        top: 80px !important;
-        left: 10px !important;
-        z-index: 100000 !important;
-        background: rgba(0, 0, 0, 0.8) !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        transform: translateZ(0) !important;
-        will-change: transform !important;
-        backface-visibility: hidden !important;
-        -webkit-backface-visibility: hidden !important;
-    }
-    
-    .mobile-mode-option {
-        position: relative !important;
-        z-index: 100001 !important;
-        transform: translateZ(0) !important;
-    }
-    
-    .mobile-mode-label {
-        position: relative !important;
-        z-index: 100002 !important;
-        transform: translateZ(0) !important;
-        backface-visibility: hidden !important;
-        -webkit-backface-visibility: hidden !important;
-    }
-}
+/* Media query specifica per orientamento landscape - RIMOSSA per evitare conflitti */
+/* I controlli touch ora usano solo le regole mobile generali */
 
 /* Pulsante di chiusura errore */
 #error button {
