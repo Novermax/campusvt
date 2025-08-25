@@ -1125,10 +1125,57 @@ window.UI = {
         }
         
         if (touchControls) {
-            touchControls.classList.add('hidden');
+            // Non nascondere mai i controlli touch su mobile
+            const isMobile = window.innerWidth <= 768;
+            if (!isMobile) {
+                touchControls.classList.add('hidden');
+            }
+            console.log('📱 Controlli touch - Mobile:', isMobile, 'Hidden:', !isMobile);
         }
         
         document.body.classList.remove('mobile-controls-hidden');
+    },
+    
+    /**
+     * Forza la visibilità dei controlli touch (metodo robusto)
+     */
+    forceShowTouchControls: function() {
+        const touchControls = document.getElementById('mobileTouchControls');
+        const isMobile = window.innerWidth <= 768;
+        
+        console.log('🔧 FORCE SHOW - isMobile:', isMobile, 'touchControls exists:', !!touchControls);
+        
+        if (touchControls && isMobile) {
+            // Rimuovi tutte le classi che potrebbero nascondere
+            touchControls.classList.remove('hidden');
+            touchControls.classList.remove('mobile-only');
+            
+            // Forza tutti gli stili necessari
+            touchControls.style.display = 'flex !important';
+            touchControls.style.flexDirection = 'column';
+            touchControls.style.visibility = 'visible !important';
+            touchControls.style.opacity = '1 !important';
+            touchControls.style.position = 'fixed !important';
+            touchControls.style.top = '110px !important';
+            touchControls.style.left = '10px !important';
+            touchControls.style.zIndex = '999999 !important';
+            touchControls.style.background = 'rgba(0, 0, 0, 0.8) !important';
+            touchControls.style.borderRadius = '8px !important';
+            touchControls.style.padding = '8px !important';
+            touchControls.style.gap = '10px !important';
+            
+            // Verifica dopo l'applicazione
+            setTimeout(() => {
+                const computed = window.getComputedStyle(touchControls);
+                console.log('📱 Controlli touch dopo FORCE:', {
+                    display: computed.display,
+                    visibility: computed.visibility,
+                    opacity: computed.opacity,
+                    zIndex: computed.zIndex,
+                    position: computed.position
+                });
+            }, 50);
+        }
     },
     
     /**
@@ -1136,10 +1183,57 @@ window.UI = {
      */
     onOrientationChange: function() {
         // Piccolo ritardo per permettere al browser di completare la rotazione
+        console.log('🔄 ORIENTAMENTO CAMBIATO - INIZIO');
+        const touchControls = document.getElementById('mobileTouchControls');
+        if (touchControls) {
+            console.log('📱 Stato controlli PRIMA rotazione:', {
+                display: touchControls.style.display,
+                visibility: touchControls.style.visibility,
+                opacity: touchControls.style.opacity,
+                className: touchControls.className
+            });
+        }
+        
         setTimeout(() => {
             console.log('📱 Orientamento cambiato, riapplicando controlli mobile...');
             this.handleMobileControlsRefresh();
+            
+            // Forza nuovamente dopo un altro delay
+            setTimeout(() => {
+                this.forceShowTouchControls();
+            }, 100);
+            
+            // Timer ricorrente per assicurarsi che rimangano visibili
+            this.startTouchControlsWatchdog();
         }, 300);
+    },
+    
+    /**
+     * Avvia un watchdog per mantenere i controlli touch sempre visibili su mobile
+     */
+    startTouchControlsWatchdog: function() {
+        // Ferma il watchdog precedente se presente
+        if (this.touchControlsWatchdog) {
+            clearInterval(this.touchControlsWatchdog);
+        }
+        
+        // Avvia nuovo watchdog ogni 500ms
+        this.touchControlsWatchdog = setInterval(() => {
+            const isMobile = window.innerWidth <= 768;
+            const touchControls = document.getElementById('mobileTouchControls');
+            
+            if (isMobile && touchControls && this.currentPage === 'scenario') {
+                const computed = window.getComputedStyle(touchControls);
+                
+                // Se i controlli sono nascosti o non visibili, forzali
+                if (computed.display === 'none' || computed.visibility === 'hidden' || computed.opacity === '0') {
+                    console.log('🚨 WATCHDOG: Controlli touch nascosti, li forzo!');
+                    this.forceShowTouchControls();
+                }
+            }
+        }, 500);
+        
+        console.log('🐕 Watchdog controlli touch avviato');
     },
     
     /**
@@ -1190,7 +1284,12 @@ window.UI = {
                 toggleBtn.classList.add('hidden');
             }
             if (touchControls) {
-                touchControls.classList.add('hidden');
+                // Solo nascondere se realmente desktop (non landscape mobile)
+                const isMobile = window.innerWidth <= 768;
+                if (!isMobile) {
+                    touchControls.classList.add('hidden');
+                }
+                console.log('🖥️ Controlli touch - Mobile:', isMobile, 'Hidden:', !isMobile);
             }
             document.body.classList.remove('mobile-controls-hidden');
             console.log('🖥️ Controlli desktop riattivati dopo orientamento');
