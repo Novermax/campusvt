@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Legenda Strumenti</title>
+    <link rel="stylesheet" href="css/base.css?v=4">
+    <link rel="stylesheet" href="css/components.css?v=7">
+    <link rel="stylesheet" href="css/layout.css?v=3">
+    <style>
+        body { margin: 0; padding: 20px; background: #f0f0f0; }
+        #test-canvas { width: 100%; height: 500px; background: #333; position: relative; }
+        .log { margin-top: 20px; padding: 10px; background: white; border-radius: 5px; }
+        .tool-state { margin: 5px 0; padding: 5px; background: #e0e0e0; }
+        .tool-state.active { background: #90caf9; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Legenda Strumenti</h1>
+    <p>Clicca sulle icone nella legenda a destra per testare la gestione degli stati.</p>
+    
+    <div id="test-canvas">
+        <!-- Simula la legenda strumenti -->
+        <div id="toolsLegend" role="complementary" aria-label="Strumenti tutorial">
+            <h3>🔧 Strumenti</h3>
+            <div id="toolsContainer">
+                <!-- Le icone verranno caricate dinamicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="log">
+        <h3>📊 Stato Strumenti</h3>
+        <div id="toolStates">
+            <div class="tool-state" data-tool="brugola">Brugola: <span>false</span></div>
+            <div class="tool-state" data-tool="chiave_inglese">Chiave Inglese: <span>false</span></div>
+            <div class="tool-state" data-tool="mano">Mano: <span>false</span></div>
+            <div class="tool-state" data-tool="martello">Martello: <span>false</span></div>
+        </div>
+        <div id="activeToolDisplay">Strumento attivo: <strong>Nessuno</strong></div>
+    </div>
+
+    <!-- Mini versione dell'UI per testare -->
+    <script>
+        // Versione semplificata dell'UI per testing
+        window.AppConfig = {
+            log: function(level, message, ...args) {
+                const levels = ['ERROR', 'WARN', 'INFO', 'DEBUG'];
+                console.log(`[${levels[level] || 'LOG'}]`, message, ...args);
+            }
+        };
+        
+        window.UI = {
+            toolsState: {},
+            
+            updateStatus: function(message) {
+                console.log('Status:', message);
+            },
+            
+            initToolsLegend: function() {
+                const toolsContainer = document.getElementById('toolsContainer');
+                if (!toolsContainer) return;
+                
+                const tools = [
+                    { name: 'brugola', icon: 'utilimages/brugola.png' },
+                    { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png' },
+                    { name: 'mano', icon: 'utilimages/mano.png' },
+                    { name: 'martello', icon: 'utilimages/martello.png' }
+                ];
+                
+                toolsContainer.innerHTML = '';
+                
+                tools.forEach(tool => {
+                    const toolElement = document.createElement('div');
+                    toolElement.className = 'tool-icon';
+                    toolElement.dataset.tool = tool.name;
+                    toolElement.title = tool.name.replace('_', ' ');
+                    
+                    const img = document.createElement('img');
+                    img.src = tool.icon;
+                    img.alt = tool.name;
+                    img.onerror = function() {
+                        console.warn(`Icona non trovata: ${tool.icon}`);
+                        this.style.display = 'none';
+                    };
+                    
+                    toolElement.appendChild(img);
+                    toolElement.addEventListener('click', () => this.toggleTool(tool.name));
+                    
+                    toolsContainer.appendChild(toolElement);
+                    this.toolsState[tool.name] = false;
+                });
+                
+                console.log('Legenda strumenti inizializzata');
+            },
+            
+            toggleTool: function(toolName) {
+                // Disattiva tutti gli altri strumenti
+                Object.keys(this.toolsState).forEach(tool => {
+                    if (tool !== toolName) {
+                        this.toolsState[tool] = false;
+                        const element = document.querySelector(`[data-tool="${tool}"]`);
+                        if (element) element.classList.remove('active');
+                    }
+                });
+                
+                // Attiva/disattiva lo strumento corrente
+                this.toolsState[toolName] = !this.toolsState[toolName];
+                const element = document.querySelector(`[data-tool="${toolName}"]`);
+                
+                if (this.toolsState[toolName]) {
+                    element.classList.add('active');
+                    this.updateStatus(`Strumento attivo: ${toolName.replace('_', ' ')}`);
+                } else {
+                    element.classList.remove('active');
+                    this.updateStatus('Nessuno strumento attivo');
+                }
+                
+                this.updateToolStatesDisplay();
+                this.onToolStateChanged(toolName, this.toolsState[toolName]);
+            },
+            
+            getActiveTool: function() {
+                for (const [toolName, isActive] of Object.entries(this.toolsState)) {
+                    if (isActive) return toolName;
+                }
+                return null;
+            },
+            
+            updateToolStatesDisplay: function() {
+                Object.keys(this.toolsState).forEach(toolName => {
+                    const stateElement = document.querySelector(`[data-tool="${toolName}"] span`);
+                    const containerElement = document.querySelector(`[data-tool="${toolName}"]`);
+                    if (stateElement) {
+                        stateElement.textContent = this.toolsState[toolName];
+                        containerElement.classList.toggle('active', this.toolsState[toolName]);
+                    }
+                });
+                
+                const activeTool = this.getActiveTool();
+                document.getElementById('activeToolDisplay').innerHTML = 
+                    'Strumento attivo: <strong>' + (activeTool ? activeTool.replace('_', ' ') : 'Nessuno') + '</strong>';
+            },
+            
+            onToolStateChanged: function(toolName, isActive) {
+                const event = new CustomEvent('toolStateChanged', {
+                    detail: { toolName, isActive, allStates: this.toolsState }
+                });
+                document.dispatchEvent(event);
+                console.log('Tool state changed:', { toolName, isActive });
+            }
+        };
+        
+        // Event listener per l'evento personalizzato
+        document.addEventListener('toolStateChanged', function(event) {
+            console.log('🔧 Tool state changed event received:', event.detail);
+        });
+        
+        // Inizializza quando la pagina è caricata
+        document.addEventListener('DOMContentLoaded', function() {
+            UI.initToolsLegend();
+            UI.updateToolStatesDisplay();
+            console.log('🚀 Test page initialized');
+        });
+    </script>
+</body>
+</html>

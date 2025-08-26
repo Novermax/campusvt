@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Blocco Mobile - Campus Virtual Training</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: #f0f0f0; 
+            font-family: Arial, sans-serif;
+        }
+        .test-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1976D2; }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Blocco Mobile - Campus Virtual Training</h1>
+    
+    <div class="test-controls">
+        <h3>🔧 Controlli di Test</h3>
+        <button onclick="setMobileUserAgent()">📱 Simula User Agent Mobile</button>
+        <button onclick="setDesktopUserAgent()">🖥️ Simula User Agent Desktop</button>
+        <button onclick="setSmallWindow()">📏 Finestra Piccola (768px)</button>
+        <button onclick="setLargeWindow()">📏 Finestra Grande (1200px)</button>
+        <button onclick="reloadFrame()">🔄 Ricarica Test</button>
+        
+        <div class="info">
+            <strong>📊 Stato Corrente:</strong><br>
+            User Agent: <span id="currentUA">Desktop</span><br>
+            Dimensioni Finestra: <span id="currentSize">Grande</span><br>
+            Dispositivo Rilevato: <span id="deviceType">Desktop</span>
+        </div>
+        
+        <div class="info">
+            <strong>📋 Come testare:</strong><br>
+            1. Usa i pulsanti sopra per simulare diversi scenari<br>
+            2. Il blocco mobile dovrebbe apparire quando viene rilevato un dispositivo mobile<br>
+            3. Apri anche gli Developer Tools del browser (F12) e attiva la modalità dispositivo mobile
+        </div>
+    </div>
+
+    <iframe id="testFrame" src="/" title="Test Campus Virtual Training"></iframe>
+
+    <script>
+        const frame = document.getElementById('testFrame');
+        const uaSpan = document.getElementById('currentUA');
+        const sizeSpan = document.getElementById('currentSize');
+        const deviceSpan = document.getElementById('deviceType');
+
+        function updateStatus() {
+            uaSpan.textContent = navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop';
+            sizeSpan.textContent = window.innerWidth <= 768 ? 'Piccola' : 'Grande';
+            
+            // Simula la logica di rilevamento
+            const isMobile = navigator.userAgent.includes('Mobile') || window.innerWidth <= 768;
+            deviceSpan.textContent = isMobile ? '📱 Mobile (BLOCCATO)' : '🖥️ Desktop (PERMESSO)';
+            deviceSpan.style.color = isMobile ? '#f44336' : '#4caf50';
+            deviceSpan.style.fontWeight = 'bold';
+        }
+
+        function setMobileUserAgent() {
+            // Nota: Non è possibile modificare realmente il User Agent dal JavaScript
+            // Questo è solo per scopi dimostrativi
+            alert('⚠️ Per testare realmente il User Agent mobile:\n\n1. Apri gli Developer Tools (F12)\n2. Clicca sull\'icona del dispositivo mobile\n3. Seleziona un dispositivo mobile dalla lista\n4. Ricarica la pagina');
+        }
+
+        function setDesktopUserAgent() {
+            alert('ℹ️ User Agent desktop è quello normale del browser.\n\nPer tornare al desktop dai Developer Tools:\n1. Disattiva la modalità dispositivo\n2. Ricarica la pagina');
+        }
+
+        function setSmallWindow() {
+            window.resizeTo(768, 600);
+            setTimeout(updateStatus, 100);
+        }
+
+        function setLargeWindow() {
+            window.resizeTo(1200, 800);
+            setTimeout(updateStatus, 100);
+        }
+
+        function reloadFrame() {
+            frame.src = frame.src;
+            setTimeout(updateStatus, 500);
+        }
+
+        // Aggiorna lo stato iniziale
+        updateStatus();
+        
+        // Monitora i cambiamenti di dimensione
+        window.addEventListener('resize', updateStatus);
+
+        console.log('🧪 Pagina di test caricata. Usa gli Developer Tools per testare il blocco mobile.');
+    </script>
+</body>
+</html>

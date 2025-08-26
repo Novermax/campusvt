@@ -7,7 +7,152 @@
  * - Input file personalizzati
  * - Messaggi di errore
  * - Loader e spinner
+ * - Schermata di blocco mobile
  */
+
+/* ===== SCHERMATA BLOCCO MOBILE ===== */
+/* Schermata mostrata sui dispositivi mobili per bloccare l'accesso */
+#mobileBlockPage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001; /* Sopra tutto */
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.mobile-block-container {
+    max-width: 90%;
+    max-height: 90%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow-y: auto;
+}
+
+.mobile-block-content {
+    text-align: center;
+}
+
+.mobile-block-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.mobile-block-content h1 {
+    font-size: 28px;
+    margin: 0 0 10px 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-block-content h2 {
+    font-size: 22px;
+    margin: 0 0 20px 0;
+    color: #ffcdd2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-block-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.mobile-block-reasons,
+.mobile-block-suggestions {
+    text-align: left;
+    margin: 25px 0;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 15px;
+    border-left: 4px solid #ff9800;
+}
+
+.mobile-block-reasons h3,
+.mobile-block-suggestions h3 {
+    margin: 0 0 15px 0;
+    color: #fff3e0;
+    font-size: 18px;
+}
+
+.mobile-block-reasons ul,
+.mobile-block-suggestions ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.mobile-block-reasons li,
+.mobile-block-suggestions li {
+    margin: 8px 0;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+}
+
+.mobile-block-suggestions p {
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+.mobile-block-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-block-footer small {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+}
+
+/* Responsive per la schermata di blocco mobile */
+@media (max-width: 480px) {
+    .mobile-block-container {
+        max-width: 95%;
+        padding: 20px;
+        border-radius: 15px;
+    }
+    
+    .mobile-block-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+    
+    .mobile-block-content h1 {
+        font-size: 22px;
+    }
+    
+    .mobile-block-content h2 {
+        font-size: 18px;
+    }
+    
+    .mobile-block-content p {
+        font-size: 14px;
+    }
+    
+    .mobile-block-reasons h3,
+    .mobile-block-suggestions h3 {
+        font-size: 16px;
+    }
+    
+    .mobile-block-reasons,
+    .mobile-block-suggestions {
+        padding: 15px;
+        margin: 20px 0;
+    }
+}
 
 /* ===== PULSANTI ===== */
 /* Stile base per tutti i pulsanti */

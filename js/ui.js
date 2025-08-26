@@ -57,6 +57,9 @@ window.UI = {
             // Carica automaticamente la configurazione home se disponibile
             this.loadHomeConfigFromServer();
             
+            // Inizializza la legenda degli strumenti
+            this.initToolsLegend();
+            
             AppConfig.log(2, 'UI inizializzata con successo');
             
         } catch (error) {
@@ -1450,6 +1453,117 @@ window.UI = {
         AppConfig.log(2, 'Avvio animazione richiesto');
         // TODO: Implementare sistema animazioni
         this.updateStatus('Animazione avviata');
+    },
+    
+    /* ===== GESTIONE STRUMENTI TUTORIAL ===== */
+    
+    /**
+     * Stato corrente degli strumenti
+     */
+    toolsState: {},
+    
+    /**
+     * Inizializza la legenda strumenti
+     */
+    initToolsLegend: function() {
+        const toolsContainer = document.getElementById('toolsContainer');
+        if (!toolsContainer) return;
+        
+        const tools = [
+            { name: 'brugola', icon: 'utilimages/brugola.png' },
+            { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png' },
+            { name: 'mano', icon: 'utilimages/mano.png' },
+            { name: 'martello', icon: 'utilimages/martello.png' }
+        ];
+        
+        // Pulisce il container
+        toolsContainer.innerHTML = '';
+        
+        // Crea le icone degli strumenti
+        tools.forEach(tool => {
+            const toolElement = document.createElement('div');
+            toolElement.className = 'tool-icon';
+            toolElement.dataset.tool = tool.name;
+            toolElement.title = tool.name.replace('_', ' ');
+            
+            const img = document.createElement('img');
+            img.src = tool.icon;
+            img.alt = tool.name;
+            img.onerror = function() {
+                console.warn(`Icona non trovata: ${tool.icon}`);
+                this.style.display = 'none';
+            };
+            
+            toolElement.appendChild(img);
+            toolElement.addEventListener('click', () => this.toggleTool(tool.name));
+            
+            toolsContainer.appendChild(toolElement);
+            
+            // Inizializza lo stato dello strumento
+            this.toolsState[tool.name] = false;
+        });
+        
+        AppConfig.log(2, 'Legenda strumenti inizializzata');
+    },
+    
+    /**
+     * Attiva/disattiva uno strumento
+     */
+    toggleTool: function(toolName) {
+        // Disattiva tutti gli altri strumenti (modalità esclusiva)
+        Object.keys(this.toolsState).forEach(tool => {
+            if (tool !== toolName) {
+                this.toolsState[tool] = false;
+                const element = document.querySelector(`[data-tool="${tool}"]`);
+                if (element) element.classList.remove('active');
+            }
+        });
+        
+        // Attiva/disattiva lo strumento corrente
+        this.toolsState[toolName] = !this.toolsState[toolName];
+        const element = document.querySelector(`[data-tool="${toolName}"]`);
+        
+        if (this.toolsState[toolName]) {
+            element.classList.add('active');
+            this.updateStatus(`Strumento attivo: ${toolName.replace('_', ' ')}`);
+            AppConfig.log(2, `Strumento attivato: ${toolName}`);
+        } else {
+            element.classList.remove('active');
+            this.updateStatus('Nessuno strumento attivo');
+            AppConfig.log(2, `Strumento disattivato: ${toolName}`);
+        }
+        
+        // Notifica il cambio di stato agli altri moduli
+        this.onToolStateChanged(toolName, this.toolsState[toolName]);
+    },
+    
+    /**
+     * Ottiene lo stato di uno strumento
+     */
+    getToolState: function(toolName) {
+        return this.toolsState[toolName] || false;
+    },
+    
+    /**
+     * Ottiene lo strumento attualmente attivo
+     */
+    getActiveTool: function() {
+        for (const [toolName, isActive] of Object.entries(this.toolsState)) {
+            if (isActive) return toolName;
+        }
+        return null;
+    },
+    
+    /**
+     * Callback chiamata quando cambia lo stato di uno strumento
+     * Può essere sovrascritta per implementare logica specifica
+     */
+    onToolStateChanged: function(toolName, isActive) {
+        // Evento personalizzabile per altri moduli
+        const event = new CustomEvent('toolStateChanged', {
+            detail: { toolName, isActive, allStates: this.toolsState }
+        });
+        document.dispatchEvent(event);
     }
 };
 
