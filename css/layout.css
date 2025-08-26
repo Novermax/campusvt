@@ -285,3 +285,202 @@
         gap: 5px;
     }
 }
+
+/* ===== BARRA STEP TUTORIAL ===== */
+/* Barra inferiore con i pulsanti di navigazione step tutorial */
+#tutorialStepsBar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    z-index: 150;
+    
+    /* Animazione di entrata */
+    animation: slideInFromBottom 0.5s ease;
+}
+
+#tutorialStepsContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Contenitore di ogni step (pulsante skip + pulsante freccia) */
+.tutorial-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+/* Pulsanti "Skip to this step" */
+.tutorial-skip-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tutorial-skip-btn:hover {
+    background: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Pulsanti freccia principali */
+.tutorial-arrow-btn {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    border: 2px solid #bbb;
+    border-radius: 8px;
+    padding: 10px 15px;
+    min-width: 120px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+    /* Shape like in the image - punta della freccia a destra */
+    clip-path:  polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
+}
+
+.tutorial-arrow-btn.first {
+    /* Primo pulsante - bordo dritto a sinistra, punta a destra */
+    clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
+}
+
+.tutorial-arrow-btn.last {
+    /* Ultimo pulsante - incavo a sinistra, bordo dritto a destra */
+    clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
+}
+
+.tutorial-arrow-btn.single {
+    /* Pulsante singolo senza punte */
+    clip-path: none;
+}
+
+.tutorial-arrow-btn:hover {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-color: #2196f3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tutorial-arrow-btn.active {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    border-color: #1565c0;
+    color: white;
+    box-shadow: 0 8px 16px rgba(33, 150, 243, 0.4);
+}
+
+.tutorial-arrow-btn.completed {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border-color: #2e7d32;
+    color: white;
+}
+
+/* Testo del pulsante freccia */
+.tutorial-arrow-text {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0 8px;
+}
+
+/* Numerazione step */
+.tutorial-step-number {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    background: #ff9800;
+    color: white;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Separatori */
+.tutorial-separator {
+    width: 20px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 0 5px;
+}
+
+/* Animazione slide dal basso */
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Responsive per la barra tutorial */
+@media (max-width: 768px) {
+    #tutorialStepsBar {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+        padding: 10px;
+    }
+    
+    #tutorialStepsContainer {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .tutorial-arrow-btn {
+        min-width: 100px;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+    
+    .tutorial-skip-btn {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tutorial-arrow-btn {
+        min-width: 80px;
+        padding: 6px 8px;
+        font-size: 10px;
+    }
+    
+    .tutorial-step-number {
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
+    }
+}

@@ -10,18 +10,19 @@ image=menuimages/1.png
 [Manutenzione pompa del vuoto]
 description=La pompa del vuoto prevede controlli periodici, pulizia filtri,sostituzione delle palette.
 image=menuimages/pompavuoto.png
+tutorial=scenes/Test/tutorial.txt
 model=scenes/Test/becker250.obj
 model=scenes/Test/becker250.mtl
-position= 0,0,0
+position= 0.002904,0.315375,-0.221367
 model=scenes/Test/culatta.obj
 model=scenes/Test/culatta.mtl
-position= 0,0,0
+position= -0.000070,0.271615,0.226631
 model=scenes/Test/filtro.obj
 model=scenes/Test/filtro.mtl
-position= 0,0,0
+position= -0.233457,0.249437,0.000000
 model=scenes/Test/trasparente.obj
 model=scenes/Test/trasparente.mtl
-position= 0,0,0
+position= -0.314366,0.248557,-0.026336
 
 
 [Regolazione campi di lavoro]

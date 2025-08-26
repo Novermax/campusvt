@@ -179,6 +179,9 @@ window.UI = {
         // Reset stato scenario
         this.currentScenario = null;
         
+        // Nasconde la barra tutorial
+        this.hideTutorialStepsBar();
+        
         // Aggiorna UI
         this.updateStatus('Home');
         this.showPage('home');
@@ -310,6 +313,10 @@ window.UI = {
                 } else if (line.startsWith('image=')) {
                     currentScenario.image = line.substring(6);
                     AppConfig.log(3, `  🖼️ Immagine: ${currentScenario.image}`);
+                    
+                } else if (line.startsWith('tutorial=')) {
+                    currentScenario.tutorial = line.substring(9);
+                    AppConfig.log(3, `  📚 Tutorial: ${currentScenario.tutorial}`);
                     
                 } else if (line.startsWith('position=')) {
                     // Posizione modello (formato: position=x,y,z)
@@ -511,6 +518,16 @@ window.UI = {
         
         // Carica automaticamente tutti i modelli OBJ/MTL dello scenario
         this.loadScenarioModels(scenario);
+        
+        // Carica il tutorial se specificato nel file di configurazione
+        if (scenario.tutorial) {
+            AppConfig.log(2, `🎓 Caricamento tutorial per scenario: ${scenario.tutorial}`);
+            this.loadTutorial(scenario.tutorial);
+        } else {
+            AppConfig.log(2, `❌ Nessun tutorial specificato per scenario: ${scenario.name}`);
+            // Nasconde la barra tutorial se non c'è tutorial
+            this.hideTutorialStepsBar();
+        }
     },
     
     /**
@@ -1564,6 +1581,288 @@ window.UI = {
             detail: { toolName, isActive, allStates: this.toolsState }
         });
         document.dispatchEvent(event);
+    },
+    
+    /* ===== GESTIONE TUTORIAL STEPS ===== */
+    
+    /**
+     * Configurazione tutorial corrente
+     */
+    tutorialSteps: [],
+    currentStepIndex: 0,
+    
+    /**
+     * Carica e parsa il file tutorial.txt
+     */
+    loadTutorial: async function(tutorialPath) {
+        if (!tutorialPath) {
+            console.log('❌ Nessun path tutorial specificato');
+            return;
+        }
+        
+        try {
+            AppConfig.log(2, `Caricamento tutorial: ${tutorialPath}`);
+            
+            const response = await fetch(tutorialPath);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const content = await response.text();
+            this.tutorialSteps = this.parseTutorialContent(content);
+            
+            if (this.tutorialSteps.length > 0) {
+                this.createTutorialStepsBar();
+                this.showTutorialStepsBar();
+                AppConfig.log(2, `Tutorial caricato: ${this.tutorialSteps.length} step`);
+            } else {
+                AppConfig.log(1, 'Nessun step trovato nel tutorial');
+            }
+            
+        } catch (error) {
+            AppConfig.log(0, `Errore caricamento tutorial: ${error.message}`);
+            this.showError(`Errore caricamento tutorial: ${error.message}`);
+        }
+    },
+    
+    /**
+     * Parsa il contenuto del file tutorial.txt
+     */
+    parseTutorialContent: function(content) {
+        const steps = [];
+        const lines = content.split('\n');
+        let currentStep = null;
+        
+        for (const line of lines) {
+            const trimmedLine = line.trim();
+            
+            // Rileva inizio nuovo step [Nome Step]
+            if (trimmedLine.startsWith('[') && trimmedLine.endsWith(']')) {
+                // Salva step precedente se esiste
+                if (currentStep) {
+                    steps.push(currentStep);
+                }
+                
+                // Crea nuovo step
+                const stepName = trimmedLine.slice(1, -1); // Rimuove [ ]
+                currentStep = {
+                    name: stepName,
+                    title: stepName,
+                    properties: {}
+                };
+            }
+            // Parsa proprietà step (chiave=valore)
+            else if (trimmedLine && trimmedLine.includes('=') && currentStep) {
+                const [key, value] = trimmedLine.split('=').map(s => s.trim());
+                currentStep.properties[key] = value;
+            }
+        }
+        
+        // Aggiungi l'ultimo step
+        if (currentStep) {
+            steps.push(currentStep);
+        }
+        
+        AppConfig.log(3, 'Tutorial steps parsed:', steps);
+        return steps;
+    },
+    
+    /**
+     * Crea i pulsanti della barra tutorial
+     */
+    createTutorialStepsBar: function() {
+        const container = document.getElementById('tutorialStepsContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        this.tutorialSteps.forEach((step, index) => {
+            // Contenitore step
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'tutorial-step';
+            
+            // Pulsante freccia principale
+            const arrowBtn = document.createElement('div');
+            arrowBtn.className = 'tutorial-arrow-btn';
+            arrowBtn.onclick = () => this.goToStep(index);
+            
+            // Applica classi speciali per forma (controllo esplicito)
+            if (this.tutorialSteps.length === 1) {
+                // Pulsante singolo
+                arrowBtn.classList.add('single');
+            } else {
+                // Più pulsanti - controllo esplicito di posizione
+                if (index === 0) {
+                    // Primo pulsante
+                    arrowBtn.classList.add('first');
+                }
+                if (index === this.tutorialSteps.length - 1) {
+                    // Ultimo pulsante
+                    arrowBtn.classList.add('last');
+                }
+            }
+            
+            // Testo del pulsante
+            const arrowText = document.createElement('div');
+            arrowText.className = 'tutorial-arrow-text';
+            arrowText.textContent = step.title;
+            
+            // Numero step
+            const stepNumber = document.createElement('div');
+            stepNumber.className = 'tutorial-step-number';
+            stepNumber.textContent = (index + 1);
+            
+            // Assembla elementi
+            arrowBtn.appendChild(arrowText);
+            arrowBtn.appendChild(stepNumber);
+            stepDiv.appendChild(arrowBtn);
+            container.appendChild(stepDiv);
+            
+            // Aggiunge separatore se non è l'ultimo
+            if (index < this.tutorialSteps.length - 1) {
+                const separator = document.createElement('div');
+                separator.className = 'tutorial-separator';
+                container.appendChild(separator);
+            }
+        });
+        
+        // Imposta step iniziale
+        this.updateStepStates();
+    },
+    
+    /**
+     * Mostra la barra tutorial
+     */
+    showTutorialStepsBar: function() {
+        const bar = document.getElementById('tutorialStepsBar');
+        if (bar) {
+            bar.classList.remove('hidden');
+        }
+    },
+    
+    /**
+     * Nasconde la barra tutorial
+     */
+    hideTutorialStepsBar: function() {
+        const bar = document.getElementById('tutorialStepsBar');
+        if (bar) {
+            bar.classList.add('hidden');
+        }
+    },
+    
+    /**
+     * Va a uno step specifico
+     */
+    goToStep: function(stepIndex) {
+        if (stepIndex < 0 || stepIndex >= this.tutorialSteps.length) {
+            AppConfig.log(1, `Step index non valido: ${stepIndex}`);
+            return;
+        }
+        
+        this.currentStepIndex = stepIndex;
+        const step = this.tutorialSteps[stepIndex];
+        
+        AppConfig.log(2, `Navigazione a step ${stepIndex + 1}: ${step.title}`);
+        
+        // Aggiorna stato pulsanti
+        this.updateStepStates();
+        
+        // Esegue l'azione del tutorial step
+        this.executeStep(step);
+        
+        // Aggiorna status
+        this.updateStatus(`Step ${stepIndex + 1}/${this.tutorialSteps.length}: ${step.title}`);
+    },
+    
+    /**
+     * Aggiorna gli stati visivi dei pulsanti
+     */
+    updateStepStates: function() {
+        const buttons = document.querySelectorAll('.tutorial-arrow-btn');
+        buttons.forEach((btn, index) => {
+            btn.classList.remove('active', 'completed');
+            
+            if (index === this.currentStepIndex) {
+                btn.classList.add('active');
+            } else if (index < this.currentStepIndex) {
+                btn.classList.add('completed');
+            }
+        });
+    },
+    
+    /**
+     * Esegue un step del tutorial
+     */
+    executeStep: function(step) {
+        AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
+        
+        // Qui si possono implementare le azioni specifiche basate sulle proprietà
+        // Per ora logga le informazioni dello step
+        
+        // Esempio di utilizzo delle proprietà:
+        if (step.properties.CameraPos && window.Scene3D) {
+            // Parsing posizione camera (es: "(15, 10, 20)")
+            const pos = step.properties.CameraPos.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+            if (pos.length === 3) {
+                AppConfig.log(3, `Impostazione camera position: ${pos}`);
+                // Scene3D.setCameraPosition(pos[0], pos[1], pos[2]);
+            }
+        }
+        
+        if (step.properties.CameraTarget && window.Scene3D) {
+            const target = step.properties.CameraTarget.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+            if (target.length === 3) {
+                AppConfig.log(3, `Impostazione camera target: ${target}`);
+                // Scene3D.setCameraTarget(target[0], target[1], target[2]);
+            }
+        }
+        
+        if (step.properties.Utensile) {
+            // Attiva lo strumento corrispondente
+            const toolName = this.mapToolName(step.properties.Utensile);
+            if (toolName) {
+                AppConfig.log(3, `Attivazione strumento: ${toolName}`);
+                this.toggleTool(toolName);
+            }
+        }
+        
+        // Evento personalizzabile per altri moduli
+        const event = new CustomEvent('tutorialStepChanged', {
+            detail: { step, index: this.currentStepIndex, allSteps: this.tutorialSteps }
+        });
+        document.dispatchEvent(event);
+    },
+    
+    /**
+     * Mappa i nomi degli strumenti dal tutorial ai nomi interni
+     */
+    mapToolName: function(tutorialToolName) {
+        const mapping = {
+            'ChiaveBrugola': 'brugola',
+            'ChiaveInglese': 'chiave_inglese',
+            'Mani': 'mano',
+            'Martello': 'martello'
+        };
+        
+        return mapping[tutorialToolName] || null;
+    },
+    
+    /**
+     * Step successivo del tutorial
+     */
+    nextStep: function() {
+        if (this.currentStepIndex < this.tutorialSteps.length - 1) {
+            this.goToStep(this.currentStepIndex + 1);
+        }
+    },
+    
+    /**
+     * Step precedente del tutorial
+     */
+    previousStep: function() {
+        if (this.currentStepIndex > 0) {
+            this.goToStep(this.currentStepIndex - 1);
+        }
     }
 };
 
