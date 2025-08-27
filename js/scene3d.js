@@ -151,7 +151,7 @@ window.Scene3D = {
         
         // Imposta tone mapping per colori più realistici
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1;
+        this.renderer.toneMappingExposure = 2.8; // Bilanciato per materiali visibili ma naturali
         
         AppConfig.log(3, 'Renderer configurato', {
             size: { width: window.innerWidth, height: window.innerHeight },

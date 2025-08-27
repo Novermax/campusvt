@@ -601,6 +601,172 @@ window.ModelLoader = {
     },
     
     /**
+     * Carica modello GLTF/GLB
+     */
+    loadGLTFModel: function(gltfFile, onSuccess, onError) {
+        console.log('🔧 loadGLTFModel - GLTFLoader disponibile?', typeof window.GLTFLoader !== 'undefined');
+        
+        // Inizializza GLTFLoader se necessario
+        if (!this.loaders.gltf && typeof window.GLTFLoader !== 'undefined') {
+            this.loaders.gltf = new window.GLTFLoader();
+            console.log('✅ GLTFLoader inizializzato');
+        }
+        
+        if (!this.loaders.gltf) {
+            console.error('❌ GLTFLoader non disponibile');
+            if (onError) onError('GLTFLoader non disponibile');
+            return;
+        }
+        
+        // Crea URL dal file
+        const fileURL = URL.createObjectURL(gltfFile);
+        
+        console.log('🔄 Inizio caricamento GLTF/GLB:', gltfFile.name);
+        
+        this.loaders.gltf.load(
+            fileURL,
+            (gltf) => {
+                console.log('✅ GLTF/GLB caricato con successo:', gltf);
+                
+                // Libera l'URL temporaneo
+                URL.revokeObjectURL(fileURL);
+                
+                // Il modello GLTF è in gltf.scene
+                const model = gltf.scene;
+                model.name = this.getBaseName(gltfFile.name);
+                
+                // Attraversa tutti i mesh per correggere i materiali
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        if (!child.material) {
+                            // Crea materiale di default se mancante
+                            child.material = new THREE.MeshStandardMaterial({ 
+                                color: 0x808080,
+                                metalness: 0.1,
+                                roughness: 0.8
+                            });
+                        } else {
+                            // Correggi materiali esistenti che appaiono troppo scuri
+                            if (Array.isArray(child.material)) {
+                                // Multipli materiali
+                                child.material.forEach(mat => {
+                                    this.fixGLTFMaterial(mat);
+                                });
+                            } else {
+                                // Singolo materiale
+                                this.fixGLTFMaterial(child.material);
+                            }
+                        }
+                        
+                        // Abilita ombre
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+                
+                console.log('🎯 GLTF/GLB processato, chiamando onSuccess');
+                if (onSuccess) onSuccess(model);
+            },
+            (progress) => {
+                // Progress callback (opzionale)
+                if (progress.lengthComputable) {
+                    const percent = (progress.loaded / progress.total * 100).toFixed(2);
+                    console.log(`📊 GLTF/GLB Progress: ${percent}%`);
+                }
+            },
+            (error) => {
+                console.error('❌ Errore caricamento GLTF/GLB:', error);
+                
+                // Libera l'URL temporaneo anche in caso di errore
+                URL.revokeObjectURL(fileURL);
+                
+                if (onError) onError(`Errore caricamento GLTF/GLB: ${error.message || error}`);
+            }
+        );
+    },
+    
+    /**
+     * Corregge i materiali GLTF per renderli visibili
+     */
+    fixGLTFMaterial: function(material) {
+        if (!material) return;
+        
+        // Log del materiale per debug
+        console.log('🎨 Fixing material:', material.name, 'Type:', material.type, 'Color:', material.color);
+        console.log('🎨 Color RGB values:', material.color.r, material.color.g, material.color.b);
+        console.log('🎨 Color sum:', material.color.r + material.color.g + material.color.b);
+        
+        // Per materiali PBR troppo scuri o metallici
+        if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
+            
+            // CORREZIONE SELETTIVA: Lascia il nero come nero, correggi solo materiali invisibili
+            const colorSum = material.color.r + material.color.g + material.color.b;
+            console.log('🔍 Controllo material:', material.name, 'colorSum=' + colorSum);
+            
+            // Controlla se il materiale si chiama "nero" o simili - mantienilo nero
+            const isIntentionallyBlack = material.name && 
+                (material.name.toLowerCase().includes('nero') || 
+                 material.name.toLowerCase().includes('black') ||
+                 material.name.toLowerCase().includes('dark'));
+            
+            if (isIntentionallyBlack) {
+                console.log('🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato:', material.name);
+            } else if (material.color && colorSum < 0.1) {
+                // Solo per materiali MOLTO scuri che non dovrebbero essere neri
+                console.log('⚠️ MATERIALE INVISIBILE! Correggendo colore da:', material.color.getHex().toString(16));
+                material.color.setRGB(0.2, 0.2, 0.2); // Grigio molto scuro ma visibile
+                console.log('🎨 NUOVO COLORE:', material.color.getHex().toString(16));
+            } else {
+                console.log('✅ Colore OK, non modificato');
+            }
+            
+            // Riduci metalness eccessiva che può causare aspetto nero senza HDR
+            if (material.metalness !== undefined && material.metalness > 0.8) {
+                console.log('⚠️ Metalness troppo alta, riducendo');
+                material.metalness = 0.3;
+            }
+            
+            // Aumenta roughness per ridurre riflessi eccessivi
+            if (material.roughness !== undefined && material.roughness < 0.3) {
+                console.log('⚠️ Roughness troppo bassa, aumentando');
+                material.roughness = 0.5;
+            }
+            
+            // Assicura che il materiale non sia trasparente accidentalmente
+            if (material.transparent && material.opacity < 0.1) {
+                console.log('⚠️ Materiale troppo trasparente, correggendo');
+                material.opacity = 1.0;
+                material.transparent = false;
+            }
+        }
+        
+        // Per materiali Lambert/Phong convertili in Standard per migliore compatibilità
+        else if (material.isMeshLambertMaterial || material.isMeshPhongMaterial) {
+            console.log('🔄 Convertendo materiale legacy in MeshStandardMaterial');
+            
+            // Mantieni il colore originale
+            const originalColor = material.color ? material.color.clone() : new THREE.Color(0x808080);
+            const originalMap = material.map;
+            
+            // Non possiamo cambiare il tipo direttamente, ma possiamo impostare proprietà compatibili
+            if (originalColor.r + originalColor.g + originalColor.b < 0.1) {
+                material.color.setHex(0x808080);
+            }
+        }
+        
+        // Forza aggiornamento del materiale
+        material.needsUpdate = true;
+        
+        console.log('✅ Materiale corretto:', {
+            name: material.name,
+            color: material.color,
+            metalness: material.metalness,
+            roughness: material.roughness,
+            opacity: material.opacity
+        });
+    },
+    
+    /**
      * Libera la cache delle texture
      */
     clearCache: function() {
