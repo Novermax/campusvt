@@ -137,9 +137,10 @@ messages: {
 - **Caricamento multiplo**: Seleziona più file insieme
 
 ### **✅ Controlli Intuitivi**
-- **Mouse sinistro + trascina**: Sposta la vista
+- **Mouse sinistro + trascina**: Ruota il modello
+- **Rotella/tasto centrale + trascina**: Sposta la vista (Pan)
 - **Mouse destro + trascina**: Ruota il modello
-- **Rotella mouse**: Zoom avanti/indietro
+- **Rotella mouse (scroll)**: Zoom avanti/indietro
 - **Touch**: Supporto completo per dispositivi mobili
 
 ### **✅ Interface Responsive**

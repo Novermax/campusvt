@@ -252,8 +252,13 @@ window.Scene3D = {
         this.mouseControls.lastPosition.x = event.clientX;
         this.mouseControls.lastPosition.y = event.clientY;
         
-        // Previene selezione testo
+        // Previene comportamenti di default
         event.preventDefault();
+        
+        // Previene comportamento di default del tasto centrale (scroll o apertura link)
+        if (event.button === 1) {
+            event.stopPropagation();
+        }
     },
     
     /**
@@ -267,10 +272,13 @@ window.Scene3D = {
         const deltaY = event.clientY - this.mouseControls.lastPosition.y;
         
         if (this.mouseControls.mouseButton === 0) {
-            // Tasto sinistro: Pan (sposta la vista)
+            // Tasto sinistro: Rotazione
+            this.rotateCamera(deltaX, deltaY);
+        } else if (this.mouseControls.mouseButton === 1) {
+            // Rotella/tasto centrale: Pan (sposta la vista)
             this.panCamera(deltaX, deltaY);
         } else if (this.mouseControls.mouseButton === 2) {
-            // Tasto destro: Rotazione
+            // Tasto destro: Rotazione (manteniamo anche questo)
             this.rotateCamera(deltaX, deltaY);
         }
         
@@ -468,8 +476,8 @@ window.Scene3D = {
         
         // Limita la distanza minima e massima per controllare lo zoom
         const distance = this.camera.position.length();
-        const minDistance = 1.0;  // Zoom minimo (più vicino)
-        const maxDistance = 10.0; // Zoom massimo (più lontano)
+        const minDistance = 0.8;  // Zoom minimo (più vicino)
+        const maxDistance = 5.0; // Zoom massimo (più lontano)
         
         if (distance < minDistance) {
             this.camera.position.normalize().multiplyScalar(minDistance);
@@ -597,13 +605,32 @@ window.Scene3D = {
     
     /**
      * Adatta la vista per inquadrare tutti i modelli caricati
+     * Esclude automaticamente i modelli di pavimento dal calcolo
      */
     fitAllModelsToView: function() {
         if (this.loadedModels.length === 0) return;
         
-        // Calcola il bounding box di tutti i modelli
+        // Filtra i modelli escludendo quelli che contengono "pavimento" nel nome
+        const modelsForFitting = this.loadedModels.filter(model => {
+            // Controlla il nome del modello o userData per identificare il pavimento
+            const modelName = (model.userData && model.userData.originalFilename) || model.name || '';
+            const isPavimento = modelName.toLowerCase().includes('pavimento');
+            
+            if (isPavimento) {
+                console.log('🏠 Pavimento escluso dal calcolo auto-zoom:', modelName);
+            }
+            
+            return !isPavimento;
+        });
+        
+        if (modelsForFitting.length === 0) {
+            console.log('⚠️ Nessun modello da fittare (solo pavimenti presenti)');
+            return;
+        }
+        
+        // Calcola il bounding box solo sui modelli filtrati
         const box = new THREE.Box3();
-        this.loadedModels.forEach(model => {
+        modelsForFitting.forEach(model => {
             box.expandByObject(model);
         });
         
@@ -627,8 +654,9 @@ window.Scene3D = {
         this.camera.position.set(center.x, center.y, center.z + cameraZ);
         this.camera.lookAt(center);
         
-        console.log('📐 Vista adattata a tutti i modelli:', {
-            modelli: this.loadedModels.length,
+        console.log('📐 Vista adattata ai modelli (escluso pavimento):', {
+            modelliTotali: this.loadedModels.length,
+            modelliUsatiPerFitting: modelsForFitting.length,
             size: size,
             center: center,
             cameraZ: cameraZ

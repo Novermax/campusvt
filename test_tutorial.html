@@ -324,7 +324,7 @@
         // Funzioni di test
         function testLoadTutorial() {
             // Simula il caricamento del tutorial
-            fetch('scenes/Test/tutorial.txt')
+            fetch('scenes/Test/_tutorial.txt')
                 .then(response => response.text())
                 .then(content => {
                     UI.tutorialSteps = UI.parseTutorialContent(content);

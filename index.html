@@ -177,6 +177,15 @@
             <div class="login-form-section">
                 <h2>🔐 Accesso al Sistema</h2>
                 <p>Inserisci le tue credenziali per accedere alla piattaforma</p>
+                
+                <!-- Info abbonamento mostrata dopo login riuscito -->
+                <div id="subscriptionInfo" class="subscription-info hidden">
+                    <div class="subscription-status">
+                        <span id="subscriptionIcon">✅</span>
+                        <span id="subscriptionText">Account Attivo</span>
+                    </div>
+                    <div id="subscriptionDetails"></div>
+                </div>
             
             <form id="loginForm">
                 <div class="form-group">
@@ -498,17 +507,53 @@
                     const lines = text.split('\n').filter(line => line.trim() !== '');
                     let authenticated = false;
                     
-                    // Verifica credenziali
+                    // Verifica credenziali e data scadenza
+                    let userExpiration = null;
                     for (const line of lines) {
-                        const [fileUsername, filePassword] = line.trim().split(';');
+                        const parts = line.trim().split(';');
+                        const [fileUsername, filePassword, expirationDate] = parts;
+                        
                         if (username === fileUsername && password === filePassword) {
+                            // Controllo data scadenza
+                            if (expirationDate) {
+                                const today = new Date();
+                                const expDate = new Date(expirationDate);
+                                
+                                if (expDate < today) {
+                                    // Account scaduto
+                                    loginError.textContent = '❌ Account scaduto il ' + expDate.toLocaleDateString('it-IT');
+                                    loginError.classList.remove('hidden');
+                                    document.getElementById('password').value = '';
+                                    return;
+                                }
+                                userExpiration = expDate;
+                            }
                             authenticated = true;
                             break;
                         }
                     }
                     
                     if (authenticated) {
-                        // Login riuscito - nascondi login e mostra applicazione
+                        // Login riuscito - mostra data scadenza se presente e nascondi login
+                        if (userExpiration) {
+                            const daysLeft = Math.ceil((userExpiration - new Date()) / (1000 * 60 * 60 * 24));
+                            const expirationInfo = document.createElement('div');
+                            expirationInfo.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(39, 174, 96, 0.9); color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+                            expirationInfo.innerHTML = `
+                                <div style="font-weight: bold;">✅ Account Attivo</div>
+                                <div style="margin-top: 4px;">Scade il: ${userExpiration.toLocaleDateString('it-IT')}</div>
+                                <div style="margin-top: 2px; font-size: 12px; opacity: 0.8;">${daysLeft > 0 ? daysLeft + ' giorni rimanenti' : 'Scade oggi!'}</div>
+                            `;
+                            document.body.appendChild(expirationInfo);
+                            
+                            // Rimuovi il messaggio dopo 10 secondi
+                            setTimeout(() => {
+                                if (expirationInfo.parentNode) {
+                                    expirationInfo.parentNode.removeChild(expirationInfo);
+                                }
+                            }, 10000);
+                        }
+                        
                         document.getElementById('loginPage').classList.add('hidden');
                         document.getElementById('container').classList.remove('hidden');
                         document.getElementById('init-loader').classList.add('hidden');
