@@ -1866,7 +1866,7 @@ window.UI = {
     currentStepIndex: 0,
     
     /**
-     * Carica e parsa il file _tutorial.txt
+     * Carica e parsa il file tutorial.txt
      */
     loadTutorial: async function(tutorialPath) {
         if (!tutorialPath) {
@@ -1902,7 +1902,7 @@ window.UI = {
     },
     
     /**
-     * Parsa il contenuto del file _tutorial.txt
+     * Parsa il contenuto del file tutorial.txt
      * Ora distingue tra tutorial principali e steps
      */
     parseTutorialContent: function(content) {

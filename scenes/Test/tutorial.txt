@@ -11,7 +11,7 @@
   Descrizione=Rimuovi la prima vite del coperchio          // Testo mostrato nel fumetto laterale
   Azione=svita                                             // Tipo animazione: svitamento (rotazione oraria + estrazione)
   Distanza=0.5                                             // Distanza di movimento in unità 3D (0.5 = mezza unità)
-  CameraPos=(8, 7, 12)                                     // Posizione camera per questo step (vista ottimale)
+  CameraPos=(-8, 7, -12)                                     // Posizione camera per questo step (vista ottimale)
   CameraTarget=(0, 0, 0)                                   // Punto focale della camera (centro scena)
   CameraZoom=1.5                                           // Fattore di zoom (1.0 = normale, >1.0 = più vicino)
   CameraTransitionTime=1.0                                 // Tempo transizione camera in secondi

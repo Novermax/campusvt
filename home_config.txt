@@ -18,15 +18,15 @@ image=menuimages/1.png                                     // Immagine di antepr
 
 [Manutenzione pompa del vuoto]                              // Scenario principale con tutorial completo
 // === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(8, 7, 12)                                       // Camera posizionata più lontana per inquadratura completa
+CameraPos=(-8, 7, -12)                                       // Camera posizionata più lontana per inquadratura completa
 CameraTarget=(0, 0, 0)                                     // Camera punta al centro della scena
 AmbientLight=0x404040,1.5                                  // Luce ambientale per illuminazione generale
-DirectionalLight=0xffffff,2.5,(8, 15, 10)                 // Luce direzionale principale dall'alto a destra
+DirectionalLight=0xffffff,2.5,(-8, 15, 10)                 // Luce direzionale principale dall'alto a destra
 BackLight=0xffffff,1.0,(-8, 15, 10)                       // Luce posteriore per eliminare ombre troppo dure
 // === INFORMAZIONI SCENARIO ===
 description=La pompa del vuoto prevede controlli periodici, pulizia filtri,sostituzione delle palette.  // Descrizione tecnica dell'operazione
 image=menuimages/pompavuoto.png                            // Immagine specifica della pompa del vuoto
-tutorial=scenes/Test/_tutorial.txt                         // File tutorial con steps guidati
+tutorial=scenes/Test/tutorial.txt                         // File tutorial con steps guidati
 // === MODELLI 3D E DIREZIONI MOVIMENTO ===
 model=scenes/Test/culatta.glb                              // Modello 3D della culatta
 direzione = 0,0,1                                          // Direzione movimento: verso Z+ (estrazione verticale)
@@ -45,7 +45,11 @@ direzione = -1,0,0                                         // Direzione moviment
 model =  scenes/Test/vite_coperchio_3.glb                  // Terza vite del coperchio
 direzione = -1,0,0                                         // Direzione movimento: verso X-
 model =  scenes/Test/vite_coperchio_4.glb                  // Quarta vite del coperchio
-direzione =-1,0,0                                          // Direzione movimento: verso X-
+direzione =-1,0,0     
+model =  scenes/Test/tappino_grasso_sx.glb                  // Quarta vite del coperchio
+direzione =-1,0,0 
+model =  scenes/Test/tappino_grasso_dx.glb                  // Quarta vite del coperchio
+direzione =-1,0,0                                     // Direzione movimento: verso X-
 
 
 [Regolazione campi di lavoro]                              // Configurazione aree operative e origini
