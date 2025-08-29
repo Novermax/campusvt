@@ -8,7 +8,9 @@
       "Bash(curl:*)",
       "Bash(node:*)",
       "WebFetch(domain:en.wikipedia.org)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.anthropic.com)",
+      "Read(C:\\/**)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": [],

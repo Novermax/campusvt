@@ -1,5 +1,6 @@
 /**
  * SCENE3D.JS - Gestione della scena 3D
+ * VERSION: 1000010 - WITH ROTATION FIX FOR SCREWS
  * 
  * Questo modulo gestisce:
  * - Inizializzazione della scena Three.js
@@ -10,6 +11,8 @@
  */
 
 /* ===== VARIABILI GLOBALI SCENA ===== */
+console.log('🚀🚀🚀 SCENE3D.JS VERSION 1000010 LOADED - ROTATION FIX ACTIVE! 🚀🚀🚀');
+
 window.Scene3D = {
     // Oggetti Three.js principali
     scene: null,                    // La scena 3D principale
@@ -979,15 +982,33 @@ window.Scene3D = {
             return;
         }
         
+        // TEMPORANEO: Disabilito il sistema Group e uso rotazione diretta
+        let targetModel = model;
+        let modelCenter = null;
+        
+        // Calcola il centro per debug ma non creare Groups
+        if (action.toLowerCase() === 'svita' || action.toLowerCase() === 'avvita') {
+            modelCenter = this.calculateModelCenter(model);
+            console.log(`📐 Model center calculated for ${model.userData?.originalFilename}: (${modelCenter.x.toFixed(3)}, ${modelCenter.y.toFixed(3)}, ${modelCenter.z.toFixed(3)})`);
+        }
+        
+        console.log(`📐 Using direct model animation for ${model.userData?.originalFilename} (action: ${action})`);
+        console.log(`📐 Model current position: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
+        
         // Crea configurazione animazione
+        // Durata più lunga per azioni con rotazione (svita/avvita)
+        const duration = (action.toLowerCase() === 'svita' || action.toLowerCase() === 'avvita') ? 4.5 : 3.0;
+        
         const animConfig = {
-            model: model,
+            model: targetModel, // Usa il Group per rotazioni, o il modello diretto per altri
+            originalModel: model, // Riferimento al modello originale
             action: action,
             direction: new THREE.Vector3(direction.x, direction.y, direction.z),
-            duration: 3.5, // 3.5 secondi per rotazioni più visibili
+            duration: duration, // 4.5s per svita/avvita, 3.0s per altri
             startTime: performance.now(),
-            initialPosition: model.position.clone(),
-            initialRotation: model.rotation.clone(),
+            initialPosition: targetModel.position.clone(),
+            initialRotation: targetModel.rotation.clone(),
+            modelCenter: modelCenter, // Centro geometrico per rotazioni
             targetPosition: null,
             targetRotation: null,
             finished: false
@@ -1036,20 +1057,30 @@ window.Scene3D = {
                 break;
                 
             case 'svita':
-                // Estrai + rotazione antioraria (più rotazioni per maggior visibilità)
+                // Estrai + rotazione antioraria attorno all'asse del movimento
                 const movement = direction.clone().multiplyScalar(movementDistance);
                 targetPosition = initialPosition.clone().add(movement);
-                targetRotation.z += Math.PI * 6; // 1080° antiorario (3 giri completi)
+                
                 console.log(`🎯 SVITA - Movement vector:`, movement);
                 console.log(`🎯 SVITA - Target position:`, targetPosition);
-                console.log(`🎯 SVITA - Rotazione totale: ${(Math.PI * 6 * 180 / Math.PI)}°`);
+                console.log(`🎯 SVITA - Direction:`, direction);
+                console.log(`🎯 SVITA - About to call applyRotationBasedOnDirection...`);
+                
+                // Calcola l'asse di rotazione basato sulla direzione del movimento
+                this.applyRotationBasedOnDirection(targetRotation, direction, -Math.PI * 6); // 1080° orario
+                console.log(`🎯 SVITA - applyRotationBasedOnDirection completed!`);
                 break;
                 
             case 'avvita':
-                // Inserisci + rotazione oraria (più rotazioni per maggior visibilità)
+                // Inserisci + rotazione oraria attorno all'asse del movimento
                 targetPosition = initialPosition.clone().add(direction.clone().multiplyScalar(-movementDistance));
-                targetRotation.z -= Math.PI * 6; // 1080° orario (3 giri completi)
-                console.log(`🎯 AVVITA - Rotazione totale: ${(Math.PI * 6 * 180 / Math.PI)}° orario`);
+                
+                console.log(`🎯 AVVITA - Direction:`, direction);
+                console.log(`🎯 AVVITA - About to call applyRotationBasedOnDirection...`);
+                
+                // Calcola l'asse di rotazione basato sulla direzione del movimento
+                this.applyRotationBasedOnDirection(targetRotation, direction, Math.PI * 6); // 1080° antiorario
+                console.log(`🎯 AVVITA - applyRotationBasedOnDirection completed!`);
                 break;
                 
             default:
@@ -1060,6 +1091,181 @@ window.Scene3D = {
         
         animConfig.targetPosition = targetPosition;
         animConfig.targetRotation = targetRotation;
+    },
+    
+    /**
+     * Calcola il centro geometrico di un modello 3D in coordinate locali
+     */
+    calculateModelCenter: function(model) {
+        // Salva la posizione originale
+        const originalPosition = model.position.clone();
+        
+        // Temporaneamente sposta il modello all'origine per calcolare il centro locale
+        model.position.set(0, 0, 0);
+        
+        const boundingBox = new THREE.Box3().setFromObject(model);
+        const center = new THREE.Vector3();
+        boundingBox.getCenter(center);
+        
+        // Ripristina la posizione originale
+        model.position.copy(originalPosition);
+        
+        console.log(`📐 Local center for ${model.userData?.originalFilename}: `, center);
+        console.log(`📐 Model position: `, model.position);
+        
+        // Ritorna il centro in coordinate locali
+        return center;
+    },
+    
+    /**
+     * Crea un Group che serve come pivot point per la rotazione
+     * Il modello viene spostato nel Group in modo che ruoti attorno al centro geometrico
+     */
+    createPivotGroup: function(model) {
+        const modelName = model.userData?.originalFilename || model.name;
+        
+        // Calcola il centro geometrico locale
+        const localCenter = this.calculateModelCenter(model);
+        const modelPosition = model.position.clone();
+        
+        console.log(`📐 DEBUG ${modelName}:`);
+        console.log(`   📍 Original model position: (${modelPosition.x.toFixed(3)}, ${modelPosition.y.toFixed(3)}, ${modelPosition.z.toFixed(3)})`);
+        console.log(`   🎯 Model center (local): (${localCenter.x.toFixed(3)}, ${localCenter.y.toFixed(3)}, ${localCenter.z.toFixed(3)})`);
+        
+        // Crea il Group che fungerà da pivot
+        const pivotGroup = new THREE.Group();
+        
+        // Posiziona il Group dove era il modello originale
+        pivotGroup.position.copy(modelPosition);
+        console.log(`   📦 Group position: (${pivotGroup.position.x.toFixed(3)}, ${pivotGroup.position.y.toFixed(3)}, ${pivotGroup.position.z.toFixed(3)})`);
+        
+        // Rimuovi il modello dalla scena (se è nella scena)
+        if (model.parent) {
+            console.log(`   🔄 Removing model from parent: ${model.parent.type}`);
+            model.parent.remove(model);
+        }
+        
+        // Sposta il modello nel Group, offset per centrare la rotazione
+        // Il modello va posizionato nel Group in modo che il suo centro geometrico
+        // coincida con l'origine del Group (0,0,0)
+        model.position.copy(localCenter.clone().negate());
+        console.log(`   🔧 Model offset in group: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
+        
+        pivotGroup.add(model);
+        
+        // Aggiungi il Group alla scena
+        this.scene.add(pivotGroup);
+        
+        console.log(`   ✅ Pivot Group created and added to scene`);
+        
+        return {
+            group: pivotGroup,
+            center: localCenter,
+            originalModel: model
+        };
+    },
+    
+    /**
+     * Applica la rotazione all'asse principale basato sulla direzione del movimento
+     * Per le viti, ruotiamo attorno all'asse del movimento (asse longitudinale della vite)
+     */
+    applyRotationBasedOnDirection: function(targetRotation, direction, rotationAmount) {
+        // Normalizza la direzione per determinare l'asse principale
+        const normalizedDir = direction.clone().normalize();
+        
+        // Determina quale asse è predominante nella direzione
+        const absX = Math.abs(normalizedDir.x);
+        const absY = Math.abs(normalizedDir.y);
+        const absZ = Math.abs(normalizedDir.z);
+        
+        console.log(`🔄 Direction analysis: X=${normalizedDir.x.toFixed(2)}, Y=${normalizedDir.y.toFixed(2)}, Z=${normalizedDir.z.toFixed(2)}`);
+        console.log(`🔄 Abs values: absX=${absX.toFixed(2)}, absY=${absY.toFixed(2)}, absZ=${absZ.toFixed(2)}`);
+        console.log(`🔄 Rotation amount: ${rotationAmount} rad = ${(rotationAmount * 180 / Math.PI).toFixed(0)}°`);
+        
+        // Per debug, stampiamo la rotazione iniziale
+        console.log(`🔄 Initial rotation: X=${targetRotation.x.toFixed(2)}, Y=${targetRotation.y.toFixed(2)}, Z=${targetRotation.z.toFixed(2)}`);
+        
+        // Applica la rotazione all'asse principale del movimento
+        if (absX > absY && absX > absZ) {
+            // Movimento principalmente lungo X -> ruota attorno X
+            targetRotation.x += rotationAmount;
+            console.log(`🔄 ✅ Rotating around X axis: ${(rotationAmount * 180 / Math.PI).toFixed(0)}°`);
+            console.log(`🔄 Final rotation X: ${targetRotation.x.toFixed(2)} rad = ${(targetRotation.x * 180 / Math.PI).toFixed(0)}°`);
+        } else if (absY > absX && absY > absZ) {
+            // Movimento principalmente lungo Y -> ruota attorno Y  
+            targetRotation.y += rotationAmount;
+            console.log(`🔄 ✅ Rotating around Y axis: ${(rotationAmount * 180 / Math.PI).toFixed(0)}°`);
+            console.log(`🔄 Final rotation Y: ${targetRotation.y.toFixed(2)} rad = ${(targetRotation.y * 180 / Math.PI).toFixed(0)}°`);
+        } else {
+            // Movimento principalmente lungo Z -> ruota attorno Z
+            targetRotation.z += rotationAmount;
+            console.log(`🔄 ✅ Rotating around Z axis: ${(rotationAmount * 180 / Math.PI).toFixed(0)}°`);
+            console.log(`🔄 Final rotation Z: ${targetRotation.z.toFixed(2)} rad = ${(targetRotation.z * 180 / Math.PI).toFixed(0)}°`);
+        }
+        
+        console.log(`🔄 Final target rotation: X=${targetRotation.x.toFixed(2)}, Y=${targetRotation.y.toFixed(2)}, Z=${targetRotation.z.toFixed(2)}`);
+    },
+    
+    /**
+     * Applica rotazione attorno al centro geometrico usando matrici di trasformazione
+     * Approccio: T(pivot) * R(rotation) * T(-pivot) * T(linear_movement)
+     */
+    applyRotationAroundCenter: function(anim, progress) {
+        // Calcola rotazione corrente
+        const currentRotation = new THREE.Euler(
+            anim.initialRotation.x + (anim.targetRotation.x - anim.initialRotation.x) * progress,
+            anim.initialRotation.y + (anim.targetRotation.y - anim.initialRotation.y) * progress,
+            anim.initialRotation.z + (anim.targetRotation.z - anim.initialRotation.z) * progress
+        );
+        
+        // Calcola movimento lineare target
+        const linearMovement = new THREE.Vector3().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+        
+        if (anim.modelCenter && anim.modelCenter.length() > 0.001) {
+            // Rotazione attorno al centro geometrico usando matrici
+            const pivot = anim.modelCenter; // Centro geometrico locale
+            
+            // Crea la matrice di trasformazione completa
+            const matrix = new THREE.Matrix4();
+            
+            // 1. Trasla al pivot point (in coordinate negative per portarlo all'origine)
+            matrix.makeTranslation(-pivot.x, -pivot.y, -pivot.z);
+            
+            // 2. Applica la rotazione
+            const rotationMatrix = new THREE.Matrix4();
+            rotationMatrix.makeRotationFromEuler(currentRotation);
+            matrix.premultiply(rotationMatrix);
+            
+            // 3. Trasla indietro dal pivot
+            const translateBack = new THREE.Matrix4();
+            translateBack.makeTranslation(pivot.x, pivot.y, pivot.z);
+            matrix.premultiply(translateBack);
+            
+            // 4. Applica la trasformazione al modello
+            // Inizia dalla posizione iniziale e applica la matrice
+            const transformedPosition = anim.initialPosition.clone();
+            transformedPosition.applyMatrix4(matrix);
+            
+            // 5. Aggiungi il movimento lineare
+            const finalPosition = linearMovement.clone();
+            const offset = transformedPosition.clone().sub(anim.initialPosition);
+            finalPosition.add(offset);
+            
+            // Applica le trasformazioni finali
+            anim.model.position.copy(finalPosition);
+            anim.model.rotation.copy(currentRotation);
+            
+            // Debug ogni 25%
+            if (Math.floor(progress * 4) !== Math.floor((anim.lastProgressLogged || 0) * 4)) {
+                anim.lastProgressLogged = progress;
+                const modelName = anim.originalModel?.userData?.originalFilename || 'unknown';
+                console.log(`🔄 ${modelName}: ${(progress * 100).toFixed(0)}% - pivot: (${pivot.x.toFixed(2)}, ${pivot.y.toFixed(2)}, ${pivot.z.toFixed(2)}) - pos: (${finalPosition.x.toFixed(2)}, ${finalPosition.y.toFixed(2)}, ${finalPosition.z.toFixed(2)})`);
+            }
+        } else {
+            // Fallback: rotazione normale senza pivot
+            anim.model.rotation.copy(currentRotation);
+            anim.model.position.copy(linearMovement);
+        }
     },
     
     /**
@@ -1094,11 +1300,23 @@ window.Scene3D = {
             
             // Interpolazione rotazione
             if (anim.targetRotation) {
-                // Per le rotazioni usiamo slerp per un'interpolazione più smooth
-                const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
-                const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
-                const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
-                anim.model.setRotationFromQuaternion(resultQuaternion);
+                // Per azioni con rotazione (svita/avvita) usiamo rotazione attorno al centro geometrico
+                if (anim.action === 'svita' || anim.action === 'avvita') {
+                    this.applyRotationAroundCenter(anim, progress);
+                    
+                    // Debug più frequente per svita/avvita
+                    if (Math.floor(currentTime / 50) !== Math.floor(anim.lastDebugTime || 0 / 50)) {
+                        anim.lastDebugTime = currentTime;
+                        const modelName = anim.model.userData?.originalFilename || anim.model.name;
+                        console.log(`🎬 SVITA/AVVITA ${modelName}: progress=${progress.toFixed(2)}, rotation=(${anim.model.rotation.x.toFixed(2)}, ${anim.model.rotation.y.toFixed(2)}, ${anim.model.rotation.z.toFixed(2)})`);
+                    }
+                } else {
+                    // Per altre azioni usiamo slerp per un'interpolazione più smooth
+                    const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
+                    const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
+                    const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
+                    anim.model.setRotationFromQuaternion(resultQuaternion);
+                }
             }
             
             // Segna come completata se raggiunto il 100%

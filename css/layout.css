@@ -24,6 +24,70 @@
     -webkit-user-select: none;
 }
 
+/* ===== FUMETTO STEP TUTORIAL ===== */
+/* Fumetto laterale per le descrizioni degli step */
+.step-speech-bubble {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 150;
+    max-width: 350px;
+    min-width: 280px;
+}
+
+.speech-bubble-content {
+    background: var(--primary-blue);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-strong);
+    position: relative;
+    animation: fadeInLeft 0.5s ease;
+}
+
+.speech-bubble-arrow {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-left: 20px solid var(--primary-blue);
+}
+
+.step-counter {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.step-description {
+    font-size: 16px;
+    line-height: 1.5;
+    color: white;
+    margin-bottom: 0; /* Rimossa margin-bottom dato che non ci sono più pulsanti sotto */
+}
+
+/* Animazioni */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px) translateY(-50%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(-50%);
+    }
+}
+
 /* ===== HEADER PRINCIPALE ===== */
 /* Barra superiore che contiene i controlli principali */
 #header {
@@ -376,40 +440,28 @@
     clip-path: none;
 }
 
+/* Stati semplificati: solo azzurro (inattivo) e verde (attivo) */
+
 .tutorial-arrow-btn:hover {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border-color: #2196f3;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
 }
 
 .tutorial-arrow-btn.active {
-    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
-    border-color: #1565c0;
-    color: white;
-    box-shadow: 0 8px 16px rgba(33, 150, 243, 0.4);
-}
-
-.tutorial-arrow-btn:active {
-    background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%) !important;
-    border-color: #29b6f6 !important;
-    color: #0d47a1 !important;
-    transform: translateY(1px);
-    box-shadow: 0 4px 8px rgba(129, 212, 250, 0.6) !important;
-}
-
-.tutorial-arrow-btn.toggled {
-    background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
-    border-color: #29b6f6;
-    color: #0d47a1;
-    font-weight: 700;
-    box-shadow: 0 8px 16px rgba(129, 212, 250, 0.5);
-}
-
-.tutorial-arrow-btn.completed {
+    /* Stato ATTIVO: verde */
     background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     border-color: #2e7d32;
     color: white;
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+
+.tutorial-arrow-btn:not(.active) {
+    /* Stato INATTIVO: azzurro */
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    border-color: #1565c0;
+    color: white;
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
 }
 
 /* Testo del pulsante freccia */
@@ -485,6 +537,21 @@
         font-size: 10px;
         padding: 3px 6px;
     }
+    
+    /* Adattamento fumetto per tablet */
+    .step-speech-bubble {
+        max-width: 280px;
+        min-width: 220px;
+        left: 15px;
+    }
+    
+    .speech-bubble-content {
+        padding: 15px;
+    }
+    
+    .step-description {
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -498,5 +565,35 @@
         width: 16px;
         height: 16px;
         font-size: 9px;
+    }
+    
+    /* Adattamento fumetto per mobile */
+    .step-speech-bubble {
+        max-width: 250px;
+        min-width: 200px;
+        left: 10px;
+        top: 30%;
+    }
+    
+    .speech-bubble-content {
+        padding: 12px;
+    }
+    
+    .step-counter {
+        padding: 4px 8px;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .step-description {
+        font-size: 13px;
+        margin-bottom: 0;
+    }
+    
+    .speech-bubble-arrow {
+        right: -15px;
+        border-left-width: 15px;
+        border-top-width: 8px;
+        border-bottom-width: 8px;
     }
 }

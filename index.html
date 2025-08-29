@@ -275,6 +275,20 @@
                 tabindex="0"
             ></canvas>
             
+            <!-- ===== FUMETTO STEP TUTORIAL ===== -->
+            <!-- Fumetto laterale sinistro per la descrizione dello step corrente -->
+            <div id="stepSpeechBubble" class="step-speech-bubble hidden" role="dialog" aria-labelledby="step-description">
+                <div class="speech-bubble-content">
+                    <div class="step-counter">
+                        <span id="stepCurrentNumber">1</span>/<span id="stepTotalNumber">5</span>
+                    </div>
+                    <div class="step-description" id="stepDescription">
+                        Seleziona un tutorial per iniziare...
+                    </div>
+                </div>
+                <div class="speech-bubble-arrow"></div>
+            </div>
+            
             <!-- ===== LEGENDA STRUMENTI ===== -->
             <!-- Pannello laterale destro con gli strumenti del tutorial -->
             <div id="toolsLegend" role="complementary" aria-label="Strumenti tutorial">
@@ -573,7 +587,7 @@
     </script>
     
     <!-- Caricamento moduli in ordine di dipendenza -->
-    <script type="module" src="js/app.js?nocache=999999"></script>
+    <script type="module" src="js/app.js?v=1000010"></script>
     
     <!-- ===== SCRIPT ANALYTICS (opzionale) ===== -->
     <!-- Rimuovi o modifica secondo necessità -->
