@@ -1,36 +1,79 @@
 [Cambio Filtro]
-Elemento=coperchio
-Utensile=Mani
-Descrizione=Rimuovi il coperchio del filtro
-Azione=estrai
-CameraPos=(8, 7, 12)
-CameraTarget=(0, 5, 0)
-CameraZoom=1.5
-CameraTransitionTime=1.0
+ 
+
+
+  [Step 1 - Prima vite]
+  Elemento=vite_coperchio_1.glb
+  Utensile=Mani
+  Descrizione=Rimuovi la prima vite del coperchio
+  Azione=svita
+  Distanza=0.5
+  CameraPos=(8, 7, 12)
+  CameraTarget=(0, 0, 0)
+  CameraZoom=1.5
+  CameraTransitionTime=1.0
+
+  [Step 2 - Seconda vite]
+  Elemento=vite_coperchio_2.glb
+  Utensile=Mani
+  Descrizione=Rimuovi la seconda vite del coperchio
+  Azione=svita
+  Distanza=0.5
+  CameraPos=(8, 7, 12)
+  CameraTarget=(0, 0, 0)
+  CameraZoom=1.5
+  CameraTransitionTime=1.0
+
+  [Step 3 - Terza vite]
+  Elemento=vite_coperchio_3.glb
+  Utensile=Mani
+  Descrizione=Rimuovi la terza vite del coperchio
+  Azione=svita
+  Distanza=0.5
+  CameraPos=(8, 7, 12)
+  CameraTarget=(0, 0, 0)
+  CameraZoom=1.5
+  CameraTransitionTime=1.0
+
+  [Step 4 - Quarta vite]
+  Elemento=vite_coperchio_4.glb
+  Utensile=Mani
+  Descrizione=Rimuovi la quarta vite del coperchio
+  Azione=svita
+  Distanza=0.5
+  CameraPos=(8, 7, 12)
+  CameraTarget=(0, 0, 0)
+  CameraZoom=1.5
+  CameraTransitionTime=1.0
+
+  [Step 5 - Coperchio]
+  Elemento=coperchio.glb
+  Utensile=Mani
+  Descrizione=Rimuovi il coperchio del filtro
+  Azione=estrai
+  Distanza=0.4
+  CameraPos=(8, 7, 12)
+  CameraTarget=(0, 0, 0)
+  CameraZoom=1.5
+  CameraTransitionTime=1.0
+
+
+
+
 
 [Cambio Filtro Reverse]
-Elemento=coperchio
+
+Elemento=vite_coperchio_1.glb
 Utensile=Mani
-Azione=inserisci
+Descrizione=Rimuovi il coperchio del filtro
+Azione=svita
+Distanza=0.5
 CameraPos=(8, 7, 12)
-CameraTarget=(0, 5, 0)
+CameraTarget=(0, 0, 0)
 CameraZoom=1.5
 CameraTransitionTime=1.0
 
 [Sostituzione Palette]
-Elemento=culatta
-Utensile=brugola
-Azione=estrai
-CameraPos=(20, 10, 10)
-CameraTarget=(0, 0, 10)
-CameraZoom=1.3
-CameraTransitionTime=2.0
+
 
 [Sostituzione Palette Reverse]
-Elemento=culatta
-Utensile=Mani
-Azione=inserisci
-CameraPos=(20, 10, 10)
-CameraTarget=(0, 0, 10)
-CameraZoom=1.3
-CameraTransitionTime=2.0

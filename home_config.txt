@@ -18,17 +18,17 @@ direzione = 0,0,1
 model =  scenes/Test/coperchio.glb
 direzione = 0,0,1
 model =  scenes/Test/filtro.glb
-direzione = 0,0,1
+direzione = -1,0,0
 model =  scenes/Test/pavimento.glb
 direzione = 0,0,1
 model =  scenes/Test/vite_coperchio_1.glb
-direzione = 0,1,0
+direzione = -1,0,0
 model =  scenes/Test/vite_coperchio_2.glb
-direzione = 0,1,0
+direzione = -1,0,0
 model =  scenes/Test/vite_coperchio_3.glb
-direzione = 0,1,0
+direzione = -1,0,0
 model =  scenes/Test/vite_coperchio_4.glb
-direzione = 0,1,0
+direzione =-1,0,0
 
 
 [Regolazione campi di lavoro]

@@ -390,6 +390,22 @@
     box-shadow: 0 8px 16px rgba(33, 150, 243, 0.4);
 }
 
+.tutorial-arrow-btn:active {
+    background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%) !important;
+    border-color: #29b6f6 !important;
+    color: #0d47a1 !important;
+    transform: translateY(1px);
+    box-shadow: 0 4px 8px rgba(129, 212, 250, 0.6) !important;
+}
+
+.tutorial-arrow-btn.toggled {
+    background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
+    border-color: #29b6f6;
+    color: #0d47a1;
+    font-weight: 700;
+    box-shadow: 0 8px 16px rgba(129, 212, 250, 0.5);
+}
+
 .tutorial-arrow-btn.completed {
     background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     border-color: #2e7d32;

@@ -252,7 +252,7 @@ window.UI = {
         this.safeLog(2, 'Tentativo caricamento home_config.txt dal server...');
         this.updateStatus('Caricamento configurazione...');
         
-        fetch('./home_config.txt')
+        fetch(`./home_config.txt?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -330,16 +330,37 @@ window.UI = {
                     }
                     
                 } else if (line.includes('=')) {
-                    // File da caricare (formato: label=path)
-                    const [label, path] = line.split('=', 2);
-                    currentScenario.files.push({ label, path });
-                    AppConfig.log(3, `  📁 File: ${label} -> ${path}`);
+                    // File da caricare (formato: label=path) o direzione (formato: direzione = x,y,z)
+                    const [label, path] = line.split('=', 2).map(s => s.trim());
+                    
+                    if (label === 'direzione') {
+                        // Parsing direzione per l'ultimo file aggiunto
+                        const coords = path.split(',').map(n => parseFloat(n.trim()));
+                        if (coords.length === 3 && currentScenario.files.length > 0) {
+                            const lastFileIndex = currentScenario.files.length - 1;
+                            const direction = { x: coords[0], y: coords[1], z: coords[2] };
+                            currentScenario.files[lastFileIndex].direction = direction;
+                            AppConfig.log(3, `  🧭 Direzione: (${coords[0]}, ${coords[1]}, ${coords[2]}) per ${currentScenario.files[lastFileIndex].path}`);
+                        } else {
+                            AppConfig.log(1, `  ❌ Direzione non valida o nessun file precedente: ${path}`);
+                        }
+                    } else {
+                        // File da caricare
+                        currentScenario.files.push({ label, path, direction: null });
+                        AppConfig.log(3, `  📁 File: ${label} -> ${path}`);
+                    }
                 }
             }
         });
         
         // Aggiungi ultimo scenario
         if (currentScenario) {
+            // DEBUG: Stampa tutte le direzioni per questo scenario
+            console.log(`🧭 RIEPILOGO DIREZIONI per scenario "${currentScenario.name}":`);
+            currentScenario.files.forEach((file, index) => {
+                console.log(`  ${index}: ${file.path} -> direzione:`, file.direction);
+            });
+            
             scenarios.push(currentScenario);
         }
         
@@ -734,7 +755,7 @@ window.UI = {
         
         AppConfig.log(2, `Modelli caricati con successo: ${models.length}`);
         
-        // Aggiungi modelli alla scena con posizioni configurate
+        // Aggiungi modelli alla scena con posizioni e direzioni configurate
         models.forEach((model, index) => {
             if (window.Scene3D) {
                 // Applica posizione se configurata
@@ -743,7 +764,40 @@ window.UI = {
                     model.position.set(pos.x, pos.y, pos.z);
                     console.log(`📍 Applicata posizione configurata al modello ${index + 1}: (${pos.x}, ${pos.y}, ${pos.z})`);
                 }
-                window.Scene3D.addModel(model);
+                
+                // Trova la configurazione del modello (inclusa la direzione)
+                let modelConfig = null;
+                const modelFilename = model.userData?.originalFilename || model.name;
+                
+                console.log(`🔍 Ricerca config per modello: "${modelFilename}"`);
+                console.log(`🔍 Files scenario disponibili:`, this.currentScenario?.files?.map(f => ({ path: f.path, direction: f.direction })));
+                
+                if (this.currentScenario && this.currentScenario.files) {
+                    modelConfig = this.currentScenario.files.find(file => {
+                        const modelNameClean = modelFilename.replace('.glb', '');
+                        const fileNameClean = file.path.split('/').pop().replace('.glb', '');
+                        
+                        // Match esatto del nome file (più preciso)
+                        const exactMatch = modelNameClean === fileNameClean;
+                        
+                        console.log(`🔍 Test file "${file.path}": modelName="${modelNameClean}", fileName="${fileNameClean}", exactMatch=${exactMatch}, direction=`, file.direction);
+                        
+                        if (exactMatch) {
+                            console.log(`✅ EXACT MATCH FOUND for "${modelFilename}": ${file.path} with direction:`, file.direction);
+                        }
+                        
+                        return exactMatch;
+                    });
+                    
+                    if (modelConfig) {
+                        console.log(`🔍✅ Config trovato per "${modelFilename}":`, modelConfig);
+                    } else {
+                        console.log(`🔍❌ Nessun config trovato per "${modelFilename}"`);
+                    }
+                }
+                
+                // Aggiungi modello con configurazione
+                window.Scene3D.addModel(model, modelConfig);
                 
                 // DEBUG: Controlla i controlli touch dopo l'aggiunta del modello
                 setTimeout(() => {
@@ -1639,7 +1693,7 @@ window.UI = {
             // Rileva inizio nuovo step [Nome Step]
             if (trimmedLine.startsWith('[') && trimmedLine.endsWith(']')) {
                 // Salva step precedente se esiste
-                if (currentStep) {
+                if (currentStep && Object.keys(currentStep.properties).length > 0) {
                     steps.push(currentStep);
                 }
                 
@@ -1655,11 +1709,23 @@ window.UI = {
             else if (trimmedLine && trimmedLine.includes('=') && currentStep) {
                 const [key, value] = trimmedLine.split('=').map(s => s.trim());
                 currentStep.properties[key] = value;
+                
+                // Parsing specifico per proprietà speciali
+                if (key === 'CameraPos' || key === 'CameraTarget') {
+                    // Parsing coordinate camera (formato: "(x, y, z)")
+                    const coords = value.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+                    if (coords.length === 3) {
+                        currentStep.properties[key + '_parsed'] = { x: coords[0], y: coords[1], z: coords[2] };
+                    }
+                } else if (key === 'CameraZoom' || key === 'CameraTransitionTime') {
+                    // Parsing valori numerici
+                    currentStep.properties[key + '_parsed'] = parseFloat(value);
+                }
             }
         }
         
-        // Aggiungi l'ultimo step
-        if (currentStep) {
+        // Aggiungi l'ultimo step se ha proprietà
+        if (currentStep && Object.keys(currentStep.properties).length > 0) {
             steps.push(currentStep);
         }
         
@@ -1684,7 +1750,10 @@ window.UI = {
             // Pulsante freccia principale
             const arrowBtn = document.createElement('div');
             arrowBtn.className = 'tutorial-arrow-btn';
-            arrowBtn.onclick = () => this.goToStep(index);
+            arrowBtn.onclick = () => {
+                this.toggleTutorialButton(arrowBtn);
+                this.goToStep(index);
+            };
             
             // Applica classi speciali per forma (controllo esplicito)
             if (this.tutorialSteps.length === 1) {
@@ -1748,6 +1817,16 @@ window.UI = {
         if (bar) {
             bar.classList.add('hidden');
         }
+    },
+    
+    /**
+     * Toggle dello stato luminoso del pulsante tutorial
+     */
+    toggleTutorialButton: function(button) {
+        button.classList.toggle('toggled');
+        
+        const isToggled = button.classList.contains('toggled');
+        AppConfig.log(3, `Pulsante tutorial ${isToggled ? 'acceso' : 'spento'}`);
     },
     
     /**

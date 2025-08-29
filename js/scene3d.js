@@ -20,6 +20,17 @@ window.Scene3D = {
     loadedModels: [],              // Lista di tutti i modelli caricati
     currentModel: null,            // Riferimento al modello attivo
     
+    // Sistema animazioni
+    animationSystem: {
+        activeAnimations: [],      // Animazioni in corso
+        modelDirections: {},       // Direzioni per ogni modello (da config)
+        clickEnabled: true         // Se il click sui modelli è attivo
+    },
+    
+    // Raycaster per rilevamento click
+    raycaster: null,
+    mouse: null,
+    
     // Controlli e interazione
     mouseControls: {
         isMouseDown: false,        // Stato pulsante mouse
@@ -65,6 +76,7 @@ window.Scene3D = {
             this.initRenderer();
             this.initLights();
             this.initControls();
+            this.initRaycaster();
             
             // Avvia il loop di rendering
             this.startRenderLoop();
@@ -216,6 +228,16 @@ window.Scene3D = {
         AppConfig.log(3, 'Luci aggiunte alla scena (frontale + posteriore)');
     },
     
+    /**
+     * Inizializza il raycaster per il rilevamento click sui modelli
+     */
+    initRaycaster: function() {
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+        
+        AppConfig.log(3, 'Raycaster inizializzato per rilevamento click modelli');
+    },
+    
     /* ===== CONTROLLI MOUSE ===== */
     
     /**
@@ -291,6 +313,17 @@ window.Scene3D = {
      * Gestisce l'evento mouseup
      */
     onMouseUp: function(event) {
+        // Controllo per click sui modelli (solo tasto sinistro e se non c'è stato dragging)
+        if (event.button === 0 && this.animationSystem.clickEnabled) {
+            const deltaX = Math.abs(event.clientX - this.mouseControls.lastPosition.x);
+            const deltaY = Math.abs(event.clientY - this.mouseControls.lastPosition.y);
+            
+            // Solo se il movimento è minimo (non è un drag)
+            if (deltaX < 5 && deltaY < 5) {
+                this.handleModelClick(event);
+            }
+        }
+        
         this.mouseControls.isMouseDown = false;
     },
     
@@ -486,12 +519,106 @@ window.Scene3D = {
         }
     },
     
+    /* ===== RILEVAMENTO CLICK SU MODELLI ===== */
+    
+    /**
+     * Gestisce il click sui modelli 3D
+     */
+    handleModelClick: function(event) {
+        // Calcola posizione mouse normalizzata
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        
+        // Aggiorna raycaster
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        
+        // Trova intersezioni con i modelli
+        const intersects = this.raycaster.intersectObjects(this.loadedModels, true);
+        
+        if (intersects.length > 0) {
+            const clickedObject = intersects[0].object;
+            
+            // Trova il modello root che contiene questo object
+            let targetModel = null;
+            for (const model of this.loadedModels) {
+                if (this.isDescendantOf(clickedObject, model)) {
+                    targetModel = model;
+                    break;
+                }
+            }
+            
+            if (targetModel) {
+                AppConfig.log(2, `🖱️ Click su modello:`, targetModel.userData?.originalFilename || targetModel.name);
+                this.handleModelAction(targetModel);
+            }
+        }
+    },
+    
+    /**
+     * Verifica se un oggetto è discendente di un altro
+     */
+    isDescendantOf: function(child, parent) {
+        let current = child;
+        while (current && current !== this.scene) {
+            if (current === parent) return true;
+            current = current.parent;
+        }
+        return false;
+    },
+    
+    /**
+     * Gestisce l'azione su un modello cliccato
+     */
+    handleModelAction: function(model) {
+        // Verifica che sia attivo il tool "mani"
+        if (!window.UI || window.UI.getActiveTool() !== 'mano') {
+            AppConfig.log(2, '🖱️ Click ignorato: strumento "mani" non attivo');
+            return;
+        }
+        
+        // Trova lo step tutorial corrente che corrisponde a questo modello
+        const currentStep = this.getCurrentTutorialStep();
+        if (!currentStep) {
+            AppConfig.log(2, '🖱️ Click ignorato: nessun step tutorial attivo');
+            return;
+        }
+        
+        // Verifica che il modello corrisponda all'elemento dello step
+        const modelFilename = model.userData?.originalFilename || model.name;
+        const stepElement = currentStep.properties.Elemento;
+        
+        console.log(`🔍 CHECK STEP: Modello cliccato "${modelFilename}", Step corrente: ${window.UI.currentStepIndex + 1}, Elemento step: "${stepElement}"`);
+        console.log(`🔍 CHECK STEP: Step properties:`, currentStep.properties);
+        
+        if (!stepElement || !modelFilename.includes(stepElement.replace('.glb', ''))) {
+            AppConfig.log(2, `🖱️ Click ignorato: modello "${modelFilename}" non corrisponde all'elemento "${stepElement}" per step ${window.UI.currentStepIndex + 1}`);
+            return;
+        }
+        
+        // Esegui l'animazione
+        AppConfig.log(2, `🎬 Avvio animazione per: ${modelFilename}`);
+        this.startModelAnimation(model, currentStep);
+    },
+    
+    /**
+     * Ottiene lo step tutorial corrente
+     */
+    getCurrentTutorialStep: function() {
+        if (!window.UI || !window.UI.tutorialSteps || window.UI.currentStepIndex === undefined) {
+            return null;
+        }
+        
+        const stepIndex = window.UI.currentStepIndex;
+        return window.UI.tutorialSteps[stepIndex] || null;
+    },
+    
     /* ===== GESTIONE MODELLI ===== */
     
     /**
      * Aggiunge un modello alla scena
      */
-    addModel: function(model) {
+    addModel: function(model, modelConfig = null) {
         if (!model) {
             AppConfig.log(1, 'Tentativo di aggiungere modello null');
             return;
@@ -513,6 +640,26 @@ window.Scene3D = {
         this.scene.add(model);
         this.loadedModels.push(model);
         this.currentModel = model;
+        
+        // Memorizza la configurazione del modello (inclusa la direzione)
+        const modelFilename = model.userData?.originalFilename || model.name;
+        console.log(`📝 Processo addModel per: "${modelFilename}"`);
+        console.log(`📝 ModelConfig ricevuto:`, modelConfig);
+        
+        if (modelConfig && modelConfig.direction) {
+            console.log(`🔍 ADDMODEL - ModelConfig direction per "${modelFilename}":`, modelConfig.direction);
+            console.log(`🔍 ADDMODEL - Typeof direction:`, typeof modelConfig.direction);
+            console.log(`🔍 ADDMODEL - Direction keys:`, Object.keys(modelConfig.direction));
+            
+            this.animationSystem.modelDirections[modelFilename] = modelConfig.direction;
+            console.log(`🧭✅ Direzione memorizzata per "${modelFilename}":`, this.animationSystem.modelDirections[modelFilename]);
+            
+            // Verifica immediata di quello che è stato memorizzato
+            const stored = this.animationSystem.modelDirections[modelFilename];
+            console.log(`🔍 VERIFICA - Direzione appena memorizzata:`, {x: stored.x, y: stored.y, z: stored.z});
+        } else {
+            console.log(`🧭❌ Nessuna direzione per "${modelFilename}" - modelConfig:`, modelConfig);
+        }
         
         // Auto-fit solo per il primo modello o per tutti insieme
         if (this.loadedModels.length === 1) {
@@ -769,6 +916,10 @@ window.Scene3D = {
      */
     render: function() {
         if (this.scene && this.camera && this.renderer) {
+            // Aggiorna animazioni
+            this.updateAnimations();
+            
+            // Renderizza scena
             this.renderer.render(this.scene, this.camera);
         }
     },
@@ -798,6 +949,226 @@ window.Scene3D = {
         if (window.AppConfig) {
             AppConfig.log(3, 'Dimensioni aggiornate', { width, height });
         }
+    },
+    
+    /* ===== SISTEMA ANIMAZIONI ===== */
+    
+    /**
+     * Avvia un'animazione per un modello basata sullo step tutorial
+     */
+    startModelAnimation: function(model, tutorialStep) {
+        const modelFilename = model.userData?.originalFilename || model.name;
+        console.log(`🎬 DEBUG startModelAnimation per: "${modelFilename}"`);
+        console.log(`🎬 Direzioni memorizzate:`, this.animationSystem.modelDirections);
+        console.log(`🎬 Direzione specifica per "${modelFilename}":`, this.animationSystem.modelDirections[modelFilename]);
+        console.log(`🎬 Step tutorial:`, tutorialStep);
+        
+        const direction = this.animationSystem.modelDirections[modelFilename];
+        console.log(`🎬 Direction da usare:`, direction);
+        
+        if (!direction) {
+            console.log(`❌ Nessuna direzione configurata per "${modelFilename}"`);
+            console.log(`❌ Keys disponibili:`, Object.keys(this.animationSystem.modelDirections));
+            AppConfig.log(1, `❌ Nessuna direzione configurata per ${modelFilename}`);
+            return;
+        }
+        
+        const action = tutorialStep.properties.Azione;
+        if (!action) {
+            AppConfig.log(1, `❌ Nessuna azione specificata nello step`);
+            return;
+        }
+        
+        // Crea configurazione animazione
+        const animConfig = {
+            model: model,
+            action: action,
+            direction: new THREE.Vector3(direction.x, direction.y, direction.z),
+            duration: 3.5, // 3.5 secondi per rotazioni più visibili
+            startTime: performance.now(),
+            initialPosition: model.position.clone(),
+            initialRotation: model.rotation.clone(),
+            targetPosition: null,
+            targetRotation: null,
+            finished: false
+        };
+        
+        // Calcola posizioni e rotazioni target basate sull'azione
+        this.calculateAnimationTargets(animConfig, tutorialStep);
+        
+        // Aggiungi all'array delle animazioni attive
+        this.animationSystem.activeAnimations.push(animConfig);
+        
+        AppConfig.log(2, `🎬 Animazione avviata: ${action} per ${modelFilename}`, {
+            direction: direction,
+            duration: animConfig.duration,
+            initialPos: animConfig.initialPosition,
+            targetPos: animConfig.targetPosition
+        });
+    },
+    
+    /**
+     * Calcola le posizioni e rotazioni target per l'animazione
+     */
+    calculateAnimationTargets: function(animConfig, tutorialStep) {
+        const { action, direction, initialPosition, initialRotation } = animConfig;
+        // Distanza da tutorial step o default
+        const movementDistance = parseFloat(tutorialStep.properties.Distanza) || 1.5;
+        
+        console.log(`🎯 calculateAnimationTargets - Action: ${action}`);
+        console.log(`🎯 Direction vector:`, direction);
+        console.log(`🎯 Initial position:`, initialPosition);
+        console.log(`🎯 Movement distance:`, movementDistance);
+        
+        // Calcola movimento lineare
+        let targetPosition;
+        let targetRotation = initialRotation.clone();
+        
+        switch (action.toLowerCase()) {
+            case 'estrai':
+                // Sposta lungo la direzione
+                targetPosition = initialPosition.clone().add(direction.clone().multiplyScalar(movementDistance));
+                break;
+                
+            case 'inserisci':
+                // Sposta nella direzione opposta (verso l'origine)
+                targetPosition = initialPosition.clone().add(direction.clone().multiplyScalar(-movementDistance));
+                break;
+                
+            case 'svita':
+                // Estrai + rotazione antioraria (più rotazioni per maggior visibilità)
+                const movement = direction.clone().multiplyScalar(movementDistance);
+                targetPosition = initialPosition.clone().add(movement);
+                targetRotation.z += Math.PI * 6; // 1080° antiorario (3 giri completi)
+                console.log(`🎯 SVITA - Movement vector:`, movement);
+                console.log(`🎯 SVITA - Target position:`, targetPosition);
+                console.log(`🎯 SVITA - Rotazione totale: ${(Math.PI * 6 * 180 / Math.PI)}°`);
+                break;
+                
+            case 'avvita':
+                // Inserisci + rotazione oraria (più rotazioni per maggior visibilità)
+                targetPosition = initialPosition.clone().add(direction.clone().multiplyScalar(-movementDistance));
+                targetRotation.z -= Math.PI * 6; // 1080° orario (3 giri completi)
+                console.log(`🎯 AVVITA - Rotazione totale: ${(Math.PI * 6 * 180 / Math.PI)}° orario`);
+                break;
+                
+            default:
+                AppConfig.log(1, `❌ Azione non riconosciuta: ${action}`);
+                targetPosition = initialPosition.clone();
+                break;
+        }
+        
+        animConfig.targetPosition = targetPosition;
+        animConfig.targetRotation = targetRotation;
+    },
+    
+    /**
+     * Aggiorna tutte le animazioni attive (chiamato nel loop di rendering)
+     */
+    updateAnimations: function() {
+        if (this.animationSystem.activeAnimations.length === 0) return;
+        
+        const currentTime = performance.now();
+        
+        // Aggiorna ogni animazione
+        for (let i = this.animationSystem.activeAnimations.length - 1; i >= 0; i--) {
+            const anim = this.animationSystem.activeAnimations[i];
+            
+            if (anim.finished) {
+                // Rimuovi animazioni completate
+                this.animationSystem.activeAnimations.splice(i, 1);
+                continue;
+            }
+            
+            // Calcola progresso dell'animazione (0-1)
+            const elapsed = (currentTime - anim.startTime) / 1000; // in secondi
+            let progress = Math.min(elapsed / anim.duration, 1.0);
+            
+            // Applica easing (smooth acceleration/deceleration)
+            progress = this.smoothStep(progress);
+            
+            // Interpolazione posizione
+            if (anim.targetPosition) {
+                anim.model.position.lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+            }
+            
+            // Interpolazione rotazione
+            if (anim.targetRotation) {
+                // Per le rotazioni usiamo slerp per un'interpolazione più smooth
+                const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
+                const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
+                const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
+                anim.model.setRotationFromQuaternion(resultQuaternion);
+            }
+            
+            // Segna come completata se raggiunto il 100%
+            if (progress >= 1.0) {
+                anim.finished = true;
+                
+                const modelName = anim.model.userData?.originalFilename || anim.model.name;
+                AppConfig.log(2, `✅ Animazione completata: ${anim.action} per ${modelName}`);
+                
+                // Auto-avanza al prossimo step del tutorial se disponibile
+                this.advanceToNextTutorialStep();
+            }
+        }
+    },
+    
+    /**
+     * Funzione di easing smooth step (accelerazione e decelerazione graduale)
+     * Implementa la curva smoothstep: 3t² - 2t³
+     */
+    smoothStep: function(t) {
+        // Clamp tra 0 e 1
+        t = Math.max(0, Math.min(1, t));
+        
+        // Smooth step formula
+        return t * t * (3 - 2 * t);
+    },
+    
+    /**
+     * Avanza automaticamente al prossimo step del tutorial
+     */
+    advanceToNextTutorialStep: function() {
+        if (!window.UI || !window.UI.tutorialSteps) {
+            AppConfig.log(3, '🎯 Nessun sistema tutorial disponibile per auto-avanzamento');
+            return;
+        }
+        
+        const currentIndex = window.UI.currentStepIndex;
+        const totalSteps = window.UI.tutorialSteps.length;
+        
+        if (currentIndex < totalSteps - 1) {
+            AppConfig.log(2, `🎯 Auto-avanzamento da step ${currentIndex + 1} a step ${currentIndex + 2}`);
+            
+            // Avanza immediatamente al prossimo step
+            setTimeout(() => {
+                if (window.UI && window.UI.goToStep) {
+                    window.UI.goToStep(currentIndex + 1);
+                }
+            }, 100); // Solo 0.1 secondi per vedere l'animazione completata
+        } else {
+            AppConfig.log(2, `🎯 Tutorial completato! Step ${currentIndex + 1}/${totalSteps}`);
+        }
+    },
+    
+    /**
+     * Ferma tutte le animazioni in corso
+     */
+    stopAllAnimations: function() {
+        this.animationSystem.activeAnimations.forEach(anim => {
+            anim.finished = true;
+        });
+        this.animationSystem.activeAnimations = [];
+        
+        AppConfig.log(2, '⏹️ Tutte le animazioni fermate');
+    },
+    
+    /**
+     * Verifica se un modello ha un'animazione in corso
+     */
+    isModelAnimating: function(model) {
+        return this.animationSystem.activeAnimations.some(anim => anim.model === model);
     }
 };
 
