@@ -297,7 +297,7 @@ window.Scene3D = {
     initHighlightSystem: function() {
         // Crea il materiale per l'evidenziazione rossa
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
-            color: 0xcccc00,           // Verde brillante
+            color: 0xcccc00,               // Giallo brillante
             transparent: true,
             opacity: 0.8,
             wireframe: false,
@@ -1056,6 +1056,14 @@ window.Scene3D = {
             }
             
             if (targetModel) {
+                // NUOVO: Verifica se il modello è selezionabile (esclude pavimento, ecc.)
+                if (!this.isModelSelectable(targetModel)) {
+                    const modelName = targetModel.userData?.originalFilename || targetModel.name;
+                    console.log(`🚫 Pivot ignorato: modello non selezionabile "${modelName}"`);
+                    AppConfig.log(2, `🚫 Pivot ignorato su elemento non selezionabile: ${modelName}`);
+                    return;
+                }
+                
                 // Calcola il centro del modello
                 const box = new THREE.Box3().setFromObject(targetModel);
                 const center = box.getCenter(new THREE.Vector3());
@@ -2071,12 +2079,29 @@ window.Scene3D = {
         
         console.log('✅ Modelli selezionabili:', selectableModels);
         console.log('🚫 Modelli NON selezionabili:', nonSelectableModels);
+        console.log('🎯 NOTA: Modelli non selezionabili sono esclusi anche dal sistema pivot');
         
         return {
             totalModels: this.loadedModels.length,
             selectableModels: selectableModels,
             nonSelectableModels: nonSelectableModels,
             excludedKeywords: this.nonSelectableElements
+        };
+    },
+    
+    /**
+     * Test per verificare il punto pivot corrente
+     */
+    testPivotSystem: function() {
+        const pivot = this.mouseControls.pivotPoint;
+        console.log('🎯 === TEST SISTEMA PIVOT ===');
+        console.log('🎯 Pivot corrente:', `(${pivot.x.toFixed(3)}, ${pivot.y.toFixed(3)}, ${pivot.z.toFixed(3)})`);
+        console.log('🎯 Elementi esclusi dal pivot:', this.nonSelectableElements);
+        console.log('🎯 Per testare: click pulsante centrale su pavimento → dovrebbe essere ignorato');
+        
+        return {
+            pivotPoint: { x: pivot.x, y: pivot.y, z: pivot.z },
+            excludedFromPivot: this.nonSelectableElements
         };
     }
 };
