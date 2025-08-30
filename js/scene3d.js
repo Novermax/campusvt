@@ -39,10 +39,29 @@ window.Scene3D = {
         isMouseDown: false,        // Stato pulsante mouse
         mouseButton: 0,            // Quale pulsante è premuto (0=sinistra, 2=destra)
         lastPosition: { x: 0, y: 0 }, // Ultima posizione mouse
+        isPanning: false,          // Flag per indicare se si sta facendo pan
+        pivotPoint: new THREE.Vector3(0, 0, 0), // Punto pivot per rotazione/zoom
         sensitivity: {
-            rotation: 0.01,        // Sensibilità rotazione
-            pan: 0.002,            // Sensibilità spostamento
-            zoom: 0.005            // Sensibilità zoom (molto ridotta per controllo fine)
+            rotation: 0.015,       // Sensibilità rotazione aumentata
+            pan: 0.020,            // Sensibilità spostamento aumentata
+            zoom: 0.025            // Sensibilità zoom aumentata per più reattività
+        },
+        // Nuovi parametri per interpolazione e limiti
+        interpolation: {
+            enabled: true,
+            factor: 0.02,          // Fattore di interpolazione ancora più basso per effetto più fluido
+            targetRotation: { theta: 0, phi: Math.PI / 2 },
+            targetPosition: { x: 0, y: 0, z: 5 },
+            targetZoom: 5,
+            threshold: 0.001,      // Soglia sotto la quale fermare l'interpolazione
+            isPanning: false       // Flag per disabilitare interpolazione durante pan
+        },
+        limits: {
+            minPhi: 0.2,           // Limite minimo rotazione verticale (vista dall'alto)
+            maxPhi: Math.PI * 0.45, // Limite massimo ben sotto l'orizzonte per non andare mai sotto pavimento
+            minY: 0.0,            // Limite minimo posizione Y più restrittivo
+            minZoom: 0.3,          // Zoom minimo
+            maxZoom: 15            // Zoom massimo
         }
     },
     
@@ -297,13 +316,14 @@ window.Scene3D = {
         const deltaY = event.clientY - this.mouseControls.lastPosition.y;
         
         if (this.mouseControls.mouseButton === 0) {
-            // Tasto sinistro: Rotazione
-            this.rotateCamera(deltaX, deltaY);
+            // Tasto sinistro: Solo selezione elementi (nessun movimento camera)
+            // Il movimento non fa nulla, la selezione avviene in onMouseUp
         } else if (this.mouseControls.mouseButton === 1) {
-            // Rotella/tasto centrale: Pan (sposta la vista)
-            this.panCamera(deltaX, deltaY);
+            // Rotella/tasto centrale: DISABILITATO temporaneamente
+            // this.mouseControls.isPanning = true;
+            // this.panCamera(deltaX, deltaY);
         } else if (this.mouseControls.mouseButton === 2) {
-            // Tasto destro: Rotazione (manteniamo anche questo)
+            // Tasto destro: Rotazione
             this.rotateCamera(deltaX, deltaY);
         }
         
@@ -327,14 +347,41 @@ window.Scene3D = {
             }
         }
         
+        // NUOVO: Controllo per cambio pivot con tasto centrale
+        if (event.button === 1) {
+            const deltaX = Math.abs(event.clientX - this.mouseControls.lastPosition.x);
+            const deltaY = Math.abs(event.clientY - this.mouseControls.lastPosition.y);
+            
+            // Solo se il movimento è minimo (non è un drag/pan)
+            if (deltaX < 5 && deltaY < 5) {
+                this.handlePivotClick(event);
+            }
+        }
+        
         this.mouseControls.isMouseDown = false;
+        this.mouseControls.isPanning = false;  // Reset del flag panning
+        
+        // Controlla se dopo il pan siamo andati sotto il pavimento
+        if (this.camera.position.y < this.mouseControls.limits.minY) {
+            // Calcola posizione corretta sopra il pavimento
+            const currentSpherical = new THREE.Spherical();
+            currentSpherical.setFromVector3(this.camera.position);
+            currentSpherical.phi = Math.min(currentSpherical.phi, this.mouseControls.limits.maxPhi);
+            
+            // Ripristina la posizione corretta immediatamente
+            this.camera.position.setFromSpherical(currentSpherical);
+            this.camera.lookAt(0, 0, 0);
+        }
     },
     
     /**
      * Gestisce l'evento wheel (zoom)
      */
     onMouseWheel: function(event) {
-        const delta = event.deltaY * this.mouseControls.sensitivity.zoom;
+        // Normalizza il delta per reattività uniforme ma mantieni valori utilizzabili
+        const rawDelta = event.deltaY;
+        const normalizedDelta = rawDelta > 0 ? 100 : -100; // +100 per zoom out, -100 per zoom in
+        const delta = normalizedDelta * this.mouseControls.sensitivity.zoom;
         this.zoomCamera(delta);
         event.preventDefault();
     },
@@ -452,6 +499,7 @@ window.Scene3D = {
     onTouchEnd: function(event) {
         this.mouseControls.isMouseDown = false;
         
+        
         // Reset valori touch quando non ci sono più dita sullo schermo
         if (event.touches.length === 0) {
             this.mouseControls.lastPinchDistance = null;
@@ -464,62 +512,149 @@ window.Scene3D = {
     /* ===== MOVIMENTO CAMERA ===== */
     
     /**
-     * Sposta la camera (pan)
+     * Sposta la camera (pan) - movimento diretto senza interpolazione
      */
     panCamera: function(deltaX, deltaY) {
         const sensitivity = this.mouseControls.sensitivity.pan;
         
-        // Calcola la direzione di movimento basata sull'orientamento della camera
-        const vector = new THREE.Vector3();
-        vector.setFromMatrixColumn(this.camera.matrix, 0); // Vettore destra
-        vector.multiplyScalar(-deltaX * sensitivity);
+        // SALVA la rotazione corrente per ripristinarla dopo
+        const savedQuaternion = this.camera.quaternion.clone();
         
-        const vector2 = new THREE.Vector3();
-        vector2.setFromMatrixColumn(this.camera.matrix, 1); // Vettore su
-        vector2.multiplyScalar(deltaY * sensitivity);
+        // PAN LOCALE: sposta secondo la vista della camera
+        // Forza aggiornamento della matrice
+        this.camera.updateMatrixWorld();
         
-        vector.add(vector2);
-        this.camera.position.add(vector);
+        // Ottieni i vettori di direzione locali della camera
+        const right = new THREE.Vector3();
+        const up = new THREE.Vector3();
+        
+        // Estrai dalla matrice i vettori right e up
+        this.camera.matrix.extractBasis(right, up, new THREE.Vector3());
+        
+        // Movimento in coordinate locali alla camera
+        const movement = new THREE.Vector3();
+        movement.addScaledVector(right, -deltaX * sensitivity);
+        movement.addScaledVector(up, deltaY * sensitivity);
+        
+        // Applica il movimento
+        this.camera.position.add(movement);
+        
+        // CRUCIALE: ripristina esattamente la rotazione salvata
+        this.camera.quaternion.copy(savedQuaternion);
     },
     
     /**
-     * Ruota la camera attorno all'origine
+     * Ruota la camera attorno all'origine (ora con interpolazione fluida)
      */
     rotateCamera: function(deltaX, deltaY) {
         const sensitivity = this.mouseControls.sensitivity.rotation;
+        const limits = this.mouseControls.limits;
         
-        // Rotazione orizzontale (attorno all'asse Y)
+        // Rotazione attorno al pivot point corrente
+        const pivotPoint = this.mouseControls.pivotPoint;
+        
+        // Calcola la posizione relativa al pivot
+        const relativePosition = new THREE.Vector3().subVectors(this.camera.position, pivotPoint);
+        
         const spherical = new THREE.Spherical();
-        spherical.setFromVector3(this.camera.position);
+        spherical.setFromVector3(relativePosition);
+        
         spherical.theta -= deltaX * sensitivity;
         spherical.phi += deltaY * sensitivity;
         
-        // Limita l'angolo verticale per evitare gimbal lock
-        spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+        // Applica limiti
+        spherical.phi = Math.max(limits.minPhi, Math.min(limits.maxPhi, spherical.phi));
         
-        this.camera.position.setFromSpherical(spherical);
-        this.camera.lookAt(0, 0, 0);
+        // Aggiorna posizione camera relativa al pivot
+        relativePosition.setFromSpherical(spherical);
+        this.camera.position.copy(pivotPoint).add(relativePosition);
+        this.camera.lookAt(pivotPoint);
     },
     
     /**
-     * Zoom della camera
+     * Zoom della camera con interpolazione fluida
      */
     zoomCamera: function(delta) {
-        const direction = new THREE.Vector3();
-        this.camera.getWorldDirection(direction);
-        direction.multiplyScalar(delta);
-        this.camera.position.add(direction);
+        const limits = this.mouseControls.limits;
         
-        // Limita la distanza minima e massima per controllare lo zoom
-        const distance = this.camera.position.length();
-        const minDistance = 0.8;  // Zoom minimo (più vicino)
-        const maxDistance = 5.0; // Zoom massimo (più lontano)
+        // Zoom verso il pivot point corrente
+        const pivotPoint = this.mouseControls.pivotPoint;
         
-        if (distance < minDistance) {
-            this.camera.position.normalize().multiplyScalar(minDistance);
-        } else if (distance > maxDistance) {
-            this.camera.position.normalize().multiplyScalar(maxDistance);
+        // Calcola la posizione relativa al pivot
+        const relativePosition = new THREE.Vector3().subVectors(this.camera.position, pivotPoint);
+        
+        const spherical = new THREE.Spherical();
+        spherical.setFromVector3(relativePosition);
+        
+        const zoomStep = delta > 0 ? 1.2 : 1/1.2;
+        spherical.radius *= zoomStep;
+        
+        // Applica limiti
+        spherical.radius = Math.max(limits.minZoom, Math.min(limits.maxZoom, spherical.radius));
+        
+        // Aggiorna posizione camera relativa al pivot
+        relativePosition.setFromSpherical(spherical);
+        this.camera.position.copy(pivotPoint).add(relativePosition);
+        this.camera.lookAt(pivotPoint);
+    },
+    
+    /**
+     * Aggiorna la posizione e rotazione della camera con interpolazione fluida (lerp)
+     */
+    updateCameraInterpolation: function() {
+        if (!this.mouseControls.interpolation.enabled || this.mouseControls.isPanning) {
+            return;  // Non fare interpolazione durante il pan
         }
+        
+        const interpolation = this.mouseControls.interpolation;
+        const limits = this.mouseControls.limits;
+        const factor = interpolation.factor;
+        
+        // Interpolazione della rotazione (coordinate sferiche relative al pivot)
+        const pivotPoint = this.mouseControls.pivotPoint;
+        const relativePosition = new THREE.Vector3().subVectors(this.camera.position, pivotPoint);
+        
+        const currentSpherical = new THREE.Spherical();
+        currentSpherical.setFromVector3(relativePosition);
+        
+        // Interpola theta (rotazione orizzontale)
+        const thetaDiff = interpolation.targetRotation.theta - currentSpherical.theta;
+        if (Math.abs(thetaDiff) > interpolation.threshold) {
+            currentSpherical.theta += thetaDiff * factor;
+        }
+        
+        // Interpola phi (rotazione verticale) CON LIMITI APPLICATI
+        let targetPhi = interpolation.targetRotation.phi;
+        // Applica i limiti al target
+        targetPhi = Math.max(limits.minPhi, Math.min(limits.maxPhi, targetPhi));
+        const phiDiff = targetPhi - currentSpherical.phi;
+        if (Math.abs(phiDiff) > interpolation.threshold) {
+            currentSpherical.phi += phiDiff * factor;
+        }
+        
+        // Applica nuovamente i limiti per sicurezza
+        currentSpherical.phi = Math.max(limits.minPhi, Math.min(limits.maxPhi, currentSpherical.phi));
+        
+        // Interpola la distanza (zoom) CON LIMITI
+        let targetZoom = interpolation.targetZoom;
+        targetZoom = Math.max(limits.minZoom, Math.min(limits.maxZoom, targetZoom));
+        const distanceDiff = targetZoom - currentSpherical.radius;
+        if (Math.abs(distanceDiff) > interpolation.threshold) {
+            currentSpherical.radius += distanceDiff * factor;
+        }
+        
+        // Applica i limiti di zoom
+        currentSpherical.radius = Math.max(limits.minZoom, Math.min(limits.maxZoom, currentSpherical.radius));
+        
+        // Applica la nuova posizione dalla coordinata sferica relativa al pivot
+        relativePosition.setFromSpherical(currentSpherical);
+        this.camera.position.copy(pivotPoint).add(relativePosition);
+        this.camera.lookAt(pivotPoint);
+        
+        // Aggiorna i target per mantenerli sincronizzati CON I LIMITI
+        interpolation.targetRotation.theta = currentSpherical.theta;
+        interpolation.targetRotation.phi = currentSpherical.phi;
+        interpolation.targetZoom = currentSpherical.radius;
     },
     
     /* ===== RILEVAMENTO CLICK SU MODELLI ===== */
@@ -594,14 +729,84 @@ window.Scene3D = {
         console.log(`🔍 CHECK STEP: Modello cliccato "${modelFilename}", Step corrente: ${window.UI.currentStepIndex + 1}, Elemento step: "${stepElement}"`);
         console.log(`🔍 CHECK STEP: Step properties:`, currentStep.properties);
         
+        // MANTIENI il controllo della sequenza: solo l'elemento dello step corrente
         if (!stepElement || !modelFilename.includes(stepElement.replace('.glb', ''))) {
             AppConfig.log(2, `🖱️ Click ignorato: modello "${modelFilename}" non corrisponde all'elemento "${stepElement}" per step ${window.UI.currentStepIndex + 1}`);
             return;
         }
         
+        // NUOVO: Permetti animazioni multiple dello stesso tipo di elemento
+        // Solo impedisci di ricliccare sullo STESSO modello, non su altri dello stesso tipo
+        console.log(`🔍 MULTI-ANIM: Controllo modello ${modelFilename}, ID oggetto:`, model.id || model.uuid);
+        console.log(`🔍 MULTI-ANIM: Animazioni attive:`, this.animationSystem.activeAnimations.length);
+        console.log(`🔍 MULTI-ANIM: Modelli in animazione:`, this.animationSystem.activeAnimations.map(a => ({
+            name: a.model.userData?.originalFilename || a.model.name,
+            id: a.model.id || a.model.uuid
+        })));
+        
+        if (this.isModelAnimating(model)) {
+            AppConfig.log(2, `🖱️ Questo specifico modello "${modelFilename}" (ID: ${model.id || model.uuid}) è già in animazione`);
+            return;
+        }
+        
+        // Se arriviamo qui, è un elemento valido per lo step corrente e non già in animazione
+        console.log(`✅ MULTI-ANIM: Autorizzato avvio animazione per ${modelFilename}`);
+        
         // Esegui l'animazione
         AppConfig.log(2, `🎬 Avvio animazione per: ${modelFilename}`);
         this.startModelAnimation(model, currentStep);
+    },
+    
+    /**
+     * Gestisce il click con tasto centrale per cambiare il pivot
+     */
+    handlePivotClick: function(event) {
+        // Calcola posizione mouse normalizzata
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        
+        // Aggiorna raycaster
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        
+        // Trova intersezioni con tutti gli oggetti della scena
+        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+        
+        if (intersects.length > 0) {
+            const intersection = intersects[0];
+            let targetObject = intersection.object;
+            
+            // Trova il modello root che contiene questo oggetto
+            let targetModel = null;
+            for (const model of this.loadedModels) {
+                if (this.isDescendantOf(targetObject, model)) {
+                    targetModel = model;
+                    break;
+                }
+            }
+            
+            if (targetModel) {
+                // Calcola il centro del modello
+                const box = new THREE.Box3().setFromObject(targetModel);
+                const center = box.getCenter(new THREE.Vector3());
+                
+                // Aggiorna il punto pivot
+                this.mouseControls.pivotPoint.copy(center);
+                
+                console.log(`🎯 PIVOT: Nuovo pivot impostato su modello "${targetModel.userData?.originalFilename || targetModel.name}":`);
+                console.log(`🎯 PIVOT: Coordinate (${center.x.toFixed(3)}, ${center.y.toFixed(3)}, ${center.z.toFixed(3)})`);
+                
+                AppConfig.log(2, `🎯 Pivot cambiato su: ${targetModel.userData?.originalFilename || targetModel.name}`);
+            } else {
+                // Click su un punto vuoto - usa il punto di intersezione
+                this.mouseControls.pivotPoint.copy(intersection.point);
+                
+                console.log(`🎯 PIVOT: Nuovo pivot impostato su punto vuoto:`);
+                console.log(`🎯 PIVOT: Coordinate (${intersection.point.x.toFixed(3)}, ${intersection.point.y.toFixed(3)}, ${intersection.point.z.toFixed(3)})`);
+                
+                AppConfig.log(2, `🎯 Pivot cambiato su punto: (${intersection.point.x.toFixed(3)}, ${intersection.point.y.toFixed(3)}, ${intersection.point.z.toFixed(3)})`);
+            }
+        }
     },
     
     /**
@@ -880,12 +1085,38 @@ window.Scene3D = {
             zoom: this.camera.zoom
         };
         
-        AppConfig.log(3, 'Vista corrente salvata');
+        // Inizializza i target di interpolazione con la posizione corrente
+        const currentSpherical = new THREE.Spherical();
+        currentSpherical.setFromVector3(this.camera.position);
+        
+        this.mouseControls.interpolation.targetRotation.theta = currentSpherical.theta;
+        this.mouseControls.interpolation.targetRotation.phi = currentSpherical.phi;
+        this.mouseControls.interpolation.targetZoom = currentSpherical.radius;
+        
+        AppConfig.log(3, 'Vista corrente salvata e target interpolazione inizializzati');
     },
     
     /**
      * Ripristina la vista salvata
      */
+    restoreView: function() {
+        if (this.savedView) {
+            this.camera.position.copy(this.savedView.position);
+            this.camera.rotation.copy(this.savedView.rotation);
+            this.camera.zoom = this.savedView.zoom;
+            this.camera.updateProjectionMatrix();
+            
+            // Aggiorna anche i target di interpolazione
+            const currentSpherical = new THREE.Spherical();
+            currentSpherical.setFromVector3(this.camera.position);
+            
+            this.mouseControls.interpolation.targetRotation.theta = currentSpherical.theta;
+            this.mouseControls.interpolation.targetRotation.phi = currentSpherical.phi;
+            this.mouseControls.interpolation.targetZoom = currentSpherical.radius;
+            
+            AppConfig.log(3, 'Vista ripristinata e target interpolazione aggiornati');
+        }
+    },
     resetView: function() {
         if (!this.savedView) {
             AppConfig.log(1, 'Nessuna vista salvata da ripristinare');
@@ -919,6 +1150,9 @@ window.Scene3D = {
      */
     render: function() {
         if (this.scene && this.camera && this.renderer) {
+            // Aggiorna interpolazioni camera
+            this.updateCameraInterpolation();
+            
             // Aggiorna animazioni
             this.updateAnimations();
             

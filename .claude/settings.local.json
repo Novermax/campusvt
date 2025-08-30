@@ -10,7 +10,8 @@
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:docs.anthropic.com)",
       "Read(C:\\/**)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": [],

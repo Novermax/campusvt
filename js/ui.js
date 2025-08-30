@@ -1799,6 +1799,12 @@ window.UI = {
      * Attiva/disattiva uno strumento
      */
     toggleTool: function(toolName) {
+        // Se lo strumento è già attivo, non fare nulla (rimane attivo)
+        if (this.toolsState[toolName]) {
+            AppConfig.log(2, `Strumento già attivo: ${toolName}`);
+            return;
+        }
+        
         // Disattiva tutti gli altri strumenti (modalità esclusiva)
         Object.keys(this.toolsState).forEach(tool => {
             if (tool !== toolName) {
@@ -1808,22 +1814,42 @@ window.UI = {
             }
         });
         
-        // Attiva/disattiva lo strumento corrente
-        this.toolsState[toolName] = !this.toolsState[toolName];
+        // Attiva lo strumento corrente (non più toggle, solo attivazione)
+        this.toolsState[toolName] = true;
         const element = document.querySelector(`[data-tool="${toolName}"]`);
         
-        if (this.toolsState[toolName]) {
-            element.classList.add('active');
-            this.updateStatus(`Strumento attivo: ${toolName.replace('_', ' ')}`);
-            AppConfig.log(2, `Strumento attivato: ${toolName}`);
-        } else {
-            element.classList.remove('active');
-            this.updateStatus('Nessuno strumento attivo');
-            AppConfig.log(2, `Strumento disattivato: ${toolName}`);
-        }
+        element.classList.add('active');
+        this.updateStatus(`Strumento attivo: ${toolName.replace('_', ' ')}`);
+        AppConfig.log(2, `Strumento attivato: ${toolName}`);
         
         // Notifica il cambio di stato agli altri moduli
         this.onToolStateChanged(toolName, this.toolsState[toolName]);
+    },
+    
+    /**
+     * Disattiva manualmente uno strumento specifico
+     */
+    deactivateTool: function(toolName) {
+        if (!this.toolsState[toolName]) return; // Già disattivato
+        
+        this.toolsState[toolName] = false;
+        const element = document.querySelector(`[data-tool="${toolName}"]`);
+        if (element) element.classList.remove('active');
+        
+        this.updateStatus('Nessuno strumento attivo');
+        AppConfig.log(2, `Strumento disattivato: ${toolName}`);
+        
+        // Notifica il cambio di stato
+        this.onToolStateChanged(toolName, false);
+    },
+    
+    /**
+     * Disattiva tutti gli strumenti
+     */
+    deactivateAllTools: function() {
+        Object.keys(this.toolsState).forEach(toolName => {
+            this.deactivateTool(toolName);
+        });
     },
     
     /**
