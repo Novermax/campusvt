@@ -49,6 +49,19 @@ window.Scene3D = {
         lastStepCompleted: false       // Flag per ultimo step completato
     },
     
+    // Elementi da escludere dalla selezione (case-insensitive)
+    nonSelectableElements: [
+        'pavimento',
+        'piano',
+        'base',
+        'superficie',
+        'ground',
+        'floor',
+        'basement',
+        'sfondo',
+        'background'
+    ],
+    
     // Controlli e interazione
     mouseControls: {
         isMouseDown: false,        // Stato pulsante mouse
@@ -284,7 +297,7 @@ window.Scene3D = {
     initHighlightSystem: function() {
         // Crea il materiale per l'evidenziazione rossa
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffff00,           // Verde brillante
+            color: 0xcccc00,           // Verde brillante
             transparent: true,
             opacity: 0.8,
             wireframe: false,
@@ -444,6 +457,13 @@ window.Scene3D = {
         });
         
         if (targetModel) {
+            // NUOVO: Verifica che il modello trovato sia selezionabile
+            if (!this.isModelSelectable(targetModel)) {
+                console.log('🔴 ❌ Modello trovato ma non selezionabile (es. pavimento):', targetModel.userData?.originalFilename || targetModel.name);
+                AppConfig.log(1, `❌ Elemento tutorial non selezionabile: ${stepElement}`);
+                return;
+            }
+            
             console.log('🔴 ✅ Modello trovato per evidenziazione:', targetModel.userData?.originalFilename || targetModel.name);
             AppConfig.log(2, `🎯 Evidenziazione elemento tutorial: ${stepElement}`);
             this.highlightModel(targetModel);
@@ -881,6 +901,12 @@ window.Scene3D = {
             }
             
             if (targetModel) {
+                // NUOVO: Verifica se il modello è selezionabile
+                if (!this.isModelSelectable(targetModel)) {
+                    AppConfig.log(2, `🚫 Click ignorato: modello non selezionabile "${targetModel.userData?.originalFilename || targetModel.name}"`);
+                    return;
+                }
+                
                 AppConfig.log(2, `🖱️ Click su modello:`, targetModel.userData?.originalFilename || targetModel.name);
                 this.handleModelAction(targetModel);
             }
@@ -897,6 +923,27 @@ window.Scene3D = {
             current = current.parent;
         }
         return false;
+    },
+    
+    /**
+     * Verifica se un modello è selezionabile (non è nella blacklist)
+     * @param {THREE.Object3D} model - Il modello da verificare
+     * @returns {boolean} - True se selezionabile, false se da escludere
+     */
+    isModelSelectable: function(model) {
+        if (!model) return false;
+        
+        const modelName = (model.userData?.originalFilename || model.name || '').toLowerCase();
+        
+        // Controlla se il nome contiene una delle keywords da escludere
+        for (const excludeKeyword of this.nonSelectableElements) {
+            if (modelName.includes(excludeKeyword.toLowerCase())) {
+                console.log(`🚫 Modello "${modelName}" non selezionabile (contiene "${excludeKeyword}")`);
+                return false;
+            }
+        }
+        
+        return true;
     },
     
     /**
@@ -1999,6 +2046,37 @@ window.Scene3D = {
             isLastStep: isLastStep,
             lastStepCompleted: this.tutorialTracker.lastStepCompleted,
             completedSteps: Array.from(this.tutorialTracker.completedSteps)
+        };
+    },
+    
+    /**
+     * Test per verificare quali modelli sono selezionabili
+     */
+    testModelSelectability: function() {
+        console.log('🚫 === TEST SELEZIONE MODELLI ===');
+        console.log('🚫 Elementi esclusi:', this.nonSelectableElements);
+        console.log('🚫 Modelli caricati totali:', this.loadedModels.length);
+        
+        const selectableModels = [];
+        const nonSelectableModels = [];
+        
+        this.loadedModels.forEach(model => {
+            const modelName = model.userData?.originalFilename || model.name;
+            if (this.isModelSelectable(model)) {
+                selectableModels.push(modelName);
+            } else {
+                nonSelectableModels.push(modelName);
+            }
+        });
+        
+        console.log('✅ Modelli selezionabili:', selectableModels);
+        console.log('🚫 Modelli NON selezionabili:', nonSelectableModels);
+        
+        return {
+            totalModels: this.loadedModels.length,
+            selectableModels: selectableModels,
+            nonSelectableModels: nonSelectableModels,
+            excludedKeywords: this.nonSelectableElements
         };
     }
 };
