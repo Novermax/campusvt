@@ -71,7 +71,38 @@
   CameraZoom=1.5                                          // Zoom per dettaglio operazione
   CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
 
+[Step 7 - Tappodx]                                        // Sesto step: estrazione filtro usurato
+  Elemento=tappino_grasso_dx.glb                                     // Modello 3D del filtro da sostituire
+  Utensile=Mani                                           // Strumento: estrazione manuale
+  Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di destra       // Istruzione per rimozione filtro
+  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
+  Distanza=0.3                                            // Distanza di estrazione (filtro compatto)
+  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
+  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
+  CameraZoom=1.5                                          // Zoom per dettaglio operazione
+  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
 
+[Step 8 - Tapposx]                                        // Sesto step: estrazione filtro usurato
+  Elemento=tappino_grasso_sx.glb                                     // Modello 3D del filtro da sostituire
+  Utensile=Mani                                           // Strumento: estrazione manuale
+  Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di sinistra       // Istruzione per rimozione filtro
+  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
+  Distanza=0.3                                            // Distanza di estrazione (filtro compatto)
+  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
+  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
+  CameraZoom=1.5                                          // Zoom per dettaglio operazione
+  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
+
+[Step 9 - Ingrassatore]                                        // Sesto step: estrazione filtro usurato
+  Elemento=ingrassatore.glb                                     // Modello 3D del filtro da sostituire
+  Utensile=Mani                                           // Strumento: estrazione manuale
+  Descrizione=prendi l'ingrassatore       // Istruzione per rimozione filtro
+  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
+  Distanza=0.3                                            // Distanza di estrazione (filtro compatto)
+  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
+  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
+  CameraZoom=1.5                                          // Zoom per dettaglio operazione
+  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
 
 
 [Cambio Filtro Reverse]                                  // Tutorial inverso - sequenza di rimontaggio

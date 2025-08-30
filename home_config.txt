@@ -50,7 +50,8 @@ model =  scenes/Test/tappino_grasso_sx.glb                  // Quarta vite del c
 direzione =-1,0,0 
 model =  scenes/Test/tappino_grasso_dx.glb                  // Quarta vite del coperchio
 direzione =-1,0,0                                     // Direzione movimento: verso X-
-
+model =  scenes/Test/ingrassatore.glb                  // ingrassatore
+direzione =-1,0,0                                     // Direzione movimento: verso X-
 
 [Regolazione campi di lavoro]                              // Configurazione aree operative e origini
 // === CONFIGURAZIONE CAMERA E LUCI ===

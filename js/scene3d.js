@@ -34,6 +34,21 @@ window.Scene3D = {
     raycaster: null,
     mouse: null,
     
+    // Sistema evidenziazione modelli
+    highlightSystem: {
+        highlightedModel: null,        // Modello attualmente evidenziato
+        originalMaterials: new Map(),  // Materiali originali salvati
+        highlightMaterial: null,       // Materiale per evidenziazione
+        highlightTimer: null,          // Timer per auto-reset
+        isHighlighting: false          // Flag stato evidenziazione
+    },
+    
+    // Sistema tracking completamento step tutorial
+    tutorialTracker: {
+        completedSteps: new Set(),     // Set degli step completati
+        lastStepCompleted: false       // Flag per ultimo step completato
+    },
+    
     // Controlli e interazione
     mouseControls: {
         isMouseDown: false,        // Stato pulsante mouse
@@ -99,6 +114,7 @@ window.Scene3D = {
             this.initLights();
             this.initControls();
             this.initRaycaster();
+            this.initHighlightSystem();
             
             // Avvia il loop di rendering
             this.startRenderLoop();
@@ -258,6 +274,184 @@ window.Scene3D = {
         this.mouse = new THREE.Vector2();
         
         AppConfig.log(3, 'Raycaster inizializzato per rilevamento click modelli');
+    },
+    
+    /* ===== SISTEMA EVIDENZIAZIONE MODELLI ===== */
+    
+    /**
+     * Inizializza il sistema di evidenziazione
+     */
+    initHighlightSystem: function() {
+        // Crea il materiale per l'evidenziazione rossa
+        this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffff00,           // Verde brillante
+            transparent: true,
+            opacity: 0.8,
+            wireframe: false,
+            side: THREE.DoubleSide,
+            depthTest: false,          // Ignora z-buffer per essere sempre visibile
+            depthWrite: false          // Non scrive nel z-buffer
+        });
+        
+        AppConfig.log(3, 'Sistema evidenziazione inizializzato');
+    },
+    
+    /**
+     * Evidenzia un modello con outline rosso
+     * @param {THREE.Object3D} model - Il modello da evidenziare
+     * @param {number} duration - Durata in millisecondi (opzionale, se omesso rimane fino al click)
+     */
+    highlightModel: function(model, duration = null) {
+        if (!model) {
+            AppConfig.log(1, 'Tentativo di evidenziare un modello null');
+            return;
+        }
+        
+        // Se c'è già un modello evidenziato, ripristinalo prima
+        if (this.highlightSystem.isHighlighting) {
+            this.removeHighlight();
+        }
+        
+        AppConfig.log(2, `🔴 Evidenziazione modello: ${model.userData?.originalFilename || model.name}`);
+        
+        // Salva i materiali originali
+        this.saveOriginalMaterials(model);
+        
+        // Applica il materiale di evidenziazione
+        this.applyHighlightMaterial(model);
+        
+        // Aggiorna stato
+        this.highlightSystem.highlightedModel = model;
+        this.highlightSystem.isHighlighting = true;
+        
+        // Timer opzionale se specificata una durata
+        if (duration && duration > 0) {
+            this.highlightSystem.highlightTimer = setTimeout(() => {
+                this.removeHighlight();
+            }, duration);
+            AppConfig.log(2, `🔴 Evidenziazione attivata per ${duration}ms`);
+        } else {
+            AppConfig.log(2, '🔴 Evidenziazione attivata - si spegne al click sull\'elemento');
+        }
+    },
+    
+    /**
+     * Salva i materiali originali di un modello prima dell'evidenziazione
+     * @param {THREE.Object3D} model - Il modello di cui salvare i materiali
+     */
+    saveOriginalMaterials: function(model) {
+        const materials = new Map();
+        
+        model.traverse((child) => {
+            if (child.isMesh && child.material) {
+                // Salva il materiale originale usando l'UUID come chiave
+                if (Array.isArray(child.material)) {
+                    // Multi-materiale
+                    materials.set(child.uuid, child.material.slice()); // Copia array
+                } else {
+                    // Materiale singolo
+                    materials.set(child.uuid, child.material);
+                }
+            }
+        });
+        
+        this.highlightSystem.originalMaterials = materials;
+        AppConfig.log(3, `Salvati ${materials.size} materiali originali`);
+    },
+    
+    /**
+     * Applica il materiale di evidenziazione a tutto il modello
+     * @param {THREE.Object3D} model - Il modello da evidenziare
+     */
+    applyHighlightMaterial: function(model) {
+        model.traverse((child) => {
+            if (child.isMesh) {
+                // Applica il materiale rosso a tutte le mesh
+                if (Array.isArray(child.material)) {
+                    // Multi-materiale: sostituisci tutti con highlight
+                    child.material = child.material.map(() => this.highlightSystem.highlightMaterial);
+                } else {
+                    // Materiale singolo
+                    child.material = this.highlightSystem.highlightMaterial;
+                }
+                
+                // Forza il render order per essere sempre in primo piano
+                child.renderOrder = 999;
+            }
+        });
+        
+        AppConfig.log(3, 'Materiale evidenziazione applicato');
+    },
+    
+    /**
+     * Rimuove l'evidenziazione e ripristina i materiali originali
+     */
+    removeHighlight: function() {
+        if (!this.highlightSystem.isHighlighting || !this.highlightSystem.highlightedModel) {
+            return;
+        }
+        
+        const model = this.highlightSystem.highlightedModel;
+        AppConfig.log(2, `🔄 Ripristino evidenziazione: ${model.userData?.originalFilename || model.name}`);
+        
+        // Ripristina i materiali originali
+        model.traverse((child) => {
+            if (child.isMesh && this.highlightSystem.originalMaterials.has(child.uuid)) {
+                child.material = this.highlightSystem.originalMaterials.get(child.uuid);
+                child.renderOrder = 0; // Reset render order
+            }
+        });
+        
+        // Pulisce il timer se ancora attivo (ora non più usato di default)
+        if (this.highlightSystem.highlightTimer) {
+            clearTimeout(this.highlightSystem.highlightTimer);
+            this.highlightSystem.highlightTimer = null;
+        }
+        
+        // Reset stato
+        this.highlightSystem.highlightedModel = null;
+        this.highlightSystem.originalMaterials.clear();
+        this.highlightSystem.isHighlighting = false;
+        
+        AppConfig.log(2, '✅ Evidenziazione rimossa e materiali ripristinati');
+    },
+    
+    /**
+     * Evidenzia l'elemento corrente del tutorial se presente
+     */
+    highlightCurrentTutorialElement: function() {
+        console.log('🔴 highlightCurrentTutorialElement chiamata');
+        console.log('🔴 Modelli caricati:', this.loadedModels.length);
+        console.log('🔴 Modelli disponibili:', this.loadedModels.map(m => m.userData?.originalFilename || m.name));
+        
+        // Ottieni lo step corrente del tutorial
+        const currentStep = this.getCurrentTutorialStep();
+        if (!currentStep || !currentStep.properties.Elemento) {
+            console.log('🔴 Nessun step corrente o elemento tutorial da evidenziare');
+            AppConfig.log(3, 'Nessun elemento tutorial da evidenziare');
+            return;
+        }
+        
+        const stepElement = currentStep.properties.Elemento;
+        console.log('🔴 Elemento tutorial da evidenziare:', stepElement);
+        
+        // Trova il modello corrispondente
+        const targetModel = this.loadedModels.find(model => {
+            const modelFilename = model.userData?.originalFilename || model.name;
+            const match = modelFilename.includes(stepElement.replace('.glb', ''));
+            console.log(`🔍 Test modello "${modelFilename}" vs elemento "${stepElement}": ${match}`);
+            return match;
+        });
+        
+        if (targetModel) {
+            console.log('🔴 ✅ Modello trovato per evidenziazione:', targetModel.userData?.originalFilename || targetModel.name);
+            AppConfig.log(2, `🎯 Evidenziazione elemento tutorial: ${stepElement}`);
+            this.highlightModel(targetModel);
+        } else {
+            console.log('🔴 ❌ Nessun modello trovato per elemento:', stepElement);
+            console.log('🔴 ❌ Modelli disponibili:', this.loadedModels.map(m => m.userData?.originalFilename || m.name));
+            AppConfig.log(1, `❌ Modello non trovato per elemento: ${stepElement}`);
+        }
     },
     
     /* ===== CONTROLLI MOUSE ===== */
@@ -709,14 +903,35 @@ window.Scene3D = {
      * Gestisce l'azione su un modello cliccato
      */
     handleModelAction: function(model) {
-        // Verifica che sia attivo il tool "mani"
-        if (!window.UI || window.UI.getActiveTool() !== 'mano') {
-            AppConfig.log(2, '🖱️ Click ignorato: strumento "mani" non attivo');
+        // Ottieni lo step corrente per verificare il tool richiesto
+        const currentStep = this.getCurrentTutorialStep();
+        const requiredTool = this.getRequiredToolForStep(currentStep);
+        const activeTool = window.UI ? window.UI.getActiveTool() : null;
+        
+        console.log('🔧 Tool check - Richiesto:', requiredTool, 'Attivo:', activeTool);
+        
+        // NUOVO: Spegni evidenziazione SOLO se il modello è evidenziato E il tool è corretto
+        if (this.highlightSystem.isHighlighting && 
+            this.highlightSystem.highlightedModel === model) {
+            
+            if (requiredTool && activeTool === requiredTool) {
+                AppConfig.log(2, '🔴✅ Rimozione evidenziazione: tool corretto attivo');
+                this.removeHighlight();
+            } else {
+                AppConfig.log(2, '🔴❌ Evidenziazione mantenuta: tool scorretto o mancante');
+                console.log(`🔧 Tool richiesto: "${requiredTool}", tool attivo: "${activeTool}"`);
+                // Non rimuovere l'evidenziazione - rimane attiva
+                // Potremmo aggiungere un feedback visivo qui (es. vibrazione, messaggio)
+            }
+        }
+        
+        // Verifica che sia attivo il tool corretto (ora più specifico)
+        if (!requiredTool || activeTool !== requiredTool) {
+            AppConfig.log(2, `🖱️ Click ignorato: tool "${requiredTool}" richiesto, ma "${activeTool}" attivo`);
             return;
         }
         
-        // Trova lo step tutorial corrente che corrisponde a questo modello
-        const currentStep = this.getCurrentTutorialStep();
+        // Usa lo step già ottenuto sopra
         if (!currentStep) {
             AppConfig.log(2, '🖱️ Click ignorato: nessun step tutorial attivo');
             return;
@@ -732,6 +947,14 @@ window.Scene3D = {
         // MANTIENI il controllo della sequenza: solo l'elemento dello step corrente
         if (!stepElement || !modelFilename.includes(stepElement.replace('.glb', ''))) {
             AppConfig.log(2, `🖱️ Click ignorato: modello "${modelFilename}" non corrisponde all'elemento "${stepElement}" per step ${window.UI.currentStepIndex + 1}`);
+            return;
+        }
+        
+        // NUOVO: Controlla se è l'ultimo step e se è già stato completato
+        const isLastStep = this.isLastTutorialStep(window.UI.currentStepIndex);
+        if (isLastStep && this.tutorialTracker.lastStepCompleted) {
+            AppConfig.log(2, '🏁 Ultimo step già completato - azione bloccata');
+            console.log('🏁 Tutorial completato - nessuna azione aggiuntiva permessa');
             return;
         }
         
@@ -819,6 +1042,81 @@ window.Scene3D = {
         
         const stepIndex = window.UI.currentStepIndex;
         return window.UI.tutorialSteps[stepIndex] || null;
+    },
+    
+    /**
+     * Determina il tool richiesto per uno step specifico
+     * @param {Object} step - Lo step del tutorial
+     * @returns {string|null} - Nome del tool richiesto o null
+     */
+    getRequiredToolForStep: function(step) {
+        if (!step || !step.properties) {
+            return null;
+        }
+        
+        // Controlla se c'è una proprietà "Utensile" nello step
+        if (step.properties.Utensile) {
+            // Mappa i nomi degli utensili dal tutorial ai nomi interni
+            const toolMapping = {
+                'ChiaveBrugola': 'brugola',
+                'ChiaveInglese': 'chiave_inglese',
+                'Mani': 'mano',
+                'Martello': 'martello'
+            };
+            
+            const mappedTool = toolMapping[step.properties.Utensile];
+            console.log(`🔧 Tool mapping: "${step.properties.Utensile}" -> "${mappedTool}"`);
+            return mappedTool || null;
+        }
+        
+        // Se non c'è utensile specificato, default a "mano"
+        return 'mano';
+    },
+    
+    /**
+     * Verifica se l'indice corrente è l'ultimo step del tutorial
+     * @param {number} stepIndex - Indice dello step da controllare
+     * @returns {boolean} - True se è l'ultimo step
+     */
+    isLastTutorialStep: function(stepIndex) {
+        if (!window.UI || !window.UI.tutorialSteps) {
+            return false;
+        }
+        
+        return stepIndex === (window.UI.tutorialSteps.length - 1);
+    },
+    
+    /**
+     * Marca uno step come completato
+     * @param {number} stepIndex - Indice dello step da marcare come completato
+     */
+    markStepAsCompleted: function(stepIndex) {
+        this.tutorialTracker.completedSteps.add(stepIndex);
+        
+        // Se è l'ultimo step, marcalo come completato
+        if (this.isLastTutorialStep(stepIndex)) {
+            this.tutorialTracker.lastStepCompleted = true;
+            console.log('🏁 TUTORIAL COMPLETATO - Ultimo step eseguito');
+            AppConfig.log(2, '🏁 Tutorial completato con successo');
+            
+            // Rimuovi evidenziazione se presente
+            if (this.highlightSystem.isHighlighting) {
+                this.removeHighlight();
+            }
+        }
+        
+        console.log(`✅ Step ${stepIndex + 1} marcato come completato`);
+        console.log(`📊 Steps completati: ${Array.from(this.tutorialTracker.completedSteps).map(i => i + 1).join(', ')}`);
+    },
+    
+    /**
+     * Resetta il tracker del tutorial (chiamato all'inizio di un nuovo tutorial)
+     */
+    resetTutorialTracker: function() {
+        this.tutorialTracker.completedSteps.clear();
+        this.tutorialTracker.lastStepCompleted = false;
+        console.log('🔄 Tutorial tracker resettato');
+        AppConfig.log(3, 'Tutorial tracker resettato per nuovo tutorial');
     },
     
     /* ===== GESTIONE MODELLI ===== */
@@ -1560,6 +1858,11 @@ window.Scene3D = {
                 const modelName = anim.model.userData?.originalFilename || anim.model.name;
                 AppConfig.log(2, `✅ Animazione completata: ${anim.action} per ${modelName}`);
                 
+                // NUOVO: Marca lo step corrente come completato
+                if (window.UI && window.UI.currentStepIndex !== undefined) {
+                    this.markStepAsCompleted(window.UI.currentStepIndex);
+                }
+                
                 // Auto-avanza al prossimo step del tutorial se disponibile
                 this.advanceToNextTutorialStep();
             }
@@ -1621,6 +1924,82 @@ window.Scene3D = {
      */
     isModelAnimating: function(model) {
         return this.animationSystem.activeAnimations.some(anim => anim.model === model);
+    },
+    
+    /* ===== FUNZIONI DI DEBUG E TEST ===== */
+    
+    /**
+     * Evidenzia un modello casuale per test (solo per debug)
+     * @param {number} duration - Durata opzionale in millisecondi
+     */
+    testHighlight: function(duration = null) {
+        if (this.loadedModels.length === 0) {
+            console.log('🔴 Nessun modello caricato per il test evidenziazione');
+            return;
+        }
+        
+        const randomIndex = Math.floor(Math.random() * this.loadedModels.length);
+        const randomModel = this.loadedModels[randomIndex];
+        
+        if (duration) {
+            console.log(`🔴 TEST: Evidenziazione modello casuale #${randomIndex} per ${duration}ms: ${randomModel.userData?.originalFilename || randomModel.name}`);
+        } else {
+            console.log(`🔴 TEST: Evidenziazione modello casuale #${randomIndex} (fino al click): ${randomModel.userData?.originalFilename || randomModel.name}`);
+        }
+        
+        this.highlightModel(randomModel, duration);
+    },
+    
+    /**
+     * Test per verificare la logica del tool corretto
+     */
+    testToolLogic: function() {
+        const currentStep = this.getCurrentTutorialStep();
+        const requiredTool = this.getRequiredToolForStep(currentStep);
+        const activeTool = window.UI ? window.UI.getActiveTool() : null;
+        
+        console.log('🔧 === TEST TOOL LOGIC ===');
+        console.log('🔧 Step corrente:', currentStep?.properties?.Utensile || 'Nessuno');
+        console.log('🔧 Tool richiesto:', requiredTool);
+        console.log('🔧 Tool attivo:', activeTool);
+        console.log('🔧 Match:', requiredTool === activeTool);
+        console.log('🔧 Evidenziazione attiva:', this.highlightSystem.isHighlighting);
+        
+        if (this.highlightSystem.isHighlighting) {
+            console.log('🔧 Modello evidenziato:', this.highlightSystem.highlightedModel?.userData?.originalFilename || this.highlightSystem.highlightedModel?.name);
+        }
+        
+        return {
+            currentStep: currentStep,
+            requiredTool: requiredTool,
+            activeTool: activeTool,
+            isMatch: requiredTool === activeTool,
+            isHighlighting: this.highlightSystem.isHighlighting
+        };
+    },
+    
+    /**
+     * Test per verificare il sistema di completamento tutorial
+     */
+    testTutorialCompletion: function() {
+        const currentStepIndex = window.UI ? window.UI.currentStepIndex : null;
+        const totalSteps = window.UI ? window.UI.tutorialSteps?.length : 0;
+        const isLastStep = currentStepIndex !== null ? this.isLastTutorialStep(currentStepIndex) : false;
+        
+        console.log('🏁 === TEST TUTORIAL COMPLETION ===');
+        console.log('🏁 Step corrente:', currentStepIndex !== null ? currentStepIndex + 1 : 'Nessuno');
+        console.log('🏁 Totale steps:', totalSteps);
+        console.log('🏁 È ultimo step:', isLastStep);
+        console.log('🏁 Ultimo step completato:', this.tutorialTracker.lastStepCompleted);
+        console.log('🏁 Steps completati:', Array.from(this.tutorialTracker.completedSteps).map(i => i + 1));
+        
+        return {
+            currentStepIndex: currentStepIndex,
+            totalSteps: totalSteps,
+            isLastStep: isLastStep,
+            lastStepCompleted: this.tutorialTracker.lastStepCompleted,
+            completedSteps: Array.from(this.tutorialTracker.completedSteps)
+        };
     }
 };
 

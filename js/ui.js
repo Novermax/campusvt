@@ -1040,6 +1040,16 @@ window.UI = {
             this.elements.fileInput.value = '';
         }
         
+        // NUOVO: Evidenzia il primo elemento del tutorial dopo caricamento modelli
+        if (this.tutorialSteps && this.tutorialSteps.length > 0 && this.currentStepIndex === 0) {
+            setTimeout(() => {
+                console.log('🔴 Evidenziazione primo elemento tutorial dopo caricamento modelli');
+                if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
+                    window.Scene3D.highlightCurrentTutorialElement();
+                }
+            }, 200); // Delay breve per assicurare che i modelli siano nella scena
+        }
+        
         // DEBUG: Stato finale dei controlli touch dopo caricamento completo
         setTimeout(() => {
             console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');
@@ -2042,7 +2052,14 @@ window.UI = {
         
         // Se c'è almeno un tutorial, seleziona il primo come default
         if (tutorials.length > 0) {
+            // NUOVO: Resetta il tracker del tutorial per nuovo scenario
+            if (window.Scene3D && window.Scene3D.resetTutorialTracker) {
+                window.Scene3D.resetTutorialTracker();
+            }
+            
             this.selectTutorial(0);
+            // L'evidenziazione del primo elemento ora avviene dopo il caricamento dei modelli
+            // in onModelLoadComplete() per garantire che i modelli siano disponibili
             return tutorials[0].steps;
         }
         
@@ -2232,6 +2249,14 @@ window.UI = {
                 AppConfig.log(3, `Attivazione strumento: ${toolName}`);
                 this.toggleTool(toolName);
             }
+        }
+        
+        // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente
+        if (step.properties.Elemento && window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
+            // Piccolo delay per permettere che il modello sia caricato e visibile
+            setTimeout(() => {
+                window.Scene3D.highlightCurrentTutorialElement();
+            }, 100);
         }
         
         // Aggiorna il fumetto con la descrizione dello step corrente
