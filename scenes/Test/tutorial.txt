@@ -1,124 +1,25 @@
 # Tutorial per Manutenzione Pompa del Vuoto
 # Questo file definisce la sequenza guidata per la sostituzione del filtro
 
-[Cambio Filtro]                                            // Tutorial principale - sequenza di smontaggio
+[Allineamento]                                            // Tutorial principale - sequenza di smontaggio
+  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  
+
+  [Step 1 -l'ingrassatore]                                    // Primo step: rimozione prima vite
+  Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
+  Utensile=Mani                                           // Strumento: estrazione manuale
+  Descrizione=Prendi la pompetta del grasso        // Istruzione per movimento
+  Azione1=centro:(-0.2,0,0);rotazione:(0,0,90,0.8)
+  Azione2=traslazione:(-0.2,0.0,0,0.8)
+  #Azione2=traslazione:tappino_grasso_dx,(0.5,0,0,0.8)
+  Azione3=appoggia(1.5)
  
-
-
-  [Step 1 - Prima vite]                                    // Primo step: rimozione vite angolo superiore sinistro
-  Elemento=vite_coperchio_1.glb                            // Modello 3D della prima vite da animare
-  Utensile=Mani                                            // Strumento richiesto: lavoro manuale
-  Descrizione=Rimuovi la prima vite del coperchio          // Testo mostrato nel fumetto laterale
-  Azione=svita                                             // Tipo animazione: svitamento (rotazione oraria + estrazione)
-  Distanza=0.5                                             // Distanza di movimento in unità 3D (0.5 = mezza unità)
-  CameraPos=(-8, 7, -12)                                     // Posizione camera per questo step (vista ottimale)
-  CameraTarget=(0, 0, 0)                                   // Punto focale della camera (centro scena)
-  CameraZoom=1.5                                           // Fattore di zoom (1.0 = normale, >1.0 = più vicino)
-  CameraTransitionTime=1.0                                 // Tempo transizione camera in secondi
-
-  [Step 2 - Seconda vite]                                  // Secondo step: vite angolo superiore destro
-  Elemento=vite_coperchio_2.glb                            // Modello della seconda vite
-  Utensile=Mani                                            // Strumento: sempre manuale per le viti
-  Descrizione=Rimuovi la seconda vite del coperchio        // Descrizione per l'utente
-  Azione=svita                                             // Animazione di svitamento
-  Distanza=0.5                                             // Distanza standard per viti
-  CameraPos=(8, 7, 12)                                     // Stessa posizione camera (inquadratura generale)
-  CameraTarget=(0, 0, 0)                                   // Centro scena come target
-  CameraZoom=1.5                                           // Zoom per dettaglio
-  CameraTransitionTime=1.0                                 // Transizione fluida 1 secondo
-
-  [Step 3 - Terza vite]                                    // Terzo step: vite angolo inferiore sinistro
-  Elemento=vite_coperchio_3.glb                            // Modello della terza vite
-  Utensile=Mani                                            // Utensile: operazione manuale
-  Descrizione=Rimuovi la terza vite del coperchio          // Istruzione per l'operatore
-  Azione=svita                                             // Animazione: svitamento con rotazione
-  Distanza=0.5                                             // Movimento di estrazione (0.5 unità)
-  CameraPos=(8, 7, 12)                                     // Camera mantenuta in posizione generale
-  CameraTarget=(0, 0, 0)                                   // Focus centrale
-  CameraZoom=1.5                                           // Zoom di dettaglio
-  CameraTransitionTime=1.0                                 // Durata movimento camera
-
-  [Step 4 - Quarta vite]                                   // Quarto step: ultima vite angolo inferiore destro
-  Elemento=vite_coperchio_4.glb                            // Modello dell'ultima vite del coperchio
-  Utensile=Mani                                            // Strumento: operazione manuale
-  Descrizione=Rimuovi la quarta vite del coperchio         // Istruzione finale per le viti
-  Azione=svita                                             // Animazione di svitamento
-  Distanza=0.5                                             // Distanza di rimozione standard
-  CameraPos=(8, 7, 12)                                     // Posizione camera invariata
-  CameraTarget=(0, 0, 0)                                   // Target al centro
-  CameraZoom=1.5                                           // Zoom per precisione
-  CameraTransitionTime=1.0                                 // Tempo transizione standard
-
-  [Step 5 - Coperchio]                                     // Quinto step: rimozione coperchio completo
-  Elemento=coperchio.glb                                   // Modello del coperchio della pompa
-  Utensile=Mani                                            // Strumento: sollevamento manuale
-  Descrizione=Rimuovi il coperchio del filtro              // Istruzione per rimozione coperchio
-  Azione=estrai                                            // Animazione: estrazione senza rotazione
-  Distanza=0.4                                             // Movimento più corto (coperchio pesante)
-  CameraPos=(8, 7, 12)                                     // Camera in posizione ottimale
-  CameraTarget=(0, 0, 0)                                   // Focus centrale
-  CameraZoom=1.5                                           // Zoom per vedere il movimento
-  CameraTransitionTime=1.0                                 // Transizione fluida
-
-[Step 6 - Filtro]                                        // Sesto step: estrazione filtro usurato
-  Elemento=filtro.glb                                     // Modello 3D del filtro da sostituire
+[Step 2- Prima vite]                                    // Primo step: rimozione prima vite
+  Elemento=models/vite_coperchio_1.glb                                     // Modello 3D dell'ingrassatore da animare
   Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Rimuovi il filtro                           // Istruzione per rimozione filtro
-  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
-  Distanza=0.4                                            // Distanza di estrazione (filtro compatto)
-  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
-  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
-  CameraZoom=1.5                                          // Zoom per dettaglio operazione
-  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
-
-[Step 7 - Tappodx]                                        // Sesto step: estrazione filtro usurato
-  Elemento=tappino_grasso_dx.glb                                     // Modello 3D del filtro da sostituire
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di destra       // Istruzione per rimozione filtro
-  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
-  Distanza=0.3                                            // Distanza di estrazione (filtro compatto)
-  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
-  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
-  CameraZoom=1.5                                          // Zoom per dettaglio operazione
-  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
-
-[Step 8 - Tapposx]                                        // Sesto step: estrazione filtro usurato
-  Elemento=tappino_grasso_sx.glb                                     // Modello 3D del filtro da sostituire
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di sinistra       // Istruzione per rimozione filtro
-  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
-  Distanza=0.3                                            // Distanza di estrazione (filtro compatto)
-  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
-  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
-  CameraZoom=1.5                                          // Zoom per dettaglio operazione
-  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
-
-[Step 9 - Ingrassatore]                                        // Sesto step: estrazione filtro usurato
-  Elemento=ingrassatore.glb                                     // Modello 3D del filtro da sostituire
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=prendi l'ingrassatore       // Istruzione per rimozione filtro
-  Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
-  Distanza=0.3                                            // Distanza di estrazione (filtro compatto)
-  CameraPos=(8, 7, 12)                                    // Posizione camera per vedere l'interno
-  CameraTarget=(0, 0, 0)                                  // Target al centro pompa
-  CameraZoom=1.5                                          // Zoom per dettaglio operazione
-  CameraTransitionTime=1.0                                // Tempo transizione 1 secondo
-
-
-[Cambio Filtro Reverse]                                  // Tutorial inverso - sequenza di rimontaggio
-// Sequenza per rimontare il filtro e richiudere la pompa
-Elemento=vite_coperchio_1.glb                            // Prima vite da riavvitare
-Utensile=Mani                                            // Strumento: riavvitamento manuale
-Descrizione=Rimuovi il coperchio del filtro              // Descrizione (da aggiornare per rimontaggio)
-Azione=svita                                             // Azione (da cambiare in 'avvita' per rimontaggio)
-Distanza=0.5                                             // Distanza movimento
-CameraPos=(8, 7, 12)                                     // Posizione camera standard
-CameraTarget=(0, 0, 0)                                   // Focus centrale
-CameraZoom=1.5                                           // Zoom operativo
-CameraTransitionTime=1.0                                 // Tempo transizione
-
-[Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa
-// Da implementare: procedura per cambio palette rotore
-
-[Sostituzione Palette Reverse]                           // Tutorial inverso palette
-// Da implementare: procedura per rimontaggio palette
+  Descrizione=svita la manopola        // Istruzione per movimento
+  Azione1=svita
+  

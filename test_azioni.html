@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema Azioni</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #canvas3d {
+            width: 800px;
+            height: 600px;
+            border: 2px solid #333;
+            display: block;
+            margin: 20px auto;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .info {
+            text-align: center;
+            margin: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 8px;
+            white-space: pre-line;
+        }
+        .log {
+            background: #222;
+            color: #0f0;
+            font-family: monospace;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: scroll;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Sistema Azioni - Debug</h1>
+    
+    <div class="info">
+        <p><strong>Test del parsing delle nuove sintassi Azione1, Azione2, Azione3</strong></p>
+        <p>Questo test verifica che il sistema riconosca correttamente le azioni animate</p>
+    </div>
+
+    <canvas id="canvas3d"></canvas>
+    
+    <div class="controls">
+        <button onclick="testParsingAzioni()">Test Parsing Azioni</button>
+        <button onclick="testAnimazioneCompleta()">Test Animazione Completa</button>
+        <button onclick="clearLog()">Pulisci Log</button>
+    </div>
+    
+    <div class="info">
+        <div id="logOutput" class="log">Log output...</div>
+    </div>
+
+    <!-- Caricamento Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r155/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <!-- Sistema 3D -->
+    <script src="js/config.js?nocache=999999"></script>
+    <script src="js/scene3d-modular.js?nocache=1000010"></script>
+    <script src="js/modelloader.js?nocache=1000011"></script>
+    <script src="js/ui.js?nocache=1000006"></script>
+
+    <script>
+        let filtroModel = null;
+        let logElement = null;
+        
+        function log(message) {
+            if (!logElement) {
+                logElement = document.getElementById('logOutput');
+            }
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[TEST] ${message}`);
+        }
+        
+        function clearLog() {
+            if (logElement) {
+                logElement.innerHTML = '';
+            }
+        }
+        
+        // Inizializza la scena 3D
+        function initTestScene() {
+            // Verifica che tutti i moduli siano caricati
+            if (!window.Scene3D) {
+                log('⏳ Scene3D non ancora caricato, riprovo...');
+                setTimeout(initTestScene, 1000);
+                return;
+            }
+            
+            if (!window.AppConfig) {
+                log('⏳ AppConfig non ancora caricato, riprovo...');
+                setTimeout(initTestScene, 1000);
+                return;
+            }
+            
+            try {
+                Scene3D.init();
+                log('✅ Scene3D inizializzato');
+                
+                // Carica solo il filtro per il test
+                const loader = new THREE.GLTFLoader();
+                loader.load('models/filtro.glb', (gltf) => {
+                    filtroModel = gltf.scene;
+                    filtroModel.userData.originalFilename = 'filtro';
+                    
+                    // Posiziona il filtro in alto per testare l'appoggiamento
+                    filtroModel.position.set(0, 3, 0);
+                    
+                    Scene3D.scene.add(filtroModel);
+                    Scene3D.loadedModels.push(filtroModel);
+                    
+                    log('✅ Modello filtro caricato a Y=3');
+                }, undefined, (error) => {
+                    log('⚠️ Modello filtro non caricato, continuo con test parsing');
+                });
+            } catch (error) {
+                log(`❌ ERROR nell'inizializzazione: ${error.message}`);
+            }
+        }
+        
+        // Test del parsing delle azioni
+        function testParsingAzioni() {
+            log('=== INIZIO TEST PARSING AZIONI ===');
+            
+            if (!Scene3D.parseMovementSteps) {
+                log('❌ ERROR: Funzione parseMovementSteps non trovata');
+                return;
+            }
+            
+            // Crea un tutorial step simulato
+            const mockTutorialStep = {
+                properties: {
+                    'Azione1': 'centro:(-0.2,0,0);rotazione:(0,0,90,0.8)',
+                    'Azione2': 'traslazione:(-0.2,0.0,0,0.8)',
+                    'Azione3': 'appoggia(1.5)'
+                }
+            };
+            
+            try {
+                const movementSteps = Scene3D.parseMovementSteps(mockTutorialStep);
+                log(`✅ Parsing completato. Steps trovati: ${movementSteps ? movementSteps.length : 0}`);
+                
+                if (movementSteps) {
+                    movementSteps.forEach((step, index) => {
+                        log(`  Step ${index + 1}:`);
+                        log(`    - Rotazione: ${step.rotazione ? 'SI' : 'NO'}`);
+                        log(`    - Traslazione: ${step.traslazione ? 'SI' : 'NO'}`);
+                        log(`    - Appoggia: ${step.appoggia ? 'SI (durata: ' + step.appoggia.durata + ')' : 'NO'}`);
+                        log(`    - Durata totale: ${step.durata}`);
+                    });
+                } else {
+                    log('❌ ERRORE: movementSteps è null/undefined');
+                }
+            } catch (error) {
+                log(`❌ ERRORE nel parsing: ${error.message}`);
+            }
+            
+            log('=== FINE TEST PARSING AZIONI ===\n');
+        }
+        
+        // Test animazione completa
+        function testAnimazioneCompleta() {
+            log('=== INIZIO TEST ANIMAZIONE COMPLETA ===');
+            
+            if (!filtroModel) {
+                log('⚠️ Modello non disponibile, carico un cubo di test');
+                // Crea un cubo di test
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                filtroModel = new THREE.Mesh(geometry, material);
+                filtroModel.userData.originalFilename = 'test_cube';
+                filtroModel.position.set(0, 3, 0);
+                Scene3D.scene.add(filtroModel);
+                Scene3D.loadedModels.push(filtroModel);
+                log('✅ Cubo di test creato a Y=3');
+            }
+            
+            // Test del parsing e avvio animazione
+            const mockTutorialStep = {
+                properties: {
+                    'Azione1': 'rotazione:(0,0,90,0.8)',
+                    'Azione2': 'traslazione:(0.5,0,0,1.0)',
+                    'Azione3': 'appoggia(1.5)'
+                }
+            };
+            
+            try {
+                const movementSteps = Scene3D.parseMovementSteps(mockTutorialStep);
+                
+                if (movementSteps && movementSteps.length > 0) {
+                    log(`✅ Avvio animazione multi-step (${movementSteps.length} steps)`);
+                    
+                    const success = Scene3D.startMultiStepMovement(filtroModel, movementSteps);
+                    
+                    if (success) {
+                        log('✅ Animazione avviata con successo');
+                        
+                        // Monitora l'animazione
+                        let checkCount = 0;
+                        const checkInterval = setInterval(() => {
+                            checkCount++;
+                            const hasActiveAnimations = Scene3D.animationSystem.activeAnimations.length > 0;
+                            
+                            if (!hasActiveAnimations) {
+                                log('✅ Animazione completata');
+                                clearInterval(checkInterval);
+                            } else if (checkCount > 20) {
+                                log('⚠️ Animazione ancora attiva dopo 10 secondi - stop monitoring');
+                                clearInterval(checkInterval);
+                            }
+                        }, 500);
+                        
+                    } else {
+                        log('❌ Animazione NON avviata');
+                    }
+                } else {
+                    log('❌ ERRORE: Nessun movimento step parseato');
+                }
+            } catch (error) {
+                log(`❌ ERRORE nell'animazione: ${error.message}`);
+            }
+            
+            log('=== FINE TEST ANIMAZIONE COMPLETA ===\n');
+        }
+        
+        // Inizializza quando la pagina è caricata
+        window.addEventListener('load', () => {
+            clearLog();
+            log('🚀 Inizializzazione test sistema azioni...');
+            log('⏳ Caricamento moduli in corso...');
+            setTimeout(initTestScene, 2000); // Aspetta 2 secondi per il caricamento
+        });
+    </script>
+</body>
+</html>

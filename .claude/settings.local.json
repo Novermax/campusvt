@@ -11,12 +11,27 @@
       "WebFetch(domain:docs.anthropic.com)",
       "Read(C:\\/**)",
       "Bash(timeout:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(dir models)",
+      "Bash(dir:*)",
+      "Bash(tasklist:*)",
+      "Read(/C:\\Users\\mloffredo\\claude/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\scenes\\Test/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\scenes\\Test/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
+      "Bash(exit)"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
-      "C:\\c\\Users\\mloffredo"
+      "C:\\Users\\mloffredo"
     ]
   }
 }

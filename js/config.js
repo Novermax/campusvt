@@ -186,6 +186,9 @@ window.AppConfig = {
         // Mostra statistiche performance
         showStats: false,
         
+        // Mostra sfera nera centro di rotazione durante animazioni
+        showRotationCenter: false,
+        
         // Mostra helper wireframe
         showWireframe: false
     },

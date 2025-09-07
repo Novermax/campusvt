@@ -411,15 +411,17 @@
 
 /* Pulsanti freccia principali */
 .tutorial-arrow-btn {
-    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-    border: 2px solid #bbb;
+    /* COLORE DI DEFAULT: azzurro per tutti i pulsanti */
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    border: 2px solid #1565c0;
+    color: white;
     border-radius: 8px;
     padding: 10px 15px;
     min-width: 120px;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
     
     /* Shape like in the image - punta della freccia a destra */
     clip-path:  polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);

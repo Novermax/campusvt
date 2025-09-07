@@ -191,13 +191,13 @@ window.App = {
         console.log('📦 Caricamento moduli dinamico...');
         
         try {
-            // Carica i moduli in sequenza
+            // Carica i moduli in sequenza (ora con architettura modulare)
             await this.loadModule('./js/config.js?nocache=999999');
-            await this.loadModule('./js/scene3d.js?nocache=1000007');  
-            await this.loadModule('./js/modelloader.js?nocache=1000005');
+            await this.loadModule('./js/scene3d-modular.js?nocache=1000010');  // Modulo modulare compatibile
+            await this.loadModule('./js/modelloader.js?nocache=1000011');
             await this.loadModule('./js/ui.js?nocache=1000006');
             
-            console.log('✅ Tutti i moduli caricati');
+            console.log('✅ Tutti i moduli caricati (architettura modulare ottimizzata)');
         } catch (error) {
             throw new Error(`Errore caricamento moduli: ${error.message}`);
         }
@@ -228,18 +228,21 @@ window.App = {
         return new Promise((resolve, reject) => {
             console.log('🔧 Inizializzazione moduli...');
             
-            try {
-                // Verifica disponibilità moduli
-                this.checkModulesAvailability();
-                
-                // Inizializza in ordine di dipendenza
-                this.initializeModuleSequence()
-                    .then(resolve)
-                    .catch(reject);
+            // Aggiungi un piccolo ritardo per permettere ai moduli di definirsi completamente
+            setTimeout(() => {
+                try {
+                    // Verifica disponibilità moduli
+                    this.checkModulesAvailability();
                     
-            } catch (error) {
-                reject(error);
-            }
+                    // Inizializza in ordine di dipendenza
+                    this.initializeModuleSequence()
+                        .then(resolve)
+                        .catch(reject);
+                        
+                } catch (error) {
+                    reject(error);
+                }
+            }, 200); // Ritardo maggiore per permettere ai moduli di essere definiti completamente
         });
     },
     
@@ -248,12 +251,25 @@ window.App = {
      */
     checkModulesAvailability: function() {
         const missingModules = [];
+        const availableModules = [];
         
         this.requiredModules.forEach(moduleName => {
             if (!window[moduleName]) {
                 missingModules.push(moduleName);
+            } else {
+                availableModules.push(moduleName);
             }
         });
+        
+        console.log('🔍 Verifica moduli:');
+        console.log('  ✅ Disponibili:', availableModules);
+        console.log('  ❌ Mancanti:', missingModules);
+        
+        // Lista tutti gli oggetti globali per debug
+        const allGlobals = Object.keys(window).filter(key => 
+            key.startsWith('App') || key.startsWith('Scene3D') || key.startsWith('ModelLoader') || key.startsWith('UI')
+        );
+        console.log('  🌐 Oggetti globali rilevanti:', allGlobals);
         
         if (missingModules.length > 0) {
             throw new Error('Moduli mancanti: ' + missingModules.join(', '));

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Animazioni Semplice</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .info {
+            text-align: center;
+            margin: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 8px;
+        }
+        .instructions {
+            background: #444;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Animazioni - Diagnosi Rapida</h1>
+    
+    <div class="info">
+        <p><strong>Test semplificato per verificare il sistema di animazioni</strong></p>
+        <p>Questo test verifica se le animazioni funzionano nell'applicazione principale</p>
+    </div>
+    
+    <div class="instructions">
+        <h3>🔍 Passi per il test:</h3>
+        <ol>
+            <li><strong>Vai a</strong>: <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></li>
+            <li><strong>Effettua login</strong> con le credenziali</li>
+            <li><strong>Carica un tutorial</strong> (es. Test o Pompa_Becker)</li>
+            <li><strong>Clicca su un componente</strong> che ha animazioni Azione1, Azione2, Azione3</li>
+            <li><strong>Apri la Console</strong> (F12) per vedere eventuali errori</li>
+        </ol>
+        
+        <h3>🎯 Cosa cercare:</h3>
+        <ul>
+            <li><strong>Console Errors</strong>: Errori JavaScript che bloccano le animazioni</li>
+            <li><strong>Parsing Errors</strong>: Errori nel parsing di Azione1, Azione2, Azione3</li>
+            <li><strong>Click Response</strong>: Se il click viene riconosciuto sui componenti</li>
+            <li><strong>Animation System</strong>: Se le animazioni vengono aggiunte alla coda</li>
+        </ul>
+        
+        <h3>📋 Files tutorial aggiornati:</h3>
+        <ul>
+            <li><code>scenes/Test/tutorial.txt</code> - Ha Azione1, Azione2, Azione3=appoggia(1.5)</li>
+            <li><code>scenes/Pompa_Becker/tutorial.txt</code> - Ha Azione1, Azione2, Azione3=appoggia(1.5)</li>
+        </ul>
+        
+        <h3>⚠️ Possibili problemi:</h3>
+        <ul>
+            <li><strong>Script Loading</strong>: app.js potrebbe non caricare scene3d-modular.js</li>
+            <li><strong>Syntax Errors</strong>: Errori nel parsing della sintassi Azione</li>
+            <li><strong>Model Loading</strong>: I modelli 3D potrebbero non essere caricati</li>
+            <li><strong>Event Binding</strong>: I click potrebbero non essere collegati</li>
+        </ul>
+    </div>
+    
+    <div class="info">
+        <p><strong>Se le animazioni non funzionano</strong>, controlla:</p>
+        <p>1. Console del browser per errori</p>
+        <p>2. Network tab per file non caricati</p>
+        <p>3. Se Scene3D è definito: <code>console.log(window.Scene3D)</code></p>
+    </div>
+    
+    <script>
+        // Test rapido per verificare se Scene3D è disponibile
+        function checkScene3D() {
+            if (typeof window.Scene3D !== 'undefined') {
+                console.log('✅ Scene3D è disponibile');
+                console.log('Metodi disponibili:', Object.keys(window.Scene3D));
+            } else {
+                console.log('❌ Scene3D non è disponibile');
+            }
+            
+            if (typeof window.App !== 'undefined') {
+                console.log('✅ App è disponibile');
+            } else {
+                console.log('❌ App non è disponibile');
+            }
+        }
+        
+        // Controlla dopo 3 secondi
+        setTimeout(checkScene3D, 3000);
+        
+        console.log('🚀 Test animazioni caricato. Controlla la console per diagnostica.');
+    </script>
+</body>
+</html>

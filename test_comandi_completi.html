@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Comandi Completi</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .info {
+            text-align: center;
+            margin: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 8px;
+        }
+        .commands {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px;
+        }
+        .command-box {
+            background: #444;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        .command-name {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .command-desc {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+        .command-example {
+            background: #222;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #0f0;
+        }
+        .test-section {
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Comandi Semplificati Completo</h1>
+    
+    <div class="info">
+        <p><strong>Sistema di Comandi Unificato Implementato</strong></p>
+        <p>Tutti i comandi richiesti sono stati implementati con sintassi Azione1=comando</p>
+    </div>
+    
+    <div class="commands">
+        <div class="command-box">
+            <div class="command-name">🔩 svita</div>
+            <div class="command-desc">Rotazione 90° + Estrazione 0.5 unità (2.0s)</div>
+            <div class="command-example">Azione1=svita</div>
+        </div>
+        
+        <div class="command-box">
+            <div class="command-name">🔧 avvita</div>
+            <div class="command-desc">Rotazione -90° + Inserimento 0.5 unità (2.0s)</div>
+            <div class="command-example">Azione1=avvita</div>
+        </div>
+        
+        <div class="command-box">
+            <div class="command-name">📤 estrai</div>
+            <div class="command-desc">Estrazione semplice 0.4 unità (1.0s)</div>
+            <div class="command-example">Azione1=estrai</div>
+        </div>
+        
+        <div class="command-box">
+            <div class="command-name">📥 inserisci</div>
+            <div class="command-desc">Inserimento semplice 0.4 unità (1.0s)</div>
+            <div class="command-example">Azione1=inserisci</div>
+        </div>
+        
+        <div class="command-box">
+            <div class="command-name">🔽 appoggia</div>
+            <div class="command-desc">Appoggiamento automatico a Y=0</div>
+            <div class="command-example">Azione1=appoggia(1.5)</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🎯 Test Pratico</h3>
+        <p><strong>Per testare tutti i comandi:</strong></p>
+        <ol>
+            <li>Vai a <a href="http://localhost:8000" target="_blank" style="color:#4CAF50;">http://localhost:8000</a></li>
+            <li>Effettua login nel sistema</li>
+            <li>Carica il tutorial <strong>"Pompa_Becker"</strong></li>
+            <li>Testa i vari componenti:
+                <ul>
+                    <li><strong>Viti</strong>: Clicca su vite_coperchio_1 → <code>svita</code></li>
+                    <li><strong>Coperchio</strong>: Clicca su coperchio → <code>estrai</code></li>
+                    <li><strong>Filtro</strong>: Clicca su filtro → <code>estrai + appoggia</code></li>
+                    <li><strong>Tappini</strong>: Clicca su tappini → <code>estrai</code></li>
+                    <li><strong>Ingrassatore</strong>: Multi-step con <code>svita/traslazione</code></li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h3>⚙️ Configurazione Tutorial Completa</h3>
+        <p><strong>Esempio di step completo con nuovo comando:</strong></p>
+        <div style="background:#222; padding:15px; border-radius:4px; font-family:monospace; color:#0f0; margin-top:10px;">
+[Step 1 - Prima vite]<br>
+Elemento=models/vite_coperchio_1.glb<br>
+Utensile=Mani<br>
+Descrizione=Rimuovi la prima vite del coperchio<br>
+<span style="color:#ff0;">Azione1=svita</span><br>
+<br>
+[Step X - Rimontaggio]<br>
+Elemento=models/vite_coperchio_1.glb<br>
+Utensile=Mani<br>
+Descrizione=Avvita la prima vite del coperchio<br>
+<span style="color:#ff0;">Azione1=avvita</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>📋 Compatibilità Totale</h3>
+        <p>Il sistema supporta sia sintassi semplificata che dettagliata:</p>
+        <div style="background:#222; padding:15px; border-radius:4px; font-family:monospace; color:#0f0; margin-top:10px;">
+<span style="color:#4CAF50;">✅ Semplificata:</span> Azione1=svita<br>
+<span style="color:#4CAF50;">✅ Dettagliata:</span> Azione1=rotazione:(0,0,90,1.0); Azione2=traslazione:(0,0,0.5,1.0)<br>
+<span style="color:#4CAF50;">✅ Mista:</span> Azione1=svita; Azione2=appoggia(1.5)<br>
+        </div>
+    </div>
+    
+    <div class="info">
+        <p><strong>✅ Implementazione Completata</strong></p>
+        <p>Tutti i comandi richiesti (svita, avvita, estrai, inserisci, appoggia) sono operativi!</p>
+        <p>Documentazione completa: <code>COMANDI_SEMPLIFICATI.md</code></p>
+    </div>
+</body>
+</html>

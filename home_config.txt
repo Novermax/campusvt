@@ -1,193 +1,200 @@
-# Configurazione Home Page - Campus Virtual Training Morbidelli X400
-# Questo file definisce gli scenari disponibili e le loro configurazioni
+# Configuration Home Page - Campus Virtual Training Morbidelli X400
+# This file defines available scenarios and their configurations
+# REFACTORED VERSION with English variables and i18n keys
 
-title=Campus Virtual Training Morbidelli X400              // Titolo principale mostrato nella home page
-subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione  // Sottotitolo esplicativo
+title=Campus Virtual Training Morbidelli X400              // Main title shown in home page
+subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione  // Explanatory subtitle
 
-[Livellamento macchina]                                     // Nome dello scenario (mostrato come titolo della card)
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(0, 0, 5)                                        // Posizione iniziale della camera (x, y, z)
-CameraTarget=(0, 0, 0)                                     // Punto verso cui la camera guarda (x, y, z)
-AmbientLight=0x404040,1.5                                  // Luce ambientale: colore esadecimale, intensità
-DirectionalLight=0xffffff,2.5,(5, 10, 5)                  // Luce direzionale: colore, intensità, posizione(x,y,z)
-BackLight=0xffffff,1.0,(-5, 10, 5)                        // Luce posteriore: colore, intensità, posizione(x,y,z)
-// === INFORMAZIONI SCENARIO ===
-description=Regolazione dei piedini del basamento, tavolo carico e scarico, mantenendo il pantografo alla giusta quota per il corretto allineamento con il tavolo di carico.  // Descrizione mostrata nella card
-image=menuimages/1.png                                     // Immagine di anteprima dello scenario
+[TEST]                                                     // Scenario name (shown as card title)
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(-1.5, 0.5,-0.2)                               // Camera positioned farther for complete framing
+CameraTarget=(0, 0, 0)                                    // Camera points to scene center
+AmbientLight=0x404040,1.5                                 // Ambient light for general illumination
+DirectionalLight=0xffffff,2.5,(-8, 15, 10)               // Main directional light from upper right
+BackLight=0xffffff,1.0,(-8, 15, 10)                      // Back light to eliminate harsh shadows
 
+// === SCENARIO INFORMATION ===
+description_key=scenario_test_description                  // i18n key for description
+image=menuimages/1.png                                    // Scenario preview image
+tutorial=scenes/Test/tutorial.txt  
+model=models/tappino_grasso_dx.glb                        // Fourth cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/ingrassatore.glb                             // Greaser
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/tappino_grasso_sx.glb                        // Greaser left cap
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/assi.glb                                     // Axes
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_1.glb                                     // Axes
+direction=-1,0,0  
 
-[Manutenzione pompa del vuoto]                              // Scenario principale con tutorial completo
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(-8, 7, -12)                                       // Camera posizionata più lontana per inquadratura completa
-CameraTarget=(0, 0, 0)                                     // Camera punta al centro della scena
-AmbientLight=0x404040,1.5                                  // Luce ambientale per illuminazione generale
-DirectionalLight=0xffffff,2.5,(-8, 15, 10)                 // Luce direzionale principale dall'alto a destra
-BackLight=0xffffff,1.0,(-8, 15, 10)                       // Luce posteriore per eliminare ombre troppo dure
-// === INFORMAZIONI SCENARIO ===
-description=La pompa del vuoto prevede controlli periodici, pulizia filtri,sostituzione delle palette.  // Descrizione tecnica dell'operazione
-image=menuimages/pompavuoto.png                            // Immagine specifica della pompa del vuoto
-tutorial=scenes/Test/tutorial.txt                         // File tutorial con steps guidati
-// === MODELLI 3D E DIREZIONI MOVIMENTO ===
-model=scenes/Test/culatta.glb                              // Modello 3D della culatta
-direzione = 0,0,1                                          // Direzione movimento: verso Z+ (estrazione verticale)
-model =  scenes/Test/corpo.glb                             // Modello 3D del corpo pompa
-direzione = 0,0,1                                          // Direzione movimento: verso Z+
-model =  scenes/Test/coperchio.glb                         // Modello 3D del coperchio
-direzione = -1,0,1                                         // Direzione movimento: verso X- e Z+ (diagonale)
-model =  scenes/Test/filtro.glb                            // Modello 3D del filtro da sostituire
-direzione = -1,0,0                                         // Direzione movimento: verso X- (estrazione laterale)
-model =  scenes/Test/pavimento.glb                         // Modello 3D della base/pavimento (statico)
-direzione = 0,0,1                                          // Direzione movimento: verso Z+ (se necessario)
-model =  scenes/Test/vite_coperchio_1.glb                  // Prima vite del coperchio
-direzione = -1,0,0                                         // Direzione movimento: verso X- (svitamento ed estrazione)
-model =  scenes/Test/vite_coperchio_2.glb                  // Seconda vite del coperchio
-direzione = -1,0,0                                         // Direzione movimento: verso X-
-model =  scenes/Test/vite_coperchio_3.glb                  // Terza vite del coperchio
-direzione = -1,0,0                                         // Direzione movimento: verso X-
-model =  scenes/Test/vite_coperchio_4.glb                  // Quarta vite del coperchio
-direzione =-1,0,0     
-model =  scenes/Test/tappino_grasso_sx.glb                  // Quarta vite del coperchio
-direzione =-1,0,0 
-model =  scenes/Test/tappino_grasso_dx.glb                  // Quarta vite del coperchio
-direzione =-1,0,0                                     // Direzione movimento: verso X-
-model =  scenes/Test/ingrassatore.glb                  // ingrassatore
-direzione =-1,0,0                                     // Direzione movimento: verso X-
+[Manutenzione pompa del vuoto]                            // Main scenario with complete tutorial
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(-1.5, 0.5,-0.2)                               // Camera positioned farther for complete framing
+CameraTarget=(0, 0, 0)                                    // Camera points to scene center
+AmbientLight=0x404040,1.5                                 // Ambient light for general illumination
+DirectionalLight=0xffffff,2.5,(-8, 15, 10)               // Main directional light from upper right
+BackLight=0xffffff,1.0,(-8, 15, 10)                      // Back light to eliminate harsh shadows
+// === SCENARIO INFORMATION ===
+description_key=scenario_pump_maintenance_description      // i18n key for technical operation description
+image=menuimages/pompavuoto.png                           // Vacuum pump specific image
+tutorial=scenes/Pompa_Becker/tutorial.txt                // Tutorial file with guided steps
+// === 3D MODELS AND MOVEMENT DIRECTIONS ===
+model=models/culatta.glb                                  // Breech 3D model
+direction=0,0,1                                           // Movement direction: towards Z+ (vertical extraction)
+model=models/corpo.glb                                    // Pump body 3D model
+direction=0,0,1                                           // Movement direction: towards Z+
+model=models/coperchio.glb                                // Cover 3D model
+direction=-1,0,1                                          // Movement direction: towards X- and Z+ (diagonal)
+model=models/filtro.glb                                   // Filter 3D model to replace
+direction=-1,0,0                                          // Movement direction: towards X- (lateral extraction)
+model=models/pavimento.glb                                // Base/floor 3D model (static)
+direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
+model=models/assi.glb                                     // Axes
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_1.glb                         // First cover screw
+direction=-1,0,0                                          // Movement direction: towards X- (unscrewing and extraction)
+model=models/vite_coperchio_2.glb                         // Second cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_3.glb                         // Third cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_4.glb                         // Fourth cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/tappino_grasso_sx.glb                        // Left grease cap
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/tappino_grasso_dx.glb                        // Right grease cap
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/ingrassatore.glb                             // Greaser
+direction=-1,0,0                                          // Movement direction: towards X-
 
-[Regolazione campi di lavoro]                              // Configurazione aree operative e origini
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(5, 8, 10)                                       // Vista dall'alto per inquadrare i campi di lavoro
-CameraTarget=(0, 0, 0)                                     // Centra la vista sui campi operativi
-AmbientLight=0x404040,1.5                                  // Illuminazione uniforme per dettagli tecnici
-DirectionalLight=0xffffff,2.5,(6, 15, 8)                  // Luce principale per evidenziare le aree
-BackLight=0xffffff,1.0,(-6, 15, 8)                        // Luce di riempimento
-// === INFORMAZIONI SCENARIO ===
-description=Definizione delle aree operative macchina, impostazione origini locali.  // Setup delle coordinate di lavoro
-image=menuimages/3.png                                     // Immagine rappresentativa dei campi
+[Regolazione campi di lavoro]                             // Configuration of operative areas and origins
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(5, 8, 10)                                     // Top view to frame work fields
+CameraTarget=(0, 0, 0)                                   // Center view on operative fields
+AmbientLight=0x404040,1.5                                // Uniform lighting for technical details
+DirectionalLight=0xffffff,2.5,(6, 15, 8)                // Main light to highlight areas
+BackLight=0xffffff,1.0,(-6, 15, 8)                       // Fill light
+// === SCENARIO INFORMATION ===
+description_key=scenario_work_fields_description          // i18n key for work coordinate setup
+image=menuimages/3.png                                   // Representative image of fields
 
+[Ridefinizione zone di vuoto]                            // Vacuum zone configuration for work plane
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(6, 4, 8)                                      // Side view to visualize vacuum zones
+CameraTarget=(0, 0, 0)                                   // Focus on work plane
+AmbientLight=0x404040,1.5                                // Light to identify zones
+DirectionalLight=0xffffff,2.5,(7, 12, 6)                // Main plane illumination
+BackLight=0xffffff,1.0,(-7, 12, 6)                       // Light to eliminate shadows on plane
+// === SCENARIO INFORMATION ===
+description_key=scenario_vacuum_zones_description         // i18n key for suction management system
+image=menuimages/4.png                                   // Vacuum zones diagram
 
-[Ridefinizione zone di vuoto]                              // Configurazione sistema vuoto piano di lavoro
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(6, 4, 8)                                        // Vista laterale per visualizzare le zone vuoto
-CameraTarget=(0, 0, 0)                                     // Focus sul piano di lavoro
-AmbientLight=0x404040,1.5                                  // Luce per identificare le zone
-DirectionalLight=0xffffff,2.5,(7, 12, 6)                  // Illuminazione principale del piano
-BackLight=0xffffff,1.0,(-7, 12, 6)                        // Luce per eliminare ombre sul piano
-// === INFORMAZIONI SCENARIO ===
-description=Il piano può essere diviso in 8–30 zone, gestibili manualmente o automaticamente tramite paddle.  // Sistema di gestione aspirazione
-image=menuimages/4.png                                     // Diagramma delle zone vuoto
+[RTCP Automatico]                                         // RTCP System (Rotation Tool Center Point)
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(4, 6, 8)                                      // Optimal view for Prisma Head
+CameraTarget=(0, 0, 0)                                   // Center on machining head
+AmbientLight=0x404040,1.5                                // Lighting for mechanical details
+DirectionalLight=0xffffff,2.5,(5, 12, 6)                // Light to highlight kinematics
+BackLight=0xffffff,1.0,(-5, 12, 6)                       // Support light for visibility
+// === SCENARIO INFORMATION ===
+description_key=scenario_automatic_rtcp_description       // i18n key for automatic tool rotation calibration
+image=menuimages/5.png                                   // RTCP kinematics schema
 
+[Regolazione ortogonalità]                               // Cartesian machine axes calibration
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(7, 5, 9)                                      // Isometric view to see all axes
+CameraTarget=(0, 0, 0)                                   // Machine center as reference
+AmbientLight=0x404040,1.5                                // Uniform light for precise measurements
+DirectionalLight=0xffffff,2.5,(8, 12, 7)                // Illumination to highlight axes
+BackLight=0xffffff,1.0,(-8, 12, 7)                       // Light to reduce excessive contrasts
+// === SCENARIO INFORMATION ===
+description_key=scenario_orthogonality_description        // i18n key for machine geometric calibration
+image=menuimages/6.png                                   // Cartesian axes schema
 
-[RTCP Automatico]                                          // Sistema RTCP (Rotation Tool Center Point)
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(4, 6, 8)                                        // Vista ottimale per la testa Prisma
-CameraTarget=(0, 0, 0)                                     // Centra sulla testa di lavorazione
-AmbientLight=0x404040,1.5                                  // Illuminazione per dettagli meccanici
-DirectionalLight=0xffffff,2.5,(5, 12, 6)                  // Luce per evidenziare il cinematismo
-BackLight=0xffffff,1.0,(-5, 12, 6)                        // Luce di supporto per la visibilità
-// === INFORMAZIONI SCENARIO ===
-description=Regolazione del cinematismo RTCP della testa Prisma.  // Calibrazione rotazione automatica utensile
-image=menuimages/5.png                                     // Schema cinematismo RTCP
+[Sostituzione elettromandrino]                           // Complete main spindle replacement
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(9, 6, 11)                                     // Optimal view for spindle access
+CameraTarget=(0, 0, 0)                                   // Focus on spindle area
+AmbientLight=0x404040,1.5                                // Lighting for technical details
+DirectionalLight=0xffffff,2.5,(10, 15, 8)               // Intense light for precision operations
+BackLight=0xffffff,1.0,(-10, 15, 8)                      // Fill light for operational safety
+// === SCENARIO INFORMATION ===
+description_key=scenario_spindle_replacement_description  // i18n key for complete replacement procedure
+image=menuimages/7.png                                   // Electrospindle image
 
+[Regolazione offset elettromandrino - foratrice]         // Spindle-drill relative calibration
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(8, 8, 10)                                     // Top view for precise alignment
+CameraTarget=(0, 0, 0)                                   // Center machining area
+AmbientLight=0x404040,1.5                                // Uniform light for measurements
+DirectionalLight=0xffffff,2.5,(9, 15, 8)                // Main illumination for offset
+BackLight=0xffffff,1.0,(-9, 15, 8)                       // Auxiliary light for precision
+// === SCENARIO INFORMATION ===
+description_key=scenario_spindle_offset_description       // i18n key for X-Y-Z offset calibration
+image=menuimages/8.png                                   // Spindle-drill offset schema
 
-[Regolazione ortogonalità]                                // Calibrazione assi cartesiani macchina
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(7, 5, 9)                                        // Vista isometrica per vedere tutti gli assi
-CameraTarget=(0, 0, 0)                                     // Centro macchina come riferimento
-AmbientLight=0x404040,1.5                                  // Luce uniforme per misurazioni precise
-DirectionalLight=0xffffff,2.5,(8, 12, 7)                  // Illuminazione per evidenziare gli assi
-BackLight=0xffffff,1.0,(-8, 12, 7)                        // Luce per ridurre contrasti eccessivi
-// === INFORMAZIONI SCENARIO ===
-description=Allineamento assi X-Y-Z, perpendicolarità dei movimenti ottenuta con correzioni meccaniche e regolazioni parametri  // Taratura geometrica macchina
-image=menuimages/6.png                                     // Schema assi cartesiani
+[Sostituzione fuso foratrice]                            // Drilling spindle replacement
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(6, 7, 9)                                      // Side view for spindle access
+CameraTarget=(0, 0, 0)                                   // Focus on drilling unit
+AmbientLight=0x404040,1.5                                // Lighting for mechanical details
+DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Directional light for operations
+BackLight=0xffffff,1.0,(-7, 15, 7)                       // Back light for visibility
+// === SCENARIO INFORMATION ===
+description_key=scenario_drill_spindle_replacement_description // i18n key for spindle change and recalibration
+image=menuimages/9.png                                   // Drill spindle image
 
+[Sostituzione Punte foratrice]                           // Multiple drilling bits change
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(7, 9, 8)                                      // Top view for drill access
+CameraTarget=(0, 0, 0)                                   // Center drill group
+AmbientLight=0x404040,1.5                                // Light for small component details
+DirectionalLight=0xffffff,2.5,(8, 15, 6)                // Intense illumination for precision
+BackLight=0xffffff,1.0,(-8, 15, 6)                       // Support light
+// === SCENARIO INFORMATION ===
+description_key=scenario_drill_bits_replacement_description // i18n key for drill bit replacement and programming
+image=menuimages/10.png                                  // Drill bit group
 
-[Sostituzione elettromandrino]                             // Sostituzione completa del mandrino principale
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(9, 6, 11)                                       // Vista ottimale per accesso al mandrino
-CameraTarget=(0, 0, 0)                                     // Focus sull'area del mandrino
-AmbientLight=0x404040,1.5                                  // Illuminazione per dettagli tecnici
-DirectionalLight=0xffffff,2.5,(10, 15, 8)                 // Luce intensa per operazioni di precisione
-BackLight=0xffffff,1.0,(-10, 15, 8)                       // Luce di riempimento per sicurezza operativa
-// === INFORMAZIONI SCENARIO ===
-description=Procedura con blocco macchina, scollegamento elettrico/pneumatico, rimozione unità e montaggio nuovo elettromandrino.  // Procedura completa di sostituzione
-image=menuimages/7.png                                     // Immagine dell'elettromandrino
+[Squadro cassa foratrice]                                // Drill group orthogonality verification
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(5, 6, 12)                                     // Front view for square control
+CameraTarget=(0, 0, 0)                                   // Focus on drill case
+AmbientLight=0x404040,1.5                                // Uniform light for measurements
+DirectionalLight=0xffffff,2.5,(6, 15, 10)               // Illumination to highlight angles
+BackLight=0xffffff,1.0,(-6, 15, 10)                      // Light to eliminate shadows
+// === SCENARIO INFORMATION ===
+description_key=scenario_drill_case_square_description    // i18n key for case perpendicularity verification
+image=menuimages/11.png                                  // Case square schema
 
+[Squadro fusi foratrice]                                 // Individual drilling spindles alignment
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(8, 5, 11)                                     // Side view for parallelism control
+CameraTarget=(0, 0, 0)                                   // Center spindle group
+AmbientLight=0x404040,1.5                                // Light for precision details
+DirectionalLight=0xffffff,2.5,(9, 12, 8)                // Illumination to highlight alignments
+BackLight=0xffffff,1.0,(-9, 12, 8)                       // Auxiliary light for controls
+// === SCENARIO INFORMATION ===
+description_key=scenario_drill_spindles_square_description // i18n key for spindle geometric calibration
+image=menuimages/12.png                                  // Spindle alignment schema
 
-[Regolazione offset elettromandrino - foratrice]           // Calibrazione relativa mandrino-foratrice
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(8, 8, 10)                                       // Vista dall'alto per allineamento preciso
-CameraTarget=(0, 0, 0)                                     // Centro area di lavorazione
-AmbientLight=0x404040,1.5                                  // Luce uniforme per misurazioni
-DirectionalLight=0xffffff,2.5,(9, 15, 8)                  // Illuminazione principale per offset
-BackLight=0xffffff,1.0,(-9, 15, 8)                        // Luce ausiliaria per precisione
-// === INFORMAZIONI SCENARIO ===
-description=Impostazione coordinate relative tra mandrino principale e unità di foratura per mantenere precise i fori/lavorazioni combinate.  // Calibrazione offset X-Y-Z
-image=menuimages/8.png                                     // Schema offset mandrino-foratrice
+[Regolazione sensore conteggio piano di carico]          // Load plane sensor calibration
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(4, 8, 7)                                      // Top view to see sensor
+CameraTarget=(0, 0, 0)                                   // Focus on sensor area
+AmbientLight=0x404040,1.5                                // Light for electronic components
+DirectionalLight=0xffffff,2.5,(5, 15, 5)                // Illumination for sensor setup
+BackLight=0xffffff,1.0,(-5, 15, 5)                       // Light to reduce shadows on wiring
+// === SCENARIO INFORMATION ===
+description_key=scenario_load_plane_sensor_description    // i18n key for position sensor configuration
+image=menuimages/13.png                                  // Inductive sensor schema
 
-
-[Sostituzione fuso foratrice]                              // Sostituzione fuso di foratura
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(6, 7, 9)                                        // Vista laterale per accesso al fuso
-CameraTarget=(0, 0, 0)                                     // Focus sull'unità di foratura
-AmbientLight=0x404040,1.5                                  // Illuminazione per dettagli meccanici
-DirectionalLight=0xffffff,2.5,(7, 15, 7)                  // Luce direzionale per operazioni
-BackLight=0xffffff,1.0,(-7, 15, 7)                        // Luce posteriore per visibilità
-// === INFORMAZIONI SCENARIO ===
-description=Sostituzione del il fuso danneggiato e riallineamento le quote macchina.  // Cambio fuso e ricalibrazione
-image=menuimages/9.png                                     // Immagine del fuso foratrice
-
-[Sostituzione testine foratrice]                           // Cambio testine di foratura multiple
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(7, 9, 8)                                        // Vista dall'alto per accesso alle testine
-CameraTarget=(0, 0, 0)                                     // Centro gruppo foratrice
-AmbientLight=0x404040,1.5                                  // Luce per dettagli piccoli componenti
-DirectionalLight=0xffffff,2.5,(8, 15, 6)                  // Illuminazione intensa per precisione
-BackLight=0xffffff,1.0,(-8, 15, 6)                        // Luce di supporto
-// === INFORMAZIONI SCENARIO ===
-description=Richiede smontaggio unità, installazione nuove testine e regolazione parametri su CN.  // Sostituzione e programmazione testine
-image=menuimages/10.png                                    // Gruppo testine foratrici
-
-[Squadro cassa foratrice]                                  // Verifica ortogonalità gruppo foratrice
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(5, 6, 12)                                       // Vista frontale per controllo squadra
-CameraTarget=(0, 0, 0)                                     // Focus sulla cassa foratrice
-AmbientLight=0x404040,1.5                                  // Luce uniforme per misurazioni
-DirectionalLight=0xffffff,2.5,(6, 15, 10)                 // Illuminazione per evidenziare gli angoli
-BackLight=0xffffff,1.0,(-6, 15, 10)                       // Luce per eliminare ombre
-// === INFORMAZIONI SCENARIO ===
-description=Controllo e regolazioni per l'ortogonalità del gruppo foratrice rispetto al piano macchina.  // Verifica perpendicolarità cassa
-image=menuimages/11.png                                    // Schema squadro cassa
-
-
-[Squadro fusi foratrice]                                   // Allineamento individuale fusi di foratura
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(8, 5, 11)                                       // Vista laterale per controllo parallelismo
-CameraTarget=(0, 0, 0)                                     // Centro gruppo fusi
-AmbientLight=0x404040,1.5                                  // Luce per dettagli di precisione
-DirectionalLight=0xffffff,2.5,(9, 12, 8)                  // Illuminazione per evidenziare allineamenti
-BackLight=0xffffff,1.0,(-9, 12, 8)                        // Luce ausiliaria per controlli
-// === INFORMAZIONI SCENARIO ===
-description=Regolazione singoli fusi per mantenere parallelismo e perpendicolarità rispetto al piano macchina.  // Calibrazione geometrica fusi
-image=menuimages/12.png                                    // Schema allineamento fusi
-
-[Regolazione sensore conteggio piano di carico]            // Calibrazione sensore piano mobile
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(4, 8, 7)                                        // Vista dall'alto per vedere il sensore
-CameraTarget=(0, 0, 0)                                     // Focus sull'area sensore
-AmbientLight=0x404040,1.5                                  // Luce per componenti elettronici
-DirectionalLight=0xffffff,2.5,(5, 15, 5)                  // Illuminazione per setup sensore
-BackLight=0xffffff,1.0,(-5, 15, 5)                        // Luce per ridurre ombre sui cablaggi
-// === INFORMAZIONI SCENARIO ===
-description=Setup sensore induttivo per corretta movimentazione del piano di carico.  // Configurazione sensore di posizione
-image=menuimages/13.png                                    // Schema sensore induttivo
-
-[Sostituzione e regolazione tastatore]                     // Cambio e calibrazione tastatore utensili
-// === CONFIGURAZIONE CAMERA E LUCI ===
-CameraPos=(6, 8, 9)                                        // Vista ottimale per accesso al tastatore
-CameraTarget=(0, 0, 0)                                     // Centro area tastatore
-AmbientLight=0x404040,1.5                                  // Luce per componenti di precisione
-DirectionalLight=0xffffff,2.5,(7, 15, 7)                  // Illuminazione per operazioni delicate
-BackLight=0xffffff,1.0,(-7, 15, 7)                        // Luce per visibilità dettagli
-// === INFORMAZIONI SCENARIO ===
-description=Sostituzione tastatore usurato e riallineamento coordinate per la corretta misura della lunghezza utensile  // Sostituzione e ricalibrazione sistema misura
-image=menuimages/14.png                                    // Tastatore utensili
+[Sostituzione e regolazione tastatore]                   // Tool probe replacement and calibration
+// === CAMERA AND LIGHTS CONFIGURATION ===
+CameraPos=(6, 8, 9)                                      // Optimal view for probe access
+CameraTarget=(0, 0, 0)                                   // Center probe area
+AmbientLight=0x404040,1.5                                // Light for precision components
+DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Illumination for delicate operations
+BackLight=0xffffff,1.0,(-7, 15, 7)                       // Light for detail visibility
+// === SCENARIO INFORMATION ===
+description_key=scenario_probe_replacement_description    // i18n key for replacement and measurement system recalibration
+image=menuimages/14.png                                  // Tool probe

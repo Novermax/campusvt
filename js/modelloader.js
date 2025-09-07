@@ -197,7 +197,7 @@ window.ModelLoader = {
                 (model) => {
                     loadedModels.push(model);
                     currentStep++;
-                    setTimeout(loadNextModel, 100); // Piccola pausa per UI responsiva
+                    setTimeout(loadNextModel, 100);
                 },
                 onError
             );
@@ -446,9 +446,10 @@ window.ModelLoader = {
                 // Centra la geometria
                 child.geometry.center();
                 
-                // Abilita ombre
-                child.castShadow = true;
-                child.receiveShadow = true;
+                // Abilita ombre (escluso per assi.glb)
+                const shouldCastShadow = !filename.toLowerCase().includes('assi');
+                child.castShadow = shouldCastShadow;
+                child.receiveShadow = shouldCastShadow;
                 
                 // Assegna nome per debug
                 child.name = child.name || filename;
@@ -658,9 +659,10 @@ window.ModelLoader = {
                             }
                         }
                         
-                        // Abilita ombre
-                        child.castShadow = true;
-                        child.receiveShadow = true;
+                        // Abilita ombre (escluso per assi.glb)
+                        const shouldCastShadow = !gltfFile.name.toLowerCase().includes('assi');
+                        child.castShadow = shouldCastShadow;
+                        child.receiveShadow = shouldCastShadow;
                     }
                 });
                 

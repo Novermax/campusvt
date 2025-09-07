@@ -164,6 +164,8 @@ window.UI = {
         // Callback per pagina specifica
         if (page === 'scenario') {
             this.onScenarioPageShown();
+            // Inizializza il cursore del canvas quando si entra nella pagina scenario
+            setTimeout(() => this.updateCanvasCursor(), 100);
         }
     },
     
@@ -361,7 +363,7 @@ window.UI = {
                     // File da caricare (formato: label=path) o direzione (formato: direzione = x,y,z)
                     const [label, path] = line.split('=', 2).map(s => s.trim());
                     
-                    if (label === 'direzione') {
+                    if (label === 'direzione' || label === 'direction') {
                         // Parsing direzione per l'ultimo file aggiunto
                         const coords = path.split(',').map(n => parseFloat(n.trim()));
                         if (coords.length === 3 && currentScenario.files.length > 0) {
@@ -602,7 +604,9 @@ window.UI = {
             const pos = this.parseVector3(scenario.cameraPos);
             if (pos) {
                 window.Scene3D.camera.position.set(pos.x, pos.y, pos.z);
-                AppConfig.log(2, `📷 Camera position applicata: (${pos.x}, ${pos.y}, ${pos.z})`);
+                // IMPORTANTE: Imposta flag per disabilitare auto-fitting
+                window.Scene3D.manualCameraSet = true;
+                AppConfig.log(2, `📷 Camera position applicata: (${pos.x}, ${pos.y}, ${pos.z}) - Auto-fitting disabilitato`);
             }
         }
         
@@ -1040,15 +1044,8 @@ window.UI = {
             this.elements.fileInput.value = '';
         }
         
-        // NUOVO: Evidenzia il primo elemento del tutorial dopo caricamento modelli
-        if (this.tutorialSteps && this.tutorialSteps.length > 0 && this.currentStepIndex === 0) {
-            setTimeout(() => {
-                console.log('🔴 Evidenziazione primo elemento tutorial dopo caricamento modelli');
-                if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
-                    window.Scene3D.highlightCurrentTutorialElement();
-                }
-            }, 200); // Delay breve per assicurare che i modelli siano nella scena
-        }
+        // NON evidenziare automaticamente il primo elemento - solo quando l'utente preme il pulsante tutorial
+        // Il tutorial rimane in standby (currentStepIndex = -1) fino all'attivazione manuale
         
         // DEBUG: Stato finale dei controlli touch dopo caricamento completo
         setTimeout(() => {
@@ -1884,11 +1881,72 @@ window.UI = {
      * Può essere sovrascritta per implementare logica specifica
      */
     onToolStateChanged: function(toolName, isActive) {
+        // Aggiorna cursore del canvas 3D
+        this.updateCanvasCursor();
+        
         // Evento personalizzabile per altri moduli
         const event = new CustomEvent('toolStateChanged', {
             detail: { toolName, isActive, allStates: this.toolsState }
         });
         document.dispatchEvent(event);
+    },
+
+    /**
+     * Aggiorna il cursore del canvas 3D basato sullo strumento attivo
+     */
+    updateCanvasCursor: function() {
+        const canvas = document.querySelector('#canvas3d, canvas');
+        if (!canvas) return;
+        
+        const activeTool = this.getActiveTool();
+        
+        // Rimuovi tutte le classi cursore
+        canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-martello');
+        
+        // Mappa dei tool ai cursori
+        const toolCursorMap = {
+            'mano': 'cursor-mano',
+            'brugola': 'cursor-brugola', 
+            'ChiaveBrugola': 'cursor-brugola',
+            'chiave': 'cursor-chiave',
+            'ChiaveInglese': 'cursor-chiave',
+            'martello': 'cursor-martello',
+            'Martello': 'cursor-martello'
+        };
+        
+        // Applica il cursore appropriato
+        const cursorClass = toolCursorMap[activeTool] || 'cursor-default';
+        canvas.classList.add(cursorClass);
+        
+        console.log(`🖱️ Cursore aggiornato: ${activeTool || 'default'} → ${cursorClass}`);
+        
+        // Opzione avanzata: cursore canvas animato (decommentare se desiderato)
+        // this.initAnimatedCursor(activeTool);
+    },
+
+    /**
+     * OPZIONALE: Inizializza cursore canvas animato per tool complessi
+     * Offre animazioni fluide a 60fps invece dei limiti CSS
+     */
+    initAnimatedCursor: function(toolName) {
+        // Solo per tool che beneficiano di animazioni avanzate
+        const animatedTools = ['brugola', 'ChiaveBrugola', 'martello', 'Martello'];
+        
+        if (!animatedTools.includes(toolName)) {
+            this.removeAnimatedCursor();
+            return;
+        }
+        
+        // Implementazione cursore canvas (da attivare se necessario)
+        console.log(`🎯 Cursore animato disponibile per: ${toolName}`);
+    },
+
+    removeAnimatedCursor: function() {
+        // Cleanup cursore canvas se presente
+        const animatedCursor = document.getElementById('animatedCursor');
+        if (animatedCursor) {
+            animatedCursor.remove();
+        }
     },
     
     /* ===== GESTIONE TUTORIAL STEPS ===== */
@@ -1919,16 +1977,28 @@ window.UI = {
             }
             
             const content = await response.text();
-            this.tutorialSteps = this.parseTutorialContent(content);
+            this.availableTutorials = this.parseTutorialContent(content);
             
-            if (this.tutorialSteps.length > 0) {
+            if (this.availableTutorials.length > 0) {
+                // Applica automaticamente le impostazioni camera del primo tutorial disponibile
+                const firstTutorial = this.availableTutorials[0];
+                if (firstTutorial && firstTutorial.properties) {
+                    this.applyInitialCameraSettings(firstTutorial);
+                }
+                
+                // NON selezionare automaticamente nessun tutorial - lascia che l'utente scelga
+                this.currentTutorial = null;
+                this.tutorialSteps = [];
+                this.currentStepIndex = -1; // -1 indica "nessun tutorial attivo"
+                
                 this.createTutorialStepsBar();
                 this.showTutorialStepsBar();
-                this.updateStepSpeechBubble(); // Inizializza il fumetto
-                AppConfig.log(2, `Tutorial caricato: ${this.tutorialSteps.length} step`);
+                // NON chiamare updateStepSpeechBubble() - il fumetto rimane nascosto
+                
+                AppConfig.log(2, `Tutorial disponibili: ${this.availableTutorials.length} - Camera impostata dal primo tutorial`);
             } else {
-                this.hideStepSpeechBubble(); // Nasconde il fumetto se non ci sono step
-                AppConfig.log(1, 'Nessun step trovato nel tutorial');
+                this.hideStepSpeechBubble(); // Nasconde il fumetto se non ci sono tutorial
+                AppConfig.log(1, 'Nessun tutorial trovato nel file');
             }
             
         } catch (error) {
@@ -1997,24 +2067,82 @@ window.UI = {
                     currentTutorial = {
                         name: sectionName,
                         title: sectionName,
-                        steps: []
+                        steps: [],
+                        properties: {}  // NUOVO: proprietà globali del tutorial
                     };
                     currentStep = null;
                 }
             }
-            // Parsa proprietà step (chiave=valore)
-            else if (line && line.includes('=') && currentStep) {
+            // Parsa proprietà (chiave=valore)
+            else if (line && line.includes('=')) {
                 const [key, value] = line.split('=').map(s => s.trim());
-                currentStep.properties[key] = value;
                 
-                // Parsing specifico per proprietà speciali
-                if (key === 'CameraPos' || key === 'CameraTarget') {
-                    const coords = value.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
-                    if (coords.length === 3) {
-                        currentStep.properties[key + '_parsed'] = { x: coords[0], y: coords[1], z: coords[2] };
+                // NUOVO: Se siamo in un tutorial ma non in uno step, sono proprietà globali
+                if (currentTutorial && !currentStep) {
+                    currentTutorial.properties[key] = value;
+                    
+                    // Parsing specifico per proprietà camera globali  
+                    if (key === 'CameraPos') {
+                        // NUOVO: Supporta sia coordinate assolute che relative a elementi
+                        if (value.includes(':')) {
+                            // Formato elemento:offset -> lasciamo parsing a Scene3D
+                            // Es: "coperchio.glb:(0, 2, 5)"
+                            currentTutorial.properties[key + '_relative'] = value.trim();
+                        } else {
+                            // Formato coordinate assolute (x, y, z)
+                            const coords = value.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+                            if (coords.length === 3) {
+                                currentTutorial.properties[key + '_parsed'] = { x: coords[0], y: coords[1], z: coords[2] };
+                            }
+                        }
+                    } else if (key === 'CameraTarget') {
+                        // NUOVO: Supporta sia coordinate che nomi elementi
+                        if (value.includes('(') && value.includes(')')) {
+                            // Formato coordinate (x, y, z)
+                            const coords = value.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+                            if (coords.length === 3) {
+                                currentTutorial.properties[key + '_parsed'] = { x: coords[0], y: coords[1], z: coords[2] };
+                            }
+                        } else {
+                            // Formato nome elemento
+                            currentTutorial.properties[key + '_element'] = value.trim();
+                        }
+                    } else if (key === 'CameraZoom' || key === 'CameraTransitionTime') {
+                        currentTutorial.properties[key + '_parsed'] = parseFloat(value);
                     }
-                } else if (key === 'CameraZoom' || key === 'CameraTransitionTime') {
-                    currentStep.properties[key + '_parsed'] = parseFloat(value);
+                }
+                // Se siamo in uno step, sono proprietà dello step
+                else if (currentStep) {
+                    currentStep.properties[key] = value;
+                    
+                    // Parsing specifico per proprietà speciali
+                    if (key === 'CameraPos') {
+                        // NUOVO: Supporta sia coordinate assolute che relative a elementi
+                        if (value.includes(':')) {
+                            // Formato elemento:offset -> lasciamo parsing a Scene3D
+                            currentStep.properties[key + '_relative'] = value.trim();
+                        } else {
+                            // Formato coordinate assolute (x, y, z)
+                            const coords = value.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+                            if (coords.length === 3) {
+                                currentStep.properties[key + '_parsed'] = { x: coords[0], y: coords[1], z: coords[2] };
+                            }
+                        }
+                    } else if (key === 'CameraTarget') {
+                        // NUOVO: Supporta sia coordinate che nomi elementi
+                        if (value.includes('(') && value.includes(')')) {
+                            // Formato coordinate (x, y, z)
+                            const coords = value.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
+                            if (coords.length === 3) {
+                                currentStep.properties[key + '_parsed'] = { x: coords[0], y: coords[1], z: coords[2] };
+                            }
+                        } else {
+                            // Formato nome elemento
+                            currentStep.properties[key + '_element'] = value.trim();
+                        }
+                    } else if (key === 'CameraZoom' || key === 'CameraTransitionTime') {
+                        currentStep.properties[key + '_parsed'] = parseFloat(value);
+                    }
                 }
             }
             // Parsa proprietà tutorial (per tutorial senza steps espliciti)
@@ -2060,10 +2188,9 @@ window.UI = {
             this.selectTutorial(0);
             // L'evidenziazione del primo elemento ora avviene dopo il caricamento dei modelli
             // in onModelLoadComplete() per garantire che i modelli siano disponibili
-            return tutorials[0].steps;
         }
         
-        return [];
+        return tutorials;
     },
     
     /**
@@ -2081,8 +2208,124 @@ window.UI = {
         
         AppConfig.log(2, `Tutorial selezionato: ${this.currentTutorial.name} (${this.tutorialSteps.length} step)`);
         
-        // Aggiorna la UI
+        // NON applicare le impostazioni camera del tutorial qui - rimani sulla posizione dello scenario
+        // Le impostazioni camera del tutorial verranno applicate quando parte il primo step
+        
+        // Aggiorna la UI - ora che il tutorial è attivato, mostra il primo step
         this.updateStepSpeechBubble();
+        
+        // Evidenzia il primo elemento del tutorial appena selezionato
+        setTimeout(() => {
+            console.log('🚀 Tutorial avviato dall\'utente - evidenzio primo elemento');
+            
+            // ADESSO applica le impostazioni camera del tutorial (quando parte il primo step)
+            this.applyTutorialCameraSettings();
+            
+            if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
+                window.Scene3D.highlightCurrentTutorialElement();
+            }
+        }, 200); // Piccolo delay per assicurarsi che la scena sia pronta
+    },
+    
+    /**
+     * Applica impostazioni camera iniziali dal primo tutorial disponibile
+     */
+    applyInitialCameraSettings: function(tutorial) {
+        if (!tutorial || !tutorial.properties) {
+            return;
+        }
+        
+        const props = tutorial.properties;
+        let hasCameraSettings = false;
+        
+        // Crea oggetto tutorial fake per riusare la funzione esistente di Scene3D
+        const fakeTutorialStep = {
+            properties: {}
+        };
+        
+        // Copia le proprietà camera se presenti
+        if (props.CameraPos) {
+            fakeTutorialStep.properties.CameraPos = props.CameraPos;
+            hasCameraSettings = true;
+            AppConfig.log(2, `📹 CAMERA INIZIALE: CameraPos = ${props.CameraPos}`);
+        }
+        
+        if (props.CameraTarget) {
+            fakeTutorialStep.properties.CameraTarget = props.CameraTarget;
+            hasCameraSettings = true;
+            AppConfig.log(2, `📹 CAMERA INIZIALE: CameraTarget = ${props.CameraTarget}`);
+        }
+        
+        if (props.CameraZoom) {
+            fakeTutorialStep.properties.CameraZoom = props.CameraZoom;
+            hasCameraSettings = true;
+            AppConfig.log(2, `📹 CAMERA INIZIALE: CameraZoom = ${props.CameraZoom}`);
+        }
+        
+        if (props.CameraTransitionTime) {
+            fakeTutorialStep.properties.CameraTransitionTime = props.CameraTransitionTime;
+            hasCameraSettings = true;
+        } else {
+            fakeTutorialStep.properties.CameraTransitionTime = '2.0';
+        }
+        
+        // Applica impostazioni tramite Scene3D
+        if (hasCameraSettings && window.Scene3D && window.Scene3D.applyCameraSettings) {
+            AppConfig.log(2, `📹 CAMERA INIZIALE: Applicazione impostazioni camera da "${tutorial.name}"`);
+            window.Scene3D.applyCameraSettings(fakeTutorialStep);
+        } else if (hasCameraSettings) {
+            AppConfig.log(1, `⚠️ CAMERA INIZIALE: Scene3D non disponibile per applicare impostazioni camera`);
+        }
+    },
+
+    /**
+     * Applica impostazioni camera globali del tutorial corrente
+     */
+    applyTutorialCameraSettings: function() {
+        if (!this.currentTutorial || !this.currentTutorial.properties) {
+            return;
+        }
+        
+        const props = this.currentTutorial.properties;
+        let hasCameraSettings = false;
+        
+        // Crea oggetto tutorial fake per riusare la funzione esistente di Scene3D
+        const fakeTutorialStep = {
+            properties: {}
+        };
+        
+        // Copia le proprietà camera se presenti
+        if (props.CameraPos) {
+            fakeTutorialStep.properties.CameraPos = props.CameraPos;
+            hasCameraSettings = true;
+            console.log(`📹 TUTORIAL: CameraPos globale = ${props.CameraPos}`);
+        }
+        
+        if (props.CameraTarget) {
+            fakeTutorialStep.properties.CameraTarget = props.CameraTarget;
+            hasCameraSettings = true;
+            console.log(`📹 TUTORIAL: CameraTarget globale = ${props.CameraTarget}`);
+        }
+        
+        if (props.CameraZoom) {
+            fakeTutorialStep.properties.CameraZoom = props.CameraZoom;
+            hasCameraSettings = true;
+            console.log(`📹 TUTORIAL: CameraZoom globale = ${props.CameraZoom}`);
+        }
+        
+        if (props.CameraTransitionTime) {
+            fakeTutorialStep.properties.CameraTransitionTime = props.CameraTransitionTime;
+            hasCameraSettings = true;
+        } else {
+            // Default più veloce per impostazione iniziale
+            fakeTutorialStep.properties.CameraTransitionTime = '2.0';
+        }
+        
+        // Se ci sono impostazioni camera, applicale tramite Scene3D
+        if (hasCameraSettings && window.Scene3D && window.Scene3D.applyCameraSettings) {
+            console.log(`📹 TUTORIAL: Applicazione impostazioni camera globali per "${this.currentTutorial.name}"`);
+            window.Scene3D.applyCameraSettings(fakeTutorialStep);
+        }
     },
     
     /**
@@ -2225,21 +2468,8 @@ window.UI = {
         // Per ora logga le informazioni dello step
         
         // Esempio di utilizzo delle proprietà:
-        if (step.properties.CameraPos && window.Scene3D) {
-            // Parsing posizione camera (es: "(15, 10, 20)")
-            const pos = step.properties.CameraPos.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
-            if (pos.length === 3) {
-                AppConfig.log(3, `Impostazione camera position: ${pos}`);
-                // Scene3D.setCameraPosition(pos[0], pos[1], pos[2]);
-            }
-        }
-        
-        if (step.properties.CameraTarget && window.Scene3D) {
-            const target = step.properties.CameraTarget.replace(/[()]/g, '').split(',').map(n => parseFloat(n.trim()));
-            if (target.length === 3) {
-                AppConfig.log(3, `Impostazione camera target: ${target}`);
-                // Scene3D.setCameraTarget(target[0], target[1], target[2]);
-            }
+        if (window.Scene3D && window.Scene3D.applyCameraSettings) {
+            window.Scene3D.applyCameraSettings(step);
         }
         
         if (step.properties.Utensile) {
@@ -2310,10 +2540,58 @@ window.UI = {
     },
     
     /**
+     * Attiva l'effetto flash sul fumetto per attirare l'attenzione
+     */
+    flashStepBubble: function() {
+        const bubble = document.getElementById('stepSpeechBubble');
+        if (!bubble || bubble.classList.contains('hidden')) {
+            return;
+        }
+        
+        // Rimuovi eventuali classi di animazione precedenti
+        bubble.classList.remove('flash', 'pulse');
+        
+        // Forza un reflow per assicurarsi che la rimozione sia effettuata
+        bubble.offsetHeight;
+        
+        // Aggiungi la classe flash per attivare l'animazione
+        bubble.classList.add('flash');
+        
+        // Rimuovi la classe dopo l'animazione per permettere flash futuri
+        setTimeout(() => {
+            bubble.classList.remove('flash');
+        }, 1200); // Durata dell'animazione CSS (1.2s)
+    },
+    
+    /**
+     * Attiva un effetto pulse più sottile sul fumetto
+     */
+    pulseStepBubble: function() {
+        const bubble = document.getElementById('stepSpeechBubble');
+        if (!bubble || bubble.classList.contains('hidden')) {
+            return;
+        }
+        
+        // Rimuovi eventuali classi di animazione precedenti
+        bubble.classList.remove('flash', 'pulse');
+        
+        // Forza un reflow
+        bubble.offsetHeight;
+        
+        // Aggiungi la classe pulse
+        bubble.classList.add('pulse');
+        
+        // Rimuovi la classe dopo l'animazione
+        setTimeout(() => {
+            bubble.classList.remove('pulse');
+        }, 800); // Durata dell'animazione pulse (0.8s)
+    },
+    
+    /**
      * Aggiorna il contenuto del fumetto con lo step corrente
      */
     updateStepSpeechBubble: function() {
-        if (!this.tutorialSteps || this.tutorialSteps.length === 0) {
+        if (!this.tutorialSteps || this.tutorialSteps.length === 0 || this.currentStepIndex < 0) {
             this.hideStepSpeechBubble();
             return;
         }
@@ -2341,6 +2619,9 @@ window.UI = {
         
         // Mostra il fumetto (sequenza controllata solo dal sistema)
         this.showStepSpeechBubble();
+        
+        // Attiva l'effetto flash per attirare l'attenzione
+        this.flashStepBubble();
     }
 };
 

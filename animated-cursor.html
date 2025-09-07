@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cursore Animato Personalizzato</title>
+    <style>
+        body { margin: 0; cursor: none; background: #f0f0f0; }
+        
+        .test-area {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        #customCursor {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Nascondi cursore su mobile */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            #customCursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-area">
+        🛠️ Muovi il mouse e clicca per vedere l'animazione del cursore!<br>
+        <small>
+            📖 <strong>Controlli:</strong><br>
+            • <kbd>CLICK</kbd> = Anima cursore<br>
+            • <kbd>SPAZIO</kbd> = Cambia tool (🔧🔨🗝️)<br>  
+            • <kbd>A</kbd> = Cambia animazione (ping-pong ↔ swing ↔ bounce)<br>
+        </small>
+    </div>
+    
+    <canvas id="customCursor" width="32" height="32"></canvas>
+    
+    <script>
+        class AnimatedCursor {
+            constructor() {
+                this.canvas = document.getElementById('customCursor');
+                this.ctx = this.canvas.getContext('2d');
+                this.x = 0;
+                this.y = 0;
+                this.currentTool = 'brugola';
+                this.animationFrame = 0;
+                this.isAnimating = false;
+                this.animationSpeed = 0.15;
+                this.animationType = 'pingpong'; // 'pingpong', 'swing', 'bounce'
+                
+                this.tools = {
+                    brugola: {
+                        color: '#4a90e2',
+                        icon: '🔧',
+                        frames: 8
+                    },
+                    martello: {
+                        color: '#f39c12', 
+                        icon: '🔨',
+                        frames: 6
+                    },
+                    chiave: {
+                        color: '#e74c3c',
+                        icon: '🗝️',
+                        frames: 4
+                    }
+                };
+                
+                this.init();
+                this.animate();
+            }
+            
+            init() {
+                // Event listeners
+                document.addEventListener('mousemove', (e) => {
+                    this.x = e.clientX;
+                    this.y = e.clientY;
+                    this.canvas.style.left = e.clientX + 'px';
+                    this.canvas.style.top = e.clientY + 'px';
+                });
+                
+                document.addEventListener('mousedown', () => {
+                    this.startAnimation();
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    this.stopAnimation();
+                });
+                
+                // Controlli da tastiera
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space') {
+                        e.preventDefault();
+                        this.nextTool();
+                    } else if (e.code === 'KeyA') {
+                        e.preventDefault();
+                        this.nextAnimation();
+                    }
+                });
+            }
+            
+            startAnimation() {
+                this.isAnimating = true;
+                this.animationFrame = 0;
+            }
+            
+            stopAnimation() {
+                this.isAnimating = false;
+                this.animationFrame = 0;
+            }
+            
+            nextTool() {
+                const toolNames = Object.keys(this.tools);
+                const currentIndex = toolNames.indexOf(this.currentTool);
+                this.currentTool = toolNames[(currentIndex + 1) % toolNames.length];
+                console.log(`🔧 Tool: ${this.currentTool}`);
+            }
+            
+            nextAnimation() {
+                const animations = ['pingpong', 'swing', 'bounce'];
+                const currentIndex = animations.indexOf(this.animationType);
+                this.animationType = animations[(currentIndex + 1) % animations.length];
+                this.animationFrame = 0; // Reset animazione
+                console.log(`🎬 Animazione: ${this.animationType}`);
+            }
+            
+            drawTool() {
+                const tool = this.tools[this.currentTool];
+                const centerX = 16;
+                const centerY = 16;
+                
+                // Pulisci canvas
+                this.ctx.clearRect(0, 0, 32, 32);
+                
+                // Calcola rotazione per animazione PING-PONG (avanti e indietro)
+                let rotation = 0;
+                if (this.isAnimating) {
+                    const maxRotation = 45; // Massima rotazione in gradi
+                    
+                    switch(this.animationType) {
+                        case 'pingpong':
+                            // Smooth ping-pong con seno
+                            rotation = Math.sin(this.animationFrame) * maxRotation;
+                            break;
+                            
+                        case 'swing':
+                            // Oscillazione attenuata (come un pendolo che si ferma)
+                            const decay = Math.exp(-this.animationFrame * 0.1);
+                            rotation = Math.sin(this.animationFrame * 2) * maxRotation * decay;
+                            break;
+                            
+                        case 'bounce':
+                            // Rimbalzo elastico
+                            const bounce = Math.abs(Math.sin(this.animationFrame));
+                            rotation = (Math.sin(this.animationFrame) > 0 ? 1 : -1) * maxRotation * bounce;
+                            break;
+                    }
+                    
+                    this.animationFrame += this.animationSpeed;
+                    
+                    // Reset dopo un ciclo completo per swing
+                    if (this.animationType === 'swing' && this.animationFrame > Math.PI * 4) {
+                        this.animationFrame = 0;
+                    }
+                }
+                
+                // Background circle con pulsazione
+                const pulseScale = this.isAnimating ? 1 + Math.sin(this.animationFrame * 0.5) * 0.1 : 1;
+                this.ctx.save();
+                this.ctx.translate(centerX, centerY);
+                this.ctx.scale(pulseScale, pulseScale);
+                
+                // Sfondo semi-trasparente
+                this.ctx.beginPath();
+                this.ctx.arc(0, 0, 15, 0, Math.PI * 2);
+                this.ctx.fillStyle = this.isAnimating ? 
+                    tool.color + '40' : 'rgba(0,0,0,0.1)';
+                this.ctx.fill();
+                this.ctx.strokeStyle = 'white';
+                this.ctx.lineWidth = 1;
+                this.ctx.stroke();
+                
+                this.ctx.restore();
+                
+                // Disegna tool con rotazione
+                this.ctx.save();
+                this.ctx.translate(centerX, centerY);
+                this.ctx.rotate(rotation * Math.PI / 180);
+                
+                switch(this.currentTool) {
+                    case 'brugola':
+                        this.drawBrugola();
+                        break;
+                    case 'martello':
+                        this.drawMartello();
+                        break;
+                    case 'chiave':
+                        this.drawChiave();
+                        break;
+                }
+                
+                this.ctx.restore();
+            }
+            
+            drawBrugola() {
+                // Manico
+                this.ctx.fillStyle = this.tools.brugola.color;
+                this.ctx.fillRect(-2, -10, 4, 16);
+                
+                // Punta esagonale
+                this.ctx.beginPath();
+                for(let i = 0; i < 6; i++) {
+                    const angle = (i * 60) * Math.PI / 180;
+                    const x = Math.cos(angle) * 3;
+                    const y = Math.sin(angle) * 3 + 8;
+                    if(i === 0) this.ctx.moveTo(x, y);
+                    else this.ctx.lineTo(x, y);
+                }
+                this.ctx.closePath();
+                this.ctx.fill();
+                
+                // Highlight
+                this.ctx.fillStyle = 'white';
+                this.ctx.fillRect(-1, -8, 2, 2);
+            }
+            
+            drawMartello() {
+                // Manico
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(-1, -6, 2, 12);
+                
+                // Testa martello
+                this.ctx.fillStyle = this.tools.martello.color;
+                this.ctx.fillRect(-6, -8, 12, 4);
+                
+                // Highlight
+                this.ctx.fillStyle = 'white';
+                this.ctx.fillRect(-5, -7, 8, 1);
+            }
+            
+            drawChiave() {
+                // Manico
+                this.ctx.fillStyle = this.tools.chiave.color;
+                this.ctx.fillRect(-8, -1, 12, 2);
+                
+                // Anello
+                this.ctx.beginPath();
+                this.ctx.arc(6, 0, 4, 0, Math.PI * 2);
+                this.ctx.strokeStyle = this.tools.chiave.color;
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+                
+                // Denti
+                this.ctx.fillRect(2, -2, 1, 2);
+                this.ctx.fillRect(2, 1, 1, 2);
+            }
+            
+            animate() {
+                this.drawTool();
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+        
+        // Inizializza cursore animato
+        new AnimatedCursor();
+        
+        // Debug info
+        console.log('🎯 Cursore Animato Attivo!');
+        console.log('📖 Controlli:');
+        console.log('   - Muovi mouse: seguita il cursore');
+        console.log('   - Click: animazione rotazione');
+        console.log('   - SPAZIO: cambia tool');
+    </script>
+</body>
+</html>
