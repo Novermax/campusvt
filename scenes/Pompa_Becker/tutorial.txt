@@ -94,16 +94,7 @@
 
 [Cambio Filtro Reverse]                                  // Tutorial inverso - sequenza di rimontaggio
 // Sequenza per rimontare il filtro e richiudere la pompa
-[Step 1 - Prima vite]
-Elemento=models/vite_coperchio_1.glb                            // Prima vite da riavvitare
-Utensile=Mani                                            // Strumento: riavvitamento manuale
-Descrizione=Rimuovi il coperchio del filtro              // Descrizione (da aggiornare per rimontaggio)
-Azione=svita                                             // Azione (da cambiare in 'avvita' per rimontaggio)
-Distanza=0.5                                             // Distanza movimento
-//CameraPos=(8, 7, 12)                                     // Posizione camera standard
-//CameraTarget=(0, 0, 0)                                   // Focus centrale
-//CameraZoom=1.5                                           // Zoom operativo
-//CameraTransitionTime=1.0                                 // Tempo transizione
+
 
 [Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa
 // Da implementare: procedura per cambio palette rotore
