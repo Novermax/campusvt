@@ -65,7 +65,7 @@
   Elemento=models/tappino_grasso_dx.glb                                     // Modello 3D del filtro da sostituire
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di destra       // Istruzione per rimozione filtro
-  Azione1=traslazione:(-0.3,0,0.3,1.0)                       // Estrazione tappino 0.3 unità
+  Azione1=traslazione:(-0.3,0,0,1.0)                       // Estrazione tappino 0.3 unità
   Azione2=appoggia(0.5)
 
 
@@ -73,7 +73,7 @@
   Elemento=models/tappino_grasso_sx.glb                                     // Modello 3D del filtro da sostituire
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di sinistra       // Istruzione per rimozione filtro
-  Azione1=traslazione:(-0.3,0,0.5,1.0)                       // Estrazione tappino 0.3 unità
+  Azione1=traslazione:(-0.3,0,0,1.0)                       // Estrazione tappino 0.3 unità
   Azione2=appoggia(0.5)
 
 
