@@ -2,7 +2,7 @@
 # Questo file definisce la sequenza guidata per la sostituzione del filtro
 
 [Pulizia  Filtro e ingrassaggio]                                            // Tutorial principale - sequenza di smontaggio
-  CameraPos=(-10.5, 0.5,-0.2)                                       // Posizione assoluta per test
+  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
