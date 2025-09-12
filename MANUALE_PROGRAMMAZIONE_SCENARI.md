@@ -1,10 +1,12 @@
 # MANUALE PROGRAMMAZIONE SCENARI
 ## Campus Virtual Training - Sistema 3D Formazione Industriale
 
-**Versione**: 1.0  
-**Data**: Settembre 2025  
+**Versione**: 1.2  
+**Data**: 12 Novembre 2025  
 **Target**: Tecnici industriali non programmatori  
-**Obiettivo**: Creazione autonoma di scenari formativi 3D interattivi
+**Obiettivo**: Creazione autonoma di scenari formativi 3D interattivi  
+**Aggiornamenti v1.2**: Sistema riferimenti posizioni originali (_original), Snap personalizzati Drag & Drop, Export automatico posizioni
+**Aggiornamenti v1.1**: Comandi debug camera, CameraTarget con oggetti, Tool Aria, Axis Gizmo, Sistema Drag & Drop, Assemblaggio Sequenziale
 
 ---
 
@@ -86,7 +88,8 @@ direzione=-1,0,0
   - X: sinistra(-) / destra(+)
   - Y: basso(-) / alto(+)  
   - Z: davanti(-) / dietro(+)
-- **CameraTarget=(X, Y, Z)** → Punto che la camera osserva
+- **CameraTarget=(X, Y, Z)** → Coordinate punto che la camera osserva
+- **CameraTarget=nome_oggetto** → Punta automaticamente al centro dell'oggetto
 - **Esempio**: `CameraPos=(-1.5, 0.5, -0.2)` = camera sinistra, leggermente alta, davanti
 
 ### Parametri Illuminazione:
@@ -178,6 +181,38 @@ Azione1=rotazione:(0,0,90,0.8);traslazione:(0,0.6,0,0.8)
 Azione2=traslazione:tappino_grasso_dx,(0,0,0,0.8)
 ```
 
+### 🆕 NUOVO: Riferimenti a Posizioni Originali (_original)
+**Sistema per tornare alle posizioni iniziali dei componenti:**
+
+```
+# Traslazione normale (relativa)
+Azione1=traslazione:(-0.2,0,0,0.8)
+
+# Traslazione a posizione corrente di altro oggetto
+Azione1=traslazione:tappino_grasso_dx,(0.1,0,0,0.8)
+
+# Traslazione a POSIZIONE ORIGINALE di altro oggetto (NUOVO)
+Azione1=traslazione:tappino_grasso_dx_original,(0.1,0,0,0.8)
+```
+
+#### Casi d'uso tipici _original:
+- **Reset componenti**: Riportare filtro/ingrassatore alla posizione iniziale
+- **Assemblaggio sequenziale**: Componenti devono occupare posizioni precise
+- **Tutorial ripetibili**: Ripristinare configurazione originale per ricominciare
+
+#### Esempi pratici:
+```
+# Riporta filtro alla posizione iniziale
+Azione1=traslazione:filtro_original,(0,0,0,1.0)
+
+# Ingrassatore torna alla sede originale del tappino
+Azione2=traslazione:tappino_grasso_dx_original,(0,0,0,1.0)
+
+# Reset completo scenario
+Azione1=traslazione:filtro_original,(0,0,0,1.0)
+Azione2=traslazione:ingrassatore_original,(0,0,0,1.5)
+```
+
 ---
 
 ## SLIDE 8: PARAMETRI AVANZATI TUTORIAL
@@ -199,7 +234,51 @@ CameraTransitionTime=1.2                   ← Durata movimento camera
 - **Mani** → Operazione manuale
 - **ChiaveInglese** → Chiave regolabile
 - **Cacciavite** → Avvitamento/svitamento
-- **Martello** → Operazioni di forza
+- **Aria** → Strumento pneumatico (ex-Martello) con icona air.png
+
+### Parametri Drag & Drop e Assemblaggio:
+```ini
+DragDrop=true                          # Abilita trascinamento 3D
+DragDropObjects=comp1,comp2            # Lista oggetti draggabili
+DragDropDistance=1.5                   # Distanza auto-snap (0.5-3.0)
+AssemblyMode=true                      # Abilita assemblaggio sequenziale
+AssemblyConfig=configs/assembly.json   # Configurazione JSON assemblaggio
+CurrentStep=step_name                  # Step corrente sequenza
+AllowedComponents=base,vite            # Componenti montabili
+RequiredPrevious=fondamenta            # Prerequisiti step
+ShowSnapPoints=base,vite               # Mostra punti aggancio
+UndoEnabled=true                       # Abilita undo/redo
+```
+
+### 🆕 NUOVO: Drag & Drop con Target Personalizzati (_original)
+**Configurazione snap a posizioni specifiche tramite console JavaScript:**
+
+```javascript
+// Snap standard - oggetto torna alla propria posizione originale
+DragDropSystem.enable(['ingrassatore'])
+
+// Snap personalizzato - oggetto snappe alla posizione corrente di altro oggetto
+DragDropSystem.setCustomSnapTarget('ingrassatore', 'tappino_rosso')
+
+// Snap a posizione ORIGINALE di altro oggetto (NUOVO)
+DragDropSystem.setCustomSnapTarget('ingrassatore', 'tappino_grasso_dx_original')
+
+// Snap con offset preciso dalla posizione target
+DragDropSystem.setCustomSnapTarget('ingrassatore', 'filtro_original', new THREE.Vector3(0.1,0,0))
+```
+
+#### Flusso di lavoro completo:
+1. **Progetta posizioni** per ogni componente nello scenario
+2. **Esporta posizioni correnti**: `Scene3D.exportCurrentModelPositions()` 
+3. **Copia coordinate** dalla console e salva nel tutorial.txt
+4. **Configura snap personalizzati** per il training drag & drop
+5. **Testa scenario** trascinando componenti alle posizioni target
+
+#### Vantaggi sistema _original nel Drag & Drop:
+- **Assemblaggio guidato**: L'utente impara posizionamento preciso
+- **Feedback immediato**: Snap automatico quando vicino al target corretto  
+- **Flessibilità**: Oggetti possono snappare a posizioni di altri oggetti
+- **Ripetibilità**: Sempre stesso comportamento per training consistente
 
 ---
 
@@ -249,13 +328,14 @@ direzione=0,0,-1
 # In scenes/Filtro_Aria/tutorial.txt:
 [Cambio Filtro Aria]
 CameraPos=(-2, 1, -1)
-CameraTarget=(0, 0.2, 0)
+CameraTarget=coperchio_filtro     ← Punta automaticamente al coperchio
 CameraZoom=1.0
 
 [Step 1 - Apertura coperchio]
 Elemento=models/coperchio_filtro.glb
 Utensile=Mani
 Descrizione=Apri il coperchio del filtro dell'aria
+CameraTarget=coperchio_filtro     ← Camera segue il coperchio
 Azione=solleva
 Distanza=0.3
 
@@ -263,6 +343,7 @@ Distanza=0.3
 Elemento=models/filtro_aria.glb
 Utensile=Mani
 Descrizione=Estrai il filtro usurato
+CameraTarget=filtro_aria          ← Camera si sposta sul filtro
 Azione=estrai
 Distanza=0.4
 ```
@@ -350,7 +431,155 @@ traslazione:(0,0,0.5,1.0) → traslazione:(0,0,0.5,2.0)  ← Più lento
 
 ---
 
-## SLIDE 14: CHECKLIST CREAZIONE SCENARIO
+## SLIDE 14: COMANDI DEBUG AVANZATI
+
+### Accesso alla Console Debug:
+1. **Aprire il sistema 3D** nel browser
+2. **Premere F12** per aprire Developer Tools
+3. **Cliccare "Console"** per vedere l'area comandi
+4. **Digitare comandi** e premere Invio
+
+### Comandi Camera e Posizionamento:
+```javascript
+// Ottieni posizione camera corrente (con sintassi per tutorial)
+Scene3D.getCameraInfo()
+
+// Lista tutti gli oggetti nella scena (con nomi per CameraTarget)
+Scene3D.listAvailableObjects()
+```
+
+### Esempio Output getCameraInfo():
+```
+📹 CAMERA INFO:
+Position: (2.5, 1.8, 4.2)
+Pivot Point: (0, 0.5, 0)
+Distance to Pivot: 5.12
+
+📋 TUTORIAL SYNTAX:
+CameraPos=(2.5,1.8,4.2)
+CameraTarget=(0,0.5,0)
+
+💡 ALTERNATIVE CameraTarget SYNTAX:
+CameraTarget=nome_oggetto   # Punta al centro del bounding box dell'oggetto
+```
+
+### Esempio Output listAvailableObjects():
+```
+📦 OGGETTI DISPONIBILI NELLA SCENA:
+1. "filtro"
+   Centro: (0, 0.3, 0)
+   Dimensioni: 0.8 × 0.6 × 0.8
+
+2. "pompa"
+   Centro: (0, 0, 0)
+   Dimensioni: 2.1 × 1.5 × 1.8
+
+📝 USO NEI TUTORIAL:
+CameraTarget=filtro   # Punta al centro di "filtro"
+CameraTarget=pompa    # Punta al centro di "pompa"
+```
+
+### Comandi Axis Gizmo:
+```javascript
+// Mostra/nascondi il gizmo degli assi in alto a destra
+Scene3D.toggleAxisGizmoUI(true)    // Mostra
+Scene3D.toggleAxisGizmoUI(false)   // Nascondi
+
+// Debug status del gizmo
+Scene3D.debugAxisGizmoUI()
+```
+
+### Workflow Ottimizzato con Comandi Debug:
+1. **Posiziona camera** manualmente con mouse nel 3D
+2. **Esegui** `Scene3D.getCameraInfo()` in console
+3. **Copia** la sintassi generata nel tutorial.txt
+4. **Lista oggetti** con `Scene3D.listAvailableObjects()`
+5. **Usa nomi oggetti** per CameraTarget invece di coordinate
+
+---
+
+## SLIDE 14.5: SISTEMA DRAG & DROP E ASSEMBLAGGIO AVANZATO
+
+### Cos'è il Sistema Drag & Drop?
+Il **Sistema Drag & Drop 3D** consente agli utenti di:
+- **Trascinare oggetti 3D** direttamente con il mouse
+- **Posizionare componenti** in modo interattivo
+- **Assemblare meccanismi** con snap automatico
+- **Apprendere per manipolazione diretta** invece che solo osservazione
+
+### Funzionalità Principali:
+- ✅ **Trascinamento Fluido**: Raycasting preciso per movimento naturale
+- ✅ **Auto-Snap**: Aggancio automatico alle posizioni originali
+- ✅ **Feedback Visivo**: Indicatori grafici per zone di aggancio
+- ✅ **Controllo Selettivo**: Lista componenti draggabili configurabile
+- ✅ **Assemblaggio Sequenziale**: Montaggio in ordine obbligatorio
+
+### Configurazione Base Drag & Drop:
+```ini
+[Step X - Assemblaggio Interattivo]
+Descrizione=Posiziona i componenti trascinandoli
+DragDrop=true                          # Abilita sistema drag & drop
+DragDropObjects=filtro,vite,coperchio   # Lista oggetti draggabili
+DragDropDistance=1.5                    # Distanza snap (0.5-3.0)
+```
+
+### Assemblaggio Sequenziale Avanzato:
+```ini
+[Step X - Assemblaggio Guidato]
+Descrizione=Monta i componenti nella sequenza corretta
+DragDrop=true                           # Abilita drag & drop
+AssemblyMode=true                       # Abilita modalità assemblaggio
+AssemblyConfig=assembly_configs/pompa.json  # Configurazione JSON
+CurrentStep=step1                       # Step corrente sequenza
+AllowedComponents=base,corpo            # Componenti montabili ora
+RequiredPrevious=fondamenta             # Prerequisiti step
+ShowSnapPoints=base,corpo               # Mostra punti aggancio
+UndoEnabled=true                        # Abilita undo/redo
+```
+
+### Configurazione Assembly JSON:
+```json
+{
+  "sequence": ["step1", "step2", "step3"],
+  "snapPoints": {
+    "vite": {
+      "positions": [
+        {"id": "pos1", "position": [2,0,0], "rotation": [0,0,0]},
+        {"id": "pos2", "position": [-2,0,0], "rotation": [0,0,0]}
+      ]
+    }
+  },
+  "dependencies": {
+    "coperchio": ["vite1", "vite2", "vite3", "vite4"]
+  },
+  "interchangeableNodes": {
+    "viti_gruppo": ["vite_m6", "vite_m8", "vite_m10"]
+  }
+}
+```
+
+### Vantaggi Pedagogici:
+- **Apprendimento Cinestetico**: "Imparare facendo" con manipolazione diretta
+- **Memoria Procedurale**: Gesti fisici rinforzano apprendimento
+- **Feedback Immediato**: Errori visibili subito, correzione guidata
+- **Coinvolgimento**: Interazione attiva vs passiva osservazione
+
+### Casi d'Uso Tipici:
+1. **Assemblaggio Pompe**: Sequenze precise manutenzione industriale
+2. **Training Intercambiabilità**: Componenti alternativi per flessibilità
+3. **Quality Control**: Verifiche completezza assemblaggio
+4. **Troubleshooting**: Identificazione errori assemblaggio
+
+### Best Practices Drag & Drop:
+- **Oggetti Appropriati**: Solo componenti logicamente movibili
+- **Snap Distance Ottimale**: 1.0-1.5 per precisione, 2.0+ per tolleranza
+- **Feedback Visivo Chiaro**: Cerchi verdi, evidenziazione materiali
+- **Sequenza Logica**: Ordine assemblaggio realistico industriale
+- **Descrizioni Guida**: Istruzioni chiare per ogni step
+
+---
+
+## SLIDE 15: CHECKLIST CREAZIONE SCENARIO
 
 ### Prima di iniziare:
 - [ ] **Obiettivo** formativo definito chiaramente

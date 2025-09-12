@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema Congratulazioni Completo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+        }
+        .test-section {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .info {
+            background: rgba(23,162,184,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background: rgba(40,167,69,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            background: rgba(255,193,7,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎉 Test Sistema Congratulazioni Finale</h1>
+        <p>Test completo del sistema di congratulazioni personalizzate con nome utente reale dal sistema di login.</p>
+
+        <!-- Sezione 1: Simulazione Login -->
+        <div class="test-section">
+            <h3>👤 Simulazione Sistema Login</h3>
+            <p>Simula il login di diversi utenti per testare le congratulazioni personalizzate.</p>
+            <button onclick="simulateLogin('Pippo')">Login come Pippo</button>
+            <button onclick="simulateLogin('Pluto')">Login come Pluto</button>
+            <button onclick="simulateLogin('Mario')">Login come Mario</button>
+            <button onclick="clearLogin()">Logout</button>
+            <div id="loginStatus" class="info">Nessun utente loggato</div>
+        </div>
+
+        <!-- Sezione 2: Test Congratulazioni -->
+        <div class="test-section">
+            <h3>🎊 Test Congratulazioni</h3>
+            <p>Testa le congratulazioni con l'utente correntemente loggato.</p>
+            <button onclick="testCongratulationsBasic()">Test Congratulazioni Base</button>
+            <button onclick="testCongratulationsComplete()">Test Tutorial Completo</button>
+            <button onclick="testFallbackBehavior()">Test Comportamento Fallback</button>
+            <div id="congratulationsLog" class="info">Log test congratulazioni apparirà qui</div>
+        </div>
+
+        <!-- Sezione 3: Verifica Sistema -->
+        <div class="test-section">
+            <h3>🔍 Verifica Sistema</h3>
+            <p>Controlla lo stato del sistema e dei dati salvati.</p>
+            <button onclick="checkSystemState()">Verifica Stato Sistema</button>
+            <button onclick="checkLocalStorage()">Verifica LocalStorage</button>
+            <button onclick="testUsernameRetrieval()">Test Recupero Username</button>
+            <div id="systemStatus" class="info">Stato sistema apparirà qui</div>
+        </div>
+
+        <!-- Sezione 4: Logs -->
+        <div class="test-section">
+            <h3>📋 Log Console</h3>
+            <p>Monitora i log del sistema (apri console del browser per dettagli completi).</p>
+            <div id="consoleLogs" class="info">I log appariranno nella console del browser</div>
+        </div>
+    </div>
+
+    <script>
+        // Simula il comportamento del sistema di login
+        function simulateLogin(username) {
+            const expiration = new Date();
+            expiration.setFullYear(expiration.getFullYear() + 1); // Scadenza tra 1 anno
+            
+            window.currentUser = {
+                name: username,
+                loginTime: new Date(),
+                expiration: expiration
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
+            
+            document.getElementById('loginStatus').innerHTML = `
+                <strong>✅ Utente loggato:</strong> ${username}<br>
+                <strong>Login Time:</strong> ${new Date().toLocaleString()}<br>
+                <strong>Scadenza:</strong> ${expiration.toLocaleDateString()}
+            `;
+            
+            console.log(`✅ Login simulato per: ${username}`, window.currentUser);
+        }
+
+        function clearLogin() {
+            window.currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('loginStatus').innerHTML = 'Nessun utente loggato';
+            console.log('🚪 Logout completato');
+        }
+
+        // Simula il sistema Scene3D per il test
+        window.Scene3D = {
+            getCurrentUserName: function() {
+                // Verifica se l'utente è loggato e abbiamo il nome
+                if (window.currentUser && window.currentUser.name) {
+                    return window.currentUser.name;
+                }
+                
+                // Fallback: cerca in localStorage se implementato
+                const storedUser = localStorage.getItem('currentUser');
+                if (storedUser) {
+                    try {
+                        const userData = JSON.parse(storedUser);
+                        if (userData && userData.name) {
+                            return userData.name;
+                        }
+                    } catch (e) {
+                        console.warn('Errore parsing userData:', e);
+                    }
+                }
+                
+                // Fallback finale
+                return 'Utente';
+            },
+
+            displayCongratulationsModal: function(userName, tutorialName) {
+                // Crea il modal se non esiste
+                let modal = document.getElementById('congratulations-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'congratulations-modal';
+                    modal.className = 'congratulations-modal';
+                    modal.innerHTML = `
+                        <div class="congratulations-content">
+                            <div class="congratulations-icon">🎉</div>
+                            <div class="congratulations-title">Congratulazioni, ${userName}!</div>
+                            <div class="congratulations-message">
+                                Hai completato con successo il tutorial:<br>
+                                <strong>"${tutorialName}"</strong>
+                            </div>
+                            <button class="congratulations-button" onclick="Scene3D.removeCongratulationsModal()">
+                                Continua
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Aggiungi gli stili inline per il test
+                    modal.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(0, 0, 0, 0.8);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 10000;
+                        opacity: 0;
+                        visibility: hidden;
+                        transition: opacity 0.3s ease, visibility 0.3s ease;
+                    `;
+                    
+                    const content = modal.querySelector('.congratulations-content');
+                    content.style.cssText = `
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 40px;
+                        border-radius: 15px;
+                        text-align: center;
+                        max-width: 500px;
+                        margin: 20px;
+                        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                        transform: scale(0.8);
+                        transition: transform 0.3s ease;
+                    `;
+                    
+                    document.body.appendChild(modal);
+                }
+                
+                // Mostra il modal
+                requestAnimationFrame(() => {
+                    modal.style.opacity = '1';
+                    modal.style.visibility = 'visible';
+                    const content = modal.querySelector('.congratulations-content');
+                    content.style.transform = 'scale(1)';
+                });
+                
+                console.log(`🎉 Modal congratulazioni mostrato per: ${userName} - Tutorial: ${tutorialName}`);
+                return modal;
+            },
+
+            removeCongratulationsModal: function() {
+                const modal = document.getElementById('congratulations-modal');
+                if (modal) {
+                    modal.style.opacity = '0';
+                    modal.style.visibility = 'hidden';
+                    setTimeout(() => {
+                        modal.remove();
+                    }, 300);
+                    console.log('✅ Modal congratulazioni rimosso');
+                }
+            },
+
+            showTutorialCompletionCongratulations: function() {
+                const tutorialName = "Test Tutorial Completamento";
+                const userName = this.getCurrentUserName();
+                console.log(`🎉 Tutorial "${tutorialName}" completato!`);
+                this.displayCongratulationsModal(userName, tutorialName);
+            }
+        };
+
+        // Funzioni di test
+        function testCongratulationsBasic() {
+            const userName = Scene3D.getCurrentUserName();
+            Scene3D.displayCongratulationsModal(userName, "Tutorial di Test Base");
+            
+            document.getElementById('congratulationsLog').innerHTML = `
+                <strong>✅ Test Base Eseguito:</strong><br>
+                Username recuperato: <strong>${userName}</strong><br>
+                Tutorial: "Tutorial di Test Base"<br>
+                Timestamp: ${new Date().toLocaleString()}
+            `;
+        }
+
+        function testCongratulationsComplete() {
+            Scene3D.showTutorialCompletionCongratulations();
+            
+            document.getElementById('congratulationsLog').innerHTML = `
+                <strong>✅ Test Completo Eseguito:</strong><br>
+                Sistema completo di congratulazioni attivato<br>
+                Username: <strong>${Scene3D.getCurrentUserName()}</strong><br>
+                Timestamp: ${new Date().toLocaleString()}
+            `;
+        }
+
+        function testFallbackBehavior() {
+            // Salva stato corrente
+            const currentUser = window.currentUser;
+            const storedUser = localStorage.getItem('currentUser');
+            
+            // Rimuovi temporaneamente l'utente
+            window.currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            const fallbackName = Scene3D.getCurrentUserName();
+            Scene3D.displayCongratulationsModal(fallbackName, "Test Fallback");
+            
+            // Ripristina stato
+            window.currentUser = currentUser;
+            if (storedUser) {
+                localStorage.setItem('currentUser', storedUser);
+            }
+            
+            document.getElementById('congratulationsLog').innerHTML = `
+                <strong>⚠️ Test Fallback Eseguito:</strong><br>
+                Username fallback: <strong>${fallbackName}</strong><br>
+                (Dovrebbe essere "Utente" se il fallback funziona)<br>
+                Timestamp: ${new Date().toLocaleString()}
+            `;
+        }
+
+        function checkSystemState() {
+            const currentUser = window.currentUser;
+            const hasLocalStorage = !!localStorage.getItem('currentUser');
+            const userName = Scene3D.getCurrentUserName();
+            
+            document.getElementById('systemStatus').innerHTML = `
+                <strong>🔍 Stato Sistema:</strong><br>
+                <strong>window.currentUser:</strong> ${currentUser ? `${currentUser.name} (${currentUser.loginTime})` : 'Non definito'}<br>
+                <strong>localStorage user:</strong> ${hasLocalStorage ? 'Presente' : 'Assente'}<br>
+                <strong>getUserName() result:</strong> ${userName}<br>
+                <strong>Scene3D disponibile:</strong> ${window.Scene3D ? '✅ Sì' : '❌ No'}<br>
+                <strong>Timestamp verifica:</strong> ${new Date().toLocaleString()}
+            `;
+        }
+
+        function checkLocalStorage() {
+            const stored = localStorage.getItem('currentUser');
+            let storageInfo = '';
+            
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    storageInfo = `
+                        <strong>📦 LocalStorage Data:</strong><br>
+                        Nome: ${parsed.name}<br>
+                        Login Time: ${new Date(parsed.loginTime).toLocaleString()}<br>
+                        Scadenza: ${new Date(parsed.expiration).toLocaleString()}<br>
+                        Valido: ${new Date(parsed.expiration) > new Date() ? '✅ Sì' : '❌ Scaduto'}
+                    `;
+                } catch (e) {
+                    storageInfo = `❌ Errore parsing localStorage: ${e.message}`;
+                }
+            } else {
+                storageInfo = '📦 localStorage: Nessun dato utente salvato';
+            }
+            
+            document.getElementById('systemStatus').innerHTML = storageInfo;
+        }
+
+        function testUsernameRetrieval() {
+            console.log('🧪 TEST: Inizio test recupero username...');
+            
+            // Test 1: Con window.currentUser
+            const test1 = Scene3D.getCurrentUserName();
+            console.log('Test 1 (currentUser):', test1);
+            
+            // Test 2: Rimuovi temporaneamente window.currentUser
+            const backup = window.currentUser;
+            window.currentUser = null;
+            const test2 = Scene3D.getCurrentUserName();
+            console.log('Test 2 (localStorage):', test2);
+            
+            // Test 3: Rimuovi anche localStorage
+            const backupStorage = localStorage.getItem('currentUser');
+            localStorage.removeItem('currentUser');
+            const test3 = Scene3D.getCurrentUserName();
+            console.log('Test 3 (fallback):', test3);
+            
+            // Ripristina
+            window.currentUser = backup;
+            if (backupStorage) {
+                localStorage.setItem('currentUser', backupStorage);
+            }
+            
+            document.getElementById('systemStatus').innerHTML = `
+                <strong>🧪 Test Recupero Username:</strong><br>
+                <strong>Test 1 (window.currentUser):</strong> ${test1}<br>
+                <strong>Test 2 (solo localStorage):</strong> ${test2}<br>
+                <strong>Test 3 (fallback completo):</strong> ${test3}<br>
+                <strong>Stato ripristinato:</strong> ✅<br>
+                <strong>Timestamp:</strong> ${new Date().toLocaleString()}
+            `;
+            
+            console.log('🧪 TEST: Test recupero username completato!');
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Sistema test congratulazioni inizializzato');
+            
+            // Verifica se ci sono dati di login esistenti
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    if (userData && userData.name) {
+                        window.currentUser = userData;
+                        document.getElementById('loginStatus').innerHTML = `
+                            <strong>🔄 Sessione ripristinata:</strong> ${userData.name}<br>
+                            <strong>Login originale:</strong> ${new Date(userData.loginTime).toLocaleString()}<br>
+                            <strong>Scadenza:</strong> ${new Date(userData.expiration).toLocaleDateString()}
+                        `;
+                    }
+                } catch (e) {
+                    console.warn('Errore ripristino sessione test:', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

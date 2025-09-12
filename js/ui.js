@@ -1047,6 +1047,37 @@ window.UI = {
         // NON evidenziare automaticamente il primo elemento - solo quando l'utente preme il pulsante tutorial
         // Il tutorial rimane in standby (currentStepIndex = -1) fino all'attivazione manuale
         
+        // Ora che i modelli sono caricati, riapplica le impostazioni modelli del tutorial iniziale
+        if (this.availableTutorials.length > 0) {
+            const firstTutorial = this.availableTutorials[0];
+            if (firstTutorial && firstTutorial.properties && window.Scene3D && window.Scene3D.applyModelSettings) {
+                // Crea oggetto tutorial fake per riusare la funzione esistente di Scene3D
+                const fakeTutorialStep = {
+                    properties: {}
+                };
+                
+                // Copia le proprietà modelli se presenti
+                let hasModelSettings = false;
+                
+                if (firstTutorial.properties.Posizione) {
+                    fakeTutorialStep.properties.Posizione = firstTutorial.properties.Posizione;
+                    hasModelSettings = true;
+                    console.log(`🔧 MODELLI POST-LOAD: Posizione = ${firstTutorial.properties.Posizione}`);
+                }
+                
+                if (firstTutorial.properties.Rotazione) {
+                    fakeTutorialStep.properties.Rotazione = firstTutorial.properties.Rotazione;
+                    hasModelSettings = true;
+                    console.log(`🔧 MODELLI POST-LOAD: Rotazione = ${firstTutorial.properties.Rotazione}`);
+                }
+                
+                if (hasModelSettings) {
+                    console.log(`🔧 MODELLI POST-LOAD: Applicazione impostazioni modelli post-caricamento per "${firstTutorial.name}"`);
+                    window.Scene3D.applyModelSettings(fakeTutorialStep);
+                }
+            }
+        }
+        
         // DEBUG: Stato finale dei controlli touch dopo caricamento completo
         setTimeout(() => {
             console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');
@@ -1769,7 +1800,7 @@ window.UI = {
             { name: 'brugola', icon: 'utilimages/brugola.png' },
             { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png' },
             { name: 'mano', icon: 'utilimages/mano.png' },
-            { name: 'martello', icon: 'utilimages/martello.png' }
+            { name: 'aria', icon: 'utilimages/air.png' }
         ];
         
         // Pulisce il container
@@ -1900,18 +1931,28 @@ window.UI = {
         
         const activeTool = this.getActiveTool();
         
-        // Rimuovi tutte le classi cursore
-        canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-martello');
+        // Per il tool aria, gestisci direttamente il cursore body
+        if (activeTool === 'aria' || activeTool === 'Aria') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore aria direttamente al body
+            document.body.classList.remove('tool-aria-active'); // Rimuovi prima
+            document.body.classList.add('tool-aria-active');    // Poi riapplica
+            console.log(`🖱️ Cursore aria applicato direttamente al body`);
+            return;
+        }
         
-        // Mappa dei tool ai cursori
+        // Rimuovi tutte le classi cursore (inclusa aria dal body)
+        canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+        document.body.classList.remove('tool-aria-active');
+        
+        // Mappa dei tool ai cursori (escluso aria)
         const toolCursorMap = {
             'mano': 'cursor-mano',
             'brugola': 'cursor-brugola', 
             'ChiaveBrugola': 'cursor-brugola',
             'chiave': 'cursor-chiave',
-            'ChiaveInglese': 'cursor-chiave',
-            'martello': 'cursor-martello',
-            'Martello': 'cursor-martello'
+            'ChiaveInglese': 'cursor-chiave'
         };
         
         // Applica il cursore appropriato
@@ -1930,7 +1971,7 @@ window.UI = {
      */
     initAnimatedCursor: function(toolName) {
         // Solo per tool che beneficiano di animazioni avanzate
-        const animatedTools = ['brugola', 'ChiaveBrugola', 'martello', 'Martello'];
+        const animatedTools = ['brugola', 'ChiaveBrugola', 'aria', 'Aria'];
         
         if (!animatedTools.includes(toolName)) {
             this.removeAnimatedCursor();
@@ -2016,6 +2057,7 @@ window.UI = {
         const lines = content.split('\n');
         let currentTutorial = null;
         let currentStep = null;
+        let globalProperties = {}; // Raccoglie proprietà globali prima del primo tutorial
         
         for (let line of lines) {
             line = line.trim();
@@ -2070,6 +2112,14 @@ window.UI = {
                         steps: [],
                         properties: {}  // NUOVO: proprietà globali del tutorial
                     };
+                    
+                    // Se è il primo tutorial e abbiamo proprietà globali, applicale
+                    if (tutorials.length === 0 && Object.keys(globalProperties).length > 0) {
+                        console.log(`📝 PARSER: Applicazione ${Object.keys(globalProperties).length} proprietà globali al primo tutorial "${sectionName}"`);
+                        Object.assign(currentTutorial.properties, globalProperties);
+                        globalProperties = {}; // Svuota dopo aver applicato
+                    }
+                    
                     currentStep = null;
                 }
             }
@@ -2077,8 +2127,12 @@ window.UI = {
             else if (line && line.includes('=')) {
                 const [key, value] = line.split('=').map(s => s.trim());
                 
-                // NUOVO: Se siamo in un tutorial ma non in uno step, sono proprietà globali
-                if (currentTutorial && !currentStep) {
+                if (!currentTutorial) {
+                    // Proprietà globali prima del primo tutorial - raccogliamo in globalProperties
+                    globalProperties[key] = value;
+                    console.log(`📝 PARSER: Proprietà globale pre-tutorial: ${key} = ${value}`);
+                } else if (currentTutorial && !currentStep) {
+                    // Se siamo in un tutorial ma non in uno step, sono proprietà globali del tutorial
                     currentTutorial.properties[key] = value;
                     
                     // Parsing specifico per proprietà camera globali  
@@ -2202,6 +2256,16 @@ window.UI = {
             return;
         }
         
+        // RESET: Sblocca interazioni e ripristina posizioni quando si seleziona un nuovo tutorial
+        if (window.Scene3D) {
+            window.Scene3D.resetTutorialTracker();
+            
+            // Applica le impostazioni del nuovo tutorial (se presenti) durante il reset
+            const tutorialWithSettings = this.availableTutorials[tutorialIndex];
+            const tutorialStep = tutorialWithSettings.properties ? { properties: tutorialWithSettings.properties } : null;
+            window.Scene3D.resetAllModelsToInitialPositions(tutorialStep);
+        }
+        
         this.currentTutorial = this.availableTutorials[tutorialIndex];
         this.tutorialSteps = this.currentTutorial.steps;
         this.currentStepIndex = 0;
@@ -2220,6 +2284,9 @@ window.UI = {
             
             // ADESSO applica le impostazioni camera del tutorial (quando parte il primo step)
             this.applyTutorialCameraSettings();
+            
+            // Applica anche le impostazioni modelli del tutorial
+            this.applyTutorialModelSettings();
             
             if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
                 window.Scene3D.highlightCurrentTutorialElement();
@@ -2276,6 +2343,42 @@ window.UI = {
         } else if (hasCameraSettings) {
             AppConfig.log(1, `⚠️ CAMERA INIZIALE: Scene3D non disponibile per applicare impostazioni camera`);
         }
+        
+        // Copia le proprietà modelli se presenti per applicarle insieme alle camera settings
+        let hasModelSettings = false;
+        
+        if (props.Posizione) {
+            fakeTutorialStep.properties.Posizione = props.Posizione;
+            hasModelSettings = true;
+            AppConfig.log(2, `🔧 MODELLI INIZIALI: Posizione = ${props.Posizione}`);
+        }
+        
+        if (props.Rotazione) {
+            fakeTutorialStep.properties.Rotazione = props.Rotazione;
+            hasModelSettings = true;
+            AppConfig.log(2, `🔧 MODELLI INIZIALI: Rotazione = ${props.Rotazione}`);
+        }
+        
+        // Supporto per sintassi legacy Modello1/Posizione1
+        if (props.Modello1) {
+            fakeTutorialStep.properties.Modello1 = props.Modello1;
+            hasModelSettings = true;
+            AppConfig.log(2, `🔧 MODELLI INIZIALI: Modello1 = ${props.Modello1}`);
+        }
+        
+        if (props.Posizione1) {
+            fakeTutorialStep.properties.Posizione1 = props.Posizione1;
+            hasModelSettings = true;
+            AppConfig.log(2, `🔧 MODELLI INIZIALI: Posizione1 = ${props.Posizione1}`);
+        }
+        
+        // Applica impostazioni modelli se presenti
+        if (hasModelSettings && window.Scene3D && window.Scene3D.applyModelSettings) {
+            AppConfig.log(2, `🔧 MODELLI INIZIALI: Applicazione impostazioni modelli da "${tutorial.name}"`);
+            window.Scene3D.applyModelSettings(fakeTutorialStep);
+        } else if (hasModelSettings) {
+            AppConfig.log(1, `⚠️ MODELLI INIZIALI: Scene3D non disponibile per applicare impostazioni modelli`);
+        }
     },
 
     /**
@@ -2325,6 +2428,60 @@ window.UI = {
         if (hasCameraSettings && window.Scene3D && window.Scene3D.applyCameraSettings) {
             console.log(`📹 TUTORIAL: Applicazione impostazioni camera globali per "${this.currentTutorial.name}"`);
             window.Scene3D.applyCameraSettings(fakeTutorialStep);
+        }
+        
+        // Applica impostazioni modelli se presenti
+        if (window.Scene3D && window.Scene3D.applyModelSettings) {
+            window.Scene3D.applyModelSettings(fakeTutorialStep);
+        }
+    },
+    
+    /**
+     * Applica impostazioni modelli dal tutorial corrente
+     */
+    applyTutorialModelSettings: function() {
+        if (!this.currentTutorial || !this.currentTutorial.properties) {
+            return;
+        }
+        
+        const props = this.currentTutorial.properties;
+        let hasModelSettings = false;
+        
+        // Crea oggetto tutorial fake per riusare la funzione esistente di Scene3D
+        const fakeTutorialStep = {
+            properties: {}
+        };
+        
+        // Copia le proprietà modelli se presenti
+        if (props.Posizione) {
+            fakeTutorialStep.properties.Posizione = props.Posizione;
+            hasModelSettings = true;
+            console.log(`🔧 TUTORIAL: Posizione globale = ${props.Posizione}`);
+        }
+        
+        if (props.Rotazione) {
+            fakeTutorialStep.properties.Rotazione = props.Rotazione;
+            hasModelSettings = true;
+            console.log(`🔧 TUTORIAL: Rotazione globale = ${props.Rotazione}`);
+        }
+        
+        // Supporto per sintassi legacy Modello1/Posizione1
+        if (props.Modello1) {
+            fakeTutorialStep.properties.Modello1 = props.Modello1;
+            hasModelSettings = true;
+            console.log(`🔧 TUTORIAL: Modello1 = ${props.Modello1}`);
+        }
+        
+        if (props.Posizione1) {
+            fakeTutorialStep.properties.Posizione1 = props.Posizione1;
+            hasModelSettings = true;
+            console.log(`🔧 TUTORIAL: Posizione1 = ${props.Posizione1}`);
+        }
+        
+        // Se ci sono impostazioni modelli, applicale tramite Scene3D
+        if (hasModelSettings && window.Scene3D && window.Scene3D.applyModelSettings) {
+            console.log(`🔧 TUTORIAL: Applicazione impostazioni modelli globali per "${this.currentTutorial.name}"`);
+            window.Scene3D.applyModelSettings(fakeTutorialStep);
         }
     },
     
@@ -2472,12 +2629,17 @@ window.UI = {
             window.Scene3D.applyCameraSettings(step);
         }
         
+        // Applica impostazioni modelli se presenti
+        if (window.Scene3D && window.Scene3D.applyModelSettings) {
+            window.Scene3D.applyModelSettings(step);
+        }
+        
         if (step.properties.Utensile) {
-            // Attiva lo strumento corrispondente
+            // NON evidenziare automaticamente il tool - lascia che l'utente impari a scegliere
             const toolName = this.mapToolName(step.properties.Utensile);
             if (toolName) {
-                AppConfig.log(3, `Attivazione strumento: ${toolName}`);
-                this.toggleTool(toolName);
+                AppConfig.log(3, `Strumento richiesto per step: ${toolName} (senza evidenziazione automatica)`);
+                // this.highlightRequiredTool(toolName); // RIMOSSO: non dare troppi aiuti all'utente
             }
         }
         
@@ -2507,10 +2669,42 @@ window.UI = {
             'ChiaveBrugola': 'brugola',
             'ChiaveInglese': 'chiave_inglese',
             'Mani': 'mano',
-            'Martello': 'martello'
+            'Aria': 'aria'
         };
         
         return mapping[tutorialToolName] || null;
+    },
+    
+    /**
+     * Evidenzia lo strumento richiesto senza attivarlo
+     */
+    highlightRequiredTool: function(toolName) {
+        if (!toolName) return;
+        
+        // Trova elemento DOM del tool
+        const toolElement = document.querySelector(`[data-tool="${toolName}"]`);
+        if (!toolElement) {
+            AppConfig.log(1, `Elemento tool non trovato: ${toolName}`);
+            return;
+        }
+        
+        // Rimuovi evidenziazione precedente da tutti i tool
+        document.querySelectorAll('.tool-icon').forEach(icon => {
+            icon.classList.remove('required', 'tool-highlight');
+        });
+        
+        // Aggiungi evidenziazione al tool richiesto
+        toolElement.classList.add('required', 'tool-highlight');
+        
+        AppConfig.log(3, `Tool evidenziato come richiesto: ${toolName}`);
+        
+        // Rimuovi evidenziazione dopo un certo tempo (se non viene cliccato)
+        setTimeout(() => {
+            if (toolElement && !this.toolsState[toolName]) {
+                toolElement.classList.remove('required', 'tool-highlight');
+                AppConfig.log(3, `Evidenziazione tool rimossa: ${toolName}`);
+            }
+        }, 10000); // 10 secondi
     },
     
     /* Le funzioni nextStep() e previousStep() sono state rimosse

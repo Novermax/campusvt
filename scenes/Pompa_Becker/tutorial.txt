@@ -1,15 +1,21 @@
 # Tutorial per Manutenzione Pompa del Vuoto
 # Questo file definisce la sequenza guidata per la sostituzione del filtro
-
+CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  Posizione=assi:(-2,0,0)              # Posiziona modello specifico 
+ 
 [Pulizia  Filtro e ingrassaggio]                                            // Tutorial principale - sequenza di smontaggio
   CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-  
+//  Posizione=assi:(0.5,0.05,-1)
 
   [Step 1 - Prima vite]                                    // Primo step: rimozione prima vite
   Elemento=models/vite_coperchio_1.glb                         // Modello 3D della prima vite da animare
+  
   Utensile=Mani                                            // Strumento richiesto: lavoro manuale
   Descrizione=Seleziona il tool "Mano" e rimuovi la prima vite del coperchio          // Testo mostrato nel fumetto laterale
   Azione1=svita
@@ -60,8 +66,24 @@
   //Distanza=0.4                                            // Distanza di estrazione (filtro compatto)
   //Durata=1.5                                              // Durata personalizzata: estrazione rapida
 
+ [Step 7 - Aria compressa]
+  Descrizione=Pulisci il filtro con l'aria compressa
+  CameraPos=(-0.2,0.33,0.74)                                      // Posizione assoluta per test
+  CameraTarget=filtro                                  // Focus su centro scena leggermente rialzato
+  CameraZoom=0.5                                               // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  //Modello1=models/assi.glb
+  Elemento=models/filtro.glb
+  Utensile=Aria
+  Azione1=traslazione:(0,0.01,0,0.5)  
+  Azione2=appoggia(0.5)
 
-[Step 7 - Tappodx]                                        // Sesto step: estrazione filtro usurato
+[Step 9 - Tappodx]                                        // Sesto step: estrazione filtro usurato
+  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+  CameraTarget=tappino_grasso_dx                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  
   Elemento=models/tappino_grasso_dx.glb                                     // Modello 3D del filtro da sostituire
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di destra       // Istruzione per rimozione filtro
@@ -69,7 +91,11 @@
   Azione2=appoggia(0.5)
 
 
-[Step 8 - Tapposx]                                        // Sesto step: estrazione filtro usurato
+[Step 10 - Tapposx]                                        // Sesto step: estrazione filtro usurato
+ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+  CameraTarget=tappino_grasso_sx                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
   Elemento=models/tappino_grasso_sx.glb                                     // Modello 3D del filtro da sostituire
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Rimuovi il cappuccio di protezione dell'ingrassatore di sinistra       // Istruzione per rimozione filtro
@@ -77,7 +103,7 @@
   Azione2=appoggia(0.5)
 
 
-[Step 9 - Ingrassatore]                                        // Nono step: movimento ingrassatore
+[Step 11 - Ingrassatore]                                        // Nono step: movimento ingrassatore
   Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Prendi la pompetta del grasso        // Istruzione per movimento
@@ -92,10 +118,12 @@
  
 
 
-[Cambio Filtro Reverse]                                  // Tutorial inverso - sequenza di rimontaggio
+[Togli la culatta]                                  // Tutorial inverso - sequenza di rimontaggio
 // Sequenza per rimontare il filtro e richiudere la pompa
 
-
+  
+  
+  
 [Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa
 // Da implementare: procedura per cambio palette rotore
 

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema Riferimenti _original</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .example {
+            background: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 10px 0;
+        }
+        
+        .api-method {
+            background: #e3f2fd;
+            padding: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 10px 0;
+        }
+        
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        h3 { color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Test Sistema Riferimenti Posizioni Originali</h1>
+            <p>Sistema esteso per riferimenti <code>_original</code> in animazioni e drag & drop</p>
+            <p><strong>Versione:</strong> Novembre 2025 | <strong>Integrazione:</strong> AnimationSystem + DragDropSystem</p>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Panoramica Funzionalità</h2>
+            <p>Il sistema permette di riferirsi alle posizioni originali dei modelli 3D usando la sintassi <code>_original</code>:</p>
+            
+            <div class="example">
+                <h3>Esempi di utilizzo:</h3>
+                <strong>Animazioni:</strong><br>
+                <code>Azione1=traslazione:tappino_grasso_dx_original,(0,0,0,0.8)</code><br><br>
+                
+                <strong>Drag & Drop:</strong><br>
+                <code>DragDropSystem.setCustomSnapTarget('ingrassatore', 'tappino_grasso_dx_original', new THREE.Vector3(0.1,0,0))</code>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎬 Sistema Animazioni - Traslazioni a Posizioni Originali</h2>
+            <p>L'<strong>AnimationSystem</strong> è stato esteso per supportare riferimenti <code>_original</code> nelle traslazioni.</p>
+            
+            <h3>Implementazione:</h3>
+            <div class="code-block">• File: js/core/AnimationSystem.js
+• Funzione: parseMovementOperation() - Rileva suffisso _original
+• Funzione: executeMultiStepMovement() - Usa Scene3D.findModelByName() per riferimenti originali
+• Supporto: Traslazione assoluta verso posizioni iniziali di altri modelli</div>
+            
+            <h3>Sintassi Tutorial:</h3>
+            <div class="example">
+                <strong>Traslazione relativa (esistente):</strong><br>
+                <code>Azione1=traslazione:(-0.2,0,0,0.8)</code><br><br>
+                
+                <strong>Traslazione verso elemento corrente:</strong><br>
+                <code>Azione1=traslazione:tappino_grasso_dx,(0.1,0,0,0.8)</code><br><br>
+                
+                <strong>Traslazione verso posizione originale (NUOVO):</strong><br>
+                <code>Azione1=traslazione:tappino_grasso_dx_original,(0.1,0,0,0.8)</code>
+            </div>
+            
+            <h3>Output Console Esempio:</h3>
+            <div class="code-block">🎯 TRANSLATION: To ORIGINAL position of "tappino_grasso_dx_original" with offset (0.1, 0, 0) duration 0.8s
+🎯 ORIGINAL REF: Found original position for "tappino_grasso_dx_original": (1.500, 0.200, -0.500)
+🎯 ALIGNMENT DEBUG: Calculated final position: (1.600, 0.200, -0.500)</div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔄 Sistema Drag & Drop - Snap a Posizioni Originali</h2>
+            <p>Il <strong>DragDropSystem</strong> supporta ora snap personalizzati verso posizioni originali di altri oggetti.</p>
+            
+            <h3>Implementazione:</h3>
+            <div class="code-block">• File: js/core/DragDropSystem.js
+• Struttura: customSnapTargets Map per memorizzare configurazioni
+• Funzione: findSnapTarget() - Controlla prima target personalizzati, poi posizione originale oggetto
+• API: setCustomSnapTarget(), removeCustomSnapTarget(), getCustomSnapTargets()</div>
+            
+            <h3>API Pubbliche:</h3>
+            <div class="api-method">
+                <strong>setCustomSnapTarget(objectName, targetName, offset)</strong><br>
+                Imposta dove deve snappare un oggetto quando trascinato
+            </div>
+            
+            <div class="api-method">
+                <strong>removeCustomSnapTarget(objectName)</strong><br>
+                Rimuove snap personalizzato (torna al comportamento standard)
+            </div>
+            
+            <div class="api-method">
+                <strong>getCustomSnapTargets()</strong><br>
+                Ottiene tutte le configurazioni snap personalizzate
+            </div>
+            
+            <h3>Esempi d'uso:</h3>
+            <div class="example">
+                <strong>Snap alla posizione corrente di un altro oggetto:</strong><br>
+                <code>DragDropSystem.setCustomSnapTarget('ingrassatore', 'tappino_rosso')</code><br><br>
+                
+                <strong>Snap alla posizione originale di un altro oggetto:</strong><br>
+                <code>DragDropSystem.setCustomSnapTarget('ingrassatore', 'tappino_grasso_dx_original')</code><br><br>
+                
+                <strong>Snap con offset personalizzato:</strong><br>
+                <code>DragDropSystem.setCustomSnapTarget('ingrassatore', 'tappino_grasso_dx_original', new THREE.Vector3(0.1, 0, 0))</code>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Sistema Core - Scene3D findModelByName Esteso</h2>
+            <p>Il sistema core <strong>Scene3D</strong> è stato esteso per gestire riferimenti virtuali alle posizioni originali.</p>
+            
+            <h3>Implementazione:</h3>
+            <div class="code-block">• File: js/scene3d-modular.js
+• Funzione: findModelByName() - Rileva suffisso _original automaticamente
+• Funzione: createOriginalPositionReference() - Crea oggetti virtuali con posizioni originali
+• Sistema: Calcoli bounding box mantenuti per compatibilità</div>
+            
+            <h3>Comportamento:</h3>
+            <div class="example">
+                <strong>Ricerca standard:</strong> <code>Scene3D.findModelByName('filtro')</code> → oggetto reale corrente<br>
+                <strong>Ricerca originale:</strong> <code>Scene3D.findModelByName('filtro_original')</code> → oggetto virtuale con posizione iniziale
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Console</h2>
+            <p>Comandi per testare le nuove funzionalità dalla console del browser:</p>
+            
+            <div class="code-block">// Test sistema animazioni con _original
+// 1. Carica uno scenario con modelli
+// 2. Usa un tutorial con sintassi: Azione1=traslazione:modello_original,(0,0,0,1.0)
+
+// Test sistema drag & drop con _original
+DragDropSystem.enable(['ingrassatore'])
+DragDropSystem.setCustomSnapTarget('ingrassatore', 'filtro_original', new THREE.Vector3(0.1,0,0))
+// Ora trascina l'ingrassatore: snapperà alla posizione originale del filtro + offset
+
+// Test referenze originali dirette
+Scene3D.findModelByName('filtro')          // oggetto corrente
+Scene3D.findModelByName('filtro_original') // posizione originale virtuale
+
+// Verifica configurazioni snap
+DragDropSystem.getCustomSnapTargets()
+
+// Output posizioni per debug
+Scene3D.exportCurrentModelPositions()</div>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Scenari d'Uso</h2>
+            
+            <div class="example">
+                <h3>1. Assemblaggio Sequenziale</h3>
+                L'ingrassatore deve tornare alla posizione originale del tappino dopo essere stato spostato:<br>
+                <code>Azione1=traslazione:tappino_grasso_dx_original,(0,0,0,0.8)</code>
+            </div>
+            
+            <div class="example">
+                <h3>2. Reset Posizioni</h3>
+                Riporta tutti i componenti alle posizioni iniziali per ricominciare assemblaggio:<br>
+                <code>Azione1=traslazione:filtro_original,(0,0,0,1.0)</code><br>
+                <code>Azione2=traslazione:ingrassatore_original,(0,0,0,1.0)</code>
+            </div>
+            
+            <div class="example">
+                <h3>3. Drag & Drop Guidato</h3>
+                L'utente trascina componenti che devono snappare alle posizioni originali:<br>
+                <code>DragDropSystem.setCustomSnapTarget('vite1', 'sede_vite1_original')</code>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔄 Compatibilità</h2>
+            <p><strong>✅ Backward Compatible:</strong> Tutto il codice esistente continua a funzionare</p>
+            <p><strong>✅ Zero Breaking Changes:</strong> API esistenti inalterate</p>
+            <p><strong>✅ Fallback Automatico:</strong> Se riferimento _original non trovato, usa comportamento standard</p>
+            <p><strong>✅ Performance:</strong> Sistema attivato solo quando necessario</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -514,13 +514,14 @@ export class AnimationSystem {
      * Parse single movement operation
      */
     parseMovementOperation(operationString, type) {
-        // Handle translation to target element
+        // Handle translation to target element (including _original references)
         if (type === 'traslazione' && operationString.includes(':') && !operationString.match(/^traslazione:\(/)) {
             const colonIndex = operationString.indexOf(':');
             const afterColon = operationString.substring(colonIndex + 1);
             
             let targetElement = null;
             let offsetValues = null;
+            let isOriginalReference = false;
             
             if (afterColon.includes(',')) {
                 const commaIndex = afterColon.indexOf(',');
@@ -541,14 +542,22 @@ export class AnimationSystem {
                 offsetValues = [0, 0, 0, 1.0]; // Default: no offset, 1s duration
             }
             
-            console.log(`🎯 TRANSLATION: To element "${targetElement}" with offset (${offsetValues[0]}, ${offsetValues[1]}, ${offsetValues[2]}) duration ${offsetValues[3]}s`);
+            // Check if this is a reference to original position
+            isOriginalReference = targetElement.endsWith('_original');
+            
+            if (isOriginalReference) {
+                console.log(`🎯 TRANSLATION: To ORIGINAL position of "${targetElement}" with offset (${offsetValues[0]}, ${offsetValues[1]}, ${offsetValues[2]}) duration ${offsetValues[3]}s`);
+            } else {
+                console.log(`🎯 TRANSLATION: To element "${targetElement}" with offset (${offsetValues[0]}, ${offsetValues[1]}, ${offsetValues[2]}) duration ${offsetValues[3]}s`);
+            }
             
             return {
                 x: offsetValues[0],
                 y: offsetValues[1],
                 z: offsetValues[2], 
                 durata: offsetValues[3],
-                targetElement: targetElement
+                targetElement: targetElement,
+                isOriginalReference: isOriginalReference
             };
         }
         
@@ -642,13 +651,34 @@ export class AnimationSystem {
         
         // Apply translation if present
         if (currentStep.traslazione) {
-            // Translation to target element
+            // Translation to target element (including _original references)
             if (currentStep.traslazione.targetElement) {
-                const targetCenter = this.modelManager.getElementCenter(currentStep.traslazione.targetElement);
+                let targetCenter = null;
+                
+                // Handle _original references using Scene3D system
+                if (currentStep.traslazione.isOriginalReference && window.Scene3D) {
+                    const originalRef = window.Scene3D.findModelByName(currentStep.traslazione.targetElement);
+                    if (originalRef && originalRef.position) {
+                        targetCenter = originalRef.position.clone();
+                        console.log(`🎯 ORIGINAL REF: Found original position for "${currentStep.traslazione.targetElement}": (${targetCenter.x.toFixed(3)}, ${targetCenter.y.toFixed(3)}, ${targetCenter.z.toFixed(3)})`);
+                    } else {
+                        console.log(`⚠️ ORIGINAL REF: Could not find original reference for "${currentStep.traslazione.targetElement}"`);
+                    }
+                } else {
+                    // Standard target element lookup
+                    targetCenter = this.modelManager.getElementCenter(currentStep.traslazione.targetElement);
+                }
+                
                 if (targetCenter) {
                     console.log(`🎯 ALIGNMENT DEBUG: Moving element: "${model.userData?.originalFilename || model.name}"`);
                     console.log(`🎯 ALIGNMENT DEBUG: Current position: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
-                    console.log(`🎯 ALIGNMENT DEBUG: Target center "${currentStep.traslazione.targetElement}": (${targetCenter.x.toFixed(3)}, ${targetCenter.y.toFixed(3)}, ${targetCenter.z.toFixed(3)})`);
+                    
+                    if (currentStep.traslazione.isOriginalReference) {
+                        console.log(`🎯 ALIGNMENT DEBUG: Target ORIGINAL position "${currentStep.traslazione.targetElement}": (${targetCenter.x.toFixed(3)}, ${targetCenter.y.toFixed(3)}, ${targetCenter.z.toFixed(3)})`);
+                    } else {
+                        console.log(`🎯 ALIGNMENT DEBUG: Target center "${currentStep.traslazione.targetElement}": (${targetCenter.x.toFixed(3)}, ${targetCenter.y.toFixed(3)}, ${targetCenter.z.toFixed(3)})`);
+                    }
+                    
                     console.log(`🎯 ALIGNMENT DEBUG: Required offset: (${currentStep.traslazione.x.toFixed(3)}, ${currentStep.traslazione.y.toFixed(3)}, ${currentStep.traslazione.z.toFixed(3)})`);
                     
                     // Move to target center + offset
@@ -1000,7 +1030,7 @@ export class AnimationSystem {
                 'ChiaveBrugola': 'brugola',
                 'ChiaveInglese': 'chiave_inglese',
                 'Mani': 'mano',
-                'Martello': 'martello'
+                'Aria': 'aria'
             };
             
             const mappedTool = toolMapping[step.properties.Utensile];

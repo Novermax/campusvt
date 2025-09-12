@@ -6,7 +6,10 @@
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-  
+
+  Posizione=ingrassatore:(1.5,0.2,-0.5)   # Posiziona filtro.glb a coordinate specifiche
+Rotazione=ingrassatore:(0,90,0)            # Ruota modello assi di 90° sull'asse Y
+
 
   [Step 1 -l'ingrassatore]                                    // Primo step: rimozione prima vite
   Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare

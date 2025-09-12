@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Assemblaggio semplice per test e demo con 3 componenti",
+    "author": "Campus Virtual Training",
+    "createdAt": "2025-09-08",
+    "scenario": "Test"
+  },
+  
+  "sequence": [
+    "base",
+    "filtro", 
+    "coperchio"
+  ],
+  
+  "snapPoints": {
+    "base": {
+      "nodeId": "base",
+      "positions": [
+        {
+          "id": "snap_base_center",
+          "position": [0, 0, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "filtro": {
+      "nodeId": "filtro",
+      "positions": [
+        {
+          "id": "snap_filtro_center",
+          "position": [0, 0.3, 0],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_filtro_offset_a",
+          "position": [0.2, 0.3, 0.2],
+          "rotation": [0, 0.7854, 0]
+        },
+        {
+          "id": "snap_filtro_offset_b",
+          "position": [-0.2, 0.3, -0.2],
+          "rotation": [0, -0.7854, 0]
+        }
+      ]
+    },
+    
+    "coperchio": {
+      "nodeId": "coperchio",
+      "positions": [
+        {
+          "id": "snap_coperchio_top",
+          "position": [0, 0.6, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    }
+  },
+  
+  "dependencies": {
+    "filtro": ["base"],
+    "coperchio": ["base", "filtro"]
+  }
+}

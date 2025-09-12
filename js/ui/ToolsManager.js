@@ -19,7 +19,7 @@ window.ToolsManager = {
         { name: 'brugola', icon: 'utilimages/brugola.png', displayName: 'Brugola' },
         { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png', displayName: 'Chiave Inglese' },
         { name: 'mano', icon: 'utilimages/mano.png', displayName: 'Mano' },
-        { name: 'martello', icon: 'utilimages/martello.png', displayName: 'Martello' }
+        { name: 'aria', icon: 'utilimages/air.png', displayName: 'Aria' }
     ],
     
     // Riferimenti ai moduli
@@ -103,9 +103,11 @@ window.ToolsManager = {
      * Attiva/disattiva uno strumento
      */
     toggleTool: function(toolName) {
-        // Se lo strumento è già attivo, non fare nulla (rimane attivo)
+        // Se lo strumento è già attivo, riapplica comunque il cursore (specialmente per aria)
         if (this.toolsState[toolName]) {
-            console.log(`[ToolsManager] Strumento già attivo: ${toolName}`);
+            console.log(`[ToolsManager] Strumento già attivo: ${toolName} - riapplico cursore`);
+            // Riapplica cursore anche se già attivo (fix per cursore aria)
+            this.applyCursorForTool(toolName);
             return;
         }
         
@@ -136,12 +138,22 @@ window.ToolsManager = {
             return;
         }
         
+        // Disattiva tutti gli altri tool prima di attivare quello nuovo
+        Object.keys(this.toolsState).forEach(otherTool => {
+            if (otherTool !== toolName && this.toolsState[otherTool]) {
+                this.deactivateTool(otherTool);
+            }
+        });
+        
         this.toolsState[toolName] = true;
         
         const element = this.getToolElement(toolName);
         if (element) {
             element.classList.add('active');
         }
+        
+        // Applica cursore personalizzato per tool Aria
+        this.applyCursorForTool(toolName);
         
         const displayName = this.getToolDisplayName(toolName);
         if (this.feedbackManager) {
@@ -181,6 +193,9 @@ window.ToolsManager = {
         if (element) {
             element.classList.remove('active');
         }
+        
+        // Rimuovi cursore personalizzato
+        this.removeCursorForTool(toolName);
         
         // Notifica il cambio di stato
         this.notifyToolStateChanged(toolName, false);
@@ -276,7 +291,7 @@ window.ToolsManager = {
             'ChiaveBrugola': 'brugola',
             'ChiaveInglese': 'chiave_inglese',
             'Mani': 'mano',
-            'Martello': 'martello'
+            'Aria': 'aria'
         };
         
         const toolName = mapping[tutorialToolName];
@@ -288,6 +303,38 @@ window.ToolsManager = {
         
         console.warn(`[ToolsManager] Strumento tutorial non riconosciuto: ${tutorialToolName}`);
         return false;
+    },
+    
+    /**
+     * Evidenzia lo strumento richiesto senza attivarlo
+     */
+    highlightRequiredTool: function(toolName) {
+        if (!toolName) return;
+        
+        // Trova elemento DOM del tool
+        const toolElement = this.getToolElement(toolName);
+        if (!toolElement) {
+            console.log(`[ToolsManager] Elemento tool non trovato: ${toolName}`);
+            return;
+        }
+        
+        // Rimuovi evidenziazione precedente da tutti i tool
+        document.querySelectorAll('.tool-icon').forEach(icon => {
+            icon.classList.remove('required', 'tool-highlight');
+        });
+        
+        // Aggiungi evidenziazione al tool richiesto
+        toolElement.classList.add('required', 'tool-highlight');
+        
+        console.log(`[ToolsManager] Tool evidenziato come richiesto: ${toolName}`);
+        
+        // Rimuovi evidenziazione dopo un certo tempo (se non viene cliccato)
+        setTimeout(() => {
+            if (toolElement && !this.toolsState[toolName]) {
+                toolElement.classList.remove('required', 'tool-highlight');
+                console.log(`[ToolsManager] Evidenziazione tool rimossa: ${toolName}`);
+            }
+        }, 10000); // 10 secondi
     },
     
     /**
@@ -373,6 +420,77 @@ window.ToolsManager = {
     },
     
     /**
+     * Applica cursore personalizzato per strumento
+     */
+    applyCursorForTool: function(toolName) {
+        console.log(`[ToolsManager] applyCursorForTool chiamata con: ${toolName}`);
+        
+        // Rimuovi tutte le classi cursore precedenti
+        document.body.classList.remove('tool-aria-active', 'mouse-pressed');
+        console.log(`[ToolsManager] Classi cursore precedenti rimosse`);
+        
+        if (toolName === 'aria') {
+            document.body.classList.add('tool-aria-active');
+            console.log(`[ToolsManager] Classe 'tool-aria-active' aggiunta al body`);
+            console.log(`[ToolsManager] Body classes attuali:`, Array.from(document.body.classList));
+            console.log(`[ToolsManager] Body cursor computed:`, getComputedStyle(document.body).cursor);
+            
+            // Aggiungi event listeners per stato mouse premuto/rilasciato
+            this.addMouseStateListeners();
+            console.log(`[ToolsManager] Mouse state listeners aggiunti`);
+        }
+    },
+    
+    /**
+     * Rimuovi cursore personalizzato per strumento
+     */
+    removeCursorForTool: function(toolName) {
+        if (toolName === 'aria') {
+            document.body.classList.remove('tool-aria-active', 'mouse-pressed');
+            this.removeMouseStateListeners();
+            console.log(`[ToolsManager] Cursore personalizzato rimosso per: ${toolName}`);
+        }
+    },
+    
+    /**
+     * Aggiungi event listeners per stati mouse
+     */
+    addMouseStateListeners: function() {
+        // Evita duplicazioni
+        this.removeMouseStateListeners();
+        
+        this.mouseDownHandler = (event) => {
+            if (this.getActiveTool() === 'aria') {
+                document.body.classList.add('mouse-pressed');
+            }
+        };
+        
+        this.mouseUpHandler = (event) => {
+            if (this.getActiveTool() === 'aria') {
+                document.body.classList.remove('mouse-pressed');
+            }
+        };
+        
+        document.addEventListener('mousedown', this.mouseDownHandler);
+        document.addEventListener('mouseup', this.mouseUpHandler);
+    },
+    
+    /**
+     * Rimuovi event listeners per stati mouse
+     */
+    removeMouseStateListeners: function() {
+        if (this.mouseDownHandler) {
+            document.removeEventListener('mousedown', this.mouseDownHandler);
+            this.mouseDownHandler = null;
+        }
+        
+        if (this.mouseUpHandler) {
+            document.removeEventListener('mouseup', this.mouseUpHandler);
+            this.mouseUpHandler = null;
+        }
+    },
+
+    /**
      * Cleanup del modulo
      */
     cleanup: function() {
@@ -380,6 +498,12 @@ window.ToolsManager = {
         
         // Disattiva tutti gli strumenti
         this.deactivateAllTools();
+        
+        // Rimuovi event listeners mouse
+        this.removeMouseStateListeners();
+        
+        // Rimuovi classi cursore
+        document.body.classList.remove('tool-aria-active', 'mouse-pressed');
         
         // Reset stato
         this.toolsState = {};

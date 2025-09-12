@@ -218,11 +218,16 @@ window.UICore = {
         const { step, index } = event.detail;
         this.safeLog(3, `Tutorial step cambiato: ${index + 1} - ${step.title}`);
         
-        // Attiva strumento se specificato nello step
+        // NON evidenziare strumento automaticamente - lascia che l'utente impari
         if (step.properties.Utensile && this.modules.toolsManager) {
             const toolName = this.mapToolName(step.properties.Utensile);
             if (toolName) {
-                this.modules.toolsManager.toggleTool(toolName);
+                // Solo log del tool richiesto, senza evidenziazione automatica
+                this.safeLog(2, `Strumento richiesto per step: ${toolName} (senza evidenziazione automatica)`);
+                // NON chiamare highlightRequiredTool - l'utente deve scegliere il tool da solo
+                // if (this.modules.toolsManager.highlightRequiredTool) {
+                //     this.modules.toolsManager.highlightRequiredTool(toolName);
+                // }
             }
         }
     },

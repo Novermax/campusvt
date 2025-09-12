@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Assemblaggio completo pompa Becker con sequenza obbligatoria",
+    "author": "Campus Virtual Training",
+    "createdAt": "2025-09-08",
+    "scenario": "Pompa_Becker"
+  },
+  
+  "sequence": [
+    "base_pompa",
+    "gruppo_rotore", 
+    "gruppo_palette",
+    "coperchio_superiore",
+    "gruppo_viti_fissaggio",
+    "tubo_aspirazione",
+    "tubo_mandata",
+    "controlli_finali"
+  ],
+  
+  "snapPoints": {
+    "base_pompa": {
+      "nodeId": "base_pompa",
+      "positions": [
+        {
+          "id": "snap_base_center",
+          "position": [0, 0, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "rotore": {
+      "nodeId": "gruppo_rotore",
+      "positions": [
+        {
+          "id": "snap_rotore_principale",
+          "position": [0, 0.5, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "paletta_1": {
+      "nodeId": "gruppo_palette",
+      "positions": [
+        {
+          "id": "snap_paletta_1_slot_a",
+          "position": [0.3, 0.5, 0.1],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_paletta_1_slot_b", 
+          "position": [0.3, 0.5, -0.1],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "paletta_2": {
+      "nodeId": "gruppo_palette",
+      "positions": [
+        {
+          "id": "snap_paletta_2_slot_a",
+          "position": [-0.3, 0.5, 0.1],
+          "rotation": [0, 3.14159, 0]
+        },
+        {
+          "id": "snap_paletta_2_slot_b",
+          "position": [-0.3, 0.5, -0.1], 
+          "rotation": [0, 3.14159, 0]
+        }
+      ]
+    },
+    
+    "paletta_3": {
+      "nodeId": "gruppo_palette",
+      "positions": [
+        {
+          "id": "snap_paletta_3_slot_a",
+          "position": [0.1, 0.5, 0.3],
+          "rotation": [0, 1.5708, 0]
+        },
+        {
+          "id": "snap_paletta_3_slot_b",
+          "position": [-0.1, 0.5, 0.3],
+          "rotation": [0, 1.5708, 0]
+        }
+      ]
+    },
+    
+    "coperchio": {
+      "nodeId": "coperchio_superiore", 
+      "positions": [
+        {
+          "id": "snap_coperchio_standard",
+          "position": [0, 1.0, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "vite_m8_1": {
+      "nodeId": "gruppo_viti_fissaggio",
+      "positions": [
+        {
+          "id": "snap_vite_m8_pos1",
+          "position": [0.4, 1.0, 0.4], 
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_vite_m8_pos2",
+          "position": [0.4, 1.0, -0.4],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "vite_m8_2": {
+      "nodeId": "gruppo_viti_fissaggio", 
+      "positions": [
+        {
+          "id": "snap_vite_m8_pos3",
+          "position": [-0.4, 1.0, 0.4],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_vite_m8_pos4", 
+          "position": [-0.4, 1.0, -0.4],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "tubo_aspirazione": {
+      "nodeId": "tubo_aspirazione",
+      "positions": [
+        {
+          "id": "snap_aspirazione_ingresso",
+          "position": [-0.6, 0.5, 0],
+          "rotation": [0, 1.5708, 0]
+        }
+      ]
+    },
+    
+    "tubo_mandata": {
+      "nodeId": "tubo_mandata",
+      "positions": [
+        {
+          "id": "snap_mandata_uscita",
+          "position": [0.6, 0.5, 0], 
+          "rotation": [0, -1.5708, 0]
+        }
+      ]
+    }
+  },
+  
+  "interchangeableNodes": {
+    "gruppo_palette": ["paletta_1", "paletta_2", "paletta_3", "paletta_4"],
+    "gruppo_viti_fissaggio": ["vite_m8_1", "vite_m8_2", "vite_m6_1", "vite_m6_2"],
+    "coperchio_superiore": ["coperchio", "coperchio_rinforzato", "coperchio_trasparente"]
+  },
+  
+  "dependencies": {
+    "gruppo_rotore": ["base_pompa"],
+    "gruppo_palette": ["base_pompa", "gruppo_rotore"],
+    "coperchio_superiore": ["base_pompa", "gruppo_rotore", "gruppo_palette"], 
+    "gruppo_viti_fissaggio": ["coperchio_superiore"],
+    "tubo_aspirazione": ["base_pompa"],
+    "tubo_mandata": ["base_pompa"],
+    "controlli_finali": ["gruppo_viti_fissaggio", "tubo_aspirazione", "tubo_mandata"]
+  }
+}

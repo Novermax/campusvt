@@ -26,7 +26,8 @@
       "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
       "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
       "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
-      "Bash(exit)"
+      "Bash(exit)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": [],

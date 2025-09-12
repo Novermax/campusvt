@@ -503,6 +503,35 @@
     <script>
         // Gestione del login
         document.addEventListener('DOMContentLoaded', function() {
+            // Verifica se l'utente era già loggato (da localStorage)
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    // Verifica se i dati sono ancora validi e non scaduti
+                    if (userData.expiration) {
+                        const expDate = new Date(userData.expiration);
+                        const today = new Date();
+                        if (expDate > today) {
+                            // Login ancora valido
+                            window.currentUser = userData;
+                            document.getElementById('loginPage').classList.add('hidden');
+                            document.getElementById('container').classList.remove('hidden');
+                            document.getElementById('init-loader').classList.add('hidden');
+                            console.log(`🔄 Sessione ripristinata per: ${userData.name}`);
+                            return; // Evita di mostrare il form di login
+                        } else {
+                            // Sessione scaduta, rimuovi dati salvati
+                            localStorage.removeItem('currentUser');
+                            console.log(`⏰ Sessione scaduta per: ${userData.name}`);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Errore ripristino sessione:', e);
+                    localStorage.removeItem('currentUser');
+                }
+            }
+
             const loginForm = document.getElementById('loginForm');
             const loginError = document.getElementById('loginError');
             
@@ -548,7 +577,19 @@
                     }
                     
                     if (authenticated) {
-                        // Login riuscito - mostra data scadenza se presente e nascondi login
+                        // Login riuscito - salva nome utente per uso futuro
+                        window.currentUser = {
+                            name: username,
+                            loginTime: new Date(),
+                            expiration: userExpiration
+                        };
+                        
+                        // Salva anche in localStorage per persistenza
+                        localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
+                        
+                        console.log(`✅ Login riuscito per: ${username}`);
+                        
+                        // Mostra data scadenza se presente e nascondi login
                         if (userExpiration) {
                             const daysLeft = Math.ceil((userExpiration - new Date()) / (1000 * 60 * 60 * 24));
                             const expirationInfo = document.createElement('div');
@@ -587,7 +628,9 @@
     </script>
     
     <!-- Caricamento moduli in ordine di dipendenza -->
+    <script src="js/ui/ToolsManager.js?nocache=1000016"></script>
     <script type="module" src="js/app.js?v=1000010"></script>
+    <script src="js/core/ParticleSystem.js?v=1000017"></script>
     
     <!-- ===== SCRIPT ANALYTICS (opzionale) ===== -->
     <!-- Rimuovi o modifica secondo necessità -->

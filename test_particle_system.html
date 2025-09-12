@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema Particellare - Getto Aria Compressa</title>
+    
+    <!-- CSS base -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .test-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        
+        .test-controls h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        
+        .control-group {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+        
+        .control-group h4 {
+            margin: 0 0 10px 0;
+            color: #FFA726;
+        }
+        
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background: #45a049;
+        }
+        
+        .test-button.danger {
+            background: #f44336;
+        }
+        
+        .test-button.danger:hover {
+            background: #da190b;
+        }
+        
+        .stats {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .instructions {
+            background: #2196F3;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        #canvas3d {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        /* Stili per tools legenda */
+        #toolsContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tool-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #666;
+            transform: scale(1.05);
+        }
+        
+        .tool-icon.active {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        }
+        
+        .tool-icon.required, .tool-icon.tool-highlight {
+            background: rgba(255, 193, 7, 0.3);
+            border-color: #FFC107;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+            animation: toolPulse 1.5s infinite;
+        }
+        
+        @keyframes toolPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(255, 193, 7, 0.8); }
+        }
+        
+        .tool-icon img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0.8);
+        }
+        
+        .tool-icon.active img {
+            filter: brightness(1.2);
+        }
+        
+        .tool-icon::after {
+            content: attr(title);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .tool-icon:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Canvas 3D -->
+    <canvas id="canvas3d"></canvas>
+    
+    <!-- Pannello controlli test -->
+    <div class="test-controls">
+        <h3>🧪 Test Sistema Particellare</h3>
+        
+        <div class="instructions">
+            <strong>Istruzioni:</strong><br>
+            1. Seleziona tool "Aria" dalla legenda<br>
+            2. Clicca su qualsiasi modello 3D<br>
+            3. Osserva l'effetto getto aria + polvere
+        </div>
+        
+        <div class="control-group">
+            <h4>Test Automatici</h4>
+            <button class="test-button" onclick="testAirJet()">
+                💨 Test Getto Aria
+            </button>
+            <button class="test-button" onclick="testDustEffect()">
+                🌪️ Test Effetto Polvere
+            </button>
+            <button class="test-button" onclick="testMultipleEffects()">
+                ✨ Test Effetti Multipli
+            </button>
+        </div>
+        
+        <div class="control-group">
+            <h4>Controlli Sistema</h4>
+            <button class="test-button" onclick="clearAllEffects()">
+                🧹 Rimuovi Tutti Effetti
+            </button>
+            <button class="test-button" onclick="toggleSystem()">
+                ⚡ Abilita/Disabilita Sistema
+            </button>
+            <button class="test-button danger" onclick="testParticlePerformance()">
+                ⚠️ Test Performance (1000+ particelle)
+            </button>
+        </div>
+        
+        <div class="control-group">
+            <h4>Statistiche Sistema</h4>
+            <div class="stats" id="systemStats">
+                Caricamento statistiche...
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r155/three.min.js"></script>
+    
+    <!-- Sistema particellare -->
+    <script src="js/core/ParticleSystem.js"></script>
+    
+    <!-- Configurazione e sistemi base -->
+    <script src="js/config.js"></script>
+    <script src="js/ui/UICore.js"></script>
+    <script src="js/ui/ToolsManager.js"></script>
+    <script src="js/scene3d-modular.js"></script>
+
+    <script>
+        // Variabili globali per test
+        let testScene, testCamera, testRenderer, testCanvas;
+        let particleSystem;
+        
+        // Inizializzazione test
+        function initTest() {
+            console.log('[TEST] Inizializzazione sistema test...');
+            
+            // Setup canvas
+            testCanvas = document.getElementById('canvas3d');
+            
+            // Setup Three.js base
+            testScene = new THREE.Scene();
+            testScene.background = new THREE.Color(0x1a1a1a);
+            
+            // Camera
+            const aspect = window.innerWidth / window.innerHeight;
+            testCamera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+            testCamera.position.set(5, 3, 5);
+            testCamera.lookAt(0, 0, 0);
+            
+            // Renderer
+            testRenderer = new THREE.WebGLRenderer({ 
+                canvas: testCanvas,
+                antialias: true,
+                alpha: true 
+            });
+            testRenderer.setSize(window.innerWidth, window.innerHeight);
+            testRenderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Luci
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            testScene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            testScene.add(directionalLight);
+            
+            // Aggiungi alcuni modelli di test
+            addTestModels();
+            
+            // Inizializza sistema particellare
+            if (window.ParticleSystem) {
+                particleSystem = window.ParticleSystem.init(testScene, testCamera);
+                console.log('[TEST] ✅ Sistema particellare inizializzato');
+            } else {
+                console.error('[TEST] ❌ ParticleSystem non trovato');
+                return;
+            }
+            
+            // Inizializza ToolsManager
+            initToolsManager();
+            
+            // Setup controlli mouse
+            setupMouseControls();
+            
+            // Avvia render loop
+            animate();
+            
+            // Aggiorna statistiche periodicamente
+            setInterval(updateStats, 1000);
+            
+            console.log('[TEST] ✅ Inizializzazione completata');
+        }
+        
+        function addTestModels() {
+            // Cubo di test
+            const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x4CAF50 });
+            const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            cube.position.set(-2, 0.5, 0);
+            testScene.add(cube);
+            
+            // Sfera di test  
+            const sphereGeometry = new THREE.SphereGeometry(0.8, 16, 16);
+            const sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x2196F3 });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            sphere.position.set(2, 0.8, 0);
+            testScene.add(sphere);
+            
+            // Piano di supporto
+            const planeGeometry = new THREE.PlaneGeometry(10, 10);
+            const planeMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0x666666, 
+                side: THREE.DoubleSide 
+            });
+            const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.rotation.x = -Math.PI / 2;
+            testScene.add(plane);
+            
+            console.log('[TEST] Modelli di test aggiunti');
+        }
+        
+        function initToolsManager() {
+            if (window.ToolsManager) {
+                // Crea container tools se non esiste
+                let toolsContainer = document.getElementById('toolsContainer');
+                if (!toolsContainer) {
+                    toolsContainer = document.createElement('div');
+                    toolsContainer.id = 'toolsContainer';
+                    toolsContainer.style.cssText = `
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        display: flex;
+                        gap: 10px;
+                        z-index: 1000;
+                    `;
+                    document.body.appendChild(toolsContainer);
+                    console.log('[TEST] Container tools creato:', toolsContainer);
+                }
+                
+                // Inizializza ToolsManager
+                window.ToolsManager.init({
+                    updateStatus: (status) => console.log('[ToolsManager]', status)
+                });
+                
+                // Debug: verifica tools disponibili
+                console.log('[TEST] Tools disponibili:', window.ToolsManager.availableTools);
+                console.log('[TEST] Container tools trovato:', document.getElementById('toolsContainer'));
+                
+                // Forza un refresh dei tools
+                setTimeout(() => {
+                    const container = document.getElementById('toolsContainer');
+                    console.log('[TEST] Tools nel container dopo init:', container.children.length);
+                    
+                    // Se non ci sono tools, li creiamo manualmente
+                    if (container.children.length === 0) {
+                        console.log('[TEST] Nessun tool trovato, creazione manuale...');
+                        createManualTools();
+                    }
+                }, 100);
+                
+                console.log('[TEST] ToolsManager inizializzato');
+            } else {
+                console.error('[TEST] ToolsManager non disponibile!');
+                // Creiamo i tools manualmente
+                createManualTools();
+            }
+        }
+        
+        function createManualTools() {
+            console.log('[TEST] Creazione manuale tools...');
+            
+            const toolsContainer = document.getElementById('toolsContainer');
+            if (!toolsContainer) {
+                console.error('[TEST] Container tools non trovato');
+                return;
+            }
+            
+            const tools = [
+                { name: 'brugola', icon: 'utilimages/brugola.png', displayName: 'Brugola' },
+                { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png', displayName: 'Chiave Inglese' },
+                { name: 'mano', icon: 'utilimages/mano.png', displayName: 'Mano' },
+                { name: 'aria', icon: 'utilimages/air.png', displayName: 'Aria' }
+            ];
+            
+            // Stato tools manuale
+            window.manualToolsState = {};
+            
+            tools.forEach(tool => {
+                const toolElement = document.createElement('div');
+                toolElement.className = 'tool-icon';
+                toolElement.dataset.tool = tool.name;
+                toolElement.title = tool.displayName;
+                
+                const img = document.createElement('img');
+                img.src = tool.icon;
+                img.alt = tool.displayName;
+                img.onerror = function() {
+                    console.warn(`[TEST] Icona non trovata: ${tool.icon}`);
+                    this.style.display = 'none';
+                    // Mostra testo come fallback
+                    toolElement.innerHTML = `<span style="color: white; font-size: 10px;">${tool.displayName}</span>`;
+                };
+                
+                toolElement.appendChild(img);
+                toolElement.addEventListener('click', () => {
+                    // Disattiva tutti gli altri
+                    document.querySelectorAll('.tool-icon').forEach(el => {
+                        el.classList.remove('active');
+                        window.manualToolsState[el.dataset.tool] = false;
+                    });
+                    
+                    // Attiva questo
+                    toolElement.classList.add('active');
+                    window.manualToolsState[tool.name] = true;
+                    
+                    console.log(`[TEST] Tool attivato: ${tool.name}`);
+                });
+                
+                toolsContainer.appendChild(toolElement);
+                window.manualToolsState[tool.name] = false;
+            });
+            
+            // Override funzione getActiveTool per il sistema manuale
+            window.getManualActiveTool = function() {
+                for (const [toolName, isActive] of Object.entries(window.manualToolsState)) {
+                    if (isActive) return toolName;
+                }
+                return null;
+            };
+            
+            console.log('[TEST] ✅ Tools manuali creati');
+        }
+        
+        function setupMouseControls() {
+            let mouseDown = false;
+            let mouseX = 0, mouseY = 0;
+            
+            testCanvas.addEventListener('mousedown', (event) => {
+                mouseDown = true;
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            });
+            
+            testCanvas.addEventListener('mouseup', (event) => {
+                if (mouseDown) {
+                    const deltaX = Math.abs(event.clientX - mouseX);
+                    const deltaY = Math.abs(event.clientY - mouseY);
+                    
+                    // Se movimento minimo, considera come click
+                    if (deltaX < 5 && deltaY < 5) {
+                        handleTestClick(event);
+                    }
+                }
+                mouseDown = false;
+            });
+            
+            testCanvas.addEventListener('mousemove', (event) => {
+                if (mouseDown) {
+                    const deltaX = (event.clientX - mouseX) * 0.01;
+                    const deltaY = (event.clientY - mouseY) * 0.01;
+                    
+                    // Rotazione camera semplice
+                    const spherical = new THREE.Spherical();
+                    spherical.setFromVector3(testCamera.position);
+                    spherical.theta -= deltaX;
+                    spherical.phi += deltaY;
+                    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+                    
+                    testCamera.position.setFromSpherical(spherical);
+                    testCamera.lookAt(0, 0, 0);
+                    
+                    mouseX = event.clientX;
+                    mouseY = event.clientY;
+                }
+            });
+        }
+        
+        function handleTestClick(event) {
+            // Verifica tool attivo (prima ToolsManager, poi sistema manuale)
+            let activeTool = null;
+            if (window.ToolsManager && window.ToolsManager.getActiveTool) {
+                activeTool = window.ToolsManager.getActiveTool();
+            } else if (window.getManualActiveTool) {
+                activeTool = window.getManualActiveTool();
+            }
+            
+            console.log('[TEST] Click rilevato, tool attivo:', activeTool);
+            
+            // Simula il comportamento del tool Aria
+            if (activeTool === 'aria') {
+                const rect = testCanvas.getBoundingClientRect();
+                const mouse = new THREE.Vector2();
+                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+                
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(mouse, testCamera);
+                const intersects = raycaster.intersectObjects(testScene.children, true);
+                
+                if (intersects.length > 0) {
+                    const intersection = intersects[0];
+                    const intersectPoint = intersection.point;
+                    const normal = intersection.face ? intersection.face.normal.clone() : new THREE.Vector3(0, 1, 0);
+                    
+                    // Posizione effetto
+                    const effectPosition = intersectPoint.clone().add(normal.multiplyScalar(0.05));
+                    const jetDirection = normal.clone().normalize();
+                    
+                    console.log('[TEST] 💨 Click con tool Aria - Creando effetto particellare');
+                    
+                    // Crea getto aria
+                    particleSystem.createAirJet(effectPosition, jetDirection, {
+                        particleCount: 400,
+                        life: 1.5,
+                        speed: { min: 10, max: 25 }
+                    });
+                    
+                    // Crea effetto polvere
+                    setTimeout(() => {
+                        particleSystem.createDustEffect(intersectPoint, {
+                            particleCount: 200,
+                            life: 2.5
+                        });
+                    }, 150);
+                }
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Aggiorna sistema particellare
+            if (particleSystem && particleSystem.isActive) {
+                particleSystem.update(0.016);
+            }
+            
+            testRenderer.render(testScene, testCamera);
+        }
+        
+        function updateStats() {
+            if (particleSystem) {
+                const stats = particleSystem.getStats();
+                
+                // Ottieni tool attivo da qualsiasi sistema disponibile
+                let activeTool = 'nessuno';
+                if (window.ToolsManager && window.ToolsManager.getActiveTool) {
+                    activeTool = window.ToolsManager.getActiveTool() || 'nessuno';
+                } else if (window.getManualActiveTool) {
+                    activeTool = window.getManualActiveTool() || 'nessuno';
+                }
+                
+                document.getElementById('systemStats').innerHTML = `
+                    Sistema Attivo: ${stats.isActive ? '✅' : '❌'}<br>
+                    Effetti Attivi: ${stats.activeEffects}<br>
+                    Particelle Totali: ${stats.totalParticles}<br>
+                    Tool Attivo: ${activeTool}<br>
+                    FPS: ${Math.round(1000/16)} (stimato)
+                `;
+            }
+        }
+        
+        // Funzioni test esposte globalmente
+        window.testAirJet = function() {
+            if (!particleSystem) return;
+            
+            const testPos = new THREE.Vector3(0, 1, 0);
+            const testDir = new THREE.Vector3(1, 0.2, 0).normalize();
+            
+            particleSystem.createAirJet(testPos, testDir);
+            console.log('[TEST] Getto aria di test creato');
+        };
+        
+        window.testDustEffect = function() {
+            if (!particleSystem) return;
+            
+            const testPos = new THREE.Vector3(-1, 0, 1);
+            particleSystem.createDustEffect(testPos);
+            console.log('[TEST] Effetto polvere di test creato');
+        };
+        
+        window.testMultipleEffects = function() {
+            if (!particleSystem) return;
+            
+            for (let i = 0; i < 5; i++) {
+                const pos = new THREE.Vector3(
+                    (Math.random() - 0.5) * 4,
+                    Math.random() * 2,
+                    (Math.random() - 0.5) * 4
+                );
+                const dir = new THREE.Vector3(
+                    Math.random() - 0.5,
+                    Math.random() * 0.5 + 0.2,
+                    Math.random() - 0.5
+                ).normalize();
+                
+                particleSystem.createAirJet(pos, dir, {
+                    particleCount: 200,
+                    life: 0.5
+                });
+            }
+            console.log('[TEST] 5 effetti multipli creati');
+        };
+        
+        window.clearAllEffects = function() {
+            if (particleSystem) {
+                particleSystem.clearAllEffects();
+                console.log('[TEST] Tutti gli effetti rimossi');
+            }
+        };
+        
+        window.toggleSystem = function() {
+            if (particleSystem) {
+                const newState = !particleSystem.isActive;
+                particleSystem.setEnabled(newState);
+                console.log(`[TEST] Sistema particellare ${newState ? 'abilitato' : 'disabilitato'}`);
+            }
+        };
+        
+        window.testParticlePerformance = function() {
+            if (!particleSystem) return;
+            
+            console.log('[TEST] ⚠️ Test performance - Creando 1000+ particelle...');
+            
+            for (let i = 0; i < 10; i++) {
+                const pos = new THREE.Vector3(
+                    (Math.random() - 0.5) * 6,
+                    Math.random() * 3,
+                    (Math.random() - 0.5) * 6
+                );
+                const dir = new THREE.Vector3(0, 1, 0);
+                
+                particleSystem.createAirJet(pos, dir, {
+                    particleCount: 150,
+                    life: 5.0
+                });
+            }
+        };
+        
+        // Gestione resize
+        window.addEventListener('resize', () => {
+            if (testCamera && testRenderer) {
+                testCamera.aspect = window.innerWidth / window.innerHeight;
+                testCamera.updateProjectionMatrix();
+                testRenderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+        
+        // Inizializza quando la pagina è caricata
+        window.addEventListener('load', initTest);
+        
+    </script>
+</body>
+</html>

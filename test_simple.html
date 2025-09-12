@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema Base - Controllo Errori</title>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f0f0;
+        }
+        
+        #status {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+        }
+        
+        .error { 
+            color: #d32f2f; 
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        .success { 
+            color: #388e3c; 
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        .warning { 
+            color: #f57c00; 
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        #console {
+            background: #1e1e1e;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+        
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Sistema Base - Diagnosi Errori</h1>
+    
+    <div id="status">
+        <h3>Stato Inizializzazione:</h3>
+        <div id="statusContent">Avvio in corso...</div>
+    </div>
+    
+    <div id="console"></div>
+    
+    <canvas id="canvas3d" width="800" height="600"></canvas>
+    
+    <!-- Core Scripts senza DragDrop -->
+    <script>
+        // Console personalizzata per catturare tutti gli errori
+        const originalConsole = {
+            log: console.log,
+            warn: console.warn, 
+            error: console.error
+        };
+        
+        const consoleDiv = document.getElementById('console');
+        const statusDiv = document.getElementById('statusContent');
+        
+        let logs = [];
+        
+        function addLog(type, ...args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.join(' ');
+            logs.push(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+            
+            consoleDiv.textContent = logs.slice(-50).join('\n');
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            
+            // Aggiorna status
+            updateStatus();
+            
+            // Chiama console originale
+            originalConsole[type](...args);
+        }
+        
+        console.log = (...args) => addLog('log', ...args);
+        console.warn = (...args) => addLog('warn', ...args);
+        console.error = (...args) => addLog('error', ...args);
+        
+        function updateStatus() {
+            const errors = logs.filter(log => log.includes('ERROR')).length;
+            const warnings = logs.filter(log => log.includes('WARN')).length;
+            
+            if (errors > 0) {
+                statusDiv.innerHTML = `<div class="error">❌ ${errors} errori rilevati</div>`;
+            } else if (warnings > 0) {
+                statusDiv.innerHTML = `<div class="warning">⚠️ ${warnings} avvertimenti</div>`;
+            } else {
+                statusDiv.innerHTML = `<div class="success">✅ Sistema funzionante</div>`;
+            }
+        }
+        
+        // Configurazione minimale
+        window.AppConfig = {
+            log: function(level, message) {
+                console.log(`[${level}] ${message}`);
+            }
+        };
+        
+        // Test caricamento moduli
+        console.log('🚀 Avvio test sistema base...');
+        
+        // Verifica esistenza moduli
+        function checkModule(name, path) {
+            fetch(path)
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`✅ Modulo ${name} accessibile`);
+                    } else {
+                        console.error(`❌ Modulo ${name} non accessibile: ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`❌ Errore caricamento ${name}: ${error.message}`);
+                });
+        }
+        
+        // Test moduli
+        checkModule('Scene3D', './js/scene3d-modular.js');
+        checkModule('DragDropSystem', './js/core/DragDropSystem.js');
+        checkModule('Config', './js/config.js');
+        checkModule('ModelLoader', './js/modelloader.js');
+        checkModule('UI', './js/ui.js');
+    </script>
+    
+    <!-- Test caricamento dinamico -->
+    <script>
+        async function loadAndTestModules() {
+            try {
+                console.log('📦 Test caricamento dinamico moduli...');
+                
+                // Carica config
+                await loadScript('./js/config.js');
+                console.log('✅ Config caricato');
+                
+                // Carica DragDropSystem (opzionale)
+                try {
+                    await loadScript('./js/core/DragDropSystem.js');
+                    console.log('✅ DragDropSystem caricato');
+                } catch (error) {
+                    console.warn('⚠️ DragDropSystem non caricabile:', error.message);
+                }
+                
+                // Carica Scene3D
+                await loadScript('./js/scene3d-modular.js');
+                console.log('✅ Scene3D caricato');
+                
+                // Test inizializzazione
+                console.log('🔧 Test inizializzazione Scene3D...');
+                
+                if (typeof window.Scene3D !== 'undefined') {
+                    console.log('✅ window.Scene3D disponibile');
+                    
+                    // Controlla metodi
+                    const methods = ['init', 'enableDragDrop', 'disableDragDrop', 'isDragDropEnabled'];
+                    methods.forEach(method => {
+                        if (typeof window.Scene3D[method] === 'function') {
+                            console.log(`✅ Metodo ${method} disponibile`);
+                        } else {
+                            console.error(`❌ Metodo ${method} mancante`);
+                        }
+                    });
+                    
+                } else {
+                    console.error('❌ window.Scene3D non definito');
+                }
+                
+            } catch (error) {
+                console.error('❌ Errore durante test:', error.message);
+                console.error(error.stack);
+            }
+        }
+        
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error(`Errore caricamento ${src}`));
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Avvia test dopo un secondo
+        setTimeout(loadAndTestModules, 1000);
+        
+        // Gestione errori globali
+        window.addEventListener('error', (event) => {
+            console.error('ERRORE GLOBALE:', event.error?.message || event.message);
+            console.error('File:', event.filename);
+            console.error('Linea:', event.lineno);
+        });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('PROMISE RIFIUTATA:', event.reason);
+        });
+        
+    </script>
+</body>
+</html>

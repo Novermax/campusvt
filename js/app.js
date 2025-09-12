@@ -193,6 +193,15 @@ window.App = {
         try {
             // Carica i moduli in sequenza (ora con architettura modulare)
             await this.loadModule('./js/config.js?nocache=999999');
+            
+            // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
+            try {
+                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000012');
+                console.log('✅ Sistema drag & drop caricato');
+            } catch (error) {
+                console.warn('⚠️ DragDropSystem non caricato (opzionale):', error.message);
+            }
+            
             await this.loadModule('./js/scene3d-modular.js?nocache=1000010');  // Modulo modulare compatibile
             await this.loadModule('./js/modelloader.js?nocache=1000011');
             await this.loadModule('./js/ui.js?nocache=1000006');

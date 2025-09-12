@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembly System - Working Demo - Campus Virtual Training</title>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r155/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r155/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.0/tween.umd.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+        
+        .main-content {
+            flex: 1;
+            position: relative;
+        }
+        
+        #canvas-container {
+            width: 100%;
+            height: 100vh;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .section h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #1976D2;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 6px;
+            margin: 5px 0;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 12px;
+        }
+        
+        .status {
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .info-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        
+        .info-overlay h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        
+        .stat-value {
+            color: #2196F3;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>🏗️ Assembly System Demo</h2>
+            
+            <!-- System Status -->
+            <div class="section">
+                <h3>System Status</h3>
+                <div class="status" id="systemStatus">
+                    <div class="loading">Initializing...</div>
+                </div>
+            </div>
+            
+            <!-- Scene Control -->
+            <div class="section">
+                <h3>Scene Control</h3>
+                <button class="btn btn-primary" onclick="initializeScene()">Initialize Scene</button>
+                <button class="btn btn-secondary" onclick="createTestObjects()">Create Test Objects</button>
+                <button class="btn btn-danger" onclick="clearScene()">Clear Scene</button>
+            </div>
+            
+            <!-- Assembly Configuration -->
+            <div class="section">
+                <h3>Assembly Configuration</h3>
+                <select id="configType">
+                    <option value="simple">Simple Assembly (3 parts)</option>
+                    <option value="complex">Complex Assembly (5 parts)</option>
+                    <option value="interchangeable">Interchangeable Nodes</option>
+                </select>
+                <button class="btn btn-primary" onclick="loadAssemblyConfig()">Load Configuration</button>
+                <button class="btn btn-secondary" onclick="showCurrentConfig()">Show Config</button>
+            </div>
+            
+            <!-- Assembly Control -->
+            <div class="section">
+                <h3>Assembly Control</h3>
+                <button class="btn btn-primary" onclick="enableAssemblyMode()">Enable Assembly Mode</button>
+                <button class="btn btn-secondary" onclick="disableAssemblyMode()">Disable Assembly Mode</button>
+                <div style="margin: 10px 0;">
+                    <label>Current Step:</label>
+                    <select id="stepSelector">
+                        <option value="">-- No Steps --</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="setAssemblyStep()">Set Step</button>
+                </div>
+            </div>
+            
+            <!-- Drag & Drop Control -->
+            <div class="section">
+                <h3>Drag & Drop</h3>
+                <button class="btn btn-primary" onclick="enableDragDrop()">Enable Drag & Drop</button>
+                <button class="btn btn-secondary" onclick="disableDragDrop()">Disable Drag & Drop</button>
+                <button class="btn btn-secondary" onclick="showSnapIndicators()">Show Snap Zones</button>
+            </div>
+            
+            <!-- Testing Tools -->
+            <div class="section">
+                <h3>Testing Tools</h3>
+                <select id="componentSelector">
+                    <option value="">-- Select Component --</option>
+                </select>
+                <button class="btn btn-secondary" onclick="testComponentMountable()">Test Mountable</button>
+                <button class="btn btn-secondary" onclick="highlightComponent()">Highlight Component</button>
+                <button class="btn btn-secondary" onclick="showComponentSnapPoints()">Show Snap Points</button>
+            </div>
+            
+            <!-- Assembly Actions -->
+            <div class="section">
+                <h3>Assembly Actions</h3>
+                <button class="btn btn-secondary" onclick="undoLastAction()">Undo</button>
+                <button class="btn btn-secondary" onclick="redoLastAction()">Redo</button>
+                <button class="btn btn-danger" onclick="resetAssembly()">Reset Assembly</button>
+                <button class="btn btn-secondary" onclick="validateAssembly()">Validate Assembly</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div id="canvas-container"></div>
+            
+            <!-- Info Overlay -->
+            <div class="info-overlay">
+                <h4>Assembly Info</h4>
+                <div class="stat">
+                    <span>Mode:</span>
+                    <span class="stat-value" id="currentMode">Disabled</span>
+                </div>
+                <div class="stat">
+                    <span>Step:</span>
+                    <span class="stat-value" id="currentStep">0/0</span>
+                </div>
+                <div class="stat">
+                    <span>Objects:</span>
+                    <span class="stat-value" id="objectCount">0</span>
+                </div>
+                <div class="stat">
+                    <span>Mounted:</span>
+                    <span class="stat-value" id="mountedCount">0</span>
+                </div>
+                <div class="stat">
+                    <span>Dragging:</span>
+                    <span class="stat-value" id="draggingStatus">No</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Core Scripts -->
+    <script src="js/core/DragDropSystem.js"></script>
+    <script src="js/core/AssemblySystem.js"></script>
+    <script src="js/core/AssemblyConfigParser.js"></script>
+    
+    <script>
+        // Global state
+        let scene = null;
+        let camera = null;
+        let renderer = null;
+        let controls = null;
+        let raycaster = null;
+        let mouse = null;
+        let canvas = null;
+        
+        // Scene3D compatibility object
+        const Scene3D = {
+            scene: null,
+            camera: null,
+            renderer: null,
+            canvas: null,
+            raycaster: null,
+            mouse: null,
+            loadedModels: [],
+            init: async function() {
+                // Already initialized by initializeScene
+                return true;
+            }
+        };
+        
+        // Make Scene3D global
+        window.Scene3D = Scene3D;
+        
+        let currentAssemblyConfig = null;
+        let testObjects = [];
+        
+        // Assembly configurations
+        const assemblyConfigs = {
+            simple: {
+                sequence: ["base", "filtro", "coperchio"],
+                snapPoints: {
+                    "base": {
+                        nodeId: "base",
+                        positions: [
+                            { id: "base_center", position: [0, 0, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "filtro": {
+                        nodeId: "filtro",
+                        positions: [
+                            { id: "filtro_center", position: [0, 0.4, 0], rotation: [0, 0, 0] },
+                            { id: "filtro_offset", position: [0.3, 0.4, 0.3], rotation: [0, 0.7854, 0] }
+                        ]
+                    },
+                    "coperchio": {
+                        nodeId: "coperchio",
+                        positions: [
+                            { id: "coperchio_top", position: [0, 0.8, 0], rotation: [0, 0, 0] }
+                        ]
+                    }
+                },
+                dependencies: {
+                    "filtro": ["base"],
+                    "coperchio": ["base", "filtro"]
+                }
+            },
+            
+            complex: {
+                sequence: ["base", "gruppo_viti", "filtro", "coperchio", "maniglia"],
+                snapPoints: {
+                    "base": {
+                        nodeId: "base",
+                        positions: [
+                            { id: "base_center", position: [0, 0, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "vite_1": {
+                        nodeId: "gruppo_viti",
+                        positions: [
+                            { id: "vite_pos_1", position: [0.4, 0.1, 0.4], rotation: [0, 0, 0] },
+                            { id: "vite_pos_2", position: [0.4, 0.1, -0.4], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "vite_2": {
+                        nodeId: "gruppo_viti",
+                        positions: [
+                            { id: "vite_pos_3", position: [-0.4, 0.1, 0.4], rotation: [0, 0, 0] },
+                            { id: "vite_pos_4", position: [-0.4, 0.1, -0.4], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "filtro": {
+                        nodeId: "filtro",
+                        positions: [
+                            { id: "filtro_main", position: [0, 0.3, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "coperchio": {
+                        nodeId: "coperchio",
+                        positions: [
+                            { id: "coperchio_final", position: [0, 0.6, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "maniglia": {
+                        nodeId: "maniglia",
+                        positions: [
+                            { id: "maniglia_top", position: [0, 0.9, 0], rotation: [0, 0, 0] }
+                        ]
+                    }
+                },
+                interchangeableNodes: {
+                    "gruppo_viti": ["vite_1", "vite_2"]
+                },
+                dependencies: {
+                    "gruppo_viti": ["base"],
+                    "filtro": ["base", "gruppo_viti"],
+                    "coperchio": ["base", "filtro"],
+                    "maniglia": ["coperchio"]
+                }
+            },
+            
+            interchangeable: {
+                sequence: ["base", "gruppo_connettori", "coperchio"],
+                snapPoints: {
+                    "base": {
+                        nodeId: "base",
+                        positions: [
+                            { id: "base_center", position: [0, 0, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "filtro": {
+                        nodeId: "gruppo_connettori",
+                        positions: [
+                            { id: "conn_slot_1", position: [0.3, 0.2, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "vite_1": {
+                        nodeId: "gruppo_connettori",
+                        positions: [
+                            { id: "conn_slot_2", position: [-0.3, 0.2, 0], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "vite_2": {
+                        nodeId: "gruppo_connettori",
+                        positions: [
+                            { id: "conn_slot_3", position: [0, 0.2, 0.3], rotation: [0, 0, 0] }
+                        ]
+                    },
+                    "coperchio": {
+                        nodeId: "coperchio",
+                        positions: [
+                            { id: "coperchio_top", position: [0, 0.6, 0], rotation: [0, 0, 0] }
+                        ]
+                    }
+                },
+                interchangeableNodes: {
+                    "gruppo_connettori": ["filtro", "vite_1", "vite_2"]
+                },
+                dependencies: {
+                    "gruppo_connettori": ["base"],
+                    "coperchio": ["base", "gruppo_connettori"]
+                }
+            }
+        };
+        
+        // Initialize Three.js scene
+        function initializeScene() {
+            log('🚀 Initializing Three.js scene...');
+            
+            try {
+                // Scene
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x1a1a2e);
+                
+                // Camera
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(2, 2, 2);
+                
+                // Renderer
+                const container = document.getElementById('canvas-container');
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                container.appendChild(renderer.domElement);
+                canvas = renderer.domElement;
+                
+                // Controls
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                
+                // Raycaster and mouse
+                raycaster = new THREE.Raycaster();
+                mouse = new THREE.Vector2();
+                
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 5, 5);
+                directionalLight.castShadow = true;
+                directionalLight.shadow.mapSize.width = 2048;
+                directionalLight.shadow.mapSize.height = 2048;
+                scene.add(directionalLight);
+                
+                // Ground plane
+                const groundGeometry = new THREE.PlaneGeometry(10, 10);
+                const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x333333 });
+                const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+                ground.rotation.x = -Math.PI / 2;
+                ground.receiveShadow = true;
+                ground.name = 'ground';
+                scene.add(ground);
+                
+                // Update Scene3D object
+                Scene3D.scene = scene;
+                Scene3D.camera = camera;
+                Scene3D.renderer = renderer;
+                Scene3D.canvas = canvas;
+                Scene3D.raycaster = raycaster;
+                Scene3D.mouse = mouse;
+                Scene3D.loadedModels = [];
+                
+                // Initialize systems
+                if (!window.DragDropSystem.init(Scene3D)) {
+                    throw new Error('DragDropSystem initialization failed');
+                }
+                
+                if (!window.AssemblySystem.init(Scene3D)) {
+                    throw new Error('AssemblySystem initialization failed');
+                }
+                
+                // Start animation loop
+                animate();
+                
+                // Resize handler
+                window.addEventListener('resize', onWindowResize, false);
+                
+                log('✅ Scene initialized successfully');
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Scene initialization failed: ${error.message}`);
+                console.error(error);
+            }
+        }
+        
+        // Create test objects
+        function createTestObjects() {
+            if (!scene) {
+                log('❌ Scene not initialized');
+                return;
+            }
+            
+            log('📦 Creating test objects...');
+            
+            // Clear existing test objects
+            testObjects.forEach(obj => {
+                scene.remove(obj);
+                obj.geometry?.dispose();
+                obj.material?.dispose();
+            });
+            testObjects = [];
+            Scene3D.loadedModels = [];
+            
+            // Object definitions with colors and positions
+            const objectDefs = [
+                { name: 'base', color: 0x4CAF50, position: [0, 0.1, 0], size: [0.8, 0.2, 0.8] },
+                { name: 'filtro', color: 0x2196F3, position: [1.5, 0.15, 0], size: [0.4, 0.3, 0.4] },
+                { name: 'coperchio', color: 0xFF9800, position: [-1.5, 0.1, 0], size: [0.6, 0.2, 0.6] },
+                { name: 'vite_1', color: 0xE91E63, position: [0, 0.15, 1.5], size: [0.1, 0.3, 0.1] },
+                { name: 'vite_2', color: 0x9C27B0, position: [0, 0.15, -1.5], size: [0.1, 0.3, 0.1] },
+                { name: 'maniglia', color: 0x00BCD4, position: [1.5, 0.15, 1.5], size: [0.3, 0.1, 0.1] }
+            ];
+            
+            objectDefs.forEach(def => {
+                const geometry = new THREE.BoxGeometry(...def.size);
+                const material = new THREE.MeshLambertMaterial({ color: def.color });
+                const mesh = new THREE.Mesh(geometry, material);
+                
+                mesh.position.set(...def.position);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.name = def.name;
+                mesh.userData.isTestObject = true;
+                mesh.userData.originalPosition = mesh.position.clone();
+                
+                scene.add(mesh);
+                testObjects.push(mesh);
+                Scene3D.loadedModels.push(mesh);
+            });
+            
+            // Update component selector
+            updateComponentSelector();
+            
+            log(`✅ Created ${objectDefs.length} test objects`);
+            updateInfo();
+        }
+        
+        // Clear scene
+        function clearScene() {
+            if (!scene) return;
+            
+            log('🗑️ Clearing scene...');
+            
+            // Remove test objects
+            testObjects.forEach(obj => {
+                scene.remove(obj);
+                obj.geometry?.dispose();
+                obj.material?.dispose();
+            });
+            testObjects = [];
+            Scene3D.loadedModels = [];
+            
+            // Reset systems
+            window.AssemblySystem.reset();
+            window.DragDropSystem.reset();
+            
+            // Update UI
+            updateComponentSelector();
+            updateStepSelector();
+            
+            log('✅ Scene cleared');
+            updateInfo();
+        }
+        
+        // Load assembly configuration
+        function loadAssemblyConfig() {
+            const configType = document.getElementById('configType').value;
+            
+            if (!configType || !assemblyConfigs[configType]) {
+                log('❌ Invalid configuration type');
+                return;
+            }
+            
+            currentAssemblyConfig = assemblyConfigs[configType];
+            
+            log(`📋 Loaded ${configType} assembly configuration`);
+            log(`   Sequence: [${currentAssemblyConfig.sequence.join(', ')}]`);
+            log(`   Components: ${Object.keys(currentAssemblyConfig.snapPoints).length}`);
+            
+            // Update step selector
+            updateStepSelector();
+            
+            updateInfo();
+        }
+        
+        // Show current configuration
+        function showCurrentConfig() {
+            if (!currentAssemblyConfig) {
+                log('⚠️ No configuration loaded');
+                return;
+            }
+            
+            log('📋 Current Assembly Configuration:');
+            log(`   Sequence: [${currentAssemblyConfig.sequence.join(', ')}]`);
+            log(`   Components: ${Object.keys(currentAssemblyConfig.snapPoints).length}`);
+            
+            if (currentAssemblyConfig.interchangeableNodes) {
+                log(`   Interchangeable Nodes: ${Object.keys(currentAssemblyConfig.interchangeableNodes).length}`);
+                Object.entries(currentAssemblyConfig.interchangeableNodes).forEach(([node, components]) => {
+                    log(`     ${node}: [${components.join(', ')}]`);
+                });
+            }
+            
+            if (currentAssemblyConfig.dependencies) {
+                log('   Dependencies:');
+                Object.entries(currentAssemblyConfig.dependencies).forEach(([comp, deps]) => {
+                    log(`     ${comp} requires: [${deps.join(', ')}]`);
+                });
+            }
+        }
+        
+        // Enable assembly mode
+        function enableAssemblyMode() {
+            if (!currentAssemblyConfig) {
+                log('❌ No assembly configuration loaded');
+                return;
+            }
+            
+            try {
+                const result = window.AssemblySystem.enableAssemblyMode(currentAssemblyConfig);
+                
+                if (result) {
+                    log('✅ Assembly mode enabled');
+                } else {
+                    log('❌ Failed to enable assembly mode');
+                }
+                
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Assembly mode error: ${error.message}`);
+                console.error(error);
+            }
+        }
+        
+        // Disable assembly mode
+        function disableAssemblyMode() {
+            try {
+                window.AssemblySystem.disableAssemblyMode();
+                log('🔴 Assembly mode disabled');
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Disable error: ${error.message}`);
+            }
+        }
+        
+        // Set assembly step
+        function setAssemblyStep() {
+            const stepIndex = parseInt(document.getElementById('stepSelector').value);
+            
+            if (isNaN(stepIndex)) {
+                log('⚠️ No step selected');
+                return;
+            }
+            
+            try {
+                const result = window.AssemblySystem.setCurrentAssemblyStep(stepIndex);
+                
+                if (result) {
+                    log(`✅ Assembly step set to: ${stepIndex}`);
+                } else {
+                    log(`❌ Failed to set step: ${stepIndex}`);
+                }
+                
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Step setting error: ${error.message}`);
+            }
+        }
+        
+        // Enable drag & drop
+        function enableDragDrop() {
+            try {
+                window.DragDropSystem.enable();
+                log('✅ Drag & Drop enabled');
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Drag & Drop enable error: ${error.message}`);
+            }
+        }
+        
+        // Disable drag & drop
+        function disableDragDrop() {
+            try {
+                window.DragDropSystem.disable();
+                log('🔴 Drag & Drop disabled');
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Drag & Drop disable error: ${error.message}`);
+            }
+        }
+        
+        // Show snap indicators
+        function showSnapIndicators() {
+            log('💡 Snap indicators are shown automatically during drag operations');
+        }
+        
+        // Test component mountable
+        function testComponentMountable() {
+            const componentName = document.getElementById('componentSelector').value;
+            
+            if (!componentName) {
+                log('⚠️ No component selected');
+                return;
+            }
+            
+            try {
+                const isMountable = window.AssemblySystem.isComponentMountable(componentName);
+                
+                if (isMountable) {
+                    log(`✅ Component '${componentName}' is mountable`);
+                } else {
+                    log(`❌ Component '${componentName}' is NOT mountable`);
+                }
+                
+            } catch (error) {
+                log(`❌ Mountable test error: ${error.message}`);
+            }
+        }
+        
+        // Highlight component
+        function highlightComponent() {
+            const componentName = document.getElementById('componentSelector').value;
+            
+            if (!componentName) {
+                log('⚠️ No component selected');
+                return;
+            }
+            
+            const component = testObjects.find(obj => obj.name === componentName);
+            
+            if (component) {
+                // Save original color
+                const originalColor = component.material.color.getHex();
+                
+                // Highlight
+                component.material.color.setHex(0x00ff00);
+                
+                // Restore after 2 seconds
+                setTimeout(() => {
+                    component.material.color.setHex(originalColor);
+                }, 2000);
+                
+                log(`✨ Highlighted component '${componentName}'`);
+            } else {
+                log(`❌ Component '${componentName}' not found`);
+            }
+        }
+        
+        // Show component snap points
+        function showComponentSnapPoints() {
+            const componentName = document.getElementById('componentSelector').value;
+            
+            if (!componentName) {
+                log('⚠️ No component selected');
+                return;
+            }
+            
+            try {
+                const snapPoints = window.AssemblySystem.getAvailableSnapPoints(componentName);
+                
+                log(`📍 Snap points for '${componentName}':`);
+                snapPoints.forEach((point, index) => {
+                    log(`   ${index + 1}. ${point.id} at [${point.position.join(', ')}]`);
+                });
+                
+                if (snapPoints.length === 0) {
+                    log('   No snap points available');
+                }
+                
+            } catch (error) {
+                log(`❌ Snap points error: ${error.message}`);
+            }
+        }
+        
+        // Assembly actions
+        function undoLastAction() {
+            try {
+                const result = window.AssemblySystem.undo();
+                
+                if (result) {
+                    log('↩️ Undo successful');
+                } else {
+                    log('⚠️ Nothing to undo');
+                }
+                
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Undo error: ${error.message}`);
+            }
+        }
+        
+        function redoLastAction() {
+            try {
+                const result = window.AssemblySystem.redo();
+                
+                if (result) {
+                    log('↪️ Redo successful');
+                } else {
+                    log('⚠️ Nothing to redo');
+                }
+                
+                updateInfo();
+                
+            } catch (error) {
+                log(`❌ Redo error: ${error.message}`);
+            }
+        }
+        
+        function resetAssembly() {
+            if (confirm('Reset entire assembly?')) {
+                try {
+                    window.AssemblySystem.reset();
+                    
+                    // Reset object positions
+                    testObjects.forEach(obj => {
+                        if (obj.userData.originalPosition) {
+                            obj.position.copy(obj.userData.originalPosition);
+                        }
+                    });
+                    
+                    log('🔄 Assembly reset');
+                    updateInfo();
+                    
+                } catch (error) {
+                    log(`❌ Reset error: ${error.message}`);
+                }
+            }
+        }
+        
+        function validateAssembly() {
+            try {
+                const validation = window.AssemblySystem.validateAssemblySequence();
+                
+                if (validation.valid) {
+                    log('✅ Assembly validation passed');
+                } else {
+                    log('❌ Assembly validation failed:');
+                    validation.errors.forEach(error => {
+                        log(`   - ${error}`);
+                    });
+                }
+                
+            } catch (error) {
+                log(`❌ Validation error: ${error.message}`);
+            }
+        }
+        
+        // UI update functions
+        function updateComponentSelector() {
+            const selector = document.getElementById('componentSelector');
+            selector.innerHTML = '<option value="">-- Select Component --</option>';
+            
+            testObjects.forEach(obj => {
+                const option = document.createElement('option');
+                option.value = obj.name;
+                option.textContent = obj.name;
+                selector.appendChild(option);
+            });
+        }
+        
+        function updateStepSelector() {
+            const selector = document.getElementById('stepSelector');
+            selector.innerHTML = '<option value="">-- No Steps --</option>';
+            
+            if (currentAssemblyConfig && currentAssemblyConfig.sequence) {
+                currentAssemblyConfig.sequence.forEach((step, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${index}: ${step}`;
+                    selector.appendChild(option);
+                });
+            }
+        }
+        
+        function updateInfo() {
+            try {
+                // Assembly status
+                const status = window.AssemblySystem.getAssemblyStatus();
+                
+                document.getElementById('currentMode').textContent = 
+                    status.assemblyMode ? 'Assembly' : 'Disabled';
+                    
+                document.getElementById('currentStep').textContent = 
+                    status.totalSteps > 0 ? `${status.currentStep}/${status.totalSteps}` : '0/0';
+                    
+                document.getElementById('objectCount').textContent = testObjects.length;
+                document.getElementById('mountedCount').textContent = status.mountedComponents.length;
+                
+                // Drag status
+                document.getElementById('draggingStatus').textContent = 
+                    window.DragDropSystem.isDraggingActive() ? 'Yes' : 'No';
+                
+            } catch (error) {
+                console.error('Info update error:', error);
+            }
+        }
+        
+        // Logging function
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('systemStatus');
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '2px';
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            
+            // Keep only last 50 entries
+            while (logDiv.children.length > 50) {
+                logDiv.removeChild(logDiv.firstChild);
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (controls) {
+                controls.update();
+            }
+            
+            if (window.TWEEN) {
+                TWEEN.update();
+            }
+            
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+        
+        // Resize handler
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+            
+            const container = document.getElementById('canvas-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Assembly System Demo Starting...');
+            log('Click "Initialize Scene" to begin');
+        });
+        
+        // Auto-update info every 2 seconds
+        setInterval(updateInfo, 2000);
+    </script>
+</body>
+</html>

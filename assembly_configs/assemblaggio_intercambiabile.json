@@ -1,0 +1,205 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Demo assemblaggio con nodi di intercambiabilità avanzati",
+    "author": "Campus Virtual Training", 
+    "createdAt": "2025-09-08",
+    "scenario": "InterchangeableDemo"
+  },
+  
+  "sequence": [
+    "base_supporto",
+    "gruppo_connettori",
+    "gruppo_cavi",
+    "pannello_controllo",
+    "gruppo_protezioni"
+  ],
+  
+  "snapPoints": {
+    "base_supporto": {
+      "nodeId": "base_supporto",
+      "positions": [
+        {
+          "id": "snap_base_main",
+          "position": [0, 0, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "connettore_tipo_a": {
+      "nodeId": "gruppo_connettori",
+      "positions": [
+        {
+          "id": "snap_conn_slot_1",
+          "position": [0.3, 0.1, 0],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_conn_slot_2", 
+          "position": [-0.3, 0.1, 0],
+          "rotation": [0, 3.14159, 0]
+        },
+        {
+          "id": "snap_conn_slot_3",
+          "position": [0, 0.1, 0.3], 
+          "rotation": [0, 1.5708, 0]
+        },
+        {
+          "id": "snap_conn_slot_4",
+          "position": [0, 0.1, -0.3],
+          "rotation": [0, -1.5708, 0]
+        }
+      ]
+    },
+    
+    "connettore_tipo_b": {
+      "nodeId": "gruppo_connettori",
+      "positions": [
+        {
+          "id": "snap_conn_slot_1",
+          "position": [0.3, 0.1, 0],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_conn_slot_2",
+          "position": [-0.3, 0.1, 0], 
+          "rotation": [0, 3.14159, 0]
+        },
+        {
+          "id": "snap_conn_slot_3",
+          "position": [0, 0.1, 0.3],
+          "rotation": [0, 1.5708, 0]
+        },
+        {
+          "id": "snap_conn_slot_4",
+          "position": [0, 0.1, -0.3],
+          "rotation": [0, -1.5708, 0]
+        }
+      ]
+    },
+    
+    "connettore_tipo_c": {
+      "nodeId": "gruppo_connettori",
+      "positions": [
+        {
+          "id": "snap_conn_slot_1",
+          "position": [0.3, 0.1, 0],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_conn_slot_2",
+          "position": [-0.3, 0.1, 0],
+          "rotation": [0, 3.14159, 0]
+        },
+        {
+          "id": "snap_conn_slot_3", 
+          "position": [0, 0.1, 0.3],
+          "rotation": [0, 1.5708, 0]
+        },
+        {
+          "id": "snap_conn_slot_4",
+          "position": [0, 0.1, -0.3],
+          "rotation": [0, -1.5708, 0]
+        }
+      ]
+    },
+    
+    "cavo_alimentazione": {
+      "nodeId": "gruppo_cavi",
+      "positions": [
+        {
+          "id": "snap_cavo_power_in",
+          "position": [0.5, 0.15, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "cavo_dati": {
+      "nodeId": "gruppo_cavi", 
+      "positions": [
+        {
+          "id": "snap_cavo_data_in",
+          "position": [-0.5, 0.15, 0],
+          "rotation": [0, 3.14159, 0]
+        }
+      ]
+    },
+    
+    "pannello_standard": {
+      "nodeId": "pannello_controllo",
+      "positions": [
+        {
+          "id": "snap_pannello_front",
+          "position": [0, 0.3, 0.4],
+          "rotation": [1.5708, 0, 0]
+        }
+      ]
+    },
+    
+    "pannello_avanzato": {
+      "nodeId": "pannello_controllo",
+      "positions": [
+        {
+          "id": "snap_pannello_front",
+          "position": [0, 0.3, 0.4],
+          "rotation": [1.5708, 0, 0]
+        }
+      ]
+    },
+    
+    "protezione_base": {
+      "nodeId": "gruppo_protezioni",
+      "positions": [
+        {
+          "id": "snap_prot_top",
+          "position": [0, 0.5, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+    
+    "protezione_rinforzata": {
+      "nodeId": "gruppo_protezioni", 
+      "positions": [
+        {
+          "id": "snap_prot_top",
+          "position": [0, 0.5, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    }
+  },
+  
+  "interchangeableNodes": {
+    "gruppo_connettori": [
+      "connettore_tipo_a", 
+      "connettore_tipo_b", 
+      "connettore_tipo_c"
+    ],
+    "gruppo_cavi": [
+      "cavo_alimentazione",
+      "cavo_dati", 
+      "cavo_ethernet",
+      "cavo_usb"
+    ],
+    "pannello_controllo": [
+      "pannello_standard",
+      "pannello_avanzato",
+      "pannello_touch"
+    ],
+    "gruppo_protezioni": [
+      "protezione_base",
+      "protezione_rinforzata", 
+      "protezione_industriale"
+    ]
+  },
+  
+  "dependencies": {
+    "gruppo_connettori": ["base_supporto"],
+    "gruppo_cavi": ["base_supporto", "gruppo_connettori"],
+    "pannello_controllo": ["base_supporto", "gruppo_connettori", "gruppo_cavi"],
+    "gruppo_protezioni": ["pannello_controllo"]
+  }
+}

@@ -3,7 +3,7 @@
  * VERSION: 1000010 - Modular Architecture Compatibility Layer
  */
 
-window.Scene3D = {
+const Scene3D = {
     scene: null,
     camera: null,
     renderer: null,
@@ -38,8 +38,12 @@ window.Scene3D = {
     },
     tutorialTracker: {
         completedSteps: new Set(),
-        lastStepCompleted: false
+        lastStepCompleted: false,
+        interactionsBlocked: false // Blocca interazioni dopo completamento tutorial
     },
+    
+    // Sistema salvataggio/ripristino posizioni iniziali
+    initialModelPositions: new Map(), // UUID -> {position, rotation, scale}
     
     boundingBoxSphere: null,
     rotationCenterSphere: null,
@@ -53,7 +57,7 @@ window.Scene3D = {
         mouseButton: 0,
         lastPosition: { x: 0, y: 0 },
         isPanning: false,
-        pivotPoint: new THREE.Vector3(0, 0, 0),
+        pivotPoint: null, // Inizializzato in init()
         sensitivity: {
             rotation: 0.015,
             pan: 0.020,
@@ -83,6 +87,9 @@ window.Scene3D = {
                 throw new Error('Three.js not loaded correctly');
             }
             
+            // Inizializza oggetti Three.js che richiedono THREE
+            this.mouseControls.pivotPoint = new THREE.Vector3(0, 0, 0);
+            
             this.canvas = document.getElementById('canvas3d');
             if (!this.canvas) {
                 throw new Error('3D Canvas not found in DOM');
@@ -100,9 +107,14 @@ window.Scene3D = {
             this.saveCurrentView();
             
             this.isInitialized = true;
+            console.log('[Scene3D] ✅ Inizializzazione completata');
+            
+            return true;
             
         } catch (error) {
-            throw error;
+            console.error('[Scene3D] ❌ Errore inizializzazione:', error.message);
+            this.isInitialized = false;
+            return false;
         }
     },
 
@@ -270,6 +282,398 @@ window.Scene3D = {
         }
     },
 
+    /* ===== AXIS GIZMO UI SYSTEM ===== */
+    
+    initAxisGizmoUI: function() {
+        // Crea container HTML per il gizmo UI
+        this.createAxisGizmoContainer();
+        
+        // Inizializza scena separata per il gizmo UI
+        this.initAxisGizmoScene();
+        
+        // Carica il modello assi.glb per il gizmo UI
+        this.loadAxisGizmoModel();
+        
+        console.log('[Scene3D] 🧭 Axis Gizmo UI inizializzato');
+    },
+    
+    createAxisGizmoContainer: function() {
+        // Crea container HTML
+        this.axisGizmoContainer = document.createElement('div');
+        this.axisGizmoContainer.id = 'axis-gizmo-ui';
+        this.axisGizmoContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            z-index: 1000;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        `;
+        
+        // Crea canvas per il gizmo
+        this.axisGizmoCanvas = document.createElement('canvas');
+        this.axisGizmoCanvas.width = 100;
+        this.axisGizmoCanvas.height = 100;
+        this.axisGizmoCanvas.style.cssText = `
+            width: 100%;
+            height: 100%;
+            display: block;
+        `;
+        
+        this.axisGizmoContainer.appendChild(this.axisGizmoCanvas);
+        document.body.appendChild(this.axisGizmoContainer);
+    },
+    
+    initAxisGizmoScene: function() {
+        // Scena separata per il gizmo
+        this.axisGizmoScene = new THREE.Scene();
+        
+        // Camera ortografica per il gizmo
+        this.axisGizmoCamera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 10);
+        this.axisGizmoCamera.position.set(3, 3, 3);
+        this.axisGizmoCamera.lookAt(0, 0, 0);
+        
+        // Renderer separato per il gizmo
+        this.axisGizmoRenderer = new THREE.WebGLRenderer({
+            canvas: this.axisGizmoCanvas,
+            alpha: true,
+            antialias: true
+        });
+        this.axisGizmoRenderer.setSize(100, 100);
+        this.axisGizmoRenderer.setPixelRatio(window.devicePixelRatio);
+        this.axisGizmoRenderer.setClearColor(0x000000, 0);
+        
+        // Luci per il gizmo
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        this.axisGizmoScene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        this.axisGizmoScene.add(directionalLight);
+        
+        this.axisGizmoModel = null;
+    },
+    
+    loadAxisGizmoModel: function() {
+        // Verifica se c'è già un modello assi.glb caricato nella scena principale
+        const existingAxisModel = this.findModelByName('assi');
+        
+        if (existingAxisModel) {
+            // Clona il modello esistente per il gizmo UI
+            this.axisGizmoModel = existingAxisModel.clone();
+            this.setupAxisGizmoModel();
+            console.log('[Scene3D] 🧭 Modello assi clonato per Axis Gizmo UI');
+        } else {
+            // Carica il modello assi.glb specificamente per il gizmo UI
+            if (window.ModelLoader && window.ModelLoader.loadGLTF) {
+                window.ModelLoader.loadGLTF('models/assi.glb')
+                    .then(model => {
+                        this.axisGizmoModel = model;
+                        this.setupAxisGizmoModel();
+                        console.log('[Scene3D] 🧭 Modello assi caricato per Axis Gizmo UI');
+                    })
+                    .catch(error => {
+                        console.warn('[Scene3D] ⚠️ Impossibile caricare modello assi per gizmo UI:', error);
+                        this.createFallbackAxisGizmo();
+                    });
+            } else {
+                console.warn('[Scene3D] ⚠️ ModelLoader non disponibile, creo gizmo fallback');
+                this.createFallbackAxisGizmo();
+            }
+        }
+    },
+    
+    setupAxisGizmoModel: function() {
+        if (!this.axisGizmoModel) return;
+        
+        // Scala e posiziona il modello nel gizmo UI
+        this.axisGizmoModel.scale.setScalar(0.8);
+        this.axisGizmoModel.position.set(0, 0, 0);
+        
+        // Aggiungi alla scena del gizmo
+        this.axisGizmoScene.add(this.axisGizmoModel);
+        
+        // Avvia il rendering del gizmo
+        this.startAxisGizmoRendering();
+    },
+    
+    createFallbackAxisGizmo: function() {
+        // Crea un gizmo fallback semplice se il modello non è disponibile
+        const group = new THREE.Group();
+        
+        const colors = [0xff0000, 0x00ff00, 0x0000ff]; // X, Y, Z
+        const directions = [
+            new THREE.Vector3(1, 0, 0),
+            new THREE.Vector3(0, 1, 0),
+            new THREE.Vector3(0, 0, 1)
+        ];
+        
+        directions.forEach((direction, index) => {
+            // Asta
+            const geometry = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 8);
+            const material = new THREE.MeshBasicMaterial({ color: colors[index] });
+            const shaft = new THREE.Mesh(geometry, material);
+            
+            // Punta
+            const headGeometry = new THREE.ConeGeometry(0.1, 0.3, 8);
+            const head = new THREE.Mesh(headGeometry, material);
+            
+            if (index === 0) { // X - Rosso
+                shaft.rotation.z = -Math.PI / 2;
+                shaft.position.x = 0.75;
+                head.rotation.z = -Math.PI / 2;
+                head.position.x = 1.5;
+            } else if (index === 1) { // Y - Verde
+                shaft.position.y = 0.75;
+                head.position.y = 1.5;
+            } else { // Z - Blu
+                shaft.rotation.x = Math.PI / 2;
+                shaft.position.z = 0.75;
+                head.rotation.x = Math.PI / 2;
+                head.position.z = 1.5;
+            }
+            
+            group.add(shaft);
+            group.add(head);
+        });
+        
+        this.axisGizmoModel = group;
+        this.setupAxisGizmoModel();
+        console.log('[Scene3D] 🧭 Gizmo fallback creato');
+    },
+    
+    startAxisGizmoRendering: function() {
+        // Aggiungi il rendering del gizmo al loop principale
+        this.axisGizmoRenderEnabled = true;
+    },
+    
+    updateAxisGizmoOrientation: function() {
+        if (!this.axisGizmoModel || !this.axisGizmoRenderEnabled) return;
+        
+        // Sincronizza l'orientamento del gizmo per mostrare gli assi del mondo
+        // Il gizmo deve ruotare in modo opposto alla camera per mantenere 
+        // l'orientamento assoluto degli assi del mondo
+        
+        // Ottieni il quaternion della camera e applicalo inversamente al gizmo
+        const cameraQuaternion = this.camera.quaternion.clone();
+        
+        // Inverti il quaternion della camera per mostrare l'orientamento del mondo
+        // rispetto alla vista corrente
+        cameraQuaternion.conjugate();
+        
+        // Correzione orientamento: ruota il gizmo per avere l'asse Z (blu) verso destra
+        // nella vista iniziale del tutorial. Applica rotazione di 90° attorno all'asse Y.
+        const correctionRotation = new THREE.Quaternion();
+        correctionRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+        
+        // Applica la correzione al quaternion del gizmo
+        cameraQuaternion.multiply(correctionRotation);
+        
+        this.axisGizmoModel.quaternion.copy(cameraQuaternion);
+        
+        // Debug: stampa orientamento per verifica (solo occasionalmente)
+        if (Math.random() < 0.01) {
+            console.log('[Gizmo] Camera rotation:', this.camera.rotation);
+            console.log('[Gizmo] Gizmo quaternion:', this.axisGizmoModel.quaternion);
+        }
+        
+        // Render del gizmo
+        this.axisGizmoRenderer.render(this.axisGizmoScene, this.axisGizmoCamera);
+    },
+    
+    toggleAxisGizmoUI: function(visible = null) {
+        if (!this.axisGizmoContainer) return;
+        
+        const shouldShow = visible !== null ? visible : (this.axisGizmoContainer.style.display === 'none');
+        
+        this.axisGizmoContainer.style.display = shouldShow ? 'block' : 'none';
+        this.axisGizmoRenderEnabled = shouldShow;
+        
+        console.log(`[Scene3D] 🧭 Axis Gizmo UI ${shouldShow ? 'mostrato' : 'nascosto'}`);
+    },
+    
+    removeAxisGizmoUI: function() {
+        if (this.axisGizmoContainer) {
+            document.body.removeChild(this.axisGizmoContainer);
+            this.axisGizmoContainer = null;
+            this.axisGizmoCanvas = null;
+        }
+        
+        if (this.axisGizmoRenderer) {
+            this.axisGizmoRenderer.dispose();
+            this.axisGizmoRenderer = null;
+        }
+        
+        if (this.axisGizmoScene) {
+            this.axisGizmoScene.clear();
+            this.axisGizmoScene = null;
+        }
+        
+        this.axisGizmoModel = null;
+        this.axisGizmoCamera = null;
+        this.axisGizmoRenderEnabled = false;
+        
+        console.log('[Scene3D] 🧭 Axis Gizmo UI rimosso');
+    },
+    
+    /* ===== DEBUG FUNCTIONS FOR AXIS GIZMO UI ===== */
+    
+    debugAxisGizmoUI: function() {
+        console.log('[Scene3D] 🧭 DEBUG Axis Gizmo UI Status:');
+        console.log('  Container:', !!this.axisGizmoContainer);
+        console.log('  Canvas:', !!this.axisGizmoCanvas);
+        console.log('  Scene:', !!this.axisGizmoScene);
+        console.log('  Camera:', !!this.axisGizmoCamera);
+        console.log('  Renderer:', !!this.axisGizmoRenderer);
+        console.log('  Model:', !!this.axisGizmoModel);
+        console.log('  Render Enabled:', this.axisGizmoRenderEnabled);
+        
+        if (this.axisGizmoContainer) {
+            console.log('  Container Visible:', this.axisGizmoContainer.style.display !== 'none');
+            console.log('  Container Position:', {
+                top: this.axisGizmoContainer.style.top,
+                right: this.axisGizmoContainer.style.right,
+                zIndex: this.axisGizmoContainer.style.zIndex
+            });
+        }
+        
+        return {
+            isInitialized: !!(this.axisGizmoContainer && this.axisGizmoRenderer && this.axisGizmoModel),
+            renderEnabled: this.axisGizmoRenderEnabled,
+            visible: this.axisGizmoContainer ? (this.axisGizmoContainer.style.display !== 'none') : false
+        };
+    },
+    
+    /* ===== CAMERA DEBUG FUNCTIONS ===== */
+    
+    getCameraInfo: function() {
+        if (!this.camera) {
+            console.warn('[Scene3D] 📹 Camera non inizializzata');
+            return null;
+        }
+        
+        const cameraInfo = {
+            position: {
+                x: Math.round(this.camera.position.x * 100) / 100,
+                y: Math.round(this.camera.position.y * 100) / 100,
+                z: Math.round(this.camera.position.z * 100) / 100
+            },
+            rotation: {
+                x: Math.round(this.camera.rotation.x * 100) / 100,
+                y: Math.round(this.camera.rotation.y * 100) / 100,
+                z: Math.round(this.camera.rotation.z * 100) / 100
+            },
+            pivot: this.mouseControls && this.mouseControls.pivotPoint ? {
+                x: Math.round(this.mouseControls.pivotPoint.x * 100) / 100,
+                y: Math.round(this.mouseControls.pivotPoint.y * 100) / 100,
+                z: Math.round(this.mouseControls.pivotPoint.z * 100) / 100
+            } : null,
+            distance: this.mouseControls && this.mouseControls.pivotPoint ? 
+                Math.round(this.camera.position.distanceTo(this.mouseControls.pivotPoint) * 100) / 100 : null,
+            fov: this.camera.fov,
+            near: this.camera.near,
+            far: this.camera.far
+        };
+        
+        console.log('[Scene3D] 📹 CAMERA INFO:');
+        console.log('  Position:', `(${cameraInfo.position.x}, ${cameraInfo.position.y}, ${cameraInfo.position.z})`);
+        console.log('  Rotation:', `(${cameraInfo.rotation.x}, ${cameraInfo.rotation.y}, ${cameraInfo.rotation.z})`);
+        if (cameraInfo.pivot) {
+            console.log('  Pivot Point:', `(${cameraInfo.pivot.x}, ${cameraInfo.pivot.y}, ${cameraInfo.pivot.z})`);
+            console.log('  Distance to Pivot:', cameraInfo.distance);
+        }
+        console.log('  FOV:', cameraInfo.fov);
+        console.log('  Near/Far:', `${cameraInfo.near}/${cameraInfo.far}`);
+        
+        // Formatta per tutorial.txt
+        console.log('\n📋 TUTORIAL SYNTAX:');
+        console.log(`CameraPos=(${cameraInfo.position.x},${cameraInfo.position.y},${cameraInfo.position.z})`);
+        if (cameraInfo.pivot) {
+            console.log(`CameraTarget=(${cameraInfo.pivot.x},${cameraInfo.pivot.y},${cameraInfo.pivot.z})`);
+        }
+        
+        // Suggerimenti per target con nome oggetto
+        console.log('\n💡 ALTERNATIVE CAMERtarget SYNTAX:');
+        console.log('CameraTarget=nome_oggetto   # Punta al centro del bounding box dell\'oggetto');
+        console.log('Usa Scene3D.listAvailableObjects() per vedere tutti gli oggetti disponibili');
+        console.log('\n📝 ESEMPI:');
+        console.log('CameraTarget=filtro         # Punta al centro del filtro');
+        console.log('CameraTarget=pompa          # Punta al centro della pompa');
+        console.log('CameraTarget=(1.5,2.0,0.5)  # Coordinate esatte');
+        
+        return cameraInfo;
+    },
+    
+    listAvailableObjects: function() {
+        if (!this.loadedModels || this.loadedModels.length === 0) {
+            console.warn('[Scene3D] 📦 Nessun oggetto caricato nella scena');
+            return [];
+        }
+        
+        const objectsList = [];
+        
+        console.log('[Scene3D] 📦 OGGETTI DISPONIBILI NELLA SCENA:');
+        console.log('═'.repeat(50));
+        
+        this.loadedModels.forEach((model, index) => {
+            // Ottieni il nome dell'oggetto
+            let objectName = 'unnamed';
+            if (model.name) {
+                objectName = model.name;
+            } else if (model.userData && model.userData.originalFilename) {
+                objectName = model.userData.originalFilename.replace(/\.(glb|gltf|obj|stl)$/i, '');
+            }
+            
+            // Calcola il centro del bounding box
+            const boundingBox = new THREE.Box3().setFromObject(model);
+            const center = boundingBox.getCenter(new THREE.Vector3());
+            
+            // Calcola le dimensioni
+            const size = boundingBox.getSize(new THREE.Vector3());
+            
+            const objectInfo = {
+                name: objectName,
+                center: {
+                    x: Math.round(center.x * 100) / 100,
+                    y: Math.round(center.y * 100) / 100,
+                    z: Math.round(center.z * 100) / 100
+                },
+                size: {
+                    x: Math.round(size.x * 100) / 100,
+                    y: Math.round(size.y * 100) / 100,
+                    z: Math.round(size.z * 100) / 100
+                },
+                visible: model.visible
+            };
+            
+            objectsList.push(objectInfo);
+            
+            // Output console
+            console.log(`${index + 1}. "${objectName}"`);
+            console.log(`   Centro: (${objectInfo.center.x}, ${objectInfo.center.y}, ${objectInfo.center.z})`);
+            console.log(`   Dimensioni: ${objectInfo.size.x} × ${objectInfo.size.y} × ${objectInfo.size.z}`);
+            console.log(`   Visibile: ${objectInfo.visible ? '✅' : '❌'}`);
+            console.log('');
+        });
+        
+        console.log('📝 USO NEI TUTORIAL:');
+        objectsList.forEach(obj => {
+            if (obj.visible) {
+                console.log(`CameraTarget=${obj.name}   # Punta al centro di "${obj.name}"`);
+            }
+        });
+        
+        console.log('\n💡 SUGGERIMENTO:');
+        console.log('Usa Scene3D.getCameraInfo() per ottenere la posizione camera corrente');
+        
+        return objectsList;
+    },
+
     initRaycaster: function() {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
@@ -293,6 +697,40 @@ window.Scene3D = {
     },
 
     initSubsystems: function() {
+        // Inizializza sistema drag & drop se disponibile
+        this.dragDropSystem = null;
+        if (window.DragDropSystem && window.DragDropSystem.init) {
+            try {
+                const success = window.DragDropSystem.init(this);
+                if (success) {
+                    this.dragDropSystem = window.DragDropSystem;
+                    console.log('[Scene3D] ✅ DragDropSystem inizializzato');
+                } else {
+                    console.warn('[Scene3D] ⚠️ DragDropSystem inizializzazione fallita');
+                }
+            } catch (error) {
+                console.warn('[Scene3D] ⚠️ Errore inizializzazione DragDropSystem:', error.message);
+            }
+        } else {
+            console.log('[Scene3D] ℹ️ DragDropSystem non disponibile (opzionale)');
+        }
+        
+        // Inizializza sistema particellare se disponibile
+        this.particleSystem = null;
+        console.log('[Scene3D] Debug ParticleSystem - window.ParticleSystem:', !!window.ParticleSystem);
+        console.log('[Scene3D] Debug ParticleSystem - init function:', typeof window.ParticleSystem?.init);
+        
+        if (window.ParticleSystem && window.ParticleSystem.init) {
+            try {
+                this.particleSystem = window.ParticleSystem.init(this.scene, this.camera);
+                console.log('[Scene3D] ✅ ParticleSystem inizializzato:', !!this.particleSystem);
+            } catch (error) {
+                console.warn('[Scene3D] ⚠️ Errore inizializzazione ParticleSystem:', error.message);
+            }
+        } else {
+            console.log('[Scene3D] ℹ️ ParticleSystem non disponibile (opzionale)');
+        }
+        
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
             color: 0xcccc00,
             transparent: true,
@@ -302,6 +740,9 @@ window.Scene3D = {
             depthTest: false,
             depthWrite: false
         });
+        
+        // Inizializza Axis Gizmo UI
+        this.initAxisGizmoUI();
     },
 
     onMouseDown: function(event) {
@@ -404,7 +845,11 @@ window.Scene3D = {
         
         relativePosition.setFromSpherical(spherical);
         this.camera.position.copy(pivotPoint).add(relativePosition);
-        this.camera.lookAt(pivotPoint);
+        
+        // Non interferire con animazione camera se in corso
+        if (!this.cameraAnimation || !this.cameraAnimation.isAnimating || !this.cameraAnimation.targetTarget) {
+            this.camera.lookAt(pivotPoint);
+        }
     },
 
     zoomCamera: function(delta) {
@@ -422,7 +867,11 @@ window.Scene3D = {
         
         relativePosition.setFromSpherical(spherical);
         this.camera.position.copy(pivotPoint).add(relativePosition);
-        this.camera.lookAt(pivotPoint);
+        
+        // Non interferire con animazione camera se in corso
+        if (!this.cameraAnimation || !this.cameraAnimation.isAnimating || !this.cameraAnimation.targetTarget) {
+            this.camera.lookAt(pivotPoint);
+        }
     },
 
     addModel: function(model, modelConfig = null) {
@@ -433,6 +882,9 @@ window.Scene3D = {
         this.scene.add(model);
         this.loadedModels.push(model);
         this.currentModel = model;
+        
+        // Salva la posizione iniziale del modello per reset futuro
+        this.saveInitialModelPosition(model);
         
         const modelFilename = model.userData?.originalFilename || model.name;
         
@@ -546,6 +998,12 @@ window.Scene3D = {
     },
 
     handleModelClick: function(event) {
+        // Verifica se le interazioni sono bloccate dopo completamento tutorial
+        if (this.tutorialTracker.interactionsBlocked) {
+            console.log('🔒 Click ignorato: Interazioni bloccate. Seleziona un nuovo tutorial per continuare.');
+            return;
+        }
+        
         const rect = this.canvas.getBoundingClientRect();
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -557,10 +1015,105 @@ window.Scene3D = {
             const clickedObject = intersects[0].object;
             const targetModel = this.findRootModel(clickedObject);
             
+            // Verifica se il tool Aria è attivo per creare effetto particellare
+            const activeTool = window.ToolsManager ? window.ToolsManager.getActiveTool() : 'none';
+            const isAriaActiveByClass = document.body.classList.contains('tool-aria-active');
+            console.log(`[Scene3D] Click su modello - ToolsManager: ${activeTool}, Body class aria: ${isAriaActiveByClass}`);
+            
+            // Usa la classe body come fonte affidabile per il tool aria
+            if (isAriaActiveByClass) {
+                console.log(`[Scene3D] 💨 Attivazione effetto aria su click (rilevato da body class)!`);
+                this.handleAirToolEffect(intersects[0], event);
+                return; // Non proseguire con azione normale del modello
+            }
+            
             if (targetModel && this.isModelSelectable(targetModel)) {
                 this.handleModelAction(targetModel);
             }
         }
+    },
+
+    handleAirToolEffect: function(intersection, event) {
+        if (!this.particleSystem) {
+            console.warn('[Scene3D] Sistema particellare non disponibile per tool Aria');
+            return;
+        }
+        
+        const intersectPoint = intersection.point;
+        const normal = intersection.face ? intersection.face.normal.clone() : new THREE.Vector3(0, 1, 0);
+        const intersectedObject = intersection.object;
+        
+        // Trova il modello root (parent del mesh intersettato)
+        let targetModel = intersectedObject;
+        while (targetModel.parent && !this.loadedModels.includes(targetModel)) {
+            targetModel = targetModel.parent;
+        }
+        
+        // Calcola posizione cursore in coordinate 3D
+        const cursorPosition3D = this.getCursorPosition3D(event);
+        
+        // Calcola centro del bounding box dell'oggetto
+        const objectCenter = this.getObjectBoundingBoxCenter(targetModel);
+        
+        // Direzione dal cursore verso il centro dell'oggetto
+        const jetDirection = new THREE.Vector3()
+            .subVectors(objectCenter, cursorPosition3D)
+            .normalize();
+        
+        console.log('[Scene3D] 💨 Getto aria compressa dal cursore all\'oggetto', {
+            cursorPos: cursorPosition3D,
+            objectCenter: objectCenter,
+            direction: jetDirection
+        });
+        
+        // Crea getto aria dal cursore verso l'oggetto
+        const airJetId = this.particleSystem.createAirJet(cursorPosition3D, jetDirection, {
+            particleCount: 400,
+            life: 2.0,
+            speed: { min: 12, max: 25 },
+            size: { min: 0.02, max: 0.08 },
+            spread: { x: 0.1, y: 0.1, z: 0.1 }, // Getto più concentrato
+            turbulence: 0.6
+        });
+        
+        // Effetto polvere nel punto di impatto
+        setTimeout(() => {
+            this.particleSystem.createDustEffect(intersectPoint, {
+                particleCount: 200,
+                life: 2.5,
+                speed: { min: 2, max: 8 },
+                color: new THREE.Color(0.6, 0.55, 0.4) // Colore polvere/ruggine
+            });
+        }, 300); // Delay maggiore per effetto realistico
+        
+        // Feedback visivo aggiuntivo
+        if (window.ToolsManager && window.ToolsManager.feedbackManager) {
+            window.ToolsManager.feedbackManager.updateStatus('💨 Aria compressa: cursore → oggetto');
+        }
+    },
+
+    getCursorPosition3D: function(mouseEvent) {
+        // Proietta la posizione del cursore su un piano a distanza media dalla camera
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouse.x = ((mouseEvent.clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((mouseEvent.clientY - rect.top) / rect.height) * 2 + 1;
+        
+        // Crea un punto a distanza fissa dalla camera nella direzione del cursore
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        
+        // Posizione cursore proiettata a distanza 2 unità dalla camera
+        const cursorDistance = 2.0;
+        const cursorPos = this.raycaster.ray.origin.clone()
+            .add(this.raycaster.ray.direction.clone().multiplyScalar(cursorDistance));
+        
+        return cursorPos;
+    },
+
+    getObjectBoundingBoxCenter: function(object) {
+        // Calcola il bounding box dell'oggetto
+        const boundingBox = new THREE.Box3().setFromObject(object);
+        const center = boundingBox.getCenter(new THREE.Vector3());
+        return center;
     },
 
     handlePivotClick: function(event) {
@@ -575,14 +1128,51 @@ window.Scene3D = {
             const intersection = intersects[0];
             const targetModel = this.findRootModel(intersection.object);
             
+            let newPivotPoint;
             if (targetModel && this.isModelSelectable(targetModel)) {
                 const box = new THREE.Box3().setFromObject(targetModel);
                 const center = box.getCenter(new THREE.Vector3());
-                this.mouseControls.pivotPoint.copy(center);
+                newPivotPoint = center.clone();
             } else {
-                this.mouseControls.pivotPoint.copy(intersection.point);
+                newPivotPoint = intersection.point.clone();
             }
+            
+            // Anima fluida la camera verso il nuovo pivot point
+            this.animateCameraToPivot(newPivotPoint);
         }
+    },
+
+    animateCameraToPivot: function(newPivotPoint) {
+        // Inizializza il sistema di animazione pivot se non esiste
+        if (!this.pivotAnimation) {
+            this.pivotAnimation = {
+                isAnimating: false,
+                startTime: 0,
+                duration: 0.8, // Durata animazione fluida in secondi
+                startPivot: null,
+                targetPivot: null,
+                startCameraPosition: null,
+                targetCameraPosition: null
+            };
+        }
+
+        // Se già in animazione, aggiorna il target
+        const oldPivot = this.mouseControls.pivotPoint.clone();
+        
+        // Calcola la nuova posizione della camera mantenendo la stessa distanza relativa
+        const currentCameraDirection = this.camera.position.clone().sub(oldPivot).normalize();
+        const currentDistance = this.camera.position.distanceTo(oldPivot);
+        const newCameraPosition = newPivotPoint.clone().add(currentCameraDirection.multiplyScalar(currentDistance));
+        
+        // Configura animazione
+        this.pivotAnimation.isAnimating = true;
+        this.pivotAnimation.startTime = performance.now();
+        this.pivotAnimation.startPivot = oldPivot;
+        this.pivotAnimation.targetPivot = newPivotPoint;
+        this.pivotAnimation.startCameraPosition = this.camera.position.clone();
+        this.pivotAnimation.targetCameraPosition = newCameraPosition;
+        
+        console.log(`🎯 Animazione pivot: da (${oldPivot.x.toFixed(2)}, ${oldPivot.y.toFixed(2)}, ${oldPivot.z.toFixed(2)}) a (${newPivotPoint.x.toFixed(2)}, ${newPivotPoint.y.toFixed(2)}, ${newPivotPoint.z.toFixed(2)})`);
     },
 
     findRootModel: function(clickedObject) {
@@ -1219,6 +1809,7 @@ window.Scene3D = {
             
             let targetElement = null;
             let offsetValues = null;
+            let isAbsoluteToOriginal = false;
             
             if (afterColon.includes(',')) {
                 const commaIndex = afterColon.indexOf(',');
@@ -1236,15 +1827,25 @@ window.Scene3D = {
                 }
             } else {
                 targetElement = afterColon.trim();
-                offsetValues = [0, 0, 0, 1.0];
+                
+                // Verifica se è una traslazione assoluta verso posizione originale
+                if (targetElement.endsWith('_original')) {
+                    isAbsoluteToOriginal = true;
+                    offsetValues = [0, 0, 0, 1.0]; // Valori default per posizione assoluta
+                } else {
+                    offsetValues = [0, 0, 0, 1.0]; // Offset di default per target normale
+                }
             }
+            
+            console.log(`🎯 TRASLAZIONE: Target=${targetElement}, Absolute to Original=${isAbsoluteToOriginal}`);
             
             return {
                 x: offsetValues[0],
                 y: offsetValues[1],
                 z: offsetValues[2], 
                 durata: offsetValues[3],
-                targetElement: targetElement
+                targetElement: targetElement,
+                isAbsoluteToOriginal: isAbsoluteToOriginal
             };
         }
         
@@ -1518,17 +2119,29 @@ window.Scene3D = {
             if (currentStep.traslazione.targetElement) {
                 const targetModel = this.findModelByName(currentStep.traslazione.targetElement);
                 if (targetModel) {
-                    const targetBoundingBoxCenter = this.calculateBoundingBoxCenter(targetModel);
-                    const sourceBoundingBoxCenter = this.calculateBoundingBoxCenter(model);
-                    const centerOffset = targetBoundingBoxCenter.clone().sub(sourceBoundingBoxCenter);
-                    
-                    const additionalOffset = new THREE.Vector3(
-                        currentStep.traslazione.x,
-                        currentStep.traslazione.y,
-                        currentStep.traslazione.z
-                    );
-                    
-                    targetPosition = model.position.clone().add(centerOffset).add(additionalOffset);
+                    // Gestione traslazione assoluta verso posizione originale
+                    if (currentStep.traslazione.isAbsoluteToOriginal) {
+                        // Traslazione assoluta: sposta direttamente alla posizione originale
+                        targetPosition = targetModel.position.clone();
+                        console.log(`🎯 ABSOLUTE ORIGINAL: Spostamento verso posizione originale`, {
+                            model: model.userData?.originalFilename || model.name,
+                            target: currentStep.traslazione.targetElement,
+                            targetPosition: targetPosition.clone()
+                        });
+                    } else {
+                        // Traslazione relativa: calcola offset come prima  
+                        const targetBoundingBoxCenter = this.calculateBoundingBoxCenter(targetModel);
+                        const sourceBoundingBoxCenter = this.calculateBoundingBoxCenter(model);
+                        const centerOffset = targetBoundingBoxCenter.clone().sub(sourceBoundingBoxCenter);
+                        
+                        const additionalOffset = new THREE.Vector3(
+                            currentStep.traslazione.x,
+                            currentStep.traslazione.y,
+                            currentStep.traslazione.z
+                        );
+                        
+                        targetPosition = model.position.clone().add(centerOffset).add(additionalOffset);
+                    }
                 } else {
                     targetPosition.add(new THREE.Vector3(
                         currentStep.traslazione.x,
@@ -1639,7 +2252,12 @@ window.Scene3D = {
     findModelByName: function(targetName) {
         let foundModel = null;
         
-        const cleanTargetName = targetName.split('/').pop().replace('.glb', '');
+        // Gestione suffisso _original per posizioni iniziali
+        const isOriginalReference = targetName.endsWith('_original');
+        const cleanTargetName = targetName
+            .replace('_original', '')
+            .split('/').pop()
+            .replace('.glb', '');
         
         this.scene.traverse(function(child) {
             if (child.isMesh || child.isGroup || child.isObject3D) {
@@ -1651,7 +2269,49 @@ window.Scene3D = {
             }
         });
         
+        // Se richiesta posizione originale, crea oggetto virtuale
+        if (foundModel && isOriginalReference) {
+            return this.createOriginalPositionReference(foundModel, targetName);
+        }
+        
         return foundModel;
+    },
+    
+    /**
+     * Crea un riferimento virtuale alla posizione originale di un modello
+     */
+    createOriginalPositionReference: function(model, referenceName) {
+        const initialState = this.initialModelPositions.get(model.uuid);
+        
+        if (!initialState) {
+            console.warn(`🔍 ORIGINAL: Posizione originale non trovata per ${referenceName}`);
+            return model; // Fallback al modello corrente
+        }
+        
+        // Oggetto virtuale con posizione originale
+        const originalReference = {
+            position: initialState.position.clone(),
+            rotation: initialState.rotation.clone(),
+            scale: initialState.scale.clone(),
+            userData: { 
+                isOriginalReference: true,
+                sourceName: referenceName,
+                sourceModel: model
+            },
+            // Metodi compatibili per bounding box calculation
+            geometry: model.geometry,
+            children: model.children,
+            getWorldPosition: function(target) {
+                return target.copy(this.position);
+            }
+        };
+        
+        console.log(`🔍 ORIGINAL: Riferimento creato per ${referenceName}:`, {
+            current: model.position.clone(),
+            original: originalReference.position.clone()
+        });
+        
+        return originalReference;
     },
 
     onMultiStepCompleted: function(modelUuid) {
@@ -1839,7 +2499,7 @@ window.Scene3D = {
                 'ChiaveBrugola': 'brugola',
                 'ChiaveInglese': 'chiave_inglese',
                 'Mani': 'mano',
-                'Martello': 'martello'
+                'Aria': 'aria'
             };
             
             return toolMapping[step.properties.Utensile] || null;
@@ -1870,6 +2530,76 @@ window.Scene3D = {
     resetTutorialTracker: function() {
         this.tutorialTracker.completedSteps.clear();
         this.tutorialTracker.lastStepCompleted = false;
+        this.tutorialTracker.interactionsBlocked = false; // Sblocca interazioni per nuovo tutorial
+        console.log('🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato');
+    },
+
+    /**
+     * Salva la posizione iniziale di un modello
+     */
+    saveInitialModelPosition: function(model) {
+        if (!model || !model.uuid) return;
+        
+        this.initialModelPositions.set(model.uuid, {
+            position: model.position.clone(),
+            rotation: model.rotation.clone(),
+            scale: model.scale.clone()
+        });
+        
+        console.log(`💾 Posizione iniziale salvata per modello: ${model.name || model.uuid}`);
+    },
+
+    /**
+     * Ripristina tutti i modelli alle posizioni iniziali
+     * Se ci sono impostazioni tutorial da applicare, le applica prima del reset
+     */
+    resetAllModelsToInitialPositions: function(tutorialStep = null) {
+        console.log('🔄 RESET: Ripristino posizioni iniziali di tutti i modelli...');
+        
+        let resetCount = 0;
+        
+        // FASE 1: Ripristina alle posizioni iniziali salvate al caricamento
+        for (const model of this.loadedModels) {
+            if (this.resetModelToInitialPosition(model)) {
+                resetCount++;
+            }
+        }
+        
+        // FASE 2: Applica eventuali impostazioni tutorial (Posizione=, Rotazione=)
+        if (tutorialStep && tutorialStep.properties) {
+            console.log('🔄 RESET: Applicazione impostazioni modelli dal tutorial...');
+            this.applyModelSettings(tutorialStep);
+            
+            // FASE 3: Risalva le nuove posizioni come "iniziali" per questo tutorial
+            console.log('🔄 RESET: Aggiornamento posizioni iniziali con impostazioni tutorial...');
+            for (const model of this.loadedModels) {
+                this.saveInitialModelPosition(model);
+            }
+        }
+        
+        console.log(`🔄 RESET: ${resetCount} modelli ripristinati alle posizioni iniziali`);
+        return resetCount;
+    },
+
+    /**
+     * Ripristina un singolo modello alla posizione iniziale
+     */
+    resetModelToInitialPosition: function(model) {
+        if (!model || !model.uuid) return false;
+        
+        const initialState = this.initialModelPositions.get(model.uuid);
+        if (!initialState) {
+            console.warn(`⚠️ Nessuna posizione iniziale trovata per modello: ${model.name || model.uuid}`);
+            return false;
+        }
+        
+        // Ripristina posizione, rotazione e scala
+        model.position.copy(initialState.position);
+        model.rotation.copy(initialState.rotation);
+        model.scale.copy(initialState.scale);
+        
+        console.log(`🔄 Modello ripristinato: ${model.name || model.uuid}`);
+        return true;
     },
 
     advanceToNextTutorialStep: function() {
@@ -1886,7 +2616,426 @@ window.Scene3D = {
                     window.UI.goToStep(currentIndex + 1);
                 }
             }, 100);
+        } else if (currentIndex === totalSteps - 1) {
+            // Tutorial completato! Blocca interazioni e mostra congratulazioni
+            this.tutorialTracker.interactionsBlocked = true;
+            console.log('🔒 INTERAZIONI BLOCCATE: Tutorial completato');
+            
+            setTimeout(() => {
+                this.showTutorialCompletionCongratulations();
+            }, 500); // Delay più lungo per dare tempo all'animazione finale
         }
+    },
+
+    /**
+     * Mostra messaggio di congratulazioni per completamento tutorial
+     */
+    showTutorialCompletionCongratulations: function() {
+        if (!window.UI || !window.UI.currentTutorial) {
+            return;
+        }
+
+        const tutorialName = window.UI.currentTutorial.name;
+        const userName = this.getCurrentUserName();
+        
+        console.log(`🎉 Tutorial "${tutorialName}" completato!`);
+        
+        // Crea e mostra il messaggio di congratulazioni
+        this.displayCongratulationsModal(userName, tutorialName);
+    },
+
+    /**
+     * Ottiene il nome utente corrente dal sistema di login
+     */
+    getCurrentUserName: function() {
+        // Verifica se l'utente è loggato e abbiamo il nome
+        if (window.currentUser && window.currentUser.name) {
+            return window.currentUser.name;
+        }
+        
+        // Fallback: cerca in localStorage se implementato
+        const storedUser = localStorage.getItem('currentUser');
+        if (storedUser) {
+            try {
+                const userData = JSON.parse(storedUser);
+                if (userData.name) {
+                    return userData.name;
+                }
+            } catch (e) {
+                console.warn('Errore parsing dati utente da localStorage:', e);
+            }
+        }
+        
+        // Fallback generico se non trovato
+        return "Utente";
+    },
+
+    /**
+     * Visualizza il modal di congratulazioni
+     */
+    displayCongratulationsModal: function(userName, tutorialName) {
+        // Rimuovi eventuali modal esistenti
+        this.removeCongratulationsModal();
+
+        // Crea il modal
+        const modal = document.createElement('div');
+        modal.id = 'congratulationsModal';
+        modal.className = 'congratulations-modal';
+        
+        // Crea il contenuto
+        modal.innerHTML = `
+            <div class="congratulations-content">
+                <div class="congratulations-header">
+                    <h2>🎉 Complimenti!</h2>
+                </div>
+                <div class="congratulations-body">
+                    <p class="congratulations-text">
+                        <strong>${userName}</strong>, hai completato con successo il tutorial:
+                    </p>
+                    <p class="tutorial-name">
+                        "${tutorialName}"
+                    </p>
+                    <div class="congratulations-stats">
+                        <p>✅ Tutti gli step sono stati completati</p>
+                        <p>🏆 Ottimo lavoro!</p>
+                    </div>
+                </div>
+                <div class="congratulations-footer">
+                    <button id="congratulationsCloseBtn" class="congratulations-close-btn">
+                        Continua
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Aggiungi alla pagina
+        document.body.appendChild(modal);
+
+        // Gestisce il click sul pulsante "Continua"
+        const closeBtn = document.getElementById('congratulationsCloseBtn');
+        if (closeBtn) {
+            closeBtn.onclick = () => {
+                // NOTA: Non resettare qui - il reset avviene solo quando si seleziona un nuovo tutorial
+                // Questo permette all'utente di vedere il risultato finale prima di decidere
+                this.removeCongratulationsModal();
+                console.log('ℹ️ Tutorial completato. Seleziona un nuovo tutorial per ripristinare le posizioni iniziali.');
+            };
+        }
+
+        // Mostra il modal con animazione
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 50);
+
+        console.log(`🎉 Congratulazioni mostrate per ${userName} - Tutorial: ${tutorialName}`);
+    },
+
+    /**
+     * Rimuove il modal di congratulazioni
+     */
+    removeCongratulationsModal: function() {
+        const modal = document.getElementById('congratulationsModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            }, 300); // Tempo per l'animazione di uscita
+        }
+    },
+
+    /**
+     * Funzione di debug per testare le congratulazioni
+     * Da rimuovere in produzione o nascondere dietro flag di debug
+     */
+    testCongratulations: function() {
+        console.log("🧪 Test congratulazioni tutorial");
+        this.showTutorialCompletionCongratulations();
+    },
+
+    /**
+     * Funzione di test completo con utente simulato (per debug)
+     * Uso: Scene3D.testCongratulationsWithUser('Pippo')
+     */
+    testCongratulationsWithUser: function(testUserName = null) {
+        console.log('🧪 TEST: Avvio test completo sistema congratulazioni...');
+        
+        // Se non c'è un utente reale, simula uno per il test
+        if (testUserName && !window.currentUser) {
+            console.log('🧪 TEST: Simulazione utente per test:', testUserName);
+            window.currentUser = {
+                name: testUserName,
+                loginTime: new Date(),
+                expiration: new Date(Date.now() + 24*60*60*1000) // 24 ore da ora
+            };
+        }
+        
+        // Simula un tutorial attivo per il test
+        const originalTutorial = this.currentTutorialName;
+        this.currentTutorialName = 'Tutorial di Test';
+        
+        // Mostra le congratulazioni
+        this.showTutorialCompletionCongratulations();
+        
+        // Ripristina il tutorial originale dopo un po'
+        setTimeout(() => {
+            if (originalTutorial) {
+                this.currentTutorialName = originalTutorial;
+            }
+        }, 5000);
+        
+        console.log('🧪 TEST: Test completato!');
+        console.log('🧪 TEST: Utente corrente:', this.getCurrentUserName());
+        console.log('🧪 TEST: Tutorial corrente:', this.currentTutorialName);
+    },
+
+    /**
+     * Test delle transizioni fluide del target camera (per debug)
+     * Uso: Scene3D.testCameraTargetTransitions()
+     */
+    testCameraTargetTransitions: function() {
+        console.log('🎥 TEST: Avvio test transizioni target camera fluide...');
+        
+        // Test 1: Transizione verso coordinate assolute
+        setTimeout(() => {
+            console.log('🎥 TEST: Transizione verso (2, 1, 0)');
+            this.applyCameraSettings({
+                properties: {
+                    CameraTarget: '(2, 1, 0)',
+                    CameraTransitionTime: '2.0'
+                }
+            });
+        }, 1000);
+        
+        // Test 2: Transizione verso origine
+        setTimeout(() => {
+            console.log('🎥 TEST: Transizione verso origine (0, 0, 0)');
+            this.applyCameraSettings({
+                properties: {
+                    CameraTarget: '(0, 0, 0)',
+                    CameraTransitionTime: '1.5'
+                }
+            });
+        }, 5000);
+        
+        // Test 3: Transizione verso coordinate elevate
+        setTimeout(() => {
+            console.log('🎥 TEST: Transizione verso alto (-1, 3, 1)');
+            this.applyCameraSettings({
+                properties: {
+                    CameraTarget: '(-1, 3, 1)',
+                    CameraTransitionTime: '3.0'
+                }
+            });
+        }, 8500);
+        
+        console.log('🎥 TEST: Tre transizioni avviate - osserva se il target si muove fluidamente');
+    },
+
+    /**
+     * Test del comportamento tool senza evidenziazione automatica (per debug)
+     * Uso: Scene3D.testToolBehaviorWithoutAutoHighlight()
+     */
+    testToolBehaviorWithoutAutoHighlight: function() {
+        console.log('🔧 TEST: Verifica comportamento tool senza evidenziazione automatica...');
+        
+        // Simula step tutorial con tool richiesto
+        const testStep = {
+            properties: {
+                Utensile: 'Aria',
+                Elemento: 'filtro',
+                Descrizione: 'Test: Tool Aria richiesto ma NON evidenziato automaticamente'
+            }
+        };
+        
+        console.log('🔧 TEST: Step simulato:', testStep);
+        console.log('🔧 TEST: 1. Tool "Aria" è richiesto ma NON dovrebbe essere evidenziato automaticamente');
+        console.log('🔧 TEST: 2. L\'elemento "filtro" dovrebbe essere evidenziato normalmente');
+        console.log('🔧 TEST: 3. Solo quando l\'utente clicca tool "Aria" manualmente, questo dovrebbe attivarsi');
+        console.log('🔧 TEST: 4. Click su elemento con tool sbagliato dovrebbe mantenere evidenziazione');
+        console.log('🔧 TEST: 5. Click su elemento con tool giusto dovrebbe rimuovere evidenziazione');
+        
+        // Applica step tutorial
+        if (window.UI && window.UI.handleTutorialStepChanged) {
+            window.UI.handleTutorialStepChanged(testStep);
+        }
+        
+        // Status report
+        setTimeout(() => {
+            console.log('🔧 TEST: Status dopo 1 secondo:');
+            if (window.ToolsManager) {
+                console.log('🔧 TEST: Tool attivo:', window.ToolsManager.getActiveTool());
+                console.log('🔧 TEST: Stato tools:', window.ToolsManager.getToolsState());
+            }
+            console.log('🔧 TEST: Verifica visivamente:');
+            console.log('🔧 TEST: - Il tool "Aria" NON dovrebbe essere evidenziato');
+            console.log('🔧 TEST: - L\'elemento "filtro" dovrebbe essere evidenziato (se presente)');
+            console.log('🔧 TEST: - L\'utente deve cliccare manualmente il tool "Aria" per attivarlo');
+        }, 1000);
+        
+        return testStep;
+    },
+
+    /**
+     * Esporta tutte le posizioni e rotazioni correnti dei modelli in formato tutorial.txt
+     * Uso: Scene3D.exportCurrentModelPositions()
+     */
+    exportCurrentModelPositions: function() {
+        console.log('📝 EXPORT: Inizio esportazione posizioni e rotazioni modelli...');
+        
+        if (this.loadedModels.length === 0) {
+            console.warn('⚠️ EXPORT: Nessun modello caricato nella scena');
+            return null;
+        }
+        
+        let exportLines = [];
+        exportLines.push('# Posizioni e Rotazioni Modelli - Esportate automaticamente');
+        exportLines.push('# Generato il: ' + new Date().toLocaleString('it-IT'));
+        exportLines.push('# Sintassi: Posizione=nomeModello:(x,y,z) e Rotazione=nomeModello:(rx,ry,rz)');
+        exportLines.push('');
+        
+        // Esporta ogni modello caricato
+        this.loadedModels.forEach((model, index) => {
+            const modelName = this.getModelDisplayName(model);
+            const pos = model.position;
+            const rot = model.rotation;
+            
+            // Converti radianti in gradi per rotazione
+            const rotDeg = {
+                x: (rot.x * 180 / Math.PI),
+                y: (rot.y * 180 / Math.PI), 
+                z: (rot.z * 180 / Math.PI)
+            };
+            
+            // Formatta con 3 decimali per precisione
+            const posStr = `(${pos.x.toFixed(3)},${pos.y.toFixed(3)},${pos.z.toFixed(3)})`;
+            const rotStr = `(${rotDeg.x.toFixed(1)},${rotDeg.y.toFixed(1)},${rotDeg.z.toFixed(1)})`;
+            
+            // Aggiungi commento descrittivo
+            exportLines.push(`# Modello ${index + 1}: ${modelName}`);
+            exportLines.push(`Posizione=${modelName}:${posStr}`);
+            exportLines.push(`Rotazione=${modelName}:${rotStr}`);
+            exportLines.push('');
+            
+            console.log(`📝 EXPORT: ${modelName} - Pos: ${posStr}, Rot: ${rotStr}`);
+        });
+        
+        // Crea contenuto finale
+        const exportContent = exportLines.join('\n');
+        
+        // Mostra nel console per copia manuale
+        console.log('📝 EXPORT: Contenuto generato:');
+        console.log('═'.repeat(50));
+        console.log(exportContent);
+        console.log('═'.repeat(50));
+        
+        // Prova a scaricare come file (se supportato dal browser)
+        this.downloadModelPositionsFile(exportContent);
+        
+        return exportContent;
+    },
+
+    /**
+     * Ottiene il nome display di un modello per l'export
+     */
+    getModelDisplayName: function(model) {
+        // Priorità: originalFilename > name > uuid
+        if (model.userData && model.userData.originalFilename) {
+            // Rimuovi estensione per sintassi tutorial pulita
+            return model.userData.originalFilename.replace(/\.(glb|gltf|obj|stl)$/i, '');
+        }
+        
+        if (model.name && model.name.trim()) {
+            return model.name.replace(/\.(glb|gltf|obj|stl)$/i, '');
+        }
+        
+        // Fallback a UUID breve
+        return 'modello_' + model.uuid.substring(0, 8);
+    },
+
+    /**
+     * Prova a scaricare il file delle posizioni (solo browser moderni)
+     */
+    downloadModelPositionsFile: function(content) {
+        try {
+            // Crea timestamp per nome file
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:\-]/g, '').replace('T', '_');
+            const filename = `model_positions_${timestamp}.txt`;
+            
+            // Crea blob e download
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            // Crea link temporaneo per download
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = filename;
+            downloadLink.style.display = 'none';
+            
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            // Cleanup
+            URL.revokeObjectURL(url);
+            
+            console.log(`💾 EXPORT: File scaricato come: ${filename}`);
+            
+        } catch (error) {
+            console.warn('⚠️ EXPORT: Download automatico non supportato:', error.message);
+            console.log('💡 EXPORT: Copia manualmente il contenuto dalla console sopra');
+        }
+    },
+
+    /**
+     * Test del sistema di blocco post-tutorial e reset posizioni (per debug)
+     * Uso: Scene3D.testPostTutorialBlockAndReset()
+     */
+    testPostTutorialBlockAndReset: function() {
+        console.log('🔒 TEST: Simulazione completamento tutorial e test blocco interazioni...');
+        
+        // Simula completamento tutorial
+        this.tutorialTracker.lastStepCompleted = true;
+        this.tutorialTracker.interactionsBlocked = true;
+        
+        console.log('🔒 TEST: Tutorial simulato come completato');
+        console.log('🔒 TEST: interactionsBlocked =', this.tutorialTracker.interactionsBlocked);
+        
+        // Test 1: Prova click su modello (dovrebbe essere bloccato)
+        console.log('🔒 TEST 1: Simulazione click su modello (dovrebbe essere bloccato)...');
+        const mockEvent = { clientX: 100, clientY: 100 };
+        this.handleModelClick(mockEvent);
+        
+        // Test 2: Mostra stato posizioni iniziali
+        console.log('🔒 TEST 2: Stato posizioni iniziali salvate:');
+        console.log('🔒 TEST: Modelli con posizioni salvate:', this.initialModelPositions.size);
+        this.initialModelPositions.forEach((state, uuid) => {
+            const model = this.loadedModels.find(m => m.uuid === uuid);
+            const modelName = model ? (model.name || model.userData?.originalFilename || uuid.substring(0,8)) : uuid.substring(0,8);
+            console.log(`🔒 TEST: - ${modelName}: pos(${state.position.x.toFixed(2)}, ${state.position.y.toFixed(2)}, ${state.position.z.toFixed(2)})`);
+        });
+        
+        // Test 3: Test reset tutorial tracker
+        console.log('🔒 TEST 3: Test reset tutorial tracker...');
+        setTimeout(() => {
+            console.log('🔒 TEST: Reset tutorial tracker...');
+            this.resetTutorialTracker();
+            console.log('🔒 TEST: interactionsBlocked dopo reset =', this.tutorialTracker.interactionsBlocked);
+            
+            // Test 4: Test reset posizioni
+            console.log('🔒 TEST 4: Test reset posizioni...');
+            const resetCount = this.resetAllModelsToInitialPositions();
+            console.log('🔒 TEST: Modelli resettati:', resetCount);
+            
+            console.log('🔒 TEST: Sistema completo testato!');
+        }, 2000);
+        
+        return {
+            interactionsBlocked: this.tutorialTracker.interactionsBlocked,
+            savedPositionsCount: this.initialModelPositions.size,
+            modelsCount: this.loadedModels.length
+        };
     },
 
     saveCurrentView: function() {
@@ -1910,6 +3059,14 @@ window.Scene3D = {
         if (this.scene && this.camera && this.renderer) {
             this.updateAnimations();
             this.updateCameraAnimation();
+            this.updatePivotAnimation();
+            this.updateAxisGizmoOrientation();
+            
+            // Aggiorna sistema particellare se attivo
+            if (this.particleSystem && this.particleSystem.isActive) {
+                this.particleSystem.update(0.016); // ~60 FPS delta time
+            }
+            
             this.renderer.render(this.scene, this.camera);
         }
     },
@@ -2004,7 +3161,8 @@ window.Scene3D = {
             if (targetTarget) {
                 cameraChanged = true;
                 this.cameraAnimation.targetTarget = targetTarget;
-                this.mouseControls.pivotPoint.copy(targetTarget);
+                // NON copiare immediatamente il target - sarà animato
+                // this.mouseControls.pivotPoint.copy(targetTarget);
             }
         }
         
@@ -2047,6 +3205,175 @@ window.Scene3D = {
         }
         
         console.log(`📹 CAMERA: Avvio animazione camera (durata: ${this.cameraAnimation.duration}s)`);
+    },
+
+    applyModelSettings: function(tutorialStep) {
+        if (!tutorialStep.properties) return;
+        
+        const props = tutorialStep.properties;
+        
+        // Cerca le direttive Posizione= e Rotazione=
+        Object.keys(props).forEach(key => {
+            if (key.startsWith('Posizione')) {
+                this.applyModelPosition(key, props[key]);
+            } else if (key.startsWith('Rotazione')) {
+                this.applyModelRotation(key, props[key]);
+            }
+        });
+    },
+
+    applyModelPosition: function(key, value) {
+        // Parsing: Posizione=modello.glb:(-2,0,0) o Posizione=(-2,0,0) (per tutti i modelli)
+        let modelName = null;
+        let positionValue = value;
+        
+        if (value.includes(':')) {
+            const [model, pos] = value.split(':').map(s => s.trim());
+            modelName = model.replace('.glb', '');
+            positionValue = pos;
+        }
+        
+        // Parsing coordinate: (-2,0,0)
+        const posMatch = positionValue.match(/\(([^)]+)\)/);
+        if (!posMatch) {
+            console.warn(`🔧 MODEL: Formato posizione non valido: ${value}`);
+            return;
+        }
+        
+        const coords = posMatch[1].split(',').map(n => parseFloat(n.trim()));
+        if (coords.length !== 3) {
+            console.warn(`🔧 MODEL: Coordinate posizione non valide: ${value}`);
+            return;
+        }
+        
+        const position = new THREE.Vector3(coords[0], coords[1], coords[2]);
+        
+        // Applica la posizione
+        if (modelName) {
+            // Applica a modello specifico
+            const model = this.findModelByName(modelName);
+            if (model) {
+                model.position.copy(position);
+                console.log(`🔧 MODEL: Posizione applicata a "${modelName}": (${coords[0]}, ${coords[1]}, ${coords[2]})`);
+            } else {
+                console.warn(`🔧 MODEL: Modello "${modelName}" non trovato per posizionamento`);
+            }
+        } else {
+            // Applica a tutti i modelli (se non specificato)
+            this.loadedModels.forEach(model => {
+                if (model && model.position) {
+                    model.position.copy(position);
+                }
+            });
+            console.log(`🔧 MODEL: Posizione applicata a tutti i modelli: (${coords[0]}, ${coords[1]}, ${coords[2]})`);
+        }
+    },
+
+    applyModelRotation: function(key, value) {
+        // Parsing: Rotazione=modello.glb:(0,90,0) o Rotazione=(0,90,0) (per tutti i modelli)
+        let modelName = null;
+        let rotationValue = value;
+        
+        if (value.includes(':')) {
+            const [model, rot] = value.split(':').map(s => s.trim());
+            modelName = model.replace('.glb', '');
+            rotationValue = rot;
+        }
+        
+        // Parsing coordinate: (0,90,0) - in gradi
+        const rotMatch = rotationValue.match(/\(([^)]+)\)/);
+        if (!rotMatch) {
+            console.warn(`🔧 MODEL: Formato rotazione non valido: ${value}`);
+            return;
+        }
+        
+        const angles = rotMatch[1].split(',').map(n => parseFloat(n.trim()));
+        if (angles.length !== 3) {
+            console.warn(`🔧 MODEL: Angoli rotazione non validi: ${value}`);
+            return;
+        }
+        
+        // Converti da gradi a radianti
+        const rotation = new THREE.Euler(
+            angles[0] * Math.PI / 180,
+            angles[1] * Math.PI / 180,
+            angles[2] * Math.PI / 180
+        );
+        
+        // Applica la rotazione
+        if (modelName) {
+            // Applica a modello specifico
+            const model = this.findModelByName(modelName);
+            if (model) {
+                model.rotation.copy(rotation);
+                console.log(`🔧 MODEL: Rotazione applicata a "${modelName}": (${angles[0]}°, ${angles[1]}°, ${angles[2]}°)`);
+            } else {
+                console.warn(`🔧 MODEL: Modello "${modelName}" non trovato per rotazione`);
+            }
+        } else {
+            // Applica a tutti i modelli (se non specificato)
+            this.loadedModels.forEach(model => {
+                if (model && model.rotation) {
+                    model.rotation.copy(rotation);
+                }
+            });
+            console.log(`🔧 MODEL: Rotazione applicata a tutti i modelli: (${angles[0]}°, ${angles[1]}°, ${angles[2]}°)`);
+        }
+    },
+
+    applySilhouetteToModel: function(modelName, color = 0xffff00) {
+        // Trova il modello
+        const model = this.findModelByName(modelName);
+        if (!model) {
+            console.warn(`🔍 SILHOUETTE: Modello "${modelName}" non trovato`);
+            return;
+        }
+
+        // Crea materiale silhouette che passa attraverso tutto
+        const silhouetteMaterial = new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: 0.8,
+            depthTest: false,  // Visibile attraverso tutti gli oggetti
+            depthWrite: false, // Non scrive nel depth buffer
+            side: THREE.DoubleSide // Visibile da entrambi i lati
+        });
+
+        // Applica il materiale a tutti i mesh del modello
+        model.traverse((child) => {
+            if (child.isMesh) {
+                // Salva il materiale originale se non già fatto
+                if (!child.userData.originalMaterial) {
+                    child.userData.originalMaterial = child.material;
+                }
+                // Applica la silhouette
+                child.material = silhouetteMaterial;
+                console.log(`🔍 SILHOUETTE: Materiale silhouette applicato a "${child.name}"`);
+            }
+        });
+
+        console.log(`🔍 SILHOUETTE: Silhouette gialla applicata al modello "${modelName}" - ora è visibile ovunque!`);
+        console.log(`🔍 SILHOUETTE: Posizione corrente: (${model.position.x.toFixed(2)}, ${model.position.y.toFixed(2)}, ${model.position.z.toFixed(2)})`);
+    },
+
+    removeSilhouetteFromModel: function(modelName) {
+        // Trova il modello
+        const model = this.findModelByName(modelName);
+        if (!model) {
+            console.warn(`🔍 SILHOUETTE: Modello "${modelName}" non trovato per rimozione silhouette`);
+            return;
+        }
+
+        // Ripristina i materiali originali
+        model.traverse((child) => {
+            if (child.isMesh && child.userData.originalMaterial) {
+                child.material = child.userData.originalMaterial;
+                delete child.userData.originalMaterial;
+                console.log(`🔍 SILHOUETTE: Materiale originale ripristinato per "${child.name}"`);
+            }
+        });
+
+        console.log(`🔍 SILHOUETTE: Silhouette rimossa dal modello "${modelName}"`);
     },
 
     updateCameraAnimation: function() {
@@ -2093,6 +3420,42 @@ window.Scene3D = {
         }
     },
 
+    updatePivotAnimation: function() {
+        if (!this.pivotAnimation || !this.pivotAnimation.isAnimating) return;
+        
+        const elapsed = (performance.now() - this.pivotAnimation.startTime) / 1000;
+        let progress = Math.min(elapsed / this.pivotAnimation.duration, 1.0);
+        
+        // Smooth easing per movimento fluido
+        progress = this.smoothStep(progress);
+        
+        // Interpola pivot point
+        this.mouseControls.pivotPoint.lerpVectors(
+            this.pivotAnimation.startPivot,
+            this.pivotAnimation.targetPivot,
+            progress
+        );
+        
+        // Interpola posizione camera
+        this.camera.position.lerpVectors(
+            this.pivotAnimation.startCameraPosition,
+            this.pivotAnimation.targetCameraPosition,
+            progress
+        );
+        
+        // Mantieni la camera sempre puntata verso il pivot
+        // (a meno che non sia in corso un'animazione camera con target personalizzato)
+        if (!this.cameraAnimation || !this.cameraAnimation.isAnimating || !this.cameraAnimation.targetTarget) {
+            this.camera.lookAt(this.mouseControls.pivotPoint);
+        }
+        
+        // Termina animazione
+        if (progress >= 1.0) {
+            this.pivotAnimation.isAnimating = false;
+            console.log(`🎯 Animazione pivot completata`);
+        }
+    },
+
     onWindowResize: function() {
         if (!this.camera || !this.renderer) {
             return;
@@ -2104,8 +3467,71 @@ window.Scene3D = {
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height);
+        
+        // Aggiorna anche il renderer del gizmo UI se presente
+        if (this.axisGizmoRenderer) {
+            this.axisGizmoRenderer.setPixelRatio(window.devicePixelRatio);
+        }
+    },
+
+    /* ===== DRAG & DROP SYSTEM INTEGRATION ===== */
+    
+    /**
+     * Abilita il sistema drag & drop
+     * @param {Array} objectNames - Lista nomi oggetti draggabili (opzionale)
+     */
+    enableDragDrop: function(objectNames = null) {
+        if (this.dragDropSystem && this.dragDropSystem.enable) {
+            this.dragDropSystem.enable(objectNames);
+        } else {
+            console.warn('[Scene3D] ⚠️ DragDropSystem non disponibile o non inizializzato');
+        }
+    },
+    
+    /**
+     * Disabilita il sistema drag & drop
+     */
+    disableDragDrop: function() {
+        if (this.dragDropSystem && this.dragDropSystem.disable) {
+            this.dragDropSystem.disable();
+        } else {
+            console.warn('[Scene3D] ⚠️ DragDropSystem non disponibile per disabilitazione');
+        }
+    },
+    
+    /**
+     * Imposta distanza di snap per drag & drop
+     * @param {number} distance - Distanza di snap
+     */
+    setDragSnapDistance: function(distance) {
+        if (this.dragDropSystem && this.dragDropSystem.setSnapDistance) {
+            this.dragDropSystem.setSnapDistance(distance);
+        } else {
+            console.warn('[Scene3D] ⚠️ DragDropSystem non disponibile per setSnapDistance');
+        }
+    },
+    
+    /**
+     * Verifica se il sistema drag & drop è abilitato
+     * @returns {boolean}
+     */
+    isDragDropEnabled: function() {
+        return (this.dragDropSystem && this.dragDropSystem.isEnabled) ? 
+               this.dragDropSystem.isEnabled() : false;
+    },
+    
+    /**
+     * Verifica se è in corso un'operazione di drag
+     * @returns {boolean}
+     */
+    isDragging: function() {
+        return (this.dragDropSystem && this.dragDropSystem.isDraggingActive) ? 
+               this.dragDropSystem.isDraggingActive() : false;
     }
 };
+
+// Esponi Scene3D globalmente
+window.Scene3D = Scene3D;
 
 window.addEventListener('resize', function() {
     if (window.Scene3D && window.Scene3D.onWindowResize) {

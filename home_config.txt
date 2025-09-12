@@ -27,6 +27,8 @@ model=models/assi.glb                                     // Axes
 direction=-1,0,0                                          // Movement direction: towards X-
 model=models/vite_coperchio_1.glb                                     // Axes
 direction=-1,0,0  
+model=models/corpo.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
 
 [Manutenzione pompa del vuoto]                            // Main scenario with complete tutorial
 // === CAMERA AND LIGHTS CONFIGURATION ===

@@ -1101,8 +1101,8 @@ button:disabled, .button:disabled {
     cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15" fill="rgba(0,0,0,0.1)" stroke="white" stroke-width="1"/><g><rect x="6" y="14" width="16" height="4" fill="%23e74c3c" rx="2"/><circle cx="24" cy="16" r="6" fill="none" stroke="%23e74c3c" stroke-width="3"/><rect x="20" y="12" width="2" height="3" fill="%23e74c3c"/><rect x="20" y="17" width="2" height="3" fill="%23e74c3c"/></g></svg>'), auto;
 }
 
-.cursor-martello { 
-    cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15" fill="rgba(0,0,0,0.1)" stroke="white" stroke-width="1"/><g><rect x="10" y="6" width="12" height="8" fill="%23f39c12" rx="2"/><rect x="14" y="14" width="4" height="12" fill="%23e67e22" rx="1"/><rect x="11" y="7" width="10" height="2" fill="%23ffffff" opacity="0.5"/></g></svg>'), auto;
+.cursor-aria { 
+    cursor: url("cursors/pistola_normale.svg") 3 3, auto !important;
 }
 
 /* Animazione per click sui cursori - VERSIONE PING-PONG */
@@ -1114,12 +1114,185 @@ button:disabled, .button:disabled {
     cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15" fill="rgba(231,76,60,0.3)" stroke="white" stroke-width="2"/><g transform="rotate(-15 16 16)"><rect x="6" y="14" width="16" height="4" fill="%23c0392b" rx="2"/><circle cx="24" cy="16" r="6" fill="none" stroke="%23c0392b" stroke-width="4"/><rect x="20" y="12" width="2" height="3" fill="%23c0392b"/><rect x="20" y="17" width="2" height="3" fill="%23c0392b"/></g></svg>'), auto;
 }
 
-.cursor-martello:active { 
-    cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15" fill="rgba(243,156,18,0.3)" stroke="white" stroke-width="2"/><g transform="rotate(20 16 16)"><rect x="10" y="6" width="12" height="8" fill="%23e67e22" rx="2"/><rect x="14" y="14" width="4" height="12" fill="%23d35400" rx="1"/><rect x="11" y="7" width="10" height="2" fill="%23ffffff" opacity="0.8"/></g></svg>'), auto;
+.cursor-aria:active { 
+    cursor: url("cursors/pistola_premuto.svg") 3 3, auto !important;
 }
 
 /* Cursore di default per canvas senza tool */
 .cursor-default { cursor: default; }
+
+/* Supporto per sistema tool aria con body class - ALTA PRIORITA */
+body.tool-aria-active,
+body.tool-aria-active *,
+.tool-aria-active {
+    cursor: url("../cursors/pistola_normale.svg") 3 3, auto !important;
+}
+
+body.tool-aria-active:active,
+body.tool-aria-active:active *,
+body.tool-aria-active.mouse-pressed,
+body.tool-aria-active.mouse-pressed * {
+    cursor: url("../cursors/pistola_premuto.svg") 3 3, auto !important;
+}
+
+/* Applica cursore pistola a tutti gli elementi eccetto pulsanti e link */
+body.tool-aria-active * {
+    cursor: inherit !important;
+}
+
+/* Eccezioni: pulsanti e elementi interattivi mantengono cursore pointer */
+body.tool-aria-active button,
+body.tool-aria-active .tool-icon,
+body.tool-aria-active a,
+body.tool-aria-active input,
+body.tool-aria-active select,
+body.tool-aria-active textarea,
+body.tool-aria-active .btn,
+body.tool-aria-active .button,
+body.tool-aria-active [role="button"] {
+    cursor: pointer !important;
+}
+
+/* ===== MODAL CONGRATULAZIONI TUTORIAL ===== */
+.congratulations-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.congratulations-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.congratulations-content {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+    border: 2px solid #28a745;
+}
+
+.congratulations-modal.show .congratulations-content {
+    transform: scale(1);
+}
+
+.congratulations-header h2 {
+    color: #28a745;
+    font-size: 2.5em;
+    margin: 0 0 20px 0;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.congratulations-body {
+    margin: 30px 0;
+}
+
+.congratulations-text {
+    font-size: 1.3em;
+    color: #333;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.tutorial-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff;
+    margin: 20px 0;
+    padding: 15px;
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    border-radius: 10px;
+    border-left: 5px solid #007bff;
+}
+
+.congratulations-stats {
+    margin: 25px 0;
+    padding: 20px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    border: 1px solid #dee2e6;
+}
+
+.congratulations-stats p {
+    margin: 10px 0;
+    font-size: 1.1em;
+    color: #28a745;
+    font-weight: 500;
+}
+
+.congratulations-footer {
+    margin-top: 30px;
+}
+
+.congratulations-close-btn {
+    background: linear-gradient(145deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.congratulations-close-btn:hover {
+    background: linear-gradient(145deg, #20c997, #17a2b8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
+}
+
+.congratulations-close-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.4);
+}
+
+/* Animazione di celebrazione (opzionale) */
+.congratulations-modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 99, 132, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(54, 162, 235, 0.3) 0%, transparent 50%);
+    animation: celebration-sparkle 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes celebration-sparkle {
+    0%, 100% { 
+        opacity: 0.3;
+        transform: scale(1) rotate(0deg);
+    }
+    50% { 
+        opacity: 0.7;
+        transform: scale(1.1) rotate(180deg);
+    }
+}
 
 /* ===== GENERATORE CURSORI PERSONALIZZATI ===== */
 /* Stili per creare facilmente nuovi cursori */

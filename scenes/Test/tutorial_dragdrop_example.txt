@@ -1,0 +1,42 @@
+# Tutorial Assemblaggio Ingrassatore con Drag & Drop
+# Esempio di utilizzo sistema drag & drop per riposizionamento preciso
+
+# Posizioni e rotazioni target (da modificare secondo necessità)
+# Queste sono le posizioni finali dove l'ingrassatore dovrebbe essere posizionato
+# Puoi ottenere queste coordinate usando: Scene3D.exportCurrentModelPositions()
+
+[Tutorial Assemblaggio Ingrassatore]
+CameraPos=(-1.5, 0.8, -0.5)
+CameraTarget=(0, 0.2, 0)
+CameraZoom=1.0
+CameraTransitionTime=2.0
+
+# Posiziona l'ingrassatore in una posizione di partenza (scomposta)
+Posizione=ingrassatore:(2.0,0.5,-1.0)     # Posizione iniziale dislocata
+Rotazione=ingrassatore:(45,45,0)           # Rotazione iniziale scomposta
+
+  [Step 1 - Assemblaggio Ingrassatore con Drag & Drop]
+  Elemento=models/ingrassatore.glb
+  Utensile=Mani
+  Descrizione=Trascina l'ingrassatore nella posizione corretta. Quando rilasci vicino alla posizione originale, si posizionerà automaticamente.
+  
+  # Abilita il sistema drag & drop per questo step
+  DragDrop=true
+  DragDropObjects=ingrassatore              # Solo ingrassatore draggabile
+  DragDropDistance=1.0                      # Distanza di snap in unità 3D
+  
+  # IMPORTANTE: Nessuna azione automatica - l'utente deve trascinare manualmente
+  # Il sistema rileverà quando l'ingrassatore è vicino alla posizione target
+  
+  # Posizione e rotazione TARGET (dove dovrebbe finire l'ingrassatore)
+  # Queste coordinate vengono usate dal sistema per il posizionamento automatico
+  TargetPosizione=ingrassatore:(0.0,0.1,0.0)    # Posizione finale corretta
+  TargetRotazione=ingrassatore:(0,0,0)           # Rotazione finale corretta
+
+  [Step 2 - Verifica Posizionamento]
+  Elemento=models/ingrassatore.glb
+  Utensile=Mani
+  Descrizione=Ottimo! L'ingrassatore è ora nella posizione corretta. Il tutorial può continuare.
+  
+  # Disabilita drag & drop per i prossimi step
+  DragDrop=false
