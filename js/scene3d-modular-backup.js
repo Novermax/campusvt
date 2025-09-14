@@ -205,6 +205,266 @@ const Scene3D = {
 
 
     /* ===== CAMERA DEBUG FUNCTIONS ===== */
+
+    getCameraInfo: function() {
+        // Scena separata per il gizmo
+        this.axisGizmoScene = new THREE.Scene();
+        
+        // Camera ortografica per il gizmo
+        this.axisGizmoCamera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 10);
+        this.axisGizmoCamera.position.set(3, 3, 3);
+        this.axisGizmoCamera.lookAt(0, 0, 0);
+        
+        // Renderer separato per il gizmo
+        this.axisGizmoRenderer = new THREE.WebGLRenderer({
+            canvas: this.axisGizmoCanvas,
+            alpha: true,
+            antialias: true
+        });
+        this.axisGizmoRenderer.setSize(100, 100);
+        this.axisGizmoRenderer.setPixelRatio(window.devicePixelRatio);
+        this.axisGizmoRenderer.setClearColor(0x000000, 0);
+        
+        // Luci per il gizmo
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        this.axisGizmoScene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        this.axisGizmoScene.add(directionalLight);
+        
+        this.axisGizmoModel = null;
+    },
+    
+    loadAxisGizmoModel: function() {
+        // Verifica se c'è già un modello assi.glb caricato nella scena principale
+        const existingAxisModel = this.findModelByName('assi');
+        
+        if (existingAxisModel) {
+            // Clona il modello esistente per il gizmo UI
+            this.axisGizmoModel = existingAxisModel.clone();
+            this.setupAxisGizmoModel();
+            console.log('[Scene3D] 🧭 Modello assi clonato per Axis Gizmo UI');
+        } else {
+            // Carica il modello assi.glb specificamente per il gizmo UI
+            if (window.ModelLoader && window.ModelLoader.loadGLTF) {
+                window.ModelLoader.loadGLTF('models/assi.glb')
+                    .then(model => {
+                        this.axisGizmoModel = model;
+                        this.setupAxisGizmoModel();
+                        console.log('[Scene3D] 🧭 Modello assi caricato per Axis Gizmo UI');
+                    })
+                    .catch(error => {
+                        console.warn('[Scene3D] ⚠️ Impossibile caricare modello assi per gizmo UI:', error);
+                        this.createFallbackAxisGizmo();
+                    });
+            } else {
+                console.warn('[Scene3D] ⚠️ ModelLoader non disponibile, creo gizmo fallback');
+                this.createFallbackAxisGizmo();
+            }
+        }
+    },
+    
+    setupAxisGizmoModel: function() {
+        if (!this.axisGizmoModel) return;
+        
+        // Scala e posiziona il modello nel gizmo UI
+        this.axisGizmoModel.scale.setScalar(0.8);
+        this.axisGizmoModel.position.set(0, 0, 0);
+        
+        // Aggiungi alla scena del gizmo
+        this.axisGizmoScene.add(this.axisGizmoModel);
+        
+        // Avvia il rendering del gizmo
+        this.startAxisGizmoRendering();
+    },
+    
+    createFallbackAxisGizmo: function() {
+        // Crea un gizmo fallback semplice se il modello non è disponibile
+        const group = new THREE.Group();
+        
+        const colors = [0xff0000, 0x00ff00, 0x0000ff]; // X, Y, Z
+        const directions = [
+            new THREE.Vector3(1, 0, 0),
+            new THREE.Vector3(0, 1, 0),
+            new THREE.Vector3(0, 0, 1)
+        ];
+        
+        directions.forEach((direction, index) => {
+            // Asta
+            const geometry = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 8);
+            const material = new THREE.MeshBasicMaterial({ color: colors[index] });
+            const shaft = new THREE.Mesh(geometry, material);
+            
+            // Punta
+            const headGeometry = new THREE.ConeGeometry(0.1, 0.3, 8);
+            const head = new THREE.Mesh(headGeometry, material);
+            
+            if (index === 0) { // X - Rosso
+                shaft.rotation.z = -Math.PI / 2;
+                shaft.position.x = 0.75;
+                head.rotation.z = -Math.PI / 2;
+                head.position.x = 1.5;
+            } else if (index === 1) { // Y - Verde
+                shaft.position.y = 0.75;
+                head.position.y = 1.5;
+            } else { // Z - Blu
+                shaft.rotation.x = Math.PI / 2;
+                shaft.position.z = 0.75;
+                head.rotation.x = Math.PI / 2;
+                head.position.z = 1.5;
+            }
+            
+            group.add(shaft);
+            group.add(head);
+        });
+        
+        this.axisGizmoModel = group;
+        this.setupAxisGizmoModel();
+        console.log('[Scene3D] 🧭 Gizmo fallback creato');
+    },
+    
+    startAxisGizmoRendering: function() {
+        // Aggiungi il rendering del gizmo al loop principale
+        this.axisGizmoRenderEnabled = true;
+    },
+    
+    updateAxisGizmoOrientation: function() {
+        if (!this.axisGizmoModel || !this.axisGizmoRenderEnabled) return;
+        
+        // Il gizmo deve essere orientato come l'elemento "assi" nello spazio,
+        // ma visualizzato dalla prospettiva della camera corrente.
+        // Quindi: orientamento fisso dell'elemento assi + trasformazione vista camera
+        
+        // Cerca l'elemento "assi" nella scena principale
+        const axisObject = this.findModelByName('assi');
+        
+        if (axisObject) {
+            // ALGORITMO BILLBOARDING SFERICO
+            // Il gizmo deve guardare sempre verso la camera, ma mantenere l'orientamento
+            // dell'elemento assi come riferimento base
+            // Riferimenti: lighthouse3d.com/opengl/billboarding
+            
+            // 1. Orientamento base dall'elemento assi
+            const axisQuaternion = axisObject.quaternion.clone();
+            
+            // 2. BILLBOARDING: Calcola direzione dalla posizione gizmo verso camera
+            const gizmoPosition = new THREE.Vector3(0, 0, 0); // Gizmo sempre al centro della sua scena
+            const cameraPosition = this.camera.position.clone();
+            
+            // 3. Calcola vettore "look direction" (da gizmo verso camera)
+            const lookDirection = new THREE.Vector3();
+            lookDirection.subVectors(cameraPosition, gizmoPosition).normalize();
+            
+            // 4. Calcola vettore "up" per il billboarding (usa up della camera)
+            const upDirection = this.camera.up.clone().normalize();
+            
+            // 5. Crea matrice LookAt per billboarding sferico
+            // Il gizmo "guarda" sempre verso la camera
+            const lookAtMatrix = new THREE.Matrix4();
+            lookAtMatrix.lookAt(gizmoPosition, gizmoPosition.clone().add(lookDirection), upDirection);
+            
+            // 6. Estrai quaternion di billboarding dalla matrice
+            const billboardQuaternion = new THREE.Quaternion();
+            billboardQuaternion.setFromRotationMatrix(lookAtMatrix);
+            
+            // 7. Combina billboarding con orientamento elemento assi
+            // Formula: billboard_rotation * axis_rotation
+            const finalQuaternion = new THREE.Quaternion();
+            finalQuaternion.multiplyQuaternions(billboardQuaternion, axisQuaternion);
+            
+            // 8. Applica al gizmo
+            this.axisGizmoModel.quaternion.copy(finalQuaternion);
+            
+            // Debug: verifica algoritmo billboarding
+            if (Math.random() < 0.02) {
+                console.log('[Gizmo Billboarding] Look direction:', lookDirection);
+                console.log('[Gizmo Billboarding] Up direction:', upDirection);
+                console.log('[Gizmo Billboarding] Billboard quaternion:', billboardQuaternion);
+                console.log('[Gizmo Billboarding] Axis quaternion:', axisQuaternion);
+                console.log('[Gizmo Billboarding] Final result:', finalQuaternion);
+                console.log('[Gizmo Billboarding] ----');
+            }
+        } else {
+            // Fallback: se non trova l'elemento assi, mostra orientamento mondo dalla vista camera
+            const cameraQuaternionInverse = this.camera.quaternion.clone().conjugate();
+            this.axisGizmoModel.quaternion.copy(cameraQuaternionInverse);
+            
+            // Debug occasionale per fallback
+            if (Math.random() < 0.01) {
+                console.log('[Gizmo] Elemento "assi" non trovato, uso orientamento mondo con vista camera');
+            }
+        }
+        
+        // Render del gizmo
+        this.axisGizmoRenderer.render(this.axisGizmoScene, this.axisGizmoCamera);
+    },
+    
+    toggleAxisGizmoUI: function(visible = null) {
+        if (!this.axisGizmoContainer) return;
+        
+        const shouldShow = visible !== null ? visible : (this.axisGizmoContainer.style.display === 'none');
+        
+        this.axisGizmoContainer.style.display = shouldShow ? 'block' : 'none';
+        this.axisGizmoRenderEnabled = shouldShow;
+        
+        console.log(`[Scene3D] 🧭 Axis Gizmo UI ${shouldShow ? 'mostrato' : 'nascosto'}`);
+    },
+    
+    removeAxisGizmoUI: function() {
+        if (this.axisGizmoContainer) {
+            document.body.removeChild(this.axisGizmoContainer);
+            this.axisGizmoContainer = null;
+            this.axisGizmoCanvas = null;
+        }
+        
+        if (this.axisGizmoRenderer) {
+            this.axisGizmoRenderer.dispose();
+            this.axisGizmoRenderer = null;
+        }
+        
+        if (this.axisGizmoScene) {
+            this.axisGizmoScene.clear();
+            this.axisGizmoScene = null;
+        }
+        
+        this.axisGizmoModel = null;
+        this.axisGizmoCamera = null;
+        this.axisGizmoRenderEnabled = false;
+        
+        console.log('[Scene3D] 🧭 Axis Gizmo UI rimosso');
+    },
+    
+    /* ===== DEBUG FUNCTIONS FOR AXIS GIZMO UI ===== */
+    
+    debugAxisGizmoUI: function() {
+        console.log('[Scene3D] 🧭 DEBUG Axis Gizmo UI Status:');
+        console.log('  Container:', !!this.axisGizmoContainer);
+        console.log('  Canvas:', !!this.axisGizmoCanvas);
+        console.log('  Scene:', !!this.axisGizmoScene);
+        console.log('  Camera:', !!this.axisGizmoCamera);
+        console.log('  Renderer:', !!this.axisGizmoRenderer);
+        console.log('  Model:', !!this.axisGizmoModel);
+        console.log('  Render Enabled:', this.axisGizmoRenderEnabled);
+        
+        if (this.axisGizmoContainer) {
+            console.log('  Container Visible:', this.axisGizmoContainer.style.display !== 'none');
+            console.log('  Container Position:', {
+                top: this.axisGizmoContainer.style.top,
+                right: this.axisGizmoContainer.style.right,
+                zIndex: this.axisGizmoContainer.style.zIndex
+            });
+        }
+        
+        return {
+            isInitialized: !!(this.axisGizmoContainer && this.axisGizmoRenderer && this.axisGizmoModel),
+            renderEnabled: this.axisGizmoRenderEnabled,
+            visible: this.axisGizmoContainer ? (this.axisGizmoContainer.style.display !== 'none') : false
+        };
+    },
+    
+    /* ===== CAMERA DEBUG FUNCTIONS ===== */
+    
     getCameraInfo: function() {
         if (!this.camera) {
             console.warn('[Scene3D] 📹 Camera non inizializzata');
@@ -371,25 +631,19 @@ const Scene3D = {
         
         // Inizializza sistema particellare se disponibile
         this.particleSystem = null;
-        console.log('[Scene3D] 🔍 DEBUG ParticleSystem - window object keys:', Object.keys(window).filter(k => k.includes('Particle')));
-        console.log('[Scene3D] 🔍 DEBUG ParticleSystem - window.ParticleSystem exists:', !!window.ParticleSystem);
-        console.log('[Scene3D] 🔍 DEBUG ParticleSystem - full object:', window.ParticleSystem);
-        console.log('[Scene3D] 🔍 DEBUG ParticleSystem - init function type:', typeof window.ParticleSystem?.init);
-
+        console.log('[Scene3D] Debug ParticleSystem - window.ParticleSystem:', !!window.ParticleSystem);
+        console.log('[Scene3D] Debug ParticleSystem - init function:', typeof window.ParticleSystem?.init);
+        
         if (window.ParticleSystem && window.ParticleSystem.init) {
             try {
-                console.log('[Scene3D] 🚀 Tentativo inizializzazione ParticleSystem...');
                 window.ParticleSystem.init(this.scene, this.camera);
                 this.particleSystem = window.ParticleSystem;
-                console.log('[Scene3D] ✅ ParticleSystem inizializzato con successo!');
-                console.log('[Scene3D] 🔍 ParticleSystem methods:', Object.keys(this.particleSystem));
+                console.log('[Scene3D] ✅ ParticleSystem inizializzato:', !!this.particleSystem);
             } catch (error) {
-                console.error('[Scene3D] ❌ Errore inizializzazione ParticleSystem:', error);
-                console.error('[Scene3D] ❌ Stack trace:', error.stack);
+                console.warn('[Scene3D] ⚠️ Errore inizializzazione ParticleSystem:', error.message);
             }
         } else {
-            console.warn('[Scene3D] ⚠️ ParticleSystem NON DISPONIBILE!');
-            console.log('[Scene3D] 🔍 window.ParticleSystem value:', window.ParticleSystem);
+            console.log('[Scene3D] ℹ️ ParticleSystem non disponibile (opzionale)');
         }
         
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
@@ -541,17 +795,11 @@ const Scene3D = {
         this.scene.add(model);
         this.loadedModels.push(model);
         this.currentModel = model;
-
+        
         // Salva la posizione iniziale del modello per reset futuro
         this.saveInitialModelPosition(model);
-
+        
         const modelFilename = model.userData?.originalFilename || model.name;
-
-        // Nascondi immediatamente il modello planaxis (stato iniziale: spento)
-        if (modelFilename && modelFilename.toLowerCase().includes('planaxis')) {
-            model.visible = false;
-            console.log('📐 PLANAXIS: Modello nascosto immediatamente al caricamento');
-        }
         
         if (modelConfig && modelConfig.direction) {
             this.animationSystem.modelDirections[modelFilename] = modelConfig.direction;
@@ -700,19 +948,7 @@ const Scene3D = {
 
     handleAirToolEffect: function(intersection, event) {
         if (!this.particleSystem) {
-            console.warn('[Scene3D] Sistema particellare non disponibile per tool Aria - procedo senza effetti');
-
-            // Fallback: completa l'azione anche senza particelle
-            const intersectedObject = intersection.object;
-            let targetModel = intersectedObject;
-            while (targetModel.parent && !this.loadedModels.includes(targetModel)) {
-                targetModel = targetModel.parent;
-            }
-
-            if (targetModel && this.isModelSelectable(targetModel)) {
-                console.log('[Scene3D] 💨 Azione aria completata (modalità fallback)');
-                this.handleModelAction(targetModel);
-            }
+            console.warn('[Scene3D] Sistema particellare non disponibile per tool Aria');
             return;
         }
         
@@ -746,8 +982,8 @@ const Scene3D = {
         // Crea getto aria dal cursore verso l'oggetto (effetto più realistico)
         const airJetId = this.particleSystem.createAirJet(cursorPosition3D, jetDirection, {
             particleCount: 600,
-            life: 0.5,
-            speed: { min: 10, max: 12 },
+            life: 1.2,
+            speed: { min: 20, max: 40 },
             size: { min: 0.003, max: 0.015 },
             spread: { x: 0.08, y: 0.08, z: 0.08 }, // Getto molto concentrato
             opacity: { start: 0.7, end: 0.0 }
@@ -1053,21 +1289,15 @@ const Scene3D = {
     },
 
     calculateBoundingBoxCenter: function(model) {
-        // Controllo per riferimenti _original (oggetti virtuali)
-        if (model.isOriginalReference) {
-            console.log(`📐 ORIGINAL: Usando posizione originale per ${model.originalModelName}: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
-            return model.position.clone();
-        }
-
         const boundingBox = new THREE.Box3().setFromObject(model);
         const center = boundingBox.getCenter(new THREE.Vector3());
-
+        
         console.log(`📐 Bounding box per ${model.userData?.originalFilename}:`);
         console.log(`   Min: (${boundingBox.min.x.toFixed(3)}, ${boundingBox.min.y.toFixed(3)}, ${boundingBox.min.z.toFixed(3)})`);
         console.log(`   Max: (${boundingBox.max.x.toFixed(3)}, ${boundingBox.max.y.toFixed(3)}, ${boundingBox.max.z.toFixed(3)})`);
         console.log(`   Center: (${center.x.toFixed(3)}, ${center.y.toFixed(3)}, ${center.z.toFixed(3)})`);
         console.log(`   Size: (${(boundingBox.max.x-boundingBox.min.x).toFixed(3)}, ${(boundingBox.max.y-boundingBox.min.y).toFixed(3)}, ${(boundingBox.max.z-boundingBox.min.z).toFixed(3)})`);
-
+        
         return center;
     },
 
@@ -1985,9 +2215,7 @@ const Scene3D = {
             position: initialState.position.clone(),
             rotation: initialState.rotation.clone(),
             scale: initialState.scale.clone(),
-            isOriginalReference: true,  // Flag diretta per controllo veloce
-            originalModelName: referenceName,
-            userData: {
+            userData: { 
                 isOriginalReference: true,
                 sourceName: referenceName,
                 sourceModel: model
@@ -2233,18 +2461,14 @@ const Scene3D = {
      */
     saveInitialModelPosition: function(model) {
         if (!model || !model.uuid) return;
-
-        // Calcola il centro del bounding box come posizione di riferimento
-        const centerPosition = this.calculateBoundingBoxCenter(model);
-
+        
         this.initialModelPositions.set(model.uuid, {
-            position: centerPosition.clone(),  // Usa centro bounding box invece di model.position
+            position: model.position.clone(),
             rotation: model.rotation.clone(),
-            scale: model.scale.clone(),
-            modelPosition: model.position.clone()  // Salva anche model.position originale per riferimento
+            scale: model.scale.clone()
         });
-
-        console.log(`💾 Posizione iniziale salvata per modello: ${model.name || model.uuid} - Centro BB: (${centerPosition.x.toFixed(3)}, ${centerPosition.y.toFixed(3)}, ${centerPosition.z.toFixed(3)})`);
+        
+        console.log(`💾 Posizione iniziale salvata per modello: ${model.name || model.uuid}`);
     },
 
     /**
@@ -2284,26 +2508,19 @@ const Scene3D = {
      */
     resetModelToInitialPosition: function(model) {
         if (!model || !model.uuid) return false;
-
+        
         const initialState = this.initialModelPositions.get(model.uuid);
         if (!initialState) {
             console.warn(`⚠️ Nessuna posizione iniziale trovata per modello: ${model.name || model.uuid}`);
             return false;
         }
-
-        // Ripristina rotazione e scala
+        
+        // Ripristina posizione, rotazione e scala
+        model.position.copy(initialState.position);
         model.rotation.copy(initialState.rotation);
         model.scale.copy(initialState.scale);
-
-        // Ripristina model.position utilizzando il valore originale salvato
-        if (initialState.modelPosition) {
-            model.position.copy(initialState.modelPosition);
-        } else {
-            // Fallback per compatibilità con salvataggi precedenti
-            model.position.copy(initialState.position);
-        }
-
-        console.log(`🔄 Modello ripristinato: ${model.name || model.uuid} - Pos: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
+        
+        console.log(`🔄 Modello ripristinato: ${model.name || model.uuid}`);
         return true;
     },
 
@@ -2765,6 +2982,7 @@ const Scene3D = {
             this.updateAnimations();
             this.updateCameraAnimation();
             this.updatePivotAnimation();
+            this.updateAxisGizmoOrientation();
             
             // Aggiorna sistema particellare se attivo
             if (this.particleSystem && this.particleSystem.isActive) {
@@ -3172,6 +3390,10 @@ const Scene3D = {
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height);
         
+        // Aggiorna anche il renderer del gizmo UI se presente
+        if (this.axisGizmoRenderer) {
+            this.axisGizmoRenderer.setPixelRatio(window.devicePixelRatio);
+        }
     },
 
     /* ===== DRAG & DROP SYSTEM INTEGRATION ===== */
@@ -3225,94 +3447,8 @@ const Scene3D = {
      * @returns {boolean}
      */
     isDragging: function() {
-        return (this.dragDropSystem && this.dragDropSystem.isDraggingActive) ?
+        return (this.dragDropSystem && this.dragDropSystem.isDraggingActive) ? 
                this.dragDropSystem.isDraggingActive() : false;
-    },
-
-    /**
-     * Mostra il modello planaxis (assi)
-     */
-    showPlanaxis: function() {
-        const model = this.findModelByName('planaxis');
-        if (model) {
-            model.visible = true;
-            console.log('📐 PLANAXIS: Assi mostrati');
-        } else {
-            console.warn('📐 PLANAXIS: Modello planaxis non trovato');
-        }
-    },
-
-    /**
-     * Nasconde il modello planaxis (assi)
-     */
-    hidePlanaxis: function() {
-        const model = this.findModelByName('planaxis');
-        if (model) {
-            model.visible = false;
-            console.log('📐 PLANAXIS: Assi nascosti');
-        } else {
-            console.warn('📐 PLANAXIS: Modello planaxis non trovato');
-        }
-    },
-
-    /**
-     * Mostra/nasconde il modello planaxis (toggle)
-     */
-    togglePlanaxis: function() {
-        const model = this.findModelByName('planaxis');
-        if (model) {
-            model.visible = !model.visible;
-            console.log(`📐 PLANAXIS: Assi ${model.visible ? 'mostrati' : 'nascosti'}`);
-        } else {
-            console.warn('📐 PLANAXIS: Modello planaxis non trovato');
-        }
-    },
-
-    /**
-     * Verifica se il modello planaxis è visibile
-     * @returns {boolean}
-     */
-    isPlanaxisVisible: function() {
-        const model = this.findModelByName('planaxis');
-        return model ? model.visible : false;
-    },
-
-    /**
-     * Test manuale sistema particellare
-     */
-    testParticleSystem: function() {
-        console.log('[Scene3D] 🧪 TEST ParticleSystem manuale');
-        console.log('[Scene3D] window.ParticleSystem exists:', !!window.ParticleSystem);
-        console.log('[Scene3D] this.particleSystem exists:', !!this.particleSystem);
-
-        if (!window.ParticleSystem) {
-            console.error('[Scene3D] ❌ window.ParticleSystem non esiste!');
-            return false;
-        }
-
-        if (!this.particleSystem) {
-            console.log('[Scene3D] 🔄 Tentativo inizializzazione manuale...');
-            try {
-                window.ParticleSystem.init(this.scene, this.camera);
-                this.particleSystem = window.ParticleSystem;
-                console.log('[Scene3D] ✅ Inizializzazione manuale completata!');
-            } catch (error) {
-                console.error('[Scene3D] ❌ Errore inizializzazione manuale:', error);
-                return false;
-            }
-        }
-
-        // Test creazione effetto
-        if (this.particleSystem && this.particleSystem.createAirJet) {
-            const testPos = new THREE.Vector3(0, 1, 0);
-            const testDir = new THREE.Vector3(1, 0, 0);
-            console.log('[Scene3D] 🎆 Creazione getto test...');
-            const effectId = this.particleSystem.createAirJet(testPos, testDir);
-            console.log('[Scene3D] 🎆 Getto test creato:', effectId);
-            return true;
-        }
-
-        return false;
     }
 };
 

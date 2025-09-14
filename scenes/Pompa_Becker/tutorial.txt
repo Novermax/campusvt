@@ -1,25 +1,27 @@
 # Tutorial per Manutenzione Pompa del Vuoto
 # Questo file definisce la sequenza guidata per la sostituzione del filtro
+# e l'ingrassaggio della pompa del vuoto Pompa Becker U5.40
+# Ogni sezione rappresenta uno step con azioni specifiche e animazioni
+
 CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
-  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-  Posizione=assi:(-2,0,0)              # Posiziona modello specifico 
+CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona modello specifico 
  
 [Pulizia  Filtro e ingrassaggio]                                            // Tutorial principale - sequenza di smontaggio
   CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-//  Posizione=assi:(0.5,0.05,-1)
+ 
 
   [Step 1 - Prima vite]                                    // Primo step: rimozione prima vite
   Elemento=models/vite_coperchio_1.glb                         // Modello 3D della prima vite da animare
-  
   Utensile=Mani                                            // Strumento richiesto: lavoro manuale
   Descrizione=Seleziona il tool "Mano" e rimuovi la prima vite del coperchio          // Testo mostrato nel fumetto laterale
   Azione1=svita
-  Azione2=appoggia(0.5)
+  Azione2=appoggia(0.2)
     
 
   [Step 2 - Seconda vite]                                  // Secondo step: vite angolo superiore destro
@@ -27,7 +29,7 @@ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione as
   Utensile=Mani                                            // Strumento: sempre manuale per le viti
   Descrizione=Rimuovi la seconda vite del coperchio        // Descrizione per l'utente
   Azione1=svita
-  Azione2=appoggia(0.5)
+  Azione2=appoggia(0.2)
 
   [Step 3 - Terza vite]                                    // Terzo step: vite angolo inferiore sinistro
   Elemento=models/vite_coperchio_3.glb                            // Modello della terza vite
@@ -35,7 +37,7 @@ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione as
   Descrizione=Rimuovi la terza vite del coperchio          // Istruzione per l'operatore
   Azione1=svita
   Azione2=traslazione:( 0,0,-0.1,0.2) 
-  Azione3=appoggia(0.5)
+  Azione3=appoggia(0.2)
 
   [Step 4 - Quarta vite]                                   // Quarto step: ultima vite angolo inferiore destro
   Elemento=models/vite_coperchio_4.glb                            // Modello dell'ultima vite del coperchio
@@ -43,7 +45,7 @@ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione as
   Descrizione=Rimuovi la quarta vite del coperchio         // Istruzione finale per le viti
   Azione1=svita
   Azione2=traslazione:( 0,0,-0.1,0.2) 
-  Azione3=appoggia(0.5)
+  Azione3=appoggia(0.2)
 
   [Step 5 - Coperchio]                                     // Quinto step: rimozione coperchio completo
   Elemento=models/coperchio.glb                                   // Modello del coperchio della pompa
@@ -67,18 +69,17 @@ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione as
   //Durata=1.5                                              // Durata personalizzata: estrazione rapida
 
  [Step 7 - Aria compressa]
+  Elemento=models/filtro.glb
   Descrizione=Pulisci il filtro con l'aria compressa
   CameraPos=(-0.2,0.33,0.74)                                      // Posizione assoluta per test
   CameraTarget=filtro                                  // Focus su centro scena leggermente rialzato
   CameraZoom=0.5                                               // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-  //Modello1=models/assi.glb
-  Elemento=models/filtro.glb
   Utensile=Aria
   Azione1=traslazione:(0,0.01,0,0.5)  
   Azione2=appoggia(0.5)
 
-[Step 9 - Tappodx]                                        // Sesto step: estrazione filtro usurato
+[Step 8 - Tappodx]                                        // Sesto step: estrazione filtro usurato
   CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=tappino_grasso_dx                                    // Focus su centro scena leggermente rialzato
   CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
@@ -91,7 +92,7 @@ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione as
   Azione2=appoggia(0.5)
 
 
-[Step 10 - Tapposx]                                        // Sesto step: estrazione filtro usurato
+[Step 9 - Tapposx]                                        // Sesto step: estrazione filtro usurato
  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=tappino_grasso_sx                                    // Focus su centro scena leggermente rialzato
   CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
@@ -103,26 +104,157 @@ CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione as
   Azione2=appoggia(0.5)
 
 
-[Step 11 - Ingrassatore]                                        // Nono step: movimento ingrassatore
+[Step 10 - Ingrassatore]                                        // Nono step: movimento ingrassatore
   Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Prendi la pompetta del grasso        // Istruzione per movimento
   Azione1=traslazione:(0,0.1,0,0.8)
   Azione2=centro:(-0.1,0,0);rotazione:(0,0,90,0.8)
   Azione3=traslazione:(-0.2,0.0,0,0.8)
-  Azione4=appoggia(0.5)
+  //Azione4=appoggia(0.5)
   //CameraPos=ingrassatore:(-1, 0, 0)                    // Posizione relativa all'ingrassatore  
   //CameraTarget=ingrassatore                               // Focus diretto sull'ingrassatore
   //CameraZoom=2.2                                          // Zoom alto per operazione di precisione
   //CameraTransitionTime=1.2                                // Transizione con easing dolce
  
+[Step 11 - Ingrassatore2]                                        // Decimo step: movimento ingrassatore
+  CameraPos=(-0.42, 0.33,  0.3 )  
+  CameraTarget=(-0.28, 0.25,-0.16)                                       // Posizione assoluta per test
+  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  
+
+  Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
+  Utensile=Mani                                           // Strumento: estrazione manuale
+  Descrizione=Applica il grasso nell'ingrassatore di destra pompando 10 volte     // Istruzione per movimento
+  Azione1=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+  Azione2=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione3=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione4=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione5=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione6=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione7=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione8=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione9=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione10=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione11=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione12=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione13=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione14=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione15=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione16=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione17=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione18=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione19=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione20=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+
+  Azione21=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+
+  Azione22=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+
+  [Step 12 - Ingrassatore3]                                        // Decimo step: movimento ingrassatore
 
 
-[Togli la culatta]                                  // Tutorial inverso - sequenza di rimontaggio
+  Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
+  Utensile=Mani                                           // Strumento: estrazione manuale
+  Descrizione=Applica il grasso nell'ingrassatore di sinistra pompando 10 volte     // Istruzione per movimento
+  Azione1=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  Azione2=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione3=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione4=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione5=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione6=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione7=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione8=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione9=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione10=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione11=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione12=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione13=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione14=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione15=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione16=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione17=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione18=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione19=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione20=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione20=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione21=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  appoggia(0.5)
+
+[Riassemblaggio]                                  // Tutorial inverso - sequenza di rimontaggio
 // Sequenza per rimontare il filtro e richiudere la pompa
+CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona modello specifico 
+  
+   Posizioni e Rotazioni Modelli - Esportate automaticamente
+# Generato il: 13/09/2025, 21:29:24
+# Sintassi: Posizione=nomeModello:(x,y,z) e Rotazione=nomeModello:(rx,ry,rz)
 
-  
-  
+# Modello 1: culatta
+Posizione=culatta:(0.000,0.000,0.000)
+Rotazione=culatta:(0.0,0.0,0.0)
+
+# Modello 2: corpo
+Posizione=corpo:(0.000,0.000,0.000)
+Rotazione=corpo:(0.0,0.0,0.0)
+
+# Modello 3: coperchio
+Posizione=coperchio:(-1.148,-0.261,0.500)
+Rotazione=coperchio:(0.0,0.0,-90.0)
+
+# Modello 4: filtro
+Posizione=filtro:(-0.300,-0.142,0.500)
+Rotazione=filtro:(0.0,0.0,0.0)
+
+# Modello 5: pavimento
+Posizione=pavimento:(0.000,0.000,0.000)
+Rotazione=pavimento:(0.0,0.0,0.0)
+
+# Modello 6: planaxis
+Posizione=planaxis:(-0.500,0.010,-0.500)
+Rotazione=planaxis:(0.0,0.0,0.0)
+
+# Modello 7: vite_coperchio_1
+Posizione=vite_coperchio_1:(-0.500,-0.349,0.000)
+Rotazione=vite_coperchio_1:(-360.0,0.0,0.0)
+
+# Modello 8: vite_coperchio_2
+Posizione=vite_coperchio_2:(-0.500,-0.349,0.000)
+Rotazione=vite_coperchio_2:(-360.0,0.0,0.0)
+
+# Modello 9: vite_coperchio_3
+Posizione=vite_coperchio_3:(-0.500,-0.117,-0.100)
+Rotazione=vite_coperchio_3:(-360.0,0.0,0.0)
+
+# Modello 10: vite_coperchio_4
+Posizione=vite_coperchio_4:(-0.500,-0.117,-0.100)
+Rotazione=vite_coperchio_4:(-360.0,0.0,0.0)
+
+# Modello 11: tappino_grasso_sx
+Posizione=tappino_grasso_sx:(-0.300,-0.243,0.000)
+Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
+
+# Modello 12: tappino_grasso_dx
+Posizione=tappino_grasso_dx:(-0.300,-0.243,0.000)
+Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
+
+# Modello 13: ingrassatore
+Posizione=ingrassatore:(-0.143,0.474,0.213)
+Rotazione=ingrassatore:(0.0,0.0,90.0)
+
+[Step 1 - Assemblaggio Interattivo]
+Elemento=models/ingrassatore.glb
+Descrizione=Rimetti la pompetta del grasso al suo posto
+DragDrop=true                              # Abilita trascinamento
+DragDropObjects=ingrassatore                # Lista oggetti draggabili
+DragDropDistance=1.2                        # Distanza snap automatico
+Utensile=Mani
+ 
+
   
 [Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa
 // Da implementare: procedura per cambio palette rotore

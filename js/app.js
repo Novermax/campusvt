@@ -193,7 +193,11 @@ window.App = {
         try {
             // Carica i moduli in sequenza (ora con architettura modulare)
             await this.loadModule('./js/config.js?nocache=999999');
-            
+
+            // Carica ParticleSystem prima di scene3d-modular (richiesto per effetti aria)
+            await this.loadModule('./js/core/ParticleSystem.js?v=1000018');
+            console.log('✅ Sistema particellare caricato');
+
             // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
             try {
                 await this.loadModule('./js/core/DragDropSystem.js?nocache=1000012');
@@ -201,8 +205,8 @@ window.App = {
             } catch (error) {
                 console.warn('⚠️ DragDropSystem non caricato (opzionale):', error.message);
             }
-            
-            await this.loadModule('./js/scene3d-modular.js?nocache=1000010');  // Modulo modulare compatibile
+
+            await this.loadModule('./js/scene3d-modular.js?nocache=1000019');  // Modulo modulare compatibile
             await this.loadModule('./js/modelloader.js?nocache=1000011');
             await this.loadModule('./js/ui.js?nocache=1000006');
             

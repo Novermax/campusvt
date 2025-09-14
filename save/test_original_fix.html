@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fix Sistema _original</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-area { border: 1px solid #ccc; padding: 20px; margin: 10px 0; }
+        .success { color: green; }
+        .error { color: red; }
+        #log { background: #f5f5f5; padding: 10px; height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test Fix Sistema _original - Cache Update Verification</h1>
+
+    <div class="test-area">
+        <h3>Test 1: Caricamento Moduli</h3>
+        <button onclick="testModuleLoading()">Carica Moduli e Testa</button>
+        <div id="moduleStatus">In attesa...</div>
+    </div>
+
+    <div class="test-area">
+        <h3>Test 2: Simulazione Errore _original</h3>
+        <button onclick="testOriginalSystem()">Testa Sistema _original</button>
+        <div id="originalStatus">In attesa...</div>
+    </div>
+
+    <div class="test-area">
+        <h3>Log Console</h3>
+        <div id="log"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r155/three.min.js"></script>
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        async function testModuleLoading() {
+            const statusDiv = document.getElementById('moduleStatus');
+            statusDiv.innerHTML = 'Caricamento in corso...';
+
+            try {
+                log('🔄 Iniziando test caricamento moduli...');
+
+                // Test caricamento Scene3D con cache busting
+                const script = document.createElement('script');
+                script.src = './js/scene3d-modular.js?nocache=1000019';
+                script.onload = () => {
+                    log('✅ Scene3D caricato con cache busting 1000019');
+                    statusDiv.innerHTML = '<span class="success">✅ Moduli caricati correttamente</span>';
+
+                    // Verifica che la funzione calculateBoundingBoxCenter sia disponibile
+                    if (window.Scene3D && window.Scene3D.calculateBoundingBoxCenter) {
+                        log('✅ calculateBoundingBoxCenter disponibile');
+                    } else {
+                        log('❌ calculateBoundingBoxCenter non trovata');
+                    }
+                };
+                script.onerror = (error) => {
+                    log('❌ Errore caricamento Scene3D: ' + error);
+                    statusDiv.innerHTML = '<span class="error">❌ Errore caricamento moduli</span>';
+                };
+                document.head.appendChild(script);
+
+            } catch (error) {
+                log('❌ Errore test moduli: ' + error.message);
+                statusDiv.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        async function testOriginalSystem() {
+            const statusDiv = document.getElementById('originalStatus');
+            statusDiv.innerHTML = 'Test in corso...';
+
+            try {
+                log('🔄 Iniziando test sistema _original...');
+
+                if (!window.Scene3D) {
+                    throw new Error('Scene3D non caricato. Esegui prima Test 1.');
+                }
+
+                // Simula un oggetto _original come quello che causava l'errore
+                const mockOriginalObject = {
+                    isOriginalReference: true,
+                    originalModelName: 'tappino_grasso_dx',
+                    position: new THREE.Vector3(-0.08, 0, 0),
+                    clone: function() { return this.position.clone(); }
+                };
+
+                log('🎯 Testando calculateBoundingBoxCenter con oggetto _original simulato...');
+
+                // Questo dovrebbe ora funzionare senza errore updateWorldMatrix
+                const result = window.Scene3D.calculateBoundingBoxCenter(mockOriginalObject);
+
+                if (result && result.x !== undefined) {
+                    log('✅ calculateBoundingBoxCenter funziona con oggetti _original!');
+                    log(`📐 Risultato: (${result.x}, ${result.y}, ${result.z})`);
+                    statusDiv.innerHTML = '<span class="success">✅ Sistema _original funziona correttamente</span>';
+                } else {
+                    throw new Error('Risultato non valido da calculateBoundingBoxCenter');
+                }
+
+            } catch (error) {
+                log('❌ Errore test _original: ' + error.message);
+                log('📍 Stack trace: ' + error.stack);
+                statusDiv.innerHTML = '<span class="error">❌ Errore: ' + error.message + '</span>';
+            }
+        }
+
+        // Log iniziale
+        log('🚀 Test Fix Sistema _original inizializzato');
+        log('ℹ️ Questo test verifica che il fix per updateWorldMatrix funzioni correttamente');
+    </script>
+</body>
+</html>

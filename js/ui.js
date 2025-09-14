@@ -1077,7 +1077,9 @@ window.UI = {
                 }
             }
         }
-        
+
+        // RIMOSSO: nascondimento planaxis ora avviene immediatamente durante il caricamento in Scene3D.addModel()
+
         // DEBUG: Stato finale dei controlli touch dopo caricamento completo
         setTimeout(() => {
             console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');

@@ -446,8 +446,8 @@ window.ModelLoader = {
                 // Centra la geometria
                 child.geometry.center();
                 
-                // Abilita ombre (escluso per assi.glb)
-                const shouldCastShadow = !filename.toLowerCase().includes('assi');
+                // Abilita ombre (escluso per assi.glb e planaxis.glb)
+                const shouldCastShadow = !filename.toLowerCase().includes('assi') && !filename.toLowerCase().includes('planaxis');
                 child.castShadow = shouldCastShadow;
                 child.receiveShadow = shouldCastShadow;
                 
@@ -659,8 +659,8 @@ window.ModelLoader = {
                             }
                         }
                         
-                        // Abilita ombre (escluso per assi.glb)
-                        const shouldCastShadow = !gltfFile.name.toLowerCase().includes('assi');
+                        // Abilita ombre (escluso per assi.glb e planaxis.glb)
+                        const shouldCastShadow = !gltfFile.name.toLowerCase().includes('assi') && !gltfFile.name.toLowerCase().includes('planaxis');
                         child.castShadow = shouldCastShadow;
                         child.receiveShadow = shouldCastShadow;
                     }

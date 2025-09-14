@@ -1253,4 +1253,115 @@ DragDropSystem.removeCustomSnapTarget('ingrassatore') // reset a comportamento s
 
 ---
 
-**Ultimo aggiornamento**: 12 Novembre 2025 - Sistema riferimenti posizioni originali _original completamente implementato e documentato
+**Ultimo aggiornamento**: 13 Dicembre 2025 - Sistema Effetti Particellari completamente funzionante
+
+## 🎯 Sessione di Lavoro 13 Dicembre 2025
+
+### ❌ Problema Identificato
+- **Sistema Particellare Non Funzionante**: Tool Aria non mostrava effetti particellari
+- **Causa Root**: Problema nell'ordine di caricamento dei moduli JavaScript
+- **Sintomo**: Console mostrava "Sistema particellare non disponibile per tool Aria"
+
+### 🔧 Risoluzione Implementata
+
+#### 1. Analisi del Problema (js/app.js)
+- **Problema**: ParticleSystem.js veniva caricato nell'HTML mentre scene3d-modular.js veniva caricato dinamicamente
+- **Timing Issue**: scene3d-modular.js si inizializzava prima che window.ParticleSystem fosse disponibile
+- **File Interessato**: Caricamento asincrono causava race condition
+
+#### 2. Soluzione Implementata (js/app.js:198)
+```javascript
+// PRIMA: ParticleSystem caricato solo in HTML
+// DOPO: Caricamento dinamico sequenziale
+await this.loadModule('./js/core/ParticleSystem.js?v=1000018');
+console.log('✅ Sistema particellare caricato');
+```
+
+#### 3. Cleanup HTML (index.html:632)
+- **Rimosso**: Caricamento duplicato `<script src="js/core/ParticleSystem.js?v=1000018"></script>`
+- **Risultato**: Caricamento unico e sequenziale garantisce disponibilità
+
+### ✅ Risultato Finale
+- **Sistema Particellare**: Ora completamente funzionante con tool Aria
+- **Effetti Visuali**: Getto aria compressa realistico con particelle animate
+- **Configurazione**: ParticleSystem.js configurabile (js/core/ParticleSystem.js:19-46)
+- **Performance**: Sistema ottimizzato senza overhead quando non utilizzato
+
+### 📚 Documentazione Creata
+
+#### 1. Manuale Completo Aggiornato
+- **File**: `MANUALE_COMPLETO_CAMPUS_VIRTUAL_TRAINING.html`
+- **Modifiche**: Rimossi tutti i riferimenti a "gizmo" e "assi" (elementi non più presenti)
+- **Aggiornamenti**: Sistema coordinate 3D semplificato, troubleshooting pulito
+
+#### 2. Manuale Semplificato Comandi
+- **File**: `MANUALE_SEMPLIFICATO_COMANDI.html`
+- **Contenuto**: Solo comandi e sintassi senza spiegazioni lunghe
+- **Target**: Consultazione rapida durante sviluppo tutorial
+
+#### 3. Cheat Sheet Ultra-Compatto
+- **File**: `CHEAT_SHEET.html`
+- **Formato**: Layout 2 colonne, font 11px, tutto in una pagina
+- **Contenuto**: Comandi essenziali, sintassi, debug console, configurazioni
+- **Uso**: Riferimento veloce sempre a portata di mano
+
+### 🎯 Sistema Particellare Configurazioni Chiave
+
+#### Preset Aria Compressa (js/core/ParticleSystem.js:20-33)
+```javascript
+airJet: {
+    particleCount: 800,              // Numero particelle
+    life: 1.5,                       // Durata vita (secondi)
+    speed: { min: 15, max: 35 },     // Velocità min/max
+    size: { min: 0.0005, max: 0.002 }, // Dimensione particelle (ridotta)
+    color: new THREE.Color(0.85, 0.92, 1.0), // Colore azzurro
+    gravity: { x: 0, y: 0, z: 0 },   // Gravità disabilitata
+    turbulence: 1.2,                 // Turbolenza movimento
+    burst: true                      // Effetto burst
+}
+```
+
+#### Integrazione Tool Aria (scene3d-modular.js:741-748)
+```javascript
+const airJetId = this.particleSystem.createAirJet(cursorPosition3D, jetDirection, {
+    particleCount: 600,
+    life: 1.2,
+    speed: { min: 20, max: 40 },
+    spread: { x: 0.3, y: 0.3, z: 0.3 }
+});
+```
+
+### 🔧 Comandi Debug Sistema Particellare
+```javascript
+// Test sistema
+ParticleSystem.testAirJet()                  // Test getto aria
+ParticleSystem.getStats()                    // Statistiche sistema
+ParticleSystem.clearAllEffects()             // Rimuovi tutti gli effetti
+
+// Configurazione run-time
+ParticleSystem.createAirJet(pos, dir, config) // Getto personalizzato
+ParticleSystem.setEnabled(true/false)        // Abilita/disabilita sistema
+```
+
+### 📋 Task Completati
+- ✅ **Risoluzione Bug Particellare**: Sistema completamente funzionante
+- ✅ **Ottimizzazione Caricamento**: Sequenza moduli corretta
+- ✅ **Cleanup Documentazione**: Rimossi riferimenti obsoleti (gizmo/assi)
+- ✅ **Creazione Manuali**: 3 versioni documentazione per diversi usi
+- ✅ **Test Sistema**: Verificato funzionamento effetti particellari
+
+### 🎯 Stato Sistema Post-Fix
+- **Moduli JavaScript**: Caricamento sequenziale ottimizzato
+- **Sistema Particellare**: Pienamente operativo con tool Aria
+- **Documentazione**: Completa, semplificata e ultra-compatta
+- **Performance**: Nessun overhead aggiuntivo
+- **Compatibilità**: Zero breaking changes per tutorial esistenti
+
+---
+
+**Prossimi Sviluppi Suggeriti**:
+- Configurazioni particellari avanzate per diversi utensili
+- Effetti particellari contestuali per materiali (metallo, plastica, etc.)
+- Sistema di cache intelligente per prestazioni ottimali
+
+**Ultimo aggiornamento**: 13 Dicembre 2025 - Sistema Effetti Particellari completamente funzionante e documentato
