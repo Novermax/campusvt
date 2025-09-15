@@ -1046,7 +1046,13 @@ window.UI = {
         
         // NON evidenziare automaticamente il primo elemento - solo quando l'utente preme il pulsante tutorial
         // Il tutorial rimane in standby (currentStepIndex = -1) fino all'attivazione manuale
-        
+
+        // IMPORTANTE: Salva le posizioni originali PRIMA di applicare qualsiasi impostazione tutorial
+        if (window.DragDropSystem && typeof window.DragDropSystem.storeOriginalPositions === 'function') {
+            console.log(`🔧 DRAG&DROP: Salvataggio posizioni originali post-caricamento modelli`);
+            window.DragDropSystem.storeOriginalPositions();
+        }
+
         // Ora che i modelli sono caricati, riapplica le impostazioni modelli del tutorial iniziale
         if (this.availableTutorials.length > 0) {
             const firstTutorial = this.availableTutorials[0];
@@ -1062,13 +1068,15 @@ window.UI = {
                 if (firstTutorial.properties.Posizione) {
                     fakeTutorialStep.properties.Posizione = firstTutorial.properties.Posizione;
                     hasModelSettings = true;
-                    console.log(`🔧 MODELLI POST-LOAD: Posizione = ${firstTutorial.properties.Posizione}`);
+                    const posizioniCount = Array.isArray(firstTutorial.properties.Posizione) ? firstTutorial.properties.Posizione.length : 1;
+                    console.log(`🔧 MODELLI POST-LOAD: Posizione (${posizioniCount} modelli)`);
                 }
-                
+
                 if (firstTutorial.properties.Rotazione) {
                     fakeTutorialStep.properties.Rotazione = firstTutorial.properties.Rotazione;
                     hasModelSettings = true;
-                    console.log(`🔧 MODELLI POST-LOAD: Rotazione = ${firstTutorial.properties.Rotazione}`);
+                    const rotazioniCount = Array.isArray(firstTutorial.properties.Rotazione) ? firstTutorial.properties.Rotazione.length : 1;
+                    console.log(`🔧 MODELLI POST-LOAD: Rotazione (${rotazioniCount} modelli)`);
                 }
                 
                 if (hasModelSettings) {
@@ -2135,7 +2143,24 @@ window.UI = {
                     console.log(`📝 PARSER: Proprietà globale pre-tutorial: ${key} = ${value}`);
                 } else if (currentTutorial && !currentStep) {
                     // Se siamo in un tutorial ma non in uno step, sono proprietà globali del tutorial
-                    currentTutorial.properties[key] = value;
+
+                    // Gestione speciale per Posizione e Rotazione multiple
+                    if (key === 'Posizione' || key === 'Rotazione') {
+                        // Se la proprietà non esiste, crea un array
+                        if (!currentTutorial.properties[key]) {
+                            currentTutorial.properties[key] = [];
+                        }
+                        // Se esiste ma non è un array, convertila in array
+                        else if (!Array.isArray(currentTutorial.properties[key])) {
+                            currentTutorial.properties[key] = [currentTutorial.properties[key]];
+                        }
+                        // Aggiungi la nuova direttiva all'array
+                        currentTutorial.properties[key].push(value);
+                        console.log(`📝 PARSER: ${key} multipla aggiunta: ${value} (totale: ${currentTutorial.properties[key].length})`);
+                    } else {
+                        // Per tutte le altre proprietà, comportamento normale
+                        currentTutorial.properties[key] = value;
+                    }
                     
                     // Parsing specifico per proprietà camera globali  
                     if (key === 'CameraPos') {
@@ -2261,11 +2286,17 @@ window.UI = {
         // RESET: Sblocca interazioni e ripristina posizioni quando si seleziona un nuovo tutorial
         if (window.Scene3D) {
             window.Scene3D.resetTutorialTracker();
-            
+
             // Applica le impostazioni del nuovo tutorial (se presenti) durante il reset
             const tutorialWithSettings = this.availableTutorials[tutorialIndex];
             const tutorialStep = tutorialWithSettings.properties ? { properties: tutorialWithSettings.properties } : null;
             window.Scene3D.resetAllModelsToInitialPositions(tutorialStep);
+        }
+
+        // RESET: Disabilita sistema drag & drop quando si cambia tutorial
+        if (window.DragDropSystem && window.DragDropSystem.isEnabled()) {
+            window.DragDropSystem.disable();
+            AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per nuovo tutorial "${this.availableTutorials[tutorialIndex].name}"`);
         }
         
         this.currentTutorial = this.availableTutorials[tutorialIndex];
@@ -2292,6 +2323,12 @@ window.UI = {
             
             if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
                 window.Scene3D.highlightCurrentTutorialElement();
+            }
+
+            // NUOVO: Esegui automaticamente il primo step per attivare le sue direttive
+            if (this.tutorialSteps && this.tutorialSteps.length > 0) {
+                AppConfig.log(2, `🎯 AUTO-EXEC: Esecuzione automatica Step 1`);
+                this.executeStep(this.tutorialSteps[0]);
             }
         }, 200); // Piccolo delay per assicurarsi che la scena sia pronta
     },
@@ -2645,6 +2682,47 @@ window.UI = {
             }
         }
         
+        // NUOVO: Gestione sistema Drag & Drop se abilitato nello step
+        if (step.properties.DragDrop === 'true' && window.DragDropSystem) {
+            AppConfig.log(2, `🎯 DRAG & DROP: Abilitato per step "${step.title}"`);
+
+            // Configura oggetti draggabili se specificati
+            const draggableObjects = [];
+            if (step.properties.DragDropObjects) {
+                // Rimuovi commenti prima del parsing
+                const cleanValue = step.properties.DragDropObjects.split('#')[0].trim();
+                const objects = cleanValue.split(',').map(obj => obj.trim()).filter(obj => obj.length > 0);
+                draggableObjects.push(...objects);
+                AppConfig.log(3, `🎯 DRAG & DROP: Oggetti draggabili: ${objects.join(', ')}`);
+            } else if (step.properties.Elemento) {
+                // Se non specificato DragDropObjects, usa l'elemento del tutorial
+                const elementName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+                draggableObjects.push(elementName);
+                AppConfig.log(3, `🎯 DRAG & DROP: Oggetto draggabile automatico: ${elementName}`);
+            }
+
+            // Configura distanza di snap se specificata
+            if (step.properties.DragDropDistance) {
+                const distance = parseFloat(step.properties.DragDropDistance);
+                if (!isNaN(distance)) {
+                    window.DragDropSystem.setSnapDistance(distance);
+                    AppConfig.log(3, `🎯 DRAG & DROP: Distanza snap impostata: ${distance}`);
+                }
+            }
+
+            // Abilita il sistema con oggetti specificati
+            try {
+                window.DragDropSystem.enable(draggableObjects);
+                AppConfig.log(2, `✅ DRAG & DROP: Sistema abilitato con ${draggableObjects.length} oggetti`);
+            } catch (error) {
+                console.error(`❌ DRAG & DROP: Errore abilitazione sistema:`, error);
+            }
+        } else if (step.properties.DragDrop === 'false' && window.DragDropSystem) {
+            // Disabilita esplicitamente il sistema se richiesto
+            window.DragDropSystem.disable();
+            AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per step "${step.title}"`);
+        }
+
         // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente
         if (step.properties.Elemento && window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
             // Piccolo delay per permettere che il modello sia caricato e visibile
@@ -2652,7 +2730,7 @@ window.UI = {
                 window.Scene3D.highlightCurrentTutorialElement();
             }, 100);
         }
-        
+
         // Aggiorna il fumetto con la descrizione dello step corrente
         this.updateStepSpeechBubble();
         

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Virtual Training - Cheat Sheet Pro</title>
+    <style>
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+            body { font-size: 11pt; line-height: 1.3; margin: 10px; }
+            .no-print { display: none !important; }
+            .page-break { page-break-before: always; }
+            .avoid-break { page-break-inside: avoid; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            margin: 15px;
+            line-height: 1.4;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+            text-align: center;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card h2 .emoji {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            margin: 12px 0 6px 0;
+            color: #34495e;
+            border-left: 3px solid #e67e22;
+            padding-left: 10px;
+        }
+
+        .card table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        .card th, .card td {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .card th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .card tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .code-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+            margin: 8px 0;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            border-left: 4px solid #3498db;
+        }
+
+        .command-list {
+            background: #ecf0f1;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+        }
+
+        .command-list ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .command-list li {
+            margin: 4px 0;
+            font-size: 12px;
+        }
+
+        .command-list code {
+            background: #34495e;
+            color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+        }
+
+        .syntax-highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            color: #856404;
+        }
+
+        .coordinate-system {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .coordinate-system .axis {
+            display: inline-block;
+            margin: 0 8px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🏭 Campus Virtual Training - Cheat Sheet Pro</h1>
+
+<div class="cards-container">
+
+    <!-- CARD: Controlli Mouse -->
+    <div class="card">
+        <h2><span class="emoji">🖱️</span>Controlli Mouse</h2>
+        <table>
+            <tr><th>Azione</th><th>Funzione</th></tr>
+            <tr><td><strong>Click Sinistro</strong></td><td>Selezione oggetti tutorial</td></tr>
+            <tr><td><strong>Click Destro + Drag</strong></td><td>Rotazione camera orbitale</td></tr>
+            <tr><td><strong>Rotella</strong></td><td>Zoom avanti/indietro</td></tr>
+            <tr><td><strong>Click Centrale</strong> <span class="badge">NEW</span></td><td>Pivot dinamico fluido</td></tr>
+        </table>
+    </div>
+
+    <!-- CARD: Sistema Coordinate -->
+    <div class="card">
+        <h2><span class="emoji">📐</span>Sistema Coordinate 3D</h2>
+        <div class="coordinate-system">
+            <div class="axis">+X = DESTRA</div>
+            <div class="axis">+Y = ALTO</div>
+            <div class="axis">+Z = VERSO TE</div>
+        </div>
+        <table>
+            <tr><th>Asse</th><th>Positivo (+)</th><th>Negativo (-)</th></tr>
+            <tr><td><strong>X</strong></td><td>Destra →</td><td>← Sinistra</td></tr>
+            <tr><td><strong>Y</strong></td><td>Alto ↑</td><td>↓ Basso</td></tr>
+            <tr><td><strong>Z</strong></td><td>Verso te ⬆</td><td>⬇ Lontano</td></tr>
+        </table>
+    </div>
+
+    <!-- CARD: Sintassi Tutorial Base -->
+    <div class="card">
+        <h2><span class="emoji">📖</span>Sintassi Tutorial Base</h2>
+        <div class="code-box"># Configurazione globale scenario
+CameraPos=(-1.5, 0.5, -0.2)
+CameraTarget=(0, 0, 0)
+CameraZoom=1.2
+
+[Nome Tutorial]
+  CameraPos=(-1.5, 0.8, -0.5)
+
+  [Step 1 - Descrizione]
+  Elemento=models/file.glb
+  Descrizione=Testo da mostrare all'utente
+  Utensile=Aria
+  Azione1=traslazione:(x,y,z,dur)</div>
+    </div>
+
+    <!-- CARD: Animazioni -->
+    <div class="card">
+        <h2><span class="emoji">🎬</span>Sistema Animazioni</h2>
+        <table>
+            <tr><th>Comando</th><th>Sintassi</th><th>Uso</th></tr>
+            <tr><td><strong>traslazione</strong></td><td><span class="syntax-highlight">Azione1=traslazione:(x,y,z,dur)</span></td><td>Movimento lineare</td></tr>
+            <tr><td><strong>rotazione</strong></td><td><span class="syntax-highlight">Azione1=rotazione:(x,y,z,dur)</span></td><td>Rotazione oggetto</td></tr>
+            <tr><td><strong>appoggia</strong></td><td><span class="syntax-highlight">Azione1=appoggia(dur)</span></td><td>Auto Y=0</td></tr>
+            <tr><td><strong>estrai</strong></td><td><span class="syntax-highlight">Azione1=estrai</span></td><td>Rimozione</td></tr>
+            <tr><td><strong>inserisci</strong></td><td><span class="syntax-highlight">Azione1=inserisci</span></td><td>Installazione</td></tr>
+            <tr><td><strong>svita</strong></td><td><span class="syntax-highlight">Azione1=svita</span></td><td>Rotaz + trasla</td></tr>
+            <tr><td><strong>avvita</strong></td><td><span class="syntax-highlight">Azione1=avvita</span></td><td>Serraggio</td></tr>
+        </table>
+
+        <h3>Riferimenti Posizioni Originali <span class="badge">NEW</span></h3>
+        <div class="command-list">
+            <ul>
+                <li><code>traslazione:oggetto_original,(0,0,0,1)</code> → Posizione iniziale</li>
+                <li><code>traslazione:altro_oggetto,(x,y,z,dur)</code> → Posizione corrente</li>
+                <li><code>traslazione:filtro_original,(0.1,0,0,1.5)</code> → Con offset</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CARD: Drag & Drop -->
+    <div class="card">
+        <h2><span class="emoji">🔄</span>Drag & Drop System</h2>
+        <table>
+            <tr><th>Parametro Tutorial</th><th>Valore</th><th>Funzione</th></tr>
+            <tr><td><strong>DragDrop</strong></td><td>true/false</td><td>Abilita sistema</td></tr>
+            <tr><td><strong>DragDropObjects</strong></td><td>obj1,obj2,obj3</td><td>Lista draggabili</td></tr>
+            <tr><td><strong>DragDropDistance</strong></td><td>0.001 - 3.0</td><td>Distanza snap precisa</td></tr>
+        </table>
+
+        <h3>Console Commands</h3>
+        <div class="command-list">
+            <ul>
+                <li><code>DragDropSystem.enable(['obj1', 'obj2'])</code></li>
+                <li><code>DragDropSystem.setCustomSnapTarget('obj', 'target')</code></li>
+                <li><code>DragDropSystem.setCustomSnapTarget('obj', 'target_original')</code> <span class="badge">NEW</span></li>
+                <li><code>DragDropSystem.isEnabled()</code></li>
+                <li><code>DragDropSystem.getDraggableObjects()</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CARD: Utensili -->
+    <div class="card">
+        <h2><span class="emoji">🛠️</span>Utensili Disponibili</h2>
+        <table>
+            <tr><th>Nome Tutorial</th><th>Descrizione</th><th>Icona</th></tr>
+            <tr><td><strong>Mani</strong></td><td>Operazioni manuali, presa diretta</td><td>✋</td></tr>
+            <tr><td><strong>ChiaveInglese</strong></td><td>Chiave regolabile per dadi</td><td>🔧</td></tr>
+            <tr><td><strong>ChiaveBrugola</strong></td><td>Chiave esagonale per viti</td><td>🔩</td></tr>
+            <tr><td><strong>Aria</strong> <span class="badge">NEW</span></td><td>Aria compressa + particelle</td><td>💨</td></tr>
+        </table>
+    </div>
+
+    <!-- CARD: Controllo Camera -->
+    <div class="card">
+        <h2><span class="emoji">📹</span>Controllo Camera</h2>
+        <table>
+            <tr><th>Parametro</th><th>Esempio</th><th>Funzione</th></tr>
+            <tr><td><strong>CameraPos</strong></td><td>(x,y,z) o obj:(x,y,z)</td><td>Posizione camera</td></tr>
+            <tr><td><strong>CameraTarget</strong></td><td>(x,y,z) o nome_oggetto</td><td>Punto mira</td></tr>
+            <tr><td><strong>CameraZoom</strong></td><td>1.5</td><td>Fattore zoom</td></tr>
+            <tr><td><strong>CameraTransitionTime</strong></td><td>2.0</td><td>Durata movimento</td></tr>
+        </table>
+
+        <h3>Esempi Pratici</h3>
+        <div class="command-list">
+            <ul>
+                <li><code>CameraTarget=filtro</code> → Punta al centro filtro</li>
+                <li><code>CameraPos=ingrassatore:(-1,0,0)</code> → Relativo a oggetto</li>
+                <li><code>CameraTransitionTime=2.5</code> → Transizione lenta</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CARD: Posizionamento Modelli -->
+    <div class="card">
+        <h2><span class="emoji">⚙️</span>Posizionamento Modelli</h2>
+        <h3>Direttive Globali/Tutorial</h3>
+        <div class="code-box">Posizione=modello:(x,y,z)
+Rotazione=modello:(rx,ry,rz)
+
+# Esempi:
+Posizione=assi:(-2,0,0)
+Posizione=filtro:(1.5,0.2,-0.5)
+Rotazione=assi:(0,90,0)
+Rotazione=filtro:(45,0,0)</div>
+
+        <h3>Comportamenti</h3>
+        <div class="command-list">
+            <ul>
+                <li><strong>Globali:</strong> Applicati al caricamento scenario</li>
+                <li><strong>Tutorial:</strong> Applicati alla selezione tutorial</li>
+                <li><strong>Override:</strong> Tutorial sovrascrive globali</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<!-- CARD FULL WIDTH: Debug Console -->
+<div class="cards-container">
+    <div class="card full-width">
+        <h2><span class="emoji">🐛</span>Debug Console Commands</h2>
+        <div class="two-column">
+            <div>
+                <h3>Camera & Orientamento</h3>
+                <div class="command-list">
+                    <ul>
+                        <li><code>Scene3D.getCameraInfo()</code> → Posizione camera</li>
+                        <li><code>Scene3D.listAvailableObjects()</code> → Lista oggetti</li>
+                        <li><code>Scene3D.findModelByName('nome')</code> → Trova modello</li>
+                        <li><code>Scene3D.exportCurrentModelPositions()</code> → Export posizioni</li>
+                    </ul>
+                </div>
+
+                <h3>Sistema Tools</h3>
+                <div class="command-list">
+                    <ul>
+                        <li><code>ToolsManager.activateTool('aria')</code> → Attiva tool</li>
+                        <li><code>ToolsManager.getToolsState()</code> → Stato tools</li>
+                        <li><code>ToolsManager.activateToolFromTutorial('Aria')</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3>Sistema Particellare</h3>
+                <div class="command-list">
+                    <ul>
+                        <li><code>ParticleSystem.testAirJet()</code> → Test getto aria</li>
+                        <li><code>ParticleSystem.getStats()</code> → Statistiche</li>
+                        <li><code>ParticleSystem.clearAllEffects()</code> → Reset</li>
+                        <li><code>ParticleSystem.setEnabled(true/false)</code></li>
+                    </ul>
+                </div>
+
+                <h3>Debug Sistema</h3>
+                <div class="command-list">
+                    <ul>
+                        <li><code>Scene3D.camera</code> → Oggetto camera Three.js</li>
+                        <li><code>Scene3D.scene</code> → Oggetto scena</li>
+                        <li><code>Scene3D.mouseControls.pivotPoint</code> → Pivot corrente</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CARD FULL WIDTH: Configurazione home_config.txt -->
+<div class="cards-container">
+    <div class="card full-width">
+        <h2><span class="emoji">🏠</span>home_config.txt - Configurazione Scenari</h2>
+        <div class="code-box">[NOME_SCENARIO]
+CameraPos=(-1.5, 0.5, -0.2)
+CameraTarget=(0, 0, 0)
+AmbientLight=0x404040,1.5
+DirectionalLight=0xffffff,2.5,(-8, 15, 10)
+description_key=scenario_description_key
+image=menuimages/anteprima.png
+tutorial=scenes/Cartella/tutorial.txt
+model=models/componente.glb
+direction=-1,0,0
+
+[ALTRO_SCENARIO]
+# ... altre configurazioni</div>
+
+        <div class="two-column">
+            <div>
+                <h3>Parametri Principali</h3>
+                <div class="command-list">
+                    <ul>
+                        <li><strong>CameraPos:</strong> Posizione iniziale camera</li>
+                        <li><strong>CameraTarget:</strong> Punto mira iniziale</li>
+                        <li><strong>AmbientLight:</strong> Luce ambiente (colore, intensità)</li>
+                        <li><strong>DirectionalLight:</strong> Luce direzionale</li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <h3>Configurazione Media</h3>
+                <div class="command-list">
+                    <ul>
+                        <li><strong>image:</strong> Anteprima scenario (PNG/JPG)</li>
+                        <li><strong>tutorial:</strong> Percorso file tutorial.txt</li>
+                        <li><strong>model:</strong> Modelli 3D (.glb, .obj, .stl)</li>
+                        <li><strong>direction:</strong> Direzione movimento (X,Y,Z)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;" class="no-print">
+    <h3>📄 Cheat Sheet Stampabile Ottimizzato</h3>
+    <p>Layout a cards con caratteri ingranditi per consultazione rapida. Utilizza <strong>Ctrl+P</strong> per stampare.</p>
+    <p><strong>Miglioramenti:</strong> ✅ Font 13px leggibile ✅ Layout cards responsive ✅ Colori stampa ottimizzati ✅ Contenuto organizzato</p>
+</div>
+
+</body>
+</html>

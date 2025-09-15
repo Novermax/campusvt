@@ -1,2 +1,3 @@
 Pippo;1234;2025-12-31
 Pluto;5678;2026-06-30
+mloffredo@scmgroup.com;841334;2026-04-30

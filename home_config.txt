@@ -68,6 +68,18 @@ model=models/tappino_grasso_dx.glb                        // Right grease cap
 direction=-1,0,0                                          // Movement direction: towards X-
 model=models/ingrassatore.glb                             // Greaser
 direction=-1,0,0                                          // Movement direction: towards X-
+model=models/flangia.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta1.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta2.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta3.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta4.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta5.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
 
 [Regolazione campi di lavoro]                             // Configuration of operative areas and origins
 // === CAMERA AND LIGHTS CONFIGURATION ===

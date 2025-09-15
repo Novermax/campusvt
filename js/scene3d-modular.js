@@ -572,11 +572,14 @@ const Scene3D = {
 
     highlightModel: function(model, duration = null) {
         if (!model) return;
-        
+
+        console.log(`🔍 HIGHLIGHT: highlightModel() chiamata per: ${model.name}`);
+
         if (this.highlightSystem.isHighlighting) {
+            console.log(`🔍 HIGHLIGHT: Rimozione highlight precedente`);
             this.removeHighlight();
         }
-        
+
         this.saveOriginalMaterials(model);
         this.applyHighlightMaterial(model);
         
@@ -607,6 +610,18 @@ const Scene3D = {
     },
 
     applyHighlightMaterial: function(model) {
+        // CONTROLLO: Se DragDropSystem ha bloccato questo modello, non applicare highlight
+        if (window.DragDropSystem && window.DragDropSystem.silhouetteBlocked &&
+            window.DragDropSystem.silhouetteBlocked.has(model.name)) {
+            console.log(`🔍 HIGHLIGHT: ❌ BLOCCATO per ${model.name} durante drag&drop`);
+            return;
+        }
+
+        console.log(`🔍 HIGHLIGHT: ✅ APPLICAZIONE per ${model.name} (non bloccato)`);
+        if (window.DragDropSystem && window.DragDropSystem.silhouetteBlocked) {
+            console.log(`🔍 HIGHLIGHT: Modelli bloccati:`, Array.from(window.DragDropSystem.silhouetteBlocked));
+        }
+
         model.traverse((child) => {
             if (child.isMesh) {
                 if (Array.isArray(child.material)) {
@@ -644,8 +659,10 @@ const Scene3D = {
     },
 
     highlightCurrentTutorialElement: function() {
+        console.log(`🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata`);
         const currentStep = this.getCurrentTutorialStep();
         if (!currentStep || !currentStep.properties.Elemento) {
+            console.log(`🔍 HIGHLIGHT: Nessun step o elemento corrente`);
             return;
         }
         
@@ -658,7 +675,10 @@ const Scene3D = {
         });
         
         if (targetModel && this.isModelSelectable(targetModel)) {
+            console.log(`🔍 HIGHLIGHT: Tentativo di evidenziare modello: ${targetModel.name}`);
             this.highlightModel(targetModel);
+        } else {
+            console.log(`🔍 HIGHLIGHT: Modello non trovato o non selezionabile`);
         }
     },
 
@@ -2913,15 +2933,35 @@ const Scene3D = {
 
     applyModelSettings: function(tutorialStep) {
         if (!tutorialStep.properties) return;
-        
+
         const props = tutorialStep.properties;
-        
+
         // Cerca le direttive Posizione= e Rotazione=
         Object.keys(props).forEach(key => {
             if (key.startsWith('Posizione')) {
-                this.applyModelPosition(key, props[key]);
+                const value = props[key];
+                if (Array.isArray(value)) {
+                    // Gestione array di posizioni multiple
+                    console.log(`🔧 MODEL: Applicazione ${value.length} posizioni multiple`);
+                    value.forEach((pos, index) => {
+                        this.applyModelPosition(`${key}_${index}`, pos);
+                    });
+                } else {
+                    // Gestione singola posizione (legacy)
+                    this.applyModelPosition(key, value);
+                }
             } else if (key.startsWith('Rotazione')) {
-                this.applyModelRotation(key, props[key]);
+                const value = props[key];
+                if (Array.isArray(value)) {
+                    // Gestione array di rotazioni multiple
+                    console.log(`🔧 MODEL: Applicazione ${value.length} rotazioni multiple`);
+                    value.forEach((rot, index) => {
+                        this.applyModelRotation(`${key}_${index}`, rot);
+                    });
+                } else {
+                    // Gestione singola rotazione (legacy)
+                    this.applyModelRotation(key, value);
+                }
             }
         });
     },
@@ -3026,6 +3066,18 @@ const Scene3D = {
     },
 
     applySilhouetteToModel: function(modelName, color = 0xffff00) {
+        // CONTROLLO: Se DragDropSystem ha bloccato questo modello, non applicare silhouette
+        if (window.DragDropSystem && window.DragDropSystem.silhouetteBlocked &&
+            window.DragDropSystem.silhouetteBlocked.has(modelName)) {
+            console.log(`🔍 SILHOUETTE: ❌ BLOCCATA per ${modelName} durante drag&drop`);
+            return;
+        }
+
+        console.log(`🔍 SILHOUETTE: ✅ APPLICAZIONE per ${modelName} (non bloccata)`);
+        if (window.DragDropSystem && window.DragDropSystem.silhouetteBlocked) {
+            console.log(`🔍 SILHOUETTE: Modelli bloccati:`, Array.from(window.DragDropSystem.silhouetteBlocked));
+        }
+
         // Trova il modello
         const model = this.findModelByName(modelName);
         if (!model) {

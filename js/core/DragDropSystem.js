@@ -49,7 +49,13 @@ window.DragDropSystem = {
     raycaster: null,
     mouse: null,
     canvas: null,
-    
+
+    // Stato controlli camera (per ripristino dopo drag)
+    cameraControlsWereEnabled: undefined,
+
+    // Cache per piano dinamico (performance)
+    lastPlanePoint: null,
+
     // Controlli mouse personalizzati per drag
     mouseState: {
         isDown: false,
@@ -59,6 +65,9 @@ window.DragDropSystem = {
         currentY: 0,
         hasMoved: false
     },
+
+    // Controllo silhouette durante drag
+    silhouetteBlocked: new Set(), // Set di nomi modelli per cui bloccare silhouette automatica
     
     /**
      * Inizializza il sistema drag & drop
@@ -190,11 +199,17 @@ window.DragDropSystem = {
             this.detectDraggableObjects();
         }
         
-        // Memorizza posizioni originali
-        this.storeOriginalPositions();
+        // Controlla se le posizioni originali sono già state memorizzate
+        // (dovrebbero essere state salvate dopo il caricamento modelli)
+        if (this.originalPositions.size === 0) {
+            console.log('[DragDropSystem] ⚠️ Posizioni originali non trovate, salvataggio di backup');
+            this.storeOriginalPositions();
+        } else {
+            console.log(`[DragDropSystem] ✅ Posizioni originali già memorizzate (${this.originalPositions.size} oggetti)`);
+        }
         
-        // Crea indicatori snap
-        this.createSnapIndicators();
+        // DISABILITATO: Non creiamo più indicatori snap (sfere verdi)
+        // this.createSnapIndicators();
         
         this.enabled = true;
         
@@ -301,22 +316,35 @@ window.DragDropSystem = {
     
     /**
      * Memorizza le posizioni e rotazioni originali di tutti gli oggetti draggabili
+     * Se draggableObjects non è ancora definito, salva tutti i modelli caricati
      */
     storeOriginalPositions: function() {
         this.originalPositions.clear();
         this.originalRotations.clear();
-        
-        this.draggableObjects.forEach(obj => {
+
+        // Se draggableObjects non è definito, usa tutti i modelli caricati
+        const objectsToStore = this.draggableObjects && this.draggableObjects.length > 0
+            ? this.draggableObjects
+            : window.Scene3D?.loadedModels || [];
+
+        if (objectsToStore.length === 0) {
+            console.warn('[DragDropSystem] ⚠️ Nessun oggetto disponibile per salvare posizioni originali');
+            return;
+        }
+
+        objectsToStore.forEach(obj => {
             // Memorizza posizione del centro del bounding box
             const boundingBox = new THREE.Box3().setFromObject(obj);
             const originalCenter = boundingBox.getCenter(new THREE.Vector3());
-            
+
             this.originalPositions.set(obj.uuid, originalCenter.clone());
             this.originalRotations.set(obj.uuid, obj.rotation.clone());
-            
-            console.log(`[DragDropSystem] 📍 Memorizzata posizione originale per ${obj.name}:`, 
-                `(${originalCenter.x.toFixed(2)}, ${originalCenter.y.toFixed(2)}, ${originalCenter.z.toFixed(2)})`);
+
+            console.log(`[DragDropSystem] 📍 Memorizzata posizione originale per ${obj.name}:`,
+                `(${originalCenter.x.toFixed(3)}, ${originalCenter.y.toFixed(3)}, ${originalCenter.z.toFixed(3)})`);
         });
+
+        console.log(`[DragDropSystem] ✅ Salvate ${this.originalPositions.size} posizioni originali`);
     },
     
     /**
@@ -340,21 +368,29 @@ window.DragDropSystem = {
         const originalPos = this.originalPositions.get(obj.uuid);
         if (!originalPos) return;
         
-        // Crea cerchio di snap zone
-        const ringGeometry = new THREE.RingGeometry(
-            this.snapDistance * 0.8, 
-            this.snapDistance * 1.2, 
-            16
+        // Crea sfera verde piccola per snap zone
+        const sphereGeometry = new THREE.SphereGeometry(
+            0.05,                     // Raggio fisso piccolo (5cm)
+            12,                       // Segmenti larghezza
+            8                         // Segmenti altezza
         );
-        
-        const ring = new THREE.Mesh(ringGeometry, this.snapZoneMaterial.clone());
-        ring.position.copy(originalPos);
-        ring.rotation.x = -Math.PI / 2; // Orizzontale
-        ring.name = `SnapIndicator_${obj.name}`;
-        ring.visible = false; // Nascosto di default
-        
-        this.snapIndicators.set(obj.uuid, ring);
-        this.scene.add(ring);
+
+        // Materiale sfera verde semplice
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,          // Verde fisso
+            transparent: false,        // Non trasparente
+            wireframe: false          // Sfera piena normale
+        });
+
+        const sphere = new THREE.Mesh(sphereGeometry, material);
+        sphere.position.copy(originalPos);
+        sphere.name = `SnapIndicator_${obj.name}`;
+        sphere.visible = false; // Nascosto di default
+
+        console.log(`[DragDropSystem] 🎯 Creata sfera snap verde per ${obj.name} alla posizione:`, originalPos);
+
+        this.snapIndicators.set(obj.uuid, sphere);
+        this.scene.add(sphere);
     },
     
     /**
@@ -464,25 +500,44 @@ window.DragDropSystem = {
      */
     startDrag: function(object, intersectionPoint) {
         console.log(`[DragDropSystem] 🎯 Inizio drag di: ${object.name}`);
-        
+
         this.isDragging = true;
         this.draggedObject = object;
-        
+
         // Memorizza posizione iniziale del drag
         this.dragStartPosition.copy(object.position);
-        
+
         // Calcola offset tra centro oggetto e punto cliccato
         this.dragOffset.copy(intersectionPoint).sub(object.position);
-        
+
+        // NUOVO: Rimuovi highlight durante drag per mostrare colore originale
+        if (window.Scene3D && typeof window.Scene3D.removeHighlight === 'function') {
+            window.Scene3D.removeHighlight();
+            // Blocca future applicazioni automatiche di highlight per questo oggetto
+            this.silhouetteBlocked.add(object.name);
+            console.log(`[DragDropSystem] 🎨 Rimosso highlight da ${object.name} durante drag - bloccata riapplicazione`);
+        }
+
+        // NUOVO: Crea piano di drag perpendicolare alla camera, passando per il punto cliccato
+        this.updateDragPlaneToCamera(intersectionPoint);
+
         // Mostra indicatori snap per tutti gli oggetti tranne quello draggato
-        this.showSnapIndicators(object);
-        
+        // DISABILITATO: Non mostriamo più indicatori snap (sfere verdi)
+        // this.showSnapIndicators(object);
+
         // Cambia cursore
         this.canvas.style.cursor = 'grabbing';
-        
+
         // Disabilita sistema click esistente durante drag
         if (window.Scene3D && window.Scene3D.animationSystem) {
             window.Scene3D.animationSystem.clickEnabled = false;
+        }
+
+        // NUOVO: Disabilita controlli camera durante drag
+        if (window.Scene3D && window.Scene3D.mouseControls) {
+            this.cameraControlsWereEnabled = window.Scene3D.mouseControls.enabled;
+            window.Scene3D.mouseControls.enabled = false;
+            console.log(`[DragDropSystem] 🚫 Controlli camera disabilitati durante drag`);
         }
     },
     
@@ -492,22 +547,43 @@ window.DragDropSystem = {
      */
     updateDragPosition: function(event) {
         if (!this.draggedObject) return;
-        
+
         // Calcola coordinate normalizzate
         const rect = this.canvas.getBoundingClientRect();
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
-        // Proietta su piano di drag
+
+        // NUOVO: Raycast contro tutti gli oggetti della scena per trovare nuovo piano
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects([this.dragPlane], false);
-        
-        if (intersects.length > 0) {
-            const newPosition = intersects[0].point.sub(this.dragOffset);
-            
+        const allObjects = this.scene.children.filter(obj =>
+            obj !== this.draggedObject &&
+            obj.type !== 'DirectionalLight' &&
+            obj.type !== 'AmbientLight' &&
+            !obj.name.startsWith('SnapIndicator')
+        );
+
+        const sceneIntersects = this.raycaster.intersectObjects(allObjects, true);
+
+        if (sceneIntersects.length > 0) {
+            // Aggiorna il piano in base al punto intersectato
+            const intersectionPoint = sceneIntersects[0].point;
+
+            // Solo aggiorna se il punto è cambiato significativamente (per performance)
+            if (!this.lastPlanePoint || this.lastPlanePoint.distanceTo(intersectionPoint) > 0.01) {
+                this.updateDragPlaneToCamera(intersectionPoint);
+                this.lastPlanePoint = intersectionPoint.clone();
+            }
+        }
+
+        // Proietta su piano di drag aggiornato
+        const planeIntersects = this.raycaster.intersectObjects([this.dragPlane], false);
+
+        if (planeIntersects.length > 0) {
+            const newPosition = planeIntersects[0].point.sub(this.dragOffset);
+
             // Aggiorna posizione oggetto
             this.draggedObject.position.copy(newPosition);
-            
+
             // Controlla e evidenzia zone di snap
             this.checkSnapZones();
         }
@@ -518,33 +594,93 @@ window.DragDropSystem = {
      */
     endDrag: function() {
         if (!this.isDragging || !this.draggedObject) return;
-        
+
         console.log(`[DragDropSystem] 🏁 Fine drag di: ${this.draggedObject.name}`);
-        
+
+        // DEBUG: Log distanza dal punto di snap al momento del drop (PRIMA di findSnapTarget)
+        const originalPos = this.originalPositions.get(this.draggedObject.uuid);
+        if (originalPos) {
+            const currentBoundingBox = new THREE.Box3().setFromObject(this.draggedObject);
+            const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
+            const distanceFromTarget = currentCenter.distanceTo(originalPos);
+
+            console.log(`[DragDropSystem] 📏 DISTANZA AL DROP per ${this.draggedObject.name}:`);
+            console.log(`  📦 Centro BB corrente: (${currentCenter.x.toFixed(3)}, ${currentCenter.y.toFixed(3)}, ${currentCenter.z.toFixed(3)})`);
+            console.log(`  🎯 Target originale: (${originalPos.x.toFixed(3)}, ${originalPos.y.toFixed(3)}, ${originalPos.z.toFixed(3)})`);
+            console.log(`  📏 Distanza centro BB → target: ${distanceFromTarget.toFixed(3)} unità`);
+            console.log(`  ⚖️ Soglia snap configurata: ${this.snapDistance.toFixed(3)} unità`);
+            console.log(`  ${distanceFromTarget <= this.snapDistance ? '✅ DOVREBBE FARE SNAP' : '❌ NON DOVREBBE FARE SNAP'}`);
+        }
+
         // Controlla se l'oggetto è abbastanza vicino alla posizione originale
         const snapTarget = this.findSnapTarget(this.draggedObject);
-        
+
         if (snapTarget) {
-            // Esegui snap animato
+            // Esegui snap animato - colore originale mantenuto
             this.performSnap(this.draggedObject, snapTarget);
+            // Rimuovi dal blocco ma NON riapplicare silhouette (snap riuscito)
+            this.silhouetteBlocked.delete(this.draggedObject.name);
+            console.log(`[DragDropSystem] ✅ Snap riuscito - mantengo colore originale per ${this.draggedObject.name}`);
+        } else {
+            // Snap fallito - rimuovi dal blocco e riapplica highlight
+            this.silhouetteBlocked.delete(this.draggedObject.name);
+            if (window.Scene3D && typeof window.Scene3D.highlightModel === 'function') {
+                window.Scene3D.highlightModel(this.draggedObject);
+                console.log(`[DragDropSystem] ❌ Snap fallito - riapplicato highlight giallo a ${this.draggedObject.name}`);
+            }
         }
-        
+
         // Cleanup
         this.hideAllSnapIndicators();
         this.canvas.style.cursor = 'default';
-        
+
         // Riabilita sistema click esistente
         if (window.Scene3D && window.Scene3D.animationSystem) {
             window.Scene3D.animationSystem.clickEnabled = true;
         }
-        
+
+        // NUOVO: Riabilita controlli camera
+        if (window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
+            window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
+            console.log(`[DragDropSystem] ✅ Controlli camera riabilitati`);
+            this.cameraControlsWereEnabled = undefined;
+        }
+
         // Reset stato
         this.isDragging = false;
         this.draggedObject = null;
         this.dragOffset.set(0, 0, 0);
         this.dragStartPosition.set(0, 0, 0);
+        this.lastPlanePoint = null;  // Reset cache piano
     },
-    
+
+    /**
+     * Aggiorna il piano di drag per essere perpendicolare alla camera
+     * @param {THREE.Vector3} intersectionPoint - Punto di intersezione del raycast
+     */
+    updateDragPlaneToCamera: function(intersectionPoint) {
+        if (!this.camera || !this.dragPlane) return;
+
+        // Calcola la direzione dal camera verso il punto di intersezione
+        const cameraToPoint = new THREE.Vector3();
+        cameraToPoint.subVectors(intersectionPoint, this.camera.position).normalize();
+
+        // La normale del piano deve essere parallela alla direzione della camera
+        // Per un piano perpendicolare alla vista della camera
+        this.dragPlane.position.copy(intersectionPoint);
+
+        // Imposta rotazione del piano: normale parallela al vettore camera-punto
+        const up = new THREE.Vector3(0, 1, 0);
+        const right = new THREE.Vector3().crossVectors(cameraToPoint, up).normalize();
+        const finalUp = new THREE.Vector3().crossVectors(right, cameraToPoint).normalize();
+
+        // Costruisci matrice rotazione per il piano
+        this.dragPlane.matrix.makeBasis(right, finalUp, cameraToPoint);
+        this.dragPlane.matrix.setPosition(intersectionPoint);
+        this.dragPlane.matrixAutoUpdate = false;
+        this.dragPlane.matrixWorldNeedsUpdate = true;
+    },
+
     /* ===== SNAP SYSTEM ===== */
     
     /**
@@ -554,7 +690,11 @@ window.DragDropSystem = {
      */
     findSnapTarget: function(object) {
         const currentPos = object.position;
-        
+
+        // Calcola centro bounding box una sola volta per entrambi i controlli
+        const currentBoundingBox = new THREE.Box3().setFromObject(object);
+        const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
+
         // 1. Controlla se esiste un target di snap personalizzato
         const customTarget = this.customSnapTargets.get(object.uuid);
         if (customTarget) {
@@ -582,9 +722,9 @@ window.DragDropSystem = {
                     targetPosition.add(customTarget.offset);
                 }
                 
-                const distance = currentPos.distanceTo(targetPosition);
+                const distance = currentCenter.distanceTo(targetPosition);
                 if (distance <= this.snapDistance) {
-                    console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza: ${distance.toFixed(2)})`);
+                    console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
                     return targetPosition;
                 }
             }
@@ -593,10 +733,25 @@ window.DragDropSystem = {
         // 2. Fallback: usa posizione originale dell'oggetto stesso
         const originalPos = this.originalPositions.get(object.uuid);
         if (originalPos) {
-            const distance = currentPos.distanceTo(originalPos);
-            
-            if (distance <= this.snapDistance) {
-                console.log(`[DragDropSystem] 🧲 Standard snap disponibile per ${object.name} (distanza: ${distance.toFixed(2)})`);
+            // DEBUG: Calcola distanze da pivot e da centro bounding box (bounding box già calcolato sopra)
+
+            const distanceFromPivot = currentPos.distanceTo(originalPos);
+            const distanceFromCenter = currentCenter.distanceTo(originalPos);
+
+            // Calcola offset tra pivot e centro
+            const pivotToCenterOffset = currentCenter.clone().sub(currentPos);
+
+            console.log(`[DragDropSystem] 🔍 DEBUG SNAP per ${object.name}:`);
+            console.log(`  📍 Pivot corrente: (${currentPos.x.toFixed(3)}, ${currentPos.y.toFixed(3)}, ${currentPos.z.toFixed(3)})`);
+            console.log(`  📦 Centro BB corrente: (${currentCenter.x.toFixed(3)}, ${currentCenter.y.toFixed(3)}, ${currentCenter.z.toFixed(3)})`);
+            console.log(`  ↗️ Offset pivot→centro: (${pivotToCenterOffset.x.toFixed(3)}, ${pivotToCenterOffset.y.toFixed(3)}, ${pivotToCenterOffset.z.toFixed(3)})`);
+            console.log(`  🎯 Target snap: (${originalPos.x.toFixed(3)}, ${originalPos.y.toFixed(3)}, ${originalPos.z.toFixed(3)})`);
+            console.log(`  📏 Distanza pivot → target: ${distanceFromPivot.toFixed(3)}`);
+            console.log(`  📏 Distanza centro BB → target: ${distanceFromCenter.toFixed(3)}`);
+            console.log(`  ⚖️ Soglia snap: ${this.snapDistance.toFixed(3)}`);
+
+            if (distanceFromCenter <= this.snapDistance) {
+                console.log(`[DragDropSystem] 🧲 Standard snap disponibile per ${object.name} (distanza centro BB: ${distanceFromCenter.toFixed(2)})`);
                 return originalPos;
             }
         }
@@ -633,45 +788,74 @@ window.DragDropSystem = {
      */
     performSnap: function(object, targetPosition) {
         console.log(`[DragDropSystem] 🎯 Esecuzione snap per ${object.name}`);
-        
+
         const startPosition = object.position.clone();
         const originalRotation = this.originalRotations.get(object.uuid);
         const startRotation = object.rotation.clone();
-        
+
+        // PRIMA: Applica la rotazione originale se necessaria
+        if (originalRotation) {
+            object.rotation.copy(originalRotation);
+            console.log(`[DragDropSystem] 🔄 Rotazione applicata prima del calcolo posizione`);
+        }
+
+        // POI: Calcola posizioni con la rotazione già applicata
+        const rotatedBoundingBox = new THREE.Box3().setFromObject(object);
+        const rotatedCenter = rotatedBoundingBox.getCenter(new THREE.Vector3());
+        const currentPivot = object.position.clone();
+
+        // CALCOLA TRASLAZIONE NECESSARIA: quanto spostare l'oggetto per portare il centro alla target position
+        const translation = targetPosition.clone().sub(rotatedCenter);
+
+        // POSIZIONE TARGET CORRETTA: dove deve andare il pivot applicando la traslazione
+        const correctedTargetPosition = currentPivot.clone().add(translation);
+
+        console.log(`[DragDropSystem] 📐 Centro bounding box (dopo rotazione): (${rotatedCenter.x.toFixed(3)}, ${rotatedCenter.y.toFixed(3)}, ${rotatedCenter.z.toFixed(3)})`);
+        console.log(`[DragDropSystem] 📐 Pivot oggetto attuale: (${currentPivot.x.toFixed(3)}, ${currentPivot.y.toFixed(3)}, ${currentPivot.z.toFixed(3)})`);
+        console.log(`[DragDropSystem] 📐 Traslazione necessaria: (${translation.x.toFixed(3)}, ${translation.y.toFixed(3)}, ${translation.z.toFixed(3)})`);
+        console.log(`[DragDropSystem] 🎯 Target posizione sfera: (${targetPosition.x.toFixed(3)}, ${targetPosition.y.toFixed(3)}, ${targetPosition.z.toFixed(3)})`);
+        console.log(`[DragDropSystem] 🎯 Target posizione pivot corretta: (${correctedTargetPosition.x.toFixed(3)}, ${correctedTargetPosition.y.toFixed(3)}, ${correctedTargetPosition.z.toFixed(3)})`);
+
         // Animazione con TWEEN se disponibile, altrimenti animazione semplice
         if (window.TWEEN) {
+            // Con TWEEN: anima solo la posizione (rotazione già applicata)
             const tween = new TWEEN.Tween({
                 x: startPosition.x,
                 y: startPosition.y,
-                z: startPosition.z,
-                rotX: startRotation.x,
-                rotY: startRotation.y,
-                rotZ: startRotation.z
+                z: startPosition.z
             })
             .to({
-                x: targetPosition.x,
-                y: targetPosition.y,
-                z: targetPosition.z,
-                rotX: originalRotation ? originalRotation.x : startRotation.x,
-                rotY: originalRotation ? originalRotation.y : startRotation.y,
-                rotZ: originalRotation ? originalRotation.z : startRotation.z
+                x: correctedTargetPosition.x,
+                y: correctedTargetPosition.y,
+                z: correctedTargetPosition.z
             }, this.snapAnimationDuration * 1000)
             .easing(TWEEN.Easing.Back.Out)
             .onUpdate((coords) => {
                 object.position.set(coords.x, coords.y, coords.z);
-                object.rotation.set(coords.rotX, coords.rotY, coords.rotZ);
             })
             .onComplete(() => {
                 console.log(`[DragDropSystem] ✅ Snap completato per ${object.name}`);
+
+                // VERIFICA FINALE: controlla se il centro del bounding box è effettivamente sulla target position
+                const finalBoundingBox = new THREE.Box3().setFromObject(object);
+                const finalCenter = finalBoundingBox.getCenter(new THREE.Vector3());
+                const finalDistance = finalCenter.distanceTo(targetPosition);
+                console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
             })
             .start();
         } else {
-            // Animazione semplice senza TWEEN
-            object.position.copy(targetPosition);
-            if (originalRotation) {
-                object.rotation.copy(originalRotation);
-            }
+            // Animazione semplice senza TWEEN (rotazione già applicata, applica solo posizione)
+            object.position.copy(correctedTargetPosition);
             console.log(`[DragDropSystem] ✅ Snap immediato per ${object.name}`);
+
+            // VERIFICA FINALE: controlla se il centro del bounding box è effettivamente sulla target position
+            setTimeout(() => {
+                const finalBoundingBox = new THREE.Box3().setFromObject(object);
+                const finalCenter = finalBoundingBox.getCenter(new THREE.Vector3());
+                const finalDistance = finalCenter.distanceTo(targetPosition);
+                console.log(`[DragDropSystem] 🔍 Verifica finale - Centro finale: (${finalCenter.x.toFixed(3)}, ${finalCenter.y.toFixed(3)}, ${finalCenter.z.toFixed(3)})`);
+                console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
+            }, 100);
         }
     },
     
@@ -684,10 +868,15 @@ window.DragDropSystem = {
     showSnapIndicators: function(draggedObject) {
         this.snapIndicators.forEach((indicator, uuid) => {
             if (uuid === draggedObject.uuid) {
-                indicator.visible = true; // Mostra il suo indicatore
-                indicator.material.opacity = 0.6;
+                // Mostra l'indicatore della posizione originale dell'oggetto trascinato
+                indicator.visible = true;
+                indicator.material.opacity = 0.8;
+                indicator.material.color.set(0x00ff00); // Verde per la posizione originale
+
+                console.log(`[DragDropSystem] 🎯 Mostro indicatore snap per: ${draggedObject.name}`);
             } else {
-                indicator.visible = false; // Nasconde gli altri per chiarezza
+                // Nasconde indicatori di altri oggetti per chiarezza
+                indicator.visible = false;
             }
         });
     },
@@ -761,9 +950,14 @@ window.DragDropSystem = {
      * @param {number} distance - Nuova distanza di snap
      */
     setSnapDistance: function(distance) {
-        this.snapDistance = Math.max(0.1, distance);
-        console.log(`[DragDropSystem] Distanza snap aggiornata: ${this.snapDistance}`);
-        
+        const oldDistance = this.snapDistance;
+        // Rimozione clamping minimo per permettere distanze precise come 0.01
+        this.snapDistance = Math.max(0.001, distance); // Minimo tecnico ridotto a 0.001
+        console.log(`[DragDropSystem] 🔧 setSnapDistance chiamato:`);
+        console.log(`  📥 Valore richiesto: ${distance}`);
+        console.log(`  📤 Valore applicato: ${this.snapDistance} (minimo tecnico: 0.001)`);
+        console.log(`  🔄 Cambio: ${oldDistance} → ${this.snapDistance}`);
+
         // Ricrea indicatori con nuova distanza se abilitato
         if (this.enabled) {
             this.createSnapIndicators();
@@ -826,6 +1020,33 @@ window.DragDropSystem = {
      */
     getCustomSnapTargets: function() {
         return new Map(this.customSnapTargets);
+    },
+
+    /**
+     * Debug completo stato sistema snap
+     */
+    debugSnapSystem: function() {
+        console.log(`[DragDropSystem] 🔍 DEBUG SISTEMA SNAP COMPLETO:`);
+        console.log(`  ✅ Abilitato: ${this.enabled}`);
+        console.log(`  📏 Snap Distance: ${this.snapDistance}`);
+        console.log(`  🎯 Oggetti draggabili: ${this.draggableObjects.length}`);
+        console.log(`  📦 Posizioni originali salvate: ${this.originalPositions.size}`);
+        console.log(`  🔄 Rotazioni originali salvate: ${this.originalRotations.size}`);
+        console.log(`  🎯 Snap personalizzati attivi: ${this.customSnapTargets.size}`);
+
+        if (this.draggableObjects.length > 0) {
+            const obj = this.draggableObjects[0];
+            const snapTarget = this.findSnapTarget(obj);
+            console.log(`  🧪 Test snap su "${obj.name}": ${snapTarget ? '✅ SNAP DISPONIBILE' : '❌ NESSUNO SNAP'}`);
+        }
+
+        return {
+            enabled: this.enabled,
+            snapDistance: this.snapDistance,
+            draggableObjectsCount: this.draggableObjects.length,
+            originalPositionsCount: this.originalPositions.size,
+            customSnapTargetsCount: this.customSnapTargets.size
+        };
     },
     
     /**
@@ -1005,5 +1226,27 @@ window.DragDropSystem = {
         }
         
         return window.AssemblySystem.redo();
+    },
+
+    /**
+     * Debug: Mostra tutte le posizioni originali salvate
+     */
+    debugOriginalPositions: function() {
+        console.log(`[DragDropSystem] 🔍 DEBUG POSIZIONI ORIGINALI (${this.originalPositions.size} oggetti):`);
+
+        this.originalPositions.forEach((position, uuid) => {
+            // Trova l'oggetto corrispondente
+            const obj = this.scene.getObjectByProperty('uuid', uuid);
+            const name = obj ? obj.name : 'SCONOSCIUTO';
+
+            console.log(`📍 ${name} (${uuid.substring(0,8)}...):
+                Centro Bounding Box = (${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)})`);
+        });
+
+        if (this.originalPositions.size === 0) {
+            console.warn('⚠️ Nessuna posizione originale salvata!');
+        }
+
+        return this.originalPositions;
     }
 };
