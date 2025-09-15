@@ -192,6 +192,10 @@ CameraTarget=(0, 0, 0)
 CameraZoom=1.2
 CameraTransitionTime=2.5
 
+# IMPORTANTE: Disabilita auto-completion per tutorial multi-step
+AutoComplete=false
+TutorialSteps=7
+
 # Posizionamento modelli per assemblaggio - DEVE essere PRIMA degli step
 # Generato il: 13/09/2025, 21:29:24
 
@@ -255,7 +259,7 @@ Descrizione=Rimetti la pompetta del grasso al suo posto
 Utensile=Mani
 DragDrop=true
 DragDropObjects=ingrassatore
-DragDropDistance=0.5
+DragDropDistance=1.0
 
 [Step 2 - Rimontaggio Filtro]
 Elemento=models/filtro.glb
@@ -263,7 +267,7 @@ Utensile=Mani
 Descrizione=Ottimo! L'ingrassatore è sistemato. Ora rimetti il filtro nella sua sede originale.
 DragDrop=true
 DragDropObjects=filtro
-DragDropDistance=0.8
+DragDropDistance=1.2
 
 [Step 3 - Posizionamento Coperchio]
 Elemento=models/coperchio.glb
@@ -271,16 +275,39 @@ Utensile=Mani
 Descrizione=Riposiziona il coperchio sopra il filtro per chiudere la pompa.
 DragDrop=true
 DragDropObjects=coperchio
-DragDropDistance=0.9
+DragDropDistance=1.3
 
-[Step 4 - Rimontaggio Viti]
+[Step 4 - Rimontaggio Prima Vite]
 Elemento=models/vite_coperchio_1.glb
 Utensile=Mani
-Descrizione=Riavvita le viti del coperchio in sequenza. Inizia dalla prima vite.
-Azione1=traslazione:(0.5,0.349,0,1.0)
-Azione2=rotazione:(360,0,0,1.5)
+Descrizione=Riavvita la prima vite del coperchio nella sua sede.
+DragDrop=true
+DragDropObjects=vite_coperchio_1
+DragDropDistance=1.0
 
+[Step 5 - Rimontaggio Seconda Vite]
+Elemento=models/vite_coperchio_2.glb
+Utensile=Mani
+Descrizione=Riavvita la seconda vite del coperchio nella sua sede.
+DragDrop=true
+DragDropObjects=vite_coperchio_2
+DragDropDistance=1.0
 
+[Step 6 - Rimontaggio Terza Vite]
+Elemento=models/vite_coperchio_3.glb
+Utensile=Mani
+Descrizione=Riavvita la terza vite del coperchio nella sua sede.
+DragDrop=true
+DragDropObjects=vite_coperchio_3
+DragDropDistance=1.0
+
+[Step 7 - Rimontaggio Quarta Vite]
+Elemento=models/vite_coperchio_4.glb
+Utensile=Mani
+Descrizione=Riavvita l'ultima vite per completare il riassemblaggio della pompa.
+DragDrop=true
+DragDropObjects=vite_coperchio_4
+DragDropDistance=1.0
 
   
 [Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa

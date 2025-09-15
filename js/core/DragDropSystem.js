@@ -841,6 +841,36 @@ window.DragDropSystem = {
                 const finalCenter = finalBoundingBox.getCenter(new THREE.Vector3());
                 const finalDistance = finalCenter.distanceTo(targetPosition);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
+
+                // RESET AUTOMATICO TUTORIAL TRACKER per evitare blocco dopo snap
+                if (window.Scene3D && typeof window.Scene3D.resetTutorialTracker === 'function') {
+                    try {
+                        console.log(`[DragDropSystem] 🔄 Reset automatico tutorial tracker dopo snap completato`);
+                        window.Scene3D.resetTutorialTracker();
+                    } catch (error) {
+                        console.warn(`[DragDropSystem] ⚠️ Errore reset tutorial tracker:`, error);
+                    }
+                }
+
+                // TRIGGER AVANZAMENTO STEP SUCCESSIVO dopo snap completato
+                if (window.tutorialSystem && typeof window.tutorialSystem.completeCurrentStep === 'function') {
+                    try {
+                        console.log(`[DragDropSystem] ➡️ Trigger avanzamento al step successivo dopo snap`);
+                        window.tutorialSystem.completeCurrentStep();
+                    } catch (error) {
+                        console.warn(`[DragDropSystem] ⚠️ Errore avanzamento step:`, error);
+                    }
+                }
+
+                // ALTERNATIVA: Prova anche interfaccia UI
+                if (window.UI && typeof window.UI.advanceStep === 'function') {
+                    try {
+                        console.log(`[DragDropSystem] ➡️ Avanzamento step via UI dopo snap`);
+                        window.UI.advanceStep();
+                    } catch (error) {
+                        console.warn(`[DragDropSystem] ⚠️ Errore avanzamento step UI:`, error);
+                    }
+                }
             })
             .start();
         } else {
@@ -855,6 +885,36 @@ window.DragDropSystem = {
                 const finalDistance = finalCenter.distanceTo(targetPosition);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Centro finale: (${finalCenter.x.toFixed(3)}, ${finalCenter.y.toFixed(3)}, ${finalCenter.z.toFixed(3)})`);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
+
+                // RESET AUTOMATICO TUTORIAL TRACKER per evitare blocco dopo snap (versione semplice)
+                if (window.Scene3D && typeof window.Scene3D.resetTutorialTracker === 'function') {
+                    try {
+                        console.log(`[DragDropSystem] 🔄 Reset automatico tutorial tracker dopo snap immediato`);
+                        window.Scene3D.resetTutorialTracker();
+                    } catch (error) {
+                        console.warn(`[DragDropSystem] ⚠️ Errore reset tutorial tracker:`, error);
+                    }
+                }
+
+                // TRIGGER AVANZAMENTO STEP SUCCESSIVO dopo snap immediato
+                if (window.tutorialSystem && typeof window.tutorialSystem.completeCurrentStep === 'function') {
+                    try {
+                        console.log(`[DragDropSystem] ➡️ Trigger avanzamento al step successivo dopo snap immediato`);
+                        window.tutorialSystem.completeCurrentStep();
+                    } catch (error) {
+                        console.warn(`[DragDropSystem] ⚠️ Errore avanzamento step immediato:`, error);
+                    }
+                }
+
+                // ALTERNATIVA: Prova anche interfaccia UI (versione immediata)
+                if (window.UI && typeof window.UI.advanceStep === 'function') {
+                    try {
+                        console.log(`[DragDropSystem] ➡️ Avanzamento step via UI dopo snap immediato`);
+                        window.UI.advanceStep();
+                    } catch (error) {
+                        console.warn(`[DragDropSystem] ⚠️ Errore avanzamento step UI immediato:`, error);
+                    }
+                }
             }, 100);
         }
     },
