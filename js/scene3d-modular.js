@@ -1445,6 +1445,7 @@ const Scene3D = {
                 rotazione: null,
                 traslazione: null,
                 appoggia: null,
+                resetCenteredOriginal: null,
                 svita: null,
                 avvita: null,
                 estrai: null,
@@ -1464,6 +1465,8 @@ const Scene3D = {
                     step.traslazione = this.parseMovementOperation(trimmed, 'traslazione', modelFilename);
                 } else if (trimmed.startsWith('appoggia')) {
                     step.appoggia = this.parseMovementOperation(trimmed, 'appoggia', modelFilename);
+                } else if (trimmed.startsWith('resetCenteredOriginal')) {
+                    step.resetCenteredOriginal = this.parseMovementOperation(trimmed, 'resetCenteredOriginal', modelFilename);
                 } else if (trimmed === 'svita') {
                     step.svita = this.parseMovementOperation(trimmed, 'svita', modelFilename);
                 } else if (trimmed === 'avvita') {
@@ -1486,6 +1489,9 @@ const Scene3D = {
             }
             if (step.appoggia) {
                 durateOperazioni.push(step.appoggia.durata);
+            }
+            if (step.resetCenteredOriginal) {
+                durateOperazioni.push(step.resetCenteredOriginal.durata);
             }
             if (step.svita) {
                 durateOperazioni.push(step.svita.durata);
@@ -1604,6 +1610,29 @@ const Scene3D = {
                 };
             } else {
                 throw new Error(`Formato appoggia non valido: ${operationString}`);
+            }
+        } else if (type === 'resetCenteredOriginal') {
+            // Gestisce resetCenteredOriginal(durata) o resetCenteredOriginal senza parentesi
+            const matchWithParens = operationString.match(/resetCenteredOriginal\(([^)]+)\)/);
+            const matchWithoutParens = operationString.match(/^resetCenteredOriginal$/);
+
+            if (matchWithParens) {
+                const durata = parseFloat(matchWithParens[1]);
+                if (isNaN(durata)) {
+                    throw new Error(`Durata non valida in resetCenteredOriginal: ${operationString}`);
+                }
+                return {
+                    durata: durata,
+                    animated: true  // Se ha durata, usa animazione
+                };
+            } else if (matchWithoutParens) {
+                // Reset immediato se non specificata durata
+                return {
+                    durata: 0,
+                    animated: false
+                };
+            } else {
+                throw new Error(`Formato resetCenteredOriginal non valido: ${operationString}`);
             }
         } else if (type === 'svita') {
             // Comando semplificato: svita = rotazione attorno asse direction + traslazione lungo direction
@@ -1887,7 +1916,24 @@ const Scene3D = {
             // Imposta la posizione target Y per appoggiare il punto più basso a Y=0
             targetPosition.y = offsetY;
         }
-        
+
+        if (currentStep.resetCenteredOriginal) {
+            // Reset posizione centrata originale
+            if (currentStep.resetCenteredOriginal.animated) {
+                // Reset animato - usa il sistema di animazione
+                console.log(`🎬 RESET ANIMATO: Avvio reset centrato animato per "${modelName}" (${currentStep.resetCenteredOriginal.durata}s)`);
+                this.animateAllModelsToCenteredOriginalPositions(currentStep.resetCenteredOriginal.durata);
+            } else {
+                // Reset immediato
+                console.log(`🎯 RESET IMMEDIATO: Esecuzione reset centrato per tutti i modelli`);
+                this.resetAllModelsToCenteredOriginalPositions();
+            }
+
+            // Termina immediatamente questo step multi-step
+            this.finishMultiStepMovement(modelUuid);
+            return;
+        }
+
         if (currentStep.svita) {
             // Comando semplificato svita: rotazione + traslazione
             // Imposta il centro di rotazione al centro del bounding box del modello
@@ -3365,6 +3411,156 @@ const Scene3D = {
         }
 
         return false;
+    },
+
+    /* ===== SISTEMA RESET POSIZIONI ORIGINALI CON CENTRO BB ===== */
+
+    /**
+     * NUOVA FUNZIONE: Reset globale con centro bounding box su posizioni _original
+     * Resetta tutti i modelli posizionando il centro del loro bounding box
+     * sulle coordinate delle loro posizioni originali
+     */
+    resetAllModelsToCenteredOriginalPositions: function() {
+        console.log('🎯 RESET CENTRATO: Ripristino tutti i modelli con centro BB su posizioni originali...');
+
+        let resetCount = 0;
+        let skippedCount = 0;
+
+        for (const model of this.loadedModels) {
+            if (this.resetModelToCenteredOriginalPosition(model)) {
+                resetCount++;
+            } else {
+                skippedCount++;
+            }
+        }
+
+        console.log(`✅ RESET CENTRATO COMPLETATO: ${resetCount} modelli riposizionati, ${skippedCount} saltati`);
+        return { resetCount, skippedCount };
+    },
+
+    /**
+     * Reset singolo modello con centro bounding box su posizione originale
+     */
+    resetModelToCenteredOriginalPosition: function(model) {
+        if (!model || !model.name) {
+            return false;
+        }
+
+        // Ottieni posizione originale usando il sistema _original esistente
+        const originalRef = this.findModelByName(model.name + '_original');
+        if (!originalRef) {
+            console.log(`⚠️ RESET CENTRATO: Nessuna posizione originale trovata per "${model.name}"`);
+            return false;
+        }
+
+        // Calcola centro bounding box corrente
+        const boundingBox = new THREE.Box3().setFromObject(model);
+        const currentCenter = new THREE.Vector3();
+        boundingBox.getCenter(currentCenter);
+
+        // Posizione target (dove dovrebbe essere il centro)
+        const targetCenter = originalRef.position.clone();
+
+        // Calcola offset necessario per spostare il centro alla posizione target
+        const offset = targetCenter.sub(currentCenter);
+
+        // Applica l'offset alla posizione del modello
+        model.position.add(offset);
+
+        console.log(`🎯 RESET CENTRATO: "${model.name}" → centro BB spostato a posizione originale`, {
+            originalCenter: currentCenter.clone().sub(offset),
+            targetCenter: targetCenter.clone().add(offset),
+            appliedOffset: offset
+        });
+
+        return true;
+    },
+
+    /**
+     * Reset con animazione fluida verso posizioni centrate originali
+     * @param {number} duration - Durata animazione in secondi (default: 1.0)
+     */
+    animateAllModelsToCenteredOriginalPositions: function(duration = 1.0) {
+        console.log(`🎬 ANIMAZIONE RESET CENTRATO: Avvio animazione di ${duration}s verso posizioni originali...`);
+
+        let animationCount = 0;
+
+        for (const model of this.loadedModels) {
+            const originalRef = this.findModelByName(model.name + '_original');
+            if (!originalRef) continue;
+
+            // Calcola posizione finale
+            const boundingBox = new THREE.Box3().setFromObject(model);
+            const currentCenter = new THREE.Vector3();
+            boundingBox.getCenter(currentCenter);
+
+            const targetCenter = originalRef.position.clone();
+            const offset = targetCenter.sub(currentCenter);
+            const finalPosition = model.position.clone().add(offset);
+
+            // Crea animazione TWEEN
+            const startPosition = model.position.clone();
+            new window.TWEEN.Tween(startPosition)
+                .to(finalPosition, duration * 1000)
+                .easing(window.TWEEN.Easing.Cubic.InOut)
+                .onUpdate(() => {
+                    model.position.copy(startPosition);
+                })
+                .start();
+
+            animationCount++;
+        }
+
+        console.log(`🎬 ANIMAZIONE RESET CENTRATO: ${animationCount} animazioni avviate`);
+        return animationCount;
+    },
+
+    /**
+     * Funzione di test completa per il sistema reset centrato
+     */
+    testCenteredOriginalReset: function() {
+        console.log('🧪 TEST RESET CENTRATO: Avvio test completo del sistema...');
+
+        // 1. Verifica modelli caricati
+        console.log(`📊 Modelli caricati: ${this.loadedModels.length}`);
+
+        // 2. Verifica riferimenti _original disponibili
+        let originalRefsCount = 0;
+        for (const model of this.loadedModels) {
+            const originalRef = this.findModelByName(model.name + '_original');
+            if (originalRef) {
+                originalRefsCount++;
+                console.log(`✅ "${model.name}" → posizione originale: (${originalRef.position.x.toFixed(3)}, ${originalRef.position.y.toFixed(3)}, ${originalRef.position.z.toFixed(3)})`);
+            } else {
+                console.log(`❌ "${model.name}" → nessuna posizione originale`);
+            }
+        }
+
+        console.log(`📊 Riferimenti _original trovati: ${originalRefsCount}/${this.loadedModels.length}`);
+
+        // 3. Test reset immediato
+        if (originalRefsCount > 0) {
+            console.log('🎯 Esecuzione reset centrato immediato...');
+            const result = this.resetAllModelsToCenteredOriginalPositions();
+            console.log('✅ Test reset immediato completato:', result);
+
+            // 4. Test reset animato (dopo 2 secondi)
+            setTimeout(() => {
+                console.log('🎬 Test reset animato...');
+                // Sposta leggermente i modelli prima dell'animazione
+                for (const model of this.loadedModels.slice(0, 2)) {
+                    model.position.add(new THREE.Vector3(0.5, 0.2, -0.3));
+                }
+                const animResult = this.animateAllModelsToCenteredOriginalPositions(1.5);
+                console.log('✅ Test reset animato avviato:', animResult, 'animazioni');
+            }, 2000);
+        }
+
+        return {
+            modelsCount: this.loadedModels.length,
+            originalRefsCount: originalRefsCount,
+            systemAvailable: originalRefsCount > 0
+        };
     }
 };
 

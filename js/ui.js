@@ -1938,39 +1938,55 @@ window.UI = {
     updateCanvasCursor: function() {
         const canvas = document.querySelector('#canvas3d, canvas');
         if (!canvas) return;
-        
+
         const activeTool = this.getActiveTool();
-        
-        // Per il tool aria, gestisci direttamente il cursore body
+
+        // Rimuovi tutte le classi body tool prima di applicare la nuova
+        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active');
+
+        // Gestione cursori personalizzati via body class per tool specifici
         if (activeTool === 'aria' || activeTool === 'Aria') {
             // Rimuovi classi cursore canvas
             canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
             // Applica cursore aria direttamente al body
-            document.body.classList.remove('tool-aria-active'); // Rimuovi prima
-            document.body.classList.add('tool-aria-active');    // Poi riapplica
+            document.body.classList.add('tool-aria-active');
             console.log(`🖱️ Cursore aria applicato direttamente al body`);
             return;
         }
-        
-        // Rimuovi tutte le classi cursore (inclusa aria dal body)
+
+        if (activeTool === 'chiave_inglese' || activeTool === 'ChiaveInglese') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore chiave inglese direttamente al body
+            document.body.classList.add('tool-chiave_inglese-active');
+            console.log(`🖱️ Cursore chiave inglese applicato direttamente al body`);
+            return;
+        }
+
+        if (activeTool === 'brugola' || activeTool === 'ChiaveBrugola') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore brugola direttamente al body
+            document.body.classList.add('tool-brugola-active');
+            console.log(`🖱️ Cursore brugola applicato direttamente al body`);
+            return;
+        }
+
+        // Per tool rimanenti (mano), usa il sistema canvas
         canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-        document.body.classList.remove('tool-aria-active');
-        
-        // Mappa dei tool ai cursori (escluso aria)
+
+        // Mappa dei tool ai cursori (solo per tool senza cursore personalizzato)
         const toolCursorMap = {
             'mano': 'cursor-mano',
-            'brugola': 'cursor-brugola', 
-            'ChiaveBrugola': 'cursor-brugola',
-            'chiave': 'cursor-chiave',
-            'ChiaveInglese': 'cursor-chiave'
+            'Mani': 'cursor-mano'
         };
-        
+
         // Applica il cursore appropriato
         const cursorClass = toolCursorMap[activeTool] || 'cursor-default';
         canvas.classList.add(cursorClass);
-        
+
         console.log(`🖱️ Cursore aggiornato: ${activeTool || 'default'} → ${cursorClass}`);
-        
+
         // Opzione avanzata: cursore canvas animato (decommentare se desiderato)
         // this.initAnimatedCursor(activeTool);
     },

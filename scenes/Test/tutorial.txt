@@ -14,30 +14,40 @@ CameraTransitionTime=2.0
 # Posiziona l'ingrassatore in una posizione di partenza (scomposta)
 Posizione=ingrassatore:(2.0,0.5,-1.0)     # Posizione iniziale dislocata
 Rotazione=ingrassatore:(45,45,0)           # Rotazione iniziale scomposta
+Posizione=filtro:(1.0,0.5,1.0)     # Posizione iniziale dislocata
+Rotazione=filtro:(45,15,0)           # Rotazione iniziale scomposta
 
-  [Step 1 - Assemblaggio Ingrassatore con Drag & Drop]
+  [Step 1 - Assemblaggio Multi-Oggetto con Drag & Drop]
   Elemento=models/ingrassatore.glb
   Utensile=Mani
-  Descrizione=Trascina l'ingrassatore nella posizione corretta. Quando rilasci vicino alla posizione originale, si posizionerà automaticamente.
-  
+  Descrizione=Trascina ingrassatore e filtro nelle posizioni corrette. Quando rilasci vicino alla posizione originale, si posizionano automaticamente.
+
   # Abilita il sistema drag & drop per questo step
   DragDrop=true
-  DragDropObjects=ingrassatore              # Solo ingrassatore draggabile
-  DragDropDistance=0.06                 # Distanza di snap in unità 3D
+  DragDropObjects=ingrassatore,filtro     # Entrambi draggabili
+  DragDropDistance=0.1                     # Distanza di snap in unità 3D
   
   # IMPORTANTE: Nessuna azione automatica - l'utente deve trascinare manualmente
   # Il sistema rileverà quando l'ingrassatore è vicino alla posizione target
   
   # Posizione e rotazione TARGET (dove dovrebbe finire l'ingrassatore)
   # Queste coordinate vengono usate dal sistema per il posizionamento automatico
-  TargetPosizione=ingrassatore:(0.0,0.1,0.0)    # Posizione finale corretta
+  TargetPosizione=ingrassatore:(0.0,0.0,0.0)    # Posizione finale corretta
   TargetRotazione=ingrassatore:(0,0,0)           # Rotazione finale corretta
-
+   
   [Step 2 - Verifica Posizionamento]
-  Elemento=models/ingrassatore.glb
+  Elemento=models/filtro.glb
   Utensile=Mani
   Descrizione=Ottimo! L'ingrassatore è ora nella posizione corretta. Il tutorial può continuare.
-  
-  # Disabilita drag & drop per i prossimi step
-  DragDrop=false
+
+  TargetPosizione=filtro:(0.0,0.0,0.0)    # Posizione finale corretta
+  TargetRotazione=filtro:(0,0,0)           # Rotazione finale corretta
+
+  [Step 3 - Test Reset Posizioni Originali]
+  Elemento=models/ingrassatore.glb
+  Utensile=Mani
+  Descrizione=Clicca per testare il reset di tutti gli elementi alle loro posizioni originali con centraggio del bounding box.
+
+  # Test della nuova funzione resetCenteredOriginal
+  Azione1=resetCenteredOriginal(1.5)      # Reset animato di 1.5 secondi
   
