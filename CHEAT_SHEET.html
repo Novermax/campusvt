@@ -4,18 +4,130 @@
     <meta charset="UTF-8">
     <title>Campus Virtual Training - Cheat Sheet</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 11px; margin: 20px; line-height: 1.3; }
-        h1 { font-size: 16px; margin: 0 0 10px 0; }
-        h2 { font-size: 13px; margin: 15px 0 5px 0; border-bottom: 1px solid #ccc; }
-        h3 { font-size: 12px; margin: 10px 0 3px 0; }
-        table { width: 100%; border-collapse: collapse; margin: 5px 0; font-size: 10px; }
-        th, td { border: 1px solid #ddd; padding: 3px 5px; }
-        th { background: #f0f0f0; font-weight: bold; }
-        code { background: #f5f5f5; padding: 1px 3px; font-family: Courier, monospace; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .box { border: 1px solid #ddd; padding: 8px; margin: 5px 0; }
-        ul { margin: 3px 0; padding-left: 15px; }
-        li { margin: 1px 0; }
+        /* Stili base ottimizzati per leggibilità */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 11px;
+            margin: 15px;
+            line-height: 1.4;
+            background: #ffffff;
+            color: #333;
+        }
+
+        /* Titoli con gerarchia visiva migliorata */
+        h1 {
+            font-size: 18px;
+            margin: 0 0 12px 0;
+            color: #2c5aa0;
+            text-align: center;
+            border-bottom: 2px solid #2c5aa0;
+            padding-bottom: 5px;
+        }
+        h2 {
+            font-size: 13px;
+            margin: 12px 0 6px 0;
+            color: #d9534f;
+            border-bottom: 1px solid #d9534f;
+            background: #f8f9fa;
+            padding: 4px 6px;
+            border-radius: 3px;
+        }
+        h3 {
+            font-size: 11px;
+            margin: 8px 0 4px 0;
+            color: #5bc0de;
+            font-weight: bold;
+        }
+
+        /* Tabelle con zebra striping per leggibilità */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4px 0 8px 0;
+            font-size: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th {
+            background: linear-gradient(135deg, #2c5aa0, #1e4080);
+            color: white;
+            font-weight: bold;
+            padding: 4px 6px;
+            border: 1px solid #1e4080;
+            text-align: center;
+        }
+        td {
+            border: 1px solid #ddd;
+            padding: 3px 6px;
+            vertical-align: top;
+        }
+        tr:nth-child(even) { background: #f8f9fa; }
+        tr:hover { background: #e3f2fd; }
+
+        /* Codice con highlighting migliorato */
+        code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            font-size: 10px;
+        }
+
+        /* Layout grid responsivo */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* Box con bordi e ombreggiature */
+        .box {
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin: 6px 0;
+            background: #fafafa;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Liste con spaziatura ottimizzata */
+        ul {
+            margin: 4px 0;
+            padding-left: 18px;
+        }
+        li {
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+
+        /* Sezioni speciali con colori distintivi */
+        .syntax-section { border-left: 4px solid #5cb85c; }
+        .debug-section { border-left: 4px solid #f0ad4e; }
+        .config-section { border-left: 4px solid #5bc0de; }
+
+        /* Evidenziazione parametri importanti */
+        .param-important {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 3px;
+            padding: 1px 3px;
+        }
+
+        /* Print styles per PDF */
+        @media print {
+            body { margin: 10px; font-size: 9px; }
+            .grid { grid-template-columns: 1fr; gap: 5px; }
+            h1 { font-size: 14px; }
+            h2 { font-size: 11px; }
+            table { font-size: 8px; }
+            .box { break-inside: avoid; }
+        }
+
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
     </style>
 </head>
 <body>
@@ -43,15 +155,15 @@
 </table>
 
 <h2>📖 Sintassi Tutorial</h2>
-<div class="box">
+<div class="box syntax-section">
 <code># Globale<br>
-CameraPos=(-1.5, 0.5, -0.2)<br>
-CameraTarget=(0, 0, 0)<br><br>
+<span class="param-important">CameraPos</span>=(-1.5, 0.5, -0.2)<br>
+<span class="param-important">CameraTarget</span>=(0, 0, 0)<br><br>
 [Tutorial]<br>
 &nbsp;&nbsp;[Step 1 - Nome]<br>
-&nbsp;&nbsp;Elemento=models/file.glb<br>
-&nbsp;&nbsp;Descrizione=Testo<br>
-&nbsp;&nbsp;Utensile=Aria</code>
+&nbsp;&nbsp;<span class="param-important">Elemento</span>=models/file.glb<br>
+&nbsp;&nbsp;<span class="param-important">Descrizione</span>=Testo<br>
+&nbsp;&nbsp;<span class="param-important">Utensile</span>=Aria</code>
 </div>
 
 <h2>🎬 Animazioni</h2>
@@ -110,7 +222,7 @@ CameraTarget=(0, 0, 0)<br><br>
 </table>
 
 <h2>🐛 Debug Console</h2>
-<div class="box">
+<div class="box debug-section">
 <strong>Camera:</strong><br>
 <code>Scene3D.getCameraInfo()</code><br>
 <code>Scene3D.listAvailableObjects()</code><br><br>
@@ -130,17 +242,17 @@ CameraTarget=(0, 0, 0)<br><br>
 </div>
 
 <h2>⚙️ home_config.txt</h2>
-<div class="box">
+<div class="box config-section">
 <code>[SCENARIO]<br>
-CameraPos=(-1.5, 0.5,-0.2)<br>
-CameraTarget=(0, 0, 0)<br>
-AmbientLight=0x404040,1.5<br>
-DirectionalLight=0xffffff,2.5,(-8, 15, 10)<br>
-description_key=scenario_key<br>
-image=menuimages/img.png<br>
-tutorial=scenes/Folder/tutorial.txt<br>
-model=models/file.glb<br>
-direction=-1,0,0</code>
+<span class="param-important">CameraPos</span>=(-1.5, 0.5,-0.2)<br>
+<span class="param-important">CameraTarget</span>=(0, 0, 0)<br>
+<span class="param-important">AmbientLight</span>=0x404040,1.5<br>
+<span class="param-important">DirectionalLight</span>=0xffffff,2.5,(-8, 15, 10)<br>
+<span class="param-important">description_key</span>=scenario_key<br>
+<span class="param-important">image</span>=menuimages/img.png<br>
+<span class="param-important">tutorial</span>=scenes/Folder/tutorial.txt<br>
+<span class="param-important">model</span>=models/file.glb<br>
+<span class="param-important">direction</span>=-1,0,0</code>
 </div>
 
 <h2>🔧 Posizionamento Modelli</h2>

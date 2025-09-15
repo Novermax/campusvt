@@ -27,7 +27,12 @@
       "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
       "Read(/C:\\Users\\mloffredo\\claude\\js/**)",
       "Bash(exit)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx:*)",
+      "Bash(where chrome)",
+      "Bash(\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --headless --disable-gpu --print-to-pdf=\"CHEAT_SHEET.pdf\" --print-to-pdf-no-header file:///C:/Users/mloffredo/claude/CHEAT_SHEET.html)",
+      "Bash(\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --headless --disable-gpu --print-to-pdf=\"C:\\Users\\mloffredo\\claude\\CHEAT_SHEET.pdf\" --print-to-pdf-no-header --virtual-time-budget=2000 \"file:///C:/Users/mloffredo/claude/CHEAT_SHEET.html\")",
+      "Bash(\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --headless --disable-gpu --print-to-pdf=\"C:\\Users\\mloffredo\\claude\\MANUALE_COMPLETO_CAMPUS_VIRTUAL_TRAINING.pdf\" --print-to-pdf-no-header --virtual-time-budget=3000 --run-all-compositor-stages-before-draw \"file:///C:/Users/mloffredo/claude/MANUALE_COMPLETO_CAMPUS_VIRTUAL_TRAINING.html\")"
     ],
     "deny": [],
     "ask": [],

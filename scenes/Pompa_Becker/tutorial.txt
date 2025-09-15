@@ -111,7 +111,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione1=traslazione:(0,0.1,0,0.8)
   Azione2=centro:(-0.1,0,0);rotazione:(0,0,90,0.8)
   Azione3=traslazione:(-0.2,0.0,0,0.8)
-  //Azione4=appoggia(0.5)
+  Azione4=appoggia(0.5)
   //CameraPos=ingrassatore:(-1, 0, 0)                    // Posizione relativa all'ingrassatore  
   //CameraTarget=ingrassatore                               // Focus diretto sull'ingrassatore
   //CameraZoom=2.2                                          // Zoom alto per operazione di precisione
@@ -240,7 +240,7 @@ Posizione=tappino_grasso_sx:(-0.300,-0.243,0.000)
 Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
 
 # Modello 12: ingrassatore
-Posizione=ingrassatore:(-0.143,0.474,0.213)
+Posizione=ingrassatore:(-0.308,0.243,0.000)
 Rotazione=ingrassatore:(0.0,0.0,90.0)
 
 # Modello 13: tappino_grasso_dx
@@ -257,11 +257,30 @@ DragDrop=true
 DragDropObjects=ingrassatore
 DragDropDistance=0.5
 
-[Step 2 - Verifica Posizionamento]
-Elemento=models/ingrassatore.glb
+[Step 2 - Rimontaggio Filtro]
+Elemento=models/filtro.glb
 Utensile=Mani
-Descrizione=Ottimo! L'ingrassatore è ora nella posizione corretta. Il tutorial può continuare.
- 
+Descrizione=Ottimo! L'ingrassatore è sistemato. Ora rimetti il filtro nella sua sede originale.
+DragDrop=true
+DragDropObjects=filtro
+DragDropDistance=0.8
+
+[Step 3 - Posizionamento Coperchio]
+Elemento=models/coperchio.glb
+Utensile=Mani
+Descrizione=Riposiziona il coperchio sopra il filtro per chiudere la pompa.
+DragDrop=true
+DragDropObjects=coperchio
+DragDropDistance=0.9
+
+[Step 4 - Rimontaggio Viti]
+Elemento=models/vite_coperchio_1.glb
+Utensile=Mani
+Descrizione=Riavvita le viti del coperchio in sequenza. Inizia dalla prima vite.
+Azione1=traslazione:(0.5,0.349,0,1.0)
+Azione2=rotazione:(360,0,0,1.5)
+
+
 
   
 [Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa
