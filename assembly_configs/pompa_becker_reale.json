@@ -1,0 +1,210 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Assemblaggio Pompa Becker con modelli reali scenario",
+    "author": "Campus Virtual Training",
+    "createdAt": "2025-12-15",
+    "scenario": "Pompa_Becker"
+  },
+
+  "sequence": [
+    "base_assembly",
+    "filtro_assembly",
+    "coperchio_assembly",
+    "viti_coperchio_assembly",
+    "ingrassatori_assembly",
+    "tappini_assembly"
+  ],
+
+  "snapPoints": {
+    "filtro": {
+      "nodeId": "filtro_assembly",
+      "positions": [
+        {
+          "id": "snap_filtro_sede",
+          "position": [0, 0.1, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "coperchio": {
+      "nodeId": "coperchio_assembly",
+      "positions": [
+        {
+          "id": "snap_coperchio_principale",
+          "position": [0, 0.2, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "vite_coperchio_1": {
+      "nodeId": "viti_coperchio_assembly",
+      "positions": [
+        {
+          "id": "snap_vite_1_pos1",
+          "position": [0.15, 0.25, 0.15],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_vite_1_pos2",
+          "position": [0.15, 0.25, -0.15],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "vite_coperchio_2": {
+      "nodeId": "viti_coperchio_assembly",
+      "positions": [
+        {
+          "id": "snap_vite_2_pos1",
+          "position": [-0.15, 0.25, 0.15],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_vite_2_pos2",
+          "position": [-0.15, 0.25, -0.15],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "vite_coperchio_3": {
+      "nodeId": "viti_coperchio_assembly",
+      "positions": [
+        {
+          "id": "snap_vite_3_pos1",
+          "position": [0.15, 0.25, 0.15],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_vite_3_pos2",
+          "position": [-0.15, 0.25, 0.15],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "vite_coperchio_4": {
+      "nodeId": "viti_coperchio_assembly",
+      "positions": [
+        {
+          "id": "snap_vite_4_pos1",
+          "position": [0.15, 0.25, -0.15],
+          "rotation": [0, 0, 0]
+        },
+        {
+          "id": "snap_vite_4_pos2",
+          "position": [-0.15, 0.25, -0.15],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "tappino_grasso_dx": {
+      "nodeId": "tappini_assembly",
+      "positions": [
+        {
+          "id": "snap_tappino_dx_sede",
+          "position": [0.25, 0.15, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "tappino_grasso_sx": {
+      "nodeId": "tappini_assembly",
+      "positions": [
+        {
+          "id": "snap_tappino_sx_sede",
+          "position": [-0.25, 0.15, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "ingrassatore": {
+      "nodeId": "ingrassatori_assembly",
+      "positions": [
+        {
+          "id": "snap_ingrassatore_riposo",
+          "position": [0, 0.3, -0.4],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    }
+  },
+
+  "interchangeableNodes": {
+    "viti_coperchio_assembly": [
+      "vite_coperchio_1",
+      "vite_coperchio_2",
+      "vite_coperchio_3",
+      "vite_coperchio_4"
+    ],
+    "tappini_assembly": [
+      "tappino_grasso_dx",
+      "tappino_grasso_sx"
+    ]
+  },
+
+  "dependencies": {
+    "filtro_assembly": ["base_assembly"],
+    "coperchio_assembly": ["base_assembly", "filtro_assembly"],
+    "viti_coperchio_assembly": ["coperchio_assembly"],
+    "tappini_assembly": ["base_assembly"],
+    "ingrassatori_assembly": ["tappini_assembly"]
+  },
+
+  "assemblySteps": {
+    "base_assembly": {
+      "description": "La base della pompa deve essere posizionata per prima",
+      "requiredComponents": [],
+      "optionalComponents": [],
+      "completionCriteria": "auto"
+    },
+
+    "filtro_assembly": {
+      "description": "Inserisci il filtro nella sua sede",
+      "requiredComponents": ["filtro"],
+      "optionalComponents": [],
+      "completionCriteria": "all_required_mounted"
+    },
+
+    "coperchio_assembly": {
+      "description": "Posiziona il coperchio sopra il filtro",
+      "requiredComponents": ["coperchio"],
+      "optionalComponents": [],
+      "completionCriteria": "all_required_mounted"
+    },
+
+    "viti_coperchio_assembly": {
+      "description": "Monta le 4 viti del coperchio in qualsiasi ordine",
+      "requiredComponents": [
+        "vite_coperchio_1",
+        "vite_coperchio_2",
+        "vite_coperchio_3",
+        "vite_coperchio_4"
+      ],
+      "optionalComponents": [],
+      "completionCriteria": "all_required_mounted",
+      "minimumRequired": 4
+    },
+
+    "tappini_assembly": {
+      "description": "Monta i tappini degli ingrassatori (ordine libero)",
+      "requiredComponents": ["tappino_grasso_dx", "tappino_grasso_sx"],
+      "optionalComponents": [],
+      "completionCriteria": "all_required_mounted"
+    },
+
+    "ingrassatori_assembly": {
+      "description": "Riponi l'ingrassatore nella posizione di riposo",
+      "requiredComponents": ["ingrassatore"],
+      "optionalComponents": [],
+      "completionCriteria": "all_required_mounted"
+    }
+  }
+}

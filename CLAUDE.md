@@ -549,6 +549,309 @@ DragDropSystem.redoAssembly()
 3. **Assemblaggio Multi-Step**: Procedure complesse con validazione step-by-step
 4. **Quality Control**: Verifiche automatiche completezza assemblaggio
 
+---
+
+## 🔧 Manuale Completo Sistema Assemblaggio Sequenziale (Dicembre 2025)
+
+**Sistema Professionale**: Gestione completa di sequenze obbligatorie e insiemi intercambiabili per riassemblaggio industriale
+
+### 📋 **Concetti Fondamentali**
+
+#### **1. Sequenze Obbligatorie**
+Componenti che DEVONO essere montati in ordine specifico per rispettare procedure industriali reali.
+
+**Esempio Pompa Becker**:
+```
+1. Base pompa (sempre disponibile)
+2. Filtro (richiede base)
+3. Coperchio (richiede base + filtro)
+4. Viti coperchio (richiede coperchio)
+```
+
+#### **2. Insiemi Intercambiabili (Nodi)**
+Gruppi di componenti che possono essere montati in qualsiasi ordine interno al gruppo.
+
+**Esempi**:
+- **Gruppo Viti**: Le 4 viti del coperchio (ordine libero)
+- **Gruppo Tappini**: Tappini destro/sinistro ingrassatori (ordine libero)
+- **Gruppo Manopole**: Manopole coperchio (ordine libero)
+
+#### **3. Punti Aggancio Multipli**
+Ogni componente può avere più posizioni di montaggio alternative.
+
+**Vantaggi**:
+- Flessibilità assemblaggio
+- Slot alternativi per componenti simili
+- Tolleranze realistiche
+
+### 🏗️ **Configurazione JSON Assembly**
+
+#### **Struttura File Configurazione**
+**Percorso**: `assembly_configs/pompa_becker_reale.json`
+
+```json
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Assemblaggio Pompa Becker con modelli reali",
+    "scenario": "Pompa_Becker"
+  },
+
+  "sequence": [
+    "base_assembly",
+    "filtro_assembly",
+    "coperchio_assembly",
+    "viti_coperchio_assembly",
+    "tappini_assembly",
+    "ingrassatori_assembly"
+  ],
+
+  "snapPoints": {
+    "filtro": {
+      "nodeId": "filtro_assembly",
+      "positions": [
+        {
+          "id": "snap_filtro_sede",
+          "position": [0, 0.1, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    }
+  },
+
+  "interchangeableNodes": {
+    "viti_coperchio_assembly": [
+      "vite_coperchio_1",
+      "vite_coperchio_2",
+      "vite_coperchio_3",
+      "vite_coperchio_4"
+    ]
+  },
+
+  "dependencies": {
+    "filtro_assembly": ["base_assembly"],
+    "coperchio_assembly": ["base_assembly", "filtro_assembly"],
+    "viti_coperchio_assembly": ["coperchio_assembly"]
+  }
+}
+```
+
+#### **Sezioni Configurazione Dettagliate**
+
+##### **A. Sezione `sequence`**
+```json
+"sequence": ["step1", "step2", "step3"]
+```
+- **Funzione**: Definisce ordine OBBLIGATORIO di assemblaggio
+- **Comportamento**: Step successivi bloccati fino a completamento precedenti
+- **Validazione**: Sistema impedisce assemblaggi fuori sequenza
+
+##### **B. Sezione `snapPoints`**
+```json
+"snapPoints": {
+  "vite_coperchio_1": {
+    "nodeId": "viti_coperchio_assembly",
+    "positions": [
+      {"id": "snap_vite_1_pos1", "position": [0.15, 0.25, 0.15]},
+      {"id": "snap_vite_1_pos2", "position": [0.15, 0.25, -0.15]}
+    ]
+  }
+}
+```
+- **Funzione**: Definisce posizioni precise di montaggio
+- **Posizioni Multiple**: Ogni componente può avere più slot
+- **Coordinate**: `[x, y, z]` in unità Three.js
+- **Rotazioni**: `[rx, ry, rz]` in radianti
+
+##### **C. Sezione `interchangeableNodes`**
+```json
+"interchangeableNodes": {
+  "gruppo_viti": ["vite_1", "vite_2", "vite_3", "vite_4"],
+  "gruppo_tappini": ["tappino_dx", "tappino_sx"]
+}
+```
+- **Funzione**: Definisce gruppi con ordine libero interno
+- **Comportamento**: All'interno del gruppo, l'ordine non importa
+- **Requisiti**: Tutti i componenti del gruppo devono essere montati per completare il nodo
+
+##### **D. Sezione `dependencies`**
+```json
+"dependencies": {
+  "coperchio_assembly": ["base_assembly", "filtro_assembly"],
+  "viti_coperchio_assembly": ["coperchio_assembly"]
+}
+```
+- **Funzione**: Definisce prerequisiti per ogni step
+- **Validazione**: Impedisce montaggio senza prerequisiti
+- **Array**: Lista di assembly step richiesti
+
+### 🎮 **Integrazione Tutorial System**
+
+#### **Parametri Tutorial.txt**
+```ini
+[Step X - Assemblaggio Guidato]
+Elemento=models/filtro.glb
+Descrizione=Monta il filtro nella sua sede
+Utensile=Mani
+
+# Configurazione assemblaggio
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=filtro_assembly
+
+# Controllo componenti
+AllowedComponents=filtro
+MinimumRequired=1
+InterchangeableNode=filtro_assembly
+
+# Feedback visivo
+DragDropDistance=0.3
+ShowSnapPoints=filtro
+ValidateAssembly=true
+UndoEnabled=true
+```
+
+#### **Parametri Specifici Assembly**
+
+##### **`AssemblyMode=true`**
+- Abilita sistema assemblaggio sequenziale
+- Disabilita drag & drop libero
+- Attiva validazione dipendenze
+
+##### **`AssemblyConfig=percorso_file.json`**
+- Specifica file configurazione da utilizzare
+- Percorso relativo da directory progetto
+- Carica sequenze, snap points, nodi intercambiabili
+
+##### **`CurrentStep=nome_step`**
+- Identifica step assemblaggio corrente
+- Deve corrispondere a entry in `sequence` del JSON
+- Determina componenti montabili
+
+##### **`AllowedComponents=lista_componenti`**
+- Lista comma-separated componenti montabili nello step
+- Tutti gli altri componenti vengono bloccati (colorati rosso)
+- Controllo fine-grained su disponibilità
+
+##### **`InterchangeableNode=nome_nodo`**
+- Specifica nodo intercambiabile attivo
+- Permette montaggio ordine libero componenti del nodo
+- Requisito: tutti i componenti devono essere montati per completare
+
+##### **`MinimumRequired=numero`**
+- Numero minimo componenti da montare per completare step
+- Utile per nodi intercambiabili (es. "almeno 3 viti su 4")
+- Default: tutti i componenti di `AllowedComponents`
+
+##### **`ShowSnapPoints=lista_componenti`**
+- Mostra indicatori visivi (sfere verdi) per punti di aggancio
+- Solo per componenti specificati
+- Feedback visivo per guidare utente
+
+##### **`ValidateAssembly=true`**
+- Abilita validazione dipendenze real-time
+- Controllo prerequisiti prima di permettere montaggio
+- Feedback immediato con messaggi errore
+
+##### **`UndoEnabled=true`**
+- Abilita sistema undo per lo step
+- Permette correzione errori assemblaggio
+- Stack di stati per rollback
+
+### 🎯 **Comportamenti Sistema**
+
+#### **Feedback Visivo Stati**
+- **🟢 Verde**: Componente montabile (prerequisiti soddisfatti)
+- **🔴 Rosso**: Componente bloccato (prerequisiti mancanti)
+- **🔵 Blu**: Componente già montato
+- **🟡 Giallo**: Componente in fase di montaggio (drag attivo)
+
+#### **Sequenza Validazione**
+1. **Check Prerequisiti**: Verifica dipendenze step corrente
+2. **Check Componente**: Verifica se componente è in `AllowedComponents`
+3. **Check Nodo**: Se nodo intercambiabile, verifica slot disponibili
+4. **Check Posizione**: Verifica snap point disponibile e compatibile
+5. **Montaggio**: Esegue snap automatico con animazione
+
+#### **Gestione Errori**
+- **Assemblaggio Fuori Sequenza**: Messaggio "Prerequisiti mancanti"
+- **Componente Non Permesso**: Messaggio "Componente non montabile in questo step"
+- **Slot Occupato**: Cerca automaticamente slot alternativo
+- **Nodo Incompleto**: Mostra progresso "X/Y componenti montati"
+
+### 🔧 **Comandi Debug Assembly**
+
+#### **Console Browser**
+```javascript
+// Stato assemblaggio
+DragDropSystem.getAssemblyStatus()
+DragDropSystem.getCurrentAssemblyStep()
+DragDropSystem.getMountedComponents()
+
+// Validazione
+DragDropSystem.isComponentMountable('filtro')
+DragDropSystem.getAvailableSnapPoints('vite_coperchio_1')
+DragDropSystem.validateAssemblySequence()
+
+// Controlli assemblaggio
+DragDropSystem.enableAssemblyMode(config)
+DragDropSystem.setCurrentAssemblyStep('coperchio_assembly')
+
+// Undo/Redo
+DragDropSystem.undoAssembly()
+DragDropSystem.redoAssembly()
+DragDropSystem.getAssemblyHistory()
+
+// Debug avanzato
+AssemblySystem.debugCurrentState()
+AssemblySystem.validateConfiguration()
+```
+
+### 📝 **Esempio Completo Pompa Becker**
+
+#### **Tutorial Riassemblaggio Implementato**
+**File**: `scenes/Pompa_Becker/tutorial.txt` - Sezione `[Riassemblaggio]`
+
+**Step 1 - Filtro** (Sequenza obbligatoria)
+```ini
+AssemblyMode=true
+CurrentStep=filtro_assembly
+AllowedComponents=filtro
+```
+
+**Step 3 - Viti Coperchio** (Insieme intercambiabile)
+```ini
+AssemblyMode=true
+CurrentStep=viti_coperchio_assembly
+AllowedComponents=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+InterchangeableNode=viti_coperchio_assembly
+MinimumRequired=4
+```
+
+#### **Flusso Utente Reale**
+1. **Carica Scenario**: "Pompa_Becker"
+2. **Seleziona Tutorial**: "Riassemblaggio"
+3. **Step 1**: Monta solo filtro (altri bloccati)
+4. **Step 2**: Filtro montato → Coperchio diventa verde
+5. **Step 3**: Monta 4 viti in qualsiasi ordine
+6. **Completamento**: Sistema congratulazioni + reset disponibile
+
+### 🚀 **Estensibilità Sistema**
+
+#### **Aggiungere Nuovo Scenario**
+1. Crea file JSON in `assembly_configs/`
+2. Definisci `sequence`, `snapPoints`, `interchangeableNodes`, `dependencies`
+3. Configura tutorial.txt con `AssemblyConfig=nuovo_file.json`
+4. Test e debug con comandi console
+
+#### **Personalizzazioni Avanzate**
+- **Tempi Assembly**: Durate personalizzate snap animazioni
+- **Tolleranze**: Distanze snap specifiche per componente
+- **Alternative**: Componenti sostituibili in stesso slot
+- **Condizioni**: Prerequisiti condizionali complessi
+
+Il sistema assemblaggio sequenziale è completamente operativo e pronto per scenari industriali complessi! 🏭⚙️
+
 ## 📹 Sistema Camera Avanzato con Pivot Fluido (Settembre 2025)
 
 **Nuova Funzionalità**: Sistema di controlli camera migliorato con animazioni fluide per pivot dinamico

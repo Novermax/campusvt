@@ -252,13 +252,82 @@ Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
 
 
 
-[Step 1 - Assemblaggio Interattivo]
-Elemento=models/ingrassatore.glb
-Descrizione=Rimetti la pompetta del grasso al suo posto
+[Step 1 - Assemblaggio Sequenziale Guidato]
+Elemento=models/filtro.glb
+Descrizione=Inizia il riassemblaggio seguendo la sequenza corretta. Prima inserisci il filtro nella sua sede.
 Utensile=Mani
+
+# Sistema assemblaggio sequenziale con nodi intercambiabili
 DragDrop=true
-DragDropObjects=ingrassatore, tappino_grasso_sx, tappino_grasso_dx,filtro,coperchio,vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
-DragDropDistance=0.5
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=filtro_assembly
+
+# Solo il filtro è montabile in questo step
+AllowedComponents=filtro
+DragDropDistance=0.3
+ShowSnapPoints=filtro
+ValidateAssembly=true
+
+[Step 2 - Coperchio]
+Elemento=models/coperchio.glb
+Descrizione=Ora posiziona il coperchio sopra il filtro. Nota che senza il filtro non puoi montare il coperchio.
+Utensile=Mani
+
+# Continua assemblaggio sequenziale
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=coperchio_assembly
+AllowedComponents=coperchio
+DragDropDistance=0.3
+ShowSnapPoints=coperchio
+ValidateAssembly=true
+
+[Step 3 - Gruppo Viti Coperchio]
+Elemento=models/vite_coperchio_1.glb
+Descrizione=Monta le 4 viti del coperchio in qualsiasi ordine. Questo è un "insieme intercambiabile" - l'ordine non importa.
+Utensile=Mani
+
+# Nodo intercambiabile - ordine libero per le viti
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=viti_coperchio_assembly
+AllowedComponents=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+MinimumRequired=4
+InterchangeableNode=viti_coperchio_assembly
+DragDropDistance=0.2
+ShowSnapPoints=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+ValidateAssembly=true
+
+[Step 4 - Tappini Ingrassatori]
+Elemento=models/tappino_grasso_dx.glb
+Descrizione=Monta i tappini degli ingrassatori. Anche questo è un insieme intercambiabile - puoi montare prima quello destro o sinistro.
+Utensile=Mani
+
+# Altro nodo intercambiabile - ordine libero per i tappini
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=tappini_assembly
+AllowedComponents=tappino_grasso_dx,tappino_grasso_sx
+InterchangeableNode=tappini_assembly
+DragDropDistance=0.2
+ShowSnapPoints=tappino_grasso_dx,tappino_grasso_sx
+ValidateAssembly=true
+
+[Step 5 - Ingrassatore Finale]
+Elemento=models/ingrassatore.glb
+Descrizione=Infine, riponi l'ingrassatore nella posizione di riposo. Assemblaggio completato!
+Utensile=Mani
+
+# Step finale - richiede tutti i prerequisiti
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=ingrassatori_assembly
+AllowedComponents=ingrassatore
+DragDropDistance=0.3
+ShowSnapPoints=ingrassatore
+ValidateAssembly=true
+UndoEnabled=true
 
 
 

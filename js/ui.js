@@ -2739,6 +2739,54 @@ window.UI = {
             AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per step "${step.title}"`);
         }
 
+        // NUOVO: Gestione sistema Assemblaggio Sequenziale se abilitato nello step
+        if (step.properties.AssemblyMode === 'true' && window.AssemblySystem) {
+            AppConfig.log(2, `🏗️ ASSEMBLY: Modalità assemblaggio abilitata per step "${step.title}"`);
+
+            // Carica configurazione assemblaggio se specificata
+            if (step.properties.AssemblyConfig) {
+                const configPath = step.properties.AssemblyConfig;
+                AppConfig.log(3, `🏗️ ASSEMBLY: Caricamento configurazione: ${configPath}`);
+
+                // Carica configurazione JSON (implementazione semplificata)
+                this.loadAssemblyConfig(configPath).then(config => {
+                    if (config) {
+                        window.AssemblySystem.enableAssemblyMode(config);
+
+                        // Registra callback per aggiornamenti UI su cambio step
+                        window.AssemblySystem.setStepChangeCallback((stepName, stepIndex, assemblyStatus) => {
+                            AppConfig.log(2, `🏗️ ASSEMBLY: Cambio automatico step → "${stepName}" (${stepIndex})`);
+
+                            // Aggiorna UI o mostra notifica se necessario
+                            this.updateAssemblyStepUI(stepName, assemblyStatus);
+                        });
+
+                        // Imposta step corrente se specificato
+                        if (step.properties.CurrentStep) {
+                            window.AssemblySystem.setCurrentStep(step.properties.CurrentStep);
+                            AppConfig.log(3, `🏗️ ASSEMBLY: Step corrente: ${step.properties.CurrentStep}`);
+                        }
+
+                        // Imposta componenti permessi se specificati
+                        if (step.properties.AllowedComponents) {
+                            window.AssemblySystem.setAllowedComponents(step.properties.AllowedComponents);
+                            AppConfig.log(3, `🏗️ ASSEMBLY: Componenti permessi: ${step.properties.AllowedComponents}`);
+                        }
+
+                        AppConfig.log(2, `✅ ASSEMBLY: Sistema assemblaggio configurato`);
+                    }
+                }).catch(error => {
+                    console.error(`❌ ASSEMBLY: Errore caricamento configurazione:`, error);
+                });
+            } else {
+                console.warn('⚠️ ASSEMBLY: AssemblyMode=true ma AssemblyConfig non specificato');
+            }
+        } else if (step.properties.AssemblyMode === 'false' && window.AssemblySystem) {
+            // Disabilita esplicitamente il sistema se richiesto
+            window.AssemblySystem.disableAssemblyMode();
+            AppConfig.log(2, `🚫 ASSEMBLY: Sistema assemblaggio disabilitato per step "${step.title}"`);
+        }
+
         // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente
         if (step.properties.Elemento && window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
             // Piccolo delay per permettere che il modello sia caricato e visibile
@@ -2912,6 +2960,71 @@ window.UI = {
         
         // Attiva l'effetto flash per attirare l'attenzione
         this.flashStepBubble();
+    },
+
+    /**
+     * Carica configurazione assemblaggio da file JSON
+     * @param {string} configPath - Percorso file configurazione
+     * @returns {Promise<Object>} - Configurazione caricata
+     */
+    loadAssemblyConfig: async function(configPath) {
+        try {
+            AppConfig.log(3, `🏗️ ASSEMBLY CONFIG: Caricamento da ${configPath}`);
+
+            const response = await fetch(configPath);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const config = await response.json();
+            AppConfig.log(3, `✅ ASSEMBLY CONFIG: Configurazione caricata`, config);
+
+            return config;
+        } catch (error) {
+            console.error(`❌ ASSEMBLY CONFIG: Errore caricamento ${configPath}:`, error);
+            throw error;
+        }
+    },
+
+    /**
+     * Aggiorna UI per riflettere cambio step assemblaggio
+     * @param {string} stepName - Nome del nuovo step
+     * @param {Object} assemblyStatus - Stato assemblaggio
+     */
+    updateAssemblyStepUI: function(stepName, assemblyStatus) {
+        try {
+            AppConfig.log(3, `🏗️ UI UPDATE: Aggiornamento per step "${stepName}"`);
+
+            // Aggiorna descrizione/titolo del tutorial step se presente
+            const stepElement = document.querySelector('.tutorial-step-title');
+            if (stepElement) {
+                stepElement.textContent = `Assemblaggio: ${stepName}`;
+                AppConfig.log(3, `🏗️ UI UPDATE: Titolo aggiornato`);
+            }
+
+            // Aggiorna descrizione se presente
+            const descElement = document.querySelector('.tutorial-step-description');
+            if (descElement) {
+                const stepConfig = assemblyStatus.currentStepConfig;
+                if (stepConfig && stepConfig.description) {
+                    descElement.textContent = stepConfig.description;
+                    AppConfig.log(3, `🏗️ UI UPDATE: Descrizione aggiornata`);
+                }
+            }
+
+            // Mostra notifica di progresso (opzionale)
+            const progressElement = document.querySelector('.assembly-progress');
+            if (progressElement) {
+                const currentIndex = assemblyStatus.currentStepIndex || 0;
+                const totalSteps = assemblyStatus.totalSteps || 1;
+                progressElement.textContent = `Step ${currentIndex + 1} di ${totalSteps}`;
+                AppConfig.log(3, `🏗️ UI UPDATE: Progresso aggiornato: ${currentIndex + 1}/${totalSteps}`);
+            }
+
+            console.log(`[UI] ✅ UI aggiornata per step assemblaggio: ${stepName}`);
+        } catch (error) {
+            console.error(`[UI] ❌ Errore aggiornamento UI step assemblaggio:`, error);
+        }
     }
 };
 

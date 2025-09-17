@@ -295,21 +295,30 @@ window.DragDropSystem = {
      */
     isDraggableObject: function(obj) {
         if (!obj || !obj.name) return false;
-        
+
         const cleanName = obj.name.toLowerCase().replace(/\.(glb|gltf|obj|stl)$/, '');
-        
+
+        // Controlla prima se AssemblySystem è attivo e valida il componente
+        if (window.AssemblySystem && window.AssemblySystem.assemblyMode) {
+            const isMountable = window.AssemblySystem.isComponentMountable(cleanName);
+            if (!isMountable) {
+                console.log(`[DragDropSystem] ❌ Componente "${cleanName}" non montabile (AssemblySystem)`);
+                return false;
+            }
+        }
+
         // Se c'è una whitelist, usa quella
         if (this.whitelistedObjects.size > 0) {
             return this.whitelistedObjects.has(cleanName);
         }
-        
+
         // Altrimenti escludi oggetti non selezionabili (come pavimenti, assi, etc.)
         const nonDraggableKeywords = [
-            'pavimento', 'piano', 'base', 'superficie', 'ground', 'floor', 
+            'pavimento', 'piano', 'base', 'superficie', 'ground', 'floor',
             'basement', 'sfondo', 'background', 'assi', 'axis', 'gizmo'
         ];
-        
-        return !nonDraggableKeywords.some(keyword => 
+
+        return !nonDraggableKeywords.some(keyword =>
             cleanName.includes(keyword)
         );
     },
@@ -616,11 +625,24 @@ window.DragDropSystem = {
         const snapTarget = this.findSnapTarget(this.draggedObject);
 
         if (snapTarget) {
+            // IMPORTANTE: Salva stato da resettare dopo l'animazione
+            const snapContext = {
+                draggedObject: this.draggedObject,
+                assemblyIntegration: {
+                    enabled: window.AssemblySystem && window.AssemblySystem.assemblyMode,
+                    componentName: this.getCleanModelName(this.draggedObject.name),
+                    snapTargetId: snapTarget.id
+                }
+            };
+
             // Esegui snap animato - colore originale mantenuto
-            this.performSnap(this.draggedObject, snapTarget);
+            this.performSnap(this.draggedObject, snapTarget, snapContext);
             // Rimuovi dal blocco ma NON riapplicare silhouette (snap riuscito)
             this.silhouetteBlocked.delete(this.draggedObject.name);
             console.log(`[DragDropSystem] ✅ Snap riuscito - mantengo colore originale per ${this.draggedObject.name}`);
+
+            // NON FARE IL RESET QUI - sarà fatto da performSnap() dopo l'animazione
+            return; // Esce immediatamente, evita il reset dello stato
         } else {
             // Snap fallito - rimuovi dal blocco e riapplica highlight
             this.silhouetteBlocked.delete(this.draggedObject.name);
@@ -786,8 +808,10 @@ window.DragDropSystem = {
      * @param {THREE.Object3D} object - Oggetto da snappare
      * @param {THREE.Vector3} targetPosition - Posizione target
      */
-    performSnap: function(object, targetPosition) {
+    performSnap: function(object, targetPosition, snapContext = null) {
         console.log(`[DragDropSystem] 🎯 Esecuzione snap per ${object.name}`);
+
+        const shouldResetDragState = snapContext !== null;
 
         const startPosition = object.position.clone();
         const originalRotation = this.originalRotations.get(object.uuid);
@@ -842,6 +866,53 @@ window.DragDropSystem = {
                 const finalDistance = finalCenter.distanceTo(targetPosition);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
 
+                // NUOVO: Integrazione con AssemblySystem dopo snap completato
+                if (shouldResetDragState && snapContext && snapContext.assemblyIntegration.enabled) {
+                    try {
+                        window.AssemblySystem.markComponentMounted(
+                            snapContext.assemblyIntegration.componentName,
+                            snapContext.assemblyIntegration.snapTargetId
+                        );
+                        console.log(`[DragDropSystem] 🏗️ Componente "${snapContext.assemblyIntegration.componentName}" marcato come montato nell'AssemblySystem`);
+
+                        // Verifica se il passo corrente è completato e avanza automaticamente
+                        const assemblyStatus = window.AssemblySystem.getAssemblyStatus();
+                        if (assemblyStatus.currentStepComplete && assemblyStatus.canAdvanceToNext) {
+                            console.log(`[DragDropSystem] 🎯 Step "${assemblyStatus.currentStep}" completato, avanzamento automatico...`);
+                            const nextStep = window.AssemblySystem.getNextStep();
+                            if (nextStep) {
+                                window.AssemblySystem.setCurrentStep(nextStep);
+                                console.log(`[DragDropSystem] ⏭️ Avanzato automaticamente a step: "${nextStep}"`);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`[DragDropSystem] ❌ Errore integrazione AssemblySystem:`, error);
+                    }
+                }
+
+                // NUOVO: Reset stato drag dopo animazione completata (solo se richiesto)
+                if (shouldResetDragState) {
+                    this.isDragging = false;
+                    this.draggedObject = null;
+                    this.dragOffset.set(0, 0, 0);
+                    this.dragStartPosition.set(0, 0, 0);
+                    this.lastPlanePoint = null;
+
+                    // Riabilita sistema click esistente
+                    if (window.Scene3D && window.Scene3D.animationSystem) {
+                        window.Scene3D.animationSystem.clickEnabled = true;
+                    }
+
+                    // Riabilita controlli camera
+                    if (window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
+                        window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
+                        console.log(`[DragDropSystem] ✅ Controlli camera riabilitati dopo snap`);
+                        this.cameraControlsWereEnabled = undefined;
+                    }
+
+                    console.log(`[DragDropSystem] 🐭 Stato drag resettato dopo animazione snap completata`);
+                }
+
                 // RESET AUTOMATICO TUTORIAL TRACKER per evitare blocco dopo snap
                 if (window.Scene3D && typeof window.Scene3D.resetTutorialTracker === 'function') {
                     try {
@@ -885,6 +956,53 @@ window.DragDropSystem = {
                 const finalDistance = finalCenter.distanceTo(targetPosition);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Centro finale: (${finalCenter.x.toFixed(3)}, ${finalCenter.y.toFixed(3)}, ${finalCenter.z.toFixed(3)})`);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
+
+                // NUOVO: Integrazione con AssemblySystem dopo snap immediato
+                if (shouldResetDragState && snapContext && snapContext.assemblyIntegration.enabled) {
+                    try {
+                        window.AssemblySystem.markComponentMounted(
+                            snapContext.assemblyIntegration.componentName,
+                            snapContext.assemblyIntegration.snapTargetId
+                        );
+                        console.log(`[DragDropSystem] 🏗️ Componente "${snapContext.assemblyIntegration.componentName}" marcato come montato nell'AssemblySystem (immediato)`);
+
+                        // Verifica se il passo corrente è completato e avanza automaticamente
+                        const assemblyStatus = window.AssemblySystem.getAssemblyStatus();
+                        if (assemblyStatus.currentStepComplete && assemblyStatus.canAdvanceToNext) {
+                            console.log(`[DragDropSystem] 🎯 Step "${assemblyStatus.currentStep}" completato, avanzamento automatico... (immediato)`);
+                            const nextStep = window.AssemblySystem.getNextStep();
+                            if (nextStep) {
+                                window.AssemblySystem.setCurrentStep(nextStep);
+                                console.log(`[DragDropSystem] ⏭️ Avanzato automaticamente a step: "${nextStep}" (immediato)`);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`[DragDropSystem] ❌ Errore integrazione AssemblySystem (immediato):`, error);
+                    }
+                }
+
+                // NUOVO: Reset stato drag dopo snap immediato (solo se richiesto)
+                if (shouldResetDragState) {
+                    this.isDragging = false;
+                    this.draggedObject = null;
+                    this.dragOffset.set(0, 0, 0);
+                    this.dragStartPosition.set(0, 0, 0);
+                    this.lastPlanePoint = null;
+
+                    // Riabilita sistema click esistente
+                    if (window.Scene3D && window.Scene3D.animationSystem) {
+                        window.Scene3D.animationSystem.clickEnabled = true;
+                    }
+
+                    // Riabilita controlli camera
+                    if (window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
+                        window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
+                        console.log(`[DragDropSystem] ✅ Controlli camera riabilitati dopo snap immediato`);
+                        this.cameraControlsWereEnabled = undefined;
+                    }
+
+                    console.log(`[DragDropSystem] 🐭 Stato drag resettato dopo snap immediato completato`);
+                }
 
                 // RESET AUTOMATICO TUTORIAL TRACKER per evitare blocco dopo snap (versione semplice)
                 if (window.Scene3D && typeof window.Scene3D.resetTutorialTracker === 'function') {

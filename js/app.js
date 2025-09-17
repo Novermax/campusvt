@@ -206,6 +206,14 @@ window.App = {
                 console.warn('⚠️ DragDropSystem non caricato (opzionale):', error.message);
             }
 
+            // Carica AssemblySystem per assemblaggio sequenziale
+            try {
+                await this.loadModule('./js/core/AssemblySystem.js?nocache=1000022');
+                console.log('✅ Sistema assemblaggio sequenziale caricato');
+            } catch (error) {
+                console.warn('⚠️ AssemblySystem non caricato (opzionale):', error.message);
+            }
+
             await this.loadModule('./js/scene3d-modular.js?nocache=1000019');  // Modulo modulare compatibile
             await this.loadModule('./js/modelloader.js?nocache=1000011');
             await this.loadModule('./js/ui.js?nocache=1000006');

@@ -391,7 +391,20 @@ const Scene3D = {
             console.warn('[Scene3D] ⚠️ ParticleSystem NON DISPONIBILE!');
             console.log('[Scene3D] 🔍 window.ParticleSystem value:', window.ParticleSystem);
         }
-        
+
+        // Inizializza sistema assemblaggio se disponibile
+        if (window.AssemblySystem && window.AssemblySystem.init) {
+            try {
+                console.log('[Scene3D] 🏗️ Inizializzazione AssemblySystem...');
+                window.AssemblySystem.init(this);
+                console.log('[Scene3D] ✅ AssemblySystem inizializzato con successo!');
+            } catch (error) {
+                console.error('[Scene3D] ❌ Errore inizializzazione AssemblySystem:', error);
+            }
+        } else {
+            console.warn('[Scene3D] ⚠️ AssemblySystem non disponibile');
+        }
+
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
             color: 0xcccc00,
             transparent: true,

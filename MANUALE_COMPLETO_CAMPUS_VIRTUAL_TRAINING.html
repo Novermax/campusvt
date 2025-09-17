@@ -606,10 +606,10 @@
 
     <!-- INFORMAZIONI VERSIONE -->
     <div class="version-info">
-        <strong>Versione:</strong> 1.2 &nbsp;|&nbsp; 
-        <strong>Data:</strong> 12 Novembre 2025 &nbsp;|&nbsp; 
+        <strong>Versione:</strong> 1.3 &nbsp;|&nbsp;
+        <strong>Data:</strong> 15 Dicembre 2025 &nbsp;|&nbsp;
         <strong>Target:</strong> Tecnici industriali &nbsp;|&nbsp;
-        <strong>Aggiornamento:</strong> Sistema riferimenti posizioni originali, Drag & Drop avanzato, Effetti particellari realistici
+        <strong>Aggiornamento:</strong> Sistema Assemblaggio Sequenziale con insiemi intercambiabili, validazione dipendenze, riferimenti posizioni originali, effetti particellari realistici
     </div>
 
     <!-- INDICE -->
@@ -663,6 +663,16 @@
                     <ul style="margin: 0; padding-left: 20px;">
                         <li><a href="#configurazione-dragdrop">• Configurazione Base</a></li>
                         <li><a href="#snap-personalizzati">• Snap Personalizzati</a></li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px; padding: 15px; background: #f1f8e9; border-radius: 8px; border-left: 4px solid #4caf50; border: 2px solid #4caf50;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">🏗️ PARTE 6.5: Sistema Assemblaggio Sequenziale 🆕</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><a href="#assemblaggio-sequenziale">• Sequenze Obbligatorie e Insiemi</a></li>
+                        <li><a href="#configurazione-json-assemblaggio">• Configurazione JSON Assembly</a></li>
+                        <li><a href="#comportamenti-assemblaggio">• Feedback Visivo e Validazione</a></li>
+                        <li><a href="#esempio-pompa-becker">• Esempio Completo Pompa Becker</a></li>
                     </ul>
                 </div>
 
@@ -1289,6 +1299,351 @@ DragDropSystem.setCustomSnapTarget('vite_2', 'sede_vite_2_original')
                     <li><strong>Performance:</strong> Max 10-15 oggetti draggabili simultaneamente</li>
                     <li><strong>UX Fluida:</strong> Animazioni snap con durata 0.6-1.0 secondi</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PARTE 6.5: SISTEMA ASSEMBLAGGIO SEQUENZIALE -->
+    <div class="section page-break" id="assemblaggio-sequenziale">
+        <h2>🏗️ PARTE 6.5: Sistema Assemblaggio Sequenziale Avanzato</h2>
+
+        <div class="new-feature">
+            <div class="info">
+                <h4>🚀 NUOVA FUNZIONALITÀ PROFESSIONALE</h4>
+                <p><strong>Il Sistema Assemblaggio Sequenziale rappresenta l'evoluzione del sistema Drag & Drop</strong> per scenari industriali complessi che richiedono:</p>
+                <ul>
+                    <li><strong>Sequenze Obbligatorie:</strong> Componenti montabili solo in ordine specifico</li>
+                    <li><strong>Insiemi Intercambiabili:</strong> Gruppi con ordine libero interno (viti, manopole)</li>
+                    <li><strong>Validazione Dipendenze:</strong> Controllo automatico prerequisiti</li>
+                    <li><strong>Punti Aggancio Multipli:</strong> Posizioni alternative per stesso componente</li>
+                    <li><strong>Feedback Visivo Avanzato:</strong> Stati assemblaggio colorati</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="concetti-assemblaggio">
+            <h3>Concetti Fondamentali</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🔢 Sequenze Obbligatorie</h4>
+                    <p><strong>Definiscono l'ordine VINCOLANTE di assemblaggio per rispettare procedure industriali certificate.</strong></p>
+                    <div class="code-block" data-lang="Esempio">
+1. Base pompa (sempre disponibile)
+2. Filtro (richiede base)
+3. Coperchio (richiede base + filtro)
+4. Viti coperchio (richiede coperchio)
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔄 Insiemi Intercambiabili</h4>
+                    <p><strong>Gruppi di componenti montabili in qualsiasi ordine interno al gruppo.</strong></p>
+                    <div class="code-block" data-lang="Esempi">
+• Gruppo Viti: vite_1, vite_2, vite_3, vite_4
+• Gruppo Tappini: tappino_dx, tappino_sx
+• Gruppo Manopole: manopola_A, manopola_B
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>📍 Punti Aggancio Multipli</h4>
+                    <p><strong>Ogni componente può avere più posizioni di montaggio alternative per flessibilità assemblaggio.</strong></p>
+                    <div class="code-block" data-lang="Vantaggi">
+✓ Slot alternativi per componenti simili
+✓ Tolleranze realistiche accoppiamenti
+✓ Configurazioni multiple assemblaggio
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="configurazione-json-assemblaggio">
+            <h3>Configurazione JSON Assembly</h3>
+
+            <p>Il sistema utilizza file JSON per definire completamente logica di assemblaggio:</p>
+            <p><strong>Percorso:</strong> <code>assembly_configs/pompa_becker_reale.json</code></p>
+
+            <div class="code-block-primary" data-lang="JSON">
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Assemblaggio Pompa Becker con modelli reali",
+    "scenario": "Pompa_Becker"
+  },
+
+  "sequence": [
+    "base_assembly",
+    "filtro_assembly",
+    "coperchio_assembly",
+    "viti_coperchio_assembly",
+    "tappini_assembly",
+    "ingrassatori_assembly"
+  ],
+
+  "snapPoints": {
+    "filtro": {
+      "nodeId": "filtro_assembly",
+      "positions": [
+        {
+          "id": "snap_filtro_sede",
+          "position": [0, 0.1, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    }
+  },
+
+  "interchangeableNodes": {
+    "viti_coperchio_assembly": [
+      "vite_coperchio_1", "vite_coperchio_2",
+      "vite_coperchio_3", "vite_coperchio_4"
+    ]
+  },
+
+  "dependencies": {
+    "filtro_assembly": ["base_assembly"],
+    "coperchio_assembly": ["base_assembly", "filtro_assembly"],
+    "viti_coperchio_assembly": ["coperchio_assembly"]
+  }
+}
+            </div>
+
+            <h4>Sezioni Configurazione:</h4>
+            <table>
+                <tr>
+                    <th>Sezione</th>
+                    <th>Funzione</th>
+                    <th>Descrizione</th>
+                </tr>
+                <tr>
+                    <td><code>sequence</code></td>
+                    <td>Ordine Assemblaggio</td>
+                    <td>Array con sequenza OBBLIGATORIA di step</td>
+                </tr>
+                <tr>
+                    <td><code>snapPoints</code></td>
+                    <td>Posizioni Montaggio</td>
+                    <td>Coordinate precise con posizioni multiple alternative</td>
+                </tr>
+                <tr>
+                    <td><code>interchangeableNodes</code></td>
+                    <td>Gruppi Intercambiabili</td>
+                    <td>Definisce insiemi con ordine libero interno</td>
+                </tr>
+                <tr>
+                    <td><code>dependencies</code></td>
+                    <td>Prerequisiti</td>
+                    <td>Lista dipendenze per validazione assemblaggio</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="parametri-tutorial-assemblaggio">
+            <h3>Integrazione Tutorial System</h3>
+
+            <p>Configurazione nel file tutorial.txt per abilitare assemblaggio sequenziale:</p>
+
+            <div class="code-block" data-lang="Tutorial">
+[Step 1 - Assemblaggio Sequenziale Guidato]
+Elemento=models/filtro.glb
+Descrizione=Inizia assemblaggio seguendo sequenza corretta. Prima inserisci il filtro.
+Utensile=Mani
+
+# Configurazione assemblaggio
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=filtro_assembly
+
+# Controllo componenti
+AllowedComponents=filtro
+MinimumRequired=1
+InterchangeableNode=filtro_assembly
+
+# Feedback visivo
+DragDropDistance=0.3
+ShowSnapPoints=filtro
+ValidateAssembly=true
+UndoEnabled=true
+            </div>
+
+            <h4>Parametri Specifici Assembly:</h4>
+            <table>
+                <tr>
+                    <th>Parametro</th>
+                    <th>Funzione</th>
+                    <th>Valori</th>
+                </tr>
+                <tr>
+                    <td><code>AssemblyMode</code></td>
+                    <td>Abilita sistema sequenziale</td>
+                    <td>true/false</td>
+                </tr>
+                <tr>
+                    <td><code>AssemblyConfig</code></td>
+                    <td>File configurazione JSON</td>
+                    <td>Percorso relativo</td>
+                </tr>
+                <tr>
+                    <td><code>CurrentStep</code></td>
+                    <td>Step assemblaggio corrente</td>
+                    <td>Nome da sequence JSON</td>
+                </tr>
+                <tr>
+                    <td><code>AllowedComponents</code></td>
+                    <td>Componenti montabili</td>
+                    <td>Lista separata da virgola</td>
+                </tr>
+                <tr>
+                    <td><code>InterchangeableNode</code></td>
+                    <td>Nodo intercambiabile attivo</td>
+                    <td>Nome nodo da JSON</td>
+                </tr>
+                <tr>
+                    <td><code>ValidateAssembly</code></td>
+                    <td>Validazione dipendenze</td>
+                    <td>true/false</td>
+                </tr>
+                <tr>
+                    <td><code>MinimumRequired</code></td>
+                    <td>Numero minimo componenti</td>
+                    <td>Numero intero</td>
+                </tr>
+                <tr>
+                    <td><code>UndoEnabled</code></td>
+                    <td>Sistema undo step</td>
+                    <td>true/false</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="comportamenti-assemblaggio">
+            <h3>Comportamenti Sistema</h3>
+
+            <div class="example">
+                <h4>🎨 Feedback Visivo Stati Assemblaggio</h4>
+                <div class="controls-grid">
+                    <div class="control-item" style="background: rgba(76, 175, 80, 0.2); border: 2px solid #4caf50;">
+                        <h4 style="color: #2e7d32;">🟢 Verde - Montabile</h4>
+                        <p>Componente può essere montato (prerequisiti soddisfatti)</p>
+                    </div>
+
+                    <div class="control-item" style="background: rgba(244, 67, 54, 0.2); border: 2px solid #f44336;">
+                        <h4 style="color: #c62828;">🔴 Rosso - Bloccato</h4>
+                        <p>Componente non montabile (prerequisiti mancanti)</p>
+                    </div>
+
+                    <div class="control-item" style="background: rgba(33, 150, 243, 0.2); border: 2px solid #2196f3;">
+                        <h4 style="color: #1565c0;">🔵 Blu - Montato</h4>
+                        <p>Componente già montato correttamente</p>
+                    </div>
+
+                    <div class="control-item" style="background: rgba(255, 193, 7, 0.2); border: 2px solid #ffc107;">
+                        <h4 style="color: #f57c00;">🟡 Giallo - In Corso</h4>
+                        <p>Componente in fase di montaggio (drag attivo)</p>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Sequenza Validazione Automatica:</h4>
+            <ol class="step-list">
+                <li><strong>Check Prerequisiti:</strong> Verifica dipendenze step corrente in sequence</li>
+                <li><strong>Check Componente:</strong> Verifica se componente è in AllowedComponents</li>
+                <li><strong>Check Nodo:</strong> Se nodo intercambiabile, verifica slot disponibili</li>
+                <li><strong>Check Posizione:</strong> Verifica snap point disponibile e compatibile</li>
+                <li><strong>Montaggio:</strong> Esegue snap automatico con animazione fluida</li>
+            </ol>
+
+            <div class="warning">
+                <h4>⚙️ Gestione Errori Assemblaggio</h4>
+                <ul>
+                    <li><strong>Assemblaggio Fuori Sequenza:</strong> "Prerequisiti mancanti per questo step"</li>
+                    <li><strong>Componente Non Permesso:</strong> "Componente non montabile in questo step"</li>
+                    <li><strong>Slot Occupato:</strong> Cerca automaticamente slot alternativo disponibile</li>
+                    <li><strong>Nodo Incompleto:</strong> Mostra progresso "X/Y componenti montati"</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="esempio-pompa-becker">
+            <h3>Esempio Completo: Riassemblaggio Pompa Becker</h3>
+
+            <p><strong>Scenario Reale:</strong> Tutorial configurato nel file <code>scenes/Pompa_Becker/tutorial.txt</code> sezione [Riassemblaggio]</p>
+
+            <div class="example">
+                <h4>🏭 Flusso Assemblaggio Industriale</h4>
+                <ol class="step-list">
+                    <li><strong>Step 1 - Filtro:</strong> Solo filtro montabile (sequenza obbligatoria)</li>
+                    <li><strong>Step 2 - Coperchio:</strong> Filtro montato → Coperchio diventa verde</li>
+                    <li><strong>Step 3 - Viti Coperchio:</strong> 4 viti in qualsiasi ordine (insieme intercambiabile)</li>
+                    <li><strong>Step 4 - Tappini:</strong> Tappini dx/sx ordine libero (insieme intercambiabile)</li>
+                    <li><strong>Step 5 - Ingrassatore:</strong> Posizionamento finale (richiede tutti i prerequisiti)</li>
+                    <li><strong>Completamento:</strong> Sistema congratulazioni + reset disponibile</li>
+                </ol>
+            </div>
+
+            <div class="code-block" data-lang="Tutorial">
+# Esempio Step con Insieme Intercambiabile
+[Step 3 - Gruppo Viti Coperchio]
+Elemento=models/vite_coperchio_1.glb
+Descrizione=Monta le 4 viti del coperchio in qualsiasi ordine.
+           Questo è un "insieme intercambiabile" - l'ordine non importa.
+Utensile=Mani
+
+# Nodo intercambiabile - ordine libero per le viti
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=viti_coperchio_assembly
+AllowedComponents=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+MinimumRequired=4
+InterchangeableNode=viti_coperchio_assembly
+DragDropDistance=0.2
+ShowSnapPoints=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+ValidateAssembly=true
+            </div>
+        </div>
+
+        <div class="section" id="comandi-debug-assemblaggio">
+            <h3>Comandi Debug Assembly</h3>
+
+            <div class="info">
+                <h4>🔧 Console Browser - Comandi Assembly System</h4>
+                <p>Comandi specifici per debug e controllo sistema assemblaggio (da eseguire in console F12):</p>
+            </div>
+
+            <div class="code-block" data-lang="JavaScript">
+// === STATO ASSEMBLAGGIO ===
+DragDropSystem.getAssemblyStatus()           // Stato completo assemblaggio
+DragDropSystem.getCurrentAssemblyStep()      // Step corrente sequenza
+DragDropSystem.getMountedComponents()        // Componenti già montati
+
+// === VALIDAZIONE SISTEMA ===
+DragDropSystem.isComponentMountable('filtro')               // Verifica montabilità
+DragDropSystem.getAvailableSnapPoints('vite_coperchio_1')   // Punti snap disponibili
+DragDropSystem.validateAssemblySequence()                  // Valida intera sequenza
+
+// === CONTROLLI ASSEMBLAGGIO ===
+DragDropSystem.enableAssemblyMode(config)                  // Abilita con configurazione
+DragDropSystem.setCurrentAssemblyStep('coperchio_assembly') // Cambia step corrente
+
+// === UNDO/REDO ASSEMBLAGGIO ===
+DragDropSystem.undoAssembly()               // Annulla ultima operazione
+DragDropSystem.redoAssembly()               // Ripeti operazione annullata
+DragDropSystem.getAssemblyHistory()         // Storico operazioni
+
+// === DEBUG AVANZATO ===
+AssemblySystem.debugCurrentState()          // Debug stato completo sistema
+AssemblySystem.validateConfiguration()      // Valida configurazione JSON
+            </div>
+
+            <div class="tip">
+                <h4>💡 Workflow Debug Assemblaggio</h4>
+                <ol>
+                    <li><strong>Verifica Configurazione:</strong> <code>AssemblySystem.validateConfiguration()</code></li>
+                    <li><strong>Controlla Stato:</strong> <code>DragDropSystem.getAssemblyStatus()</code></li>
+                    <li><strong>Test Montabilità:</strong> <code>DragDropSystem.isComponentMountable('nome')</code></li>
+                    <li><strong>Debug Problemi:</strong> <code>AssemblySystem.debugCurrentState()</code></li>
+                </ol>
             </div>
         </div>
     </div>
