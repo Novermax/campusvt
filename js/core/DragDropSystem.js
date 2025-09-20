@@ -647,16 +647,52 @@ window.DragDropSystem = {
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-        // NUOVO: Raycast contro tutti gli oggetti della scena per trovare nuovo piano
+        // NUOVO: Raycast intelligente per assemblaggio VS rimozione
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        const allObjects = this.scene.children.filter(obj =>
-            obj !== this.draggedObject &&
-            obj.type !== 'DirectionalLight' &&
-            obj.type !== 'AmbientLight' &&
-            !obj.name.startsWith('SnapIndicator')
-        );
 
-        const sceneIntersects = this.raycaster.intersectObjects(allObjects, true);
+        // Verifica se stiamo vicini a una zona di snap (assemblaggio) o siamo in movimento libero (rimozione)
+        const isNearSnapZone = this.isNearAnySnapZone(this.draggedObject);
+        const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
+        let raycastTargets = [];
+
+        if (isNearSnapZone) {
+            // MODALITÀ ASSEMBLAGGIO: Usa corpo + coperchio per assemblaggio completo
+            raycastTargets = [];
+
+            if (corpoModel) {
+                raycastTargets.push(corpoModel);
+            }
+
+            // Aggiungi coperchio per assemblaggio viti coperchio
+            const coperchioModel = this.scene.children.find(obj => obj.name === 'coperchio');
+            if (coperchioModel) {
+                raycastTargets.push(coperchioModel);
+            }
+
+            console.log(`[DEBUG] 🎯 ASSEMBLAGGIO: Raycast targeting CORPO + COPERCHIO per snap di "${this.draggedObject.name}"`);
+            console.log(`[DEBUG] 🎯 Targets disponibili: [${raycastTargets.map(obj => obj.name).join(', ')}]`);
+        } else {
+            // MODALITÀ RIMOZIONE: Usa superficie estesa per movimento libero
+            raycastTargets = this.scene.children.filter(obj =>
+                obj !== this.draggedObject &&
+                obj.type !== 'DirectionalLight' &&
+                obj.type !== 'AmbientLight' &&
+                !obj.name.startsWith('SnapIndicator') &&
+                // Permetti coperchio per rimozione viti, ma non altre viti/tappini
+                !obj.name.includes('vite') &&
+                !obj.name.includes('tappino')
+            );
+            console.log(`[DEBUG] 🆓 RIMOZIONE: Raycast con ${raycastTargets.length} oggetti per movimento libero di "${this.draggedObject.name}"`);
+        }
+
+        const sceneIntersects = this.raycaster.intersectObjects(raycastTargets, true);
+
+        // DEBUG: Log raycast results solo se problematici
+        if (this.draggedObject && sceneIntersects.length === 0) {
+            console.log(`[DEBUG] ❌ Raycast fallito durante drag di "${this.draggedObject.name}"`);
+            console.log(`  📊 Oggetti raycast target: ${raycastTargets.length}`);
+            console.log(`  🎯 Target utilizzati:`, raycastTargets.slice(0, 5).map(obj => obj.name || obj.type));
+        }
 
         if (sceneIntersects.length > 0) {
             // Aggiorna il piano in base al punto intersectato
@@ -666,6 +702,39 @@ window.DragDropSystem = {
             if (!this.lastPlanePoint || this.lastPlanePoint.distanceTo(intersectionPoint) > 0.01) {
                 this.updateDragPlaneToCamera(intersectionPoint);
                 this.lastPlanePoint = intersectionPoint.clone();
+            }
+        } else {
+            // FALLBACK: Se raycast fallisce, crea piano di drag per movimento libero
+            if (!this.lastPlanePoint) {
+                console.log(`[DEBUG] 🔄 Fallback: Creazione piano drag per movimento libero`);
+
+                // OPZIONE 1: Prova corpo della pompa
+                const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
+                if (corpoModel) {
+                    const corpoCenter = new THREE.Vector3();
+                    const box = new THREE.Box3().setFromObject(corpoModel);
+                    box.getCenter(corpoCenter);
+                    this.updateDragPlaneToCamera(corpoCenter);
+                    this.lastPlanePoint = corpoCenter.clone();
+                    console.log(`[DEBUG] ✅ Fallback: Usato centro corpo per piano drag`);
+                } else {
+                    // OPZIONE 2: Prova pavimento
+                    const pavimento = this.scene.children.find(obj => obj.name === 'pavimento');
+                    if (pavimento) {
+                        const pavimentoCenter = new THREE.Vector3();
+                        const box = new THREE.Box3().setFromObject(pavimento);
+                        box.getCenter(pavimentoCenter);
+                        this.updateDragPlaneToCamera(pavimentoCenter);
+                        this.lastPlanePoint = pavimentoCenter.clone();
+                        console.log(`[DEBUG] ✅ Fallback: Usato pavimento per piano drag`);
+                    } else {
+                        // OPZIONE 3: Crea piano alla posizione corrente oggetto
+                        const currentPos = this.draggedObject.position.clone();
+                        this.updateDragPlaneToCamera(currentPos);
+                        this.lastPlanePoint = currentPos.clone();
+                        console.log(`[DEBUG] ✅ Fallback: Creato piano alla posizione oggetto corrente`);
+                    }
+                }
             }
         }
 
@@ -867,6 +936,51 @@ window.DragDropSystem = {
 
     /* ===== SNAP SYSTEM ===== */
     
+    /**
+     * Verifica se l'oggetto è vicino a una zona di snap (per assemblaggio)
+     * @param {THREE.Object3D} object - Oggetto da controllare
+     * @returns {boolean} - true se vicino a zona snap, false altrimenti
+     */
+    isNearAnySnapZone: function(object) {
+        if (!object) return false;
+
+        // Usa la stessa logica di findSnapTarget ma ritorna solo boolean
+        const currentBoundingBox = new THREE.Box3().setFromObject(object);
+        const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
+
+        // 1. Controlla target personalizzati
+        const customTarget = this.customSnapTargets.get(object.uuid);
+        if (customTarget) {
+            let targetPosition = null;
+
+            if (customTarget.isOriginalRef && window.Scene3D) {
+                const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
+                if (originalRef && originalRef.position) {
+                    targetPosition = originalRef.position.clone();
+                }
+            } else {
+                const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
+                if (targetModel && targetModel.position) {
+                    targetPosition = targetModel.position.clone();
+                }
+            }
+
+            if (targetPosition) {
+                const distance = currentCenter.distanceTo(targetPosition);
+                return distance <= this.snapDistance * 1.5; // Un po' più tollerante per rilevamento modalità
+            }
+        }
+
+        // 2. Controlla posizione originale salvata
+        const originalPos = this.originalPositions.get(object.uuid);
+        if (originalPos) {
+            const distance = currentCenter.distanceTo(originalPos);
+            return distance <= this.snapDistance * 1.5; // Un po' più tollerante per rilevamento modalità
+        }
+
+        return false; // Non vicino a nessuna zona snap
+    },
+
     /**
      * Trova il target di snap per un oggetto
      * @param {THREE.Object3D} object - Oggetto da controllare

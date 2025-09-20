@@ -182,7 +182,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione21=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
   Azione22=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
   Azione23=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
-  Azione24=appoggia(0.5)
+  Azione24=traslazione:ingrassatore_original(-0.2,0.0,0,0.5)
+  Azione25=appoggia(0.5)
 
 [Riassemblaggio]
 # Tutorial inverso - sequenza di rimontaggio
@@ -196,62 +197,50 @@ CameraTransitionTime=2.5
 
 # IMPORTANTE: Disabilita auto-completion per tutorial multi-step
 //AutoComplete=false
-//comunque TutorialSteps=7
+TutorialSteps=5
 
-# Posizionamento modelli per assemblaggio - DEVE essere PRIMA degli step
-# Generato il: 13/09/2025, 21:29:24
+# Posizionamento modelli per assemblaggio - Posizioni custom corrette
+# IMPORTANTE: I pezzi partono "smontati" come alla fine della pulizia
 
-# Modello 1: culatta
-Posizione=culatta:(0.000,0.000,0.000)
-Rotazione=culatta:(0.0,0.0,0.0)
-
-# Modello 2: corpo
-Posizione=corpo:(0.000,0.000,0.000)
-Rotazione=corpo:(0.0,0.0,0.0)
-
-# Modello 3: coperchio
+# Modello 1: coperchio
 Posizione=coperchio:(-1.148,-0.261,0.500)
 Rotazione=coperchio:(0.0,0.0,-90.0)
 
-# Modello 4: filtro
+# Modello 2: filtro
 Posizione=filtro:(-0.300,-0.142,0.500)
 Rotazione=filtro:(0.0,0.0,0.0)
 
-# Modello 5: pavimento
+# Modello 3: pavimento
 Posizione=pavimento:(0.000,0.000,0.000)
 Rotazione=pavimento:(0.0,0.0,0.0)
 
-# Modello 6: planaxis
-Posizione=planaxis:(-0.500,0.010,-0.500)
-Rotazione=planaxis:(0.0,0.0,0.0)
-
-# Modello 7: vite_coperchio_1
+# Modello 4: vite_coperchio_1
 Posizione=vite_coperchio_1:(-0.500,-0.349,0.000)
 Rotazione=vite_coperchio_1:(-360.0,0.0,0.0)
 
-# Modello 8: vite_coperchio_2
+# Modello 5: vite_coperchio_2
 Posizione=vite_coperchio_2:(-0.500,-0.349,0.000)
 Rotazione=vite_coperchio_2:(-360.0,0.0,0.0)
 
-# Modello 9: vite_coperchio_3
+# Modello 6: vite_coperchio_3
 Posizione=vite_coperchio_3:(-0.500,-0.117,-0.100)
 Rotazione=vite_coperchio_3:(-360.0,0.0,0.0)
 
-# Modello 10: vite_coperchio_4
+# Modello 7: vite_coperchio_4
 Posizione=vite_coperchio_4:(-0.500,-0.117,-0.100)
 Rotazione=vite_coperchio_4:(-360.0,0.0,0.0)
 
-# Modello 11: ingrassatore
-Posizione=ingrassatore:(-0.308,0.243,0.000)
-Rotazione=ingrassatore:(0.0,0.0,90.0)
+# Modello 8: tappino_grasso_sx
+Posizione=tappino_grasso_sx:(-0.300,-0.243,0.000)
+Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
 
-# Modello 12: tappino_grasso_dx (posizionato a destra)
-Posizione=tappino_grasso_dx:(-0.100,-0.243,0.000)
+# Modello 9: tappino_grasso_dx
+Posizione=tappino_grasso_dx:(-0.300,-0.243,0.000)
 Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
 
-# Modello 13: tappino_grasso_sx (posizionato a sinistra)
-Posizione=tappino_grasso_sx:(-0.100,-0.243,-0.0)
-Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
+# Modello 10: ingrassatore
+Posizione=ingrassatore:(-0.263,0.243,0)
+Rotazione=ingrassatore:(0.0,0.0,90.0)
 
 [Step 1 - Tappini Ingrassatori]
 Descrizione=Monta i tappini degli ingrassatori in qualsiasi ordine. Puoi iniziare dal destro o dal sinistro.

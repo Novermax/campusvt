@@ -1951,9 +1951,14 @@ window.UI = {
      * Ottiene lo strumento attualmente attivo
      */
     getActiveTool: function() {
+        console.log(`[DEBUG] 🔍 getActiveTool() - toolsState:`, this.toolsState);
         for (const [toolName, isActive] of Object.entries(this.toolsState)) {
-            if (isActive) return toolName;
+            if (isActive) {
+                console.log(`[DEBUG] ✅ getActiveTool() found: "${toolName}"`);
+                return toolName;
+            }
         }
+        console.log(`[DEBUG] ❌ getActiveTool() returning null - no active tools`);
         return null;
     },
     

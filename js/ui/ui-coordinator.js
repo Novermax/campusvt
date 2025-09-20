@@ -169,21 +169,58 @@ const UI = {
      * Mostra una pagina specifica
      */
     showPage: function(page) {
-        return this.core.showPage(page);
+        if (this.core && this.core.showPage) {
+            return this.core.showPage(page);
+        } else {
+            // FALLBACK: Implementazione diretta
+            console.log(`🏠 UI-COORDINATOR: Fallback showPage('${page}')`);
+
+            // Nascondi tutte le pagine
+            const homePage = document.getElementById('homePage');
+            const scenarioPage = document.getElementById('scenarioPage');
+
+            if (homePage) homePage.classList.add('hidden');
+            if (scenarioPage) scenarioPage.classList.add('hidden');
+
+            // Mostra la pagina richiesta
+            if (page === 'home' && homePage) {
+                homePage.classList.remove('hidden');
+                this.currentPage = 'home';
+            } else if (page === 'scenario' && scenarioPage) {
+                scenarioPage.classList.remove('hidden');
+                this.currentPage = 'scenario';
+            }
+        }
     },
 
     /**
      * Torna alla home page
      */
     goHome: function() {
-        return this.core.goHome();
+        if (this.core && this.core.goHome) {
+            return this.core.goHome();
+        } else {
+            // FALLBACK: Usa il metodo del sistema UI originale
+            console.log('🏠 UI-COORDINATOR: Fallback goHome() - torna alla home page');
+            this.showPage('home');
+            this.updateStatus('Torna alla pagina principale');
+        }
     },
 
     /**
      * Aggiorna messaggio di stato
      */
     updateStatus: function(message) {
-        return this.core.updateStatus(message);
+        if (this.core && this.core.updateStatus) {
+            return this.core.updateStatus(message);
+        } else {
+            // FALLBACK: Implementazione diretta
+            console.log(`ℹ️ UI-COORDINATOR: Fallback updateStatus('${message}')`);
+            const statusElement = document.getElementById('statusMessage');
+            if (statusElement) {
+                statusElement.textContent = message;
+            }
+        }
     },
 
     /**

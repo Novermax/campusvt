@@ -76,7 +76,13 @@ export class CameraControls {
         canvas.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
-        
+
+        // Keyboard event listeners (Home key support)
+        document.addEventListener('keydown', this.onKeyDown.bind(this));
+
+        // Salva posizione iniziale camera per reset Home
+        this.saveInitialCameraPosition();
+
         AppConfig.log(3, 'Camera controls initialized');
     }
 
@@ -474,5 +480,58 @@ export class CameraControls {
         interpolation.targetRotation.theta = currentSpherical.theta;
         interpolation.targetRotation.phi = currentSpherical.phi;
         interpolation.targetZoom = currentSpherical.radius;
+    }
+
+    /**
+     * Gestisce eventi tastiera (Home key per reset camera)
+     */
+    onKeyDown(event) {
+        if (event.key === 'Home' || event.keyCode === 36) {
+            console.log('🏠 HOME KEY: Reset camera alla posizione iniziale');
+            this.resetCameraToInitialPosition();
+            event.preventDefault();
+        }
+    }
+
+    /**
+     * Salva la posizione iniziale della camera per reset Home
+     */
+    saveInitialCameraPosition() {
+        this.initialCameraState = {
+            position: this.camera.position.clone(),
+            target: new THREE.Vector3(0, 0, 0), // Default target center
+            zoom: this.camera.position.length()
+        };
+        console.log('🏠 HOME: Posizione iniziale camera salvata:', this.initialCameraState);
+    }
+
+    /**
+     * Reset camera alla posizione iniziale (Home key)
+     */
+    resetCameraToInitialPosition() {
+        if (!this.initialCameraState) {
+            console.warn('⚠️ HOME: Nessuna posizione iniziale salvata');
+            return;
+        }
+
+        // Reset camera position
+        this.camera.position.copy(this.initialCameraState.position);
+        this.camera.lookAt(this.initialCameraState.target);
+
+        // Reset mouse controls targets
+        const controls = this.mouseControls;
+        if (controls.interpolation) {
+            // Calcola coordinate sferiche dalla posizione iniziale
+            const spherical = new THREE.Spherical();
+            const relativePos = this.initialCameraState.position.clone().sub(this.initialCameraState.target);
+            spherical.setFromVector3(relativePos);
+
+            controls.interpolation.targetRotation.theta = spherical.theta;
+            controls.interpolation.targetRotation.phi = spherical.phi;
+            controls.interpolation.targetZoom = spherical.radius;
+            controls.pivotPoint.copy(this.initialCameraState.target);
+        }
+
+        console.log('🏠 HOME: Camera resettata alla posizione iniziale');
     }
 }

@@ -942,39 +942,51 @@ const Scene3D = {
     },
 
     handleModelAction: function(model) {
+        console.log(`[DEBUG] 🎬 handleModelAction chiamato per: ${model.name}`);
+
         const currentStep = this.getCurrentTutorialStep();
+        console.log(`[DEBUG] 📋 Current step:`, currentStep?.name || 'null');
+
         const requiredTool = this.getRequiredToolForStep(currentStep);
-        const activeTool = window.UI ? window.UI.getActiveTool() : null;
-        
-        if (this.highlightSystem.isHighlighting && 
+        const activeTool = window.ToolsManager ? window.ToolsManager.getActiveTool() : null;
+        console.log(`[DEBUG] 🔧 Tool required: "${requiredTool}", active: "${activeTool}"`);
+
+        if (this.highlightSystem.isHighlighting &&
             this.highlightSystem.highlightedModel === model &&
             requiredTool && activeTool === requiredTool) {
-            
+
             this.removeHighlight();
         }
-        
+
         if (!requiredTool || activeTool !== requiredTool) {
+            console.log(`[DEBUG] ❌ Tool mismatch - USCITA EARLY`);
             return;
         }
-        
+
         if (!currentStep) {
+            console.log(`[DEBUG] ❌ No current step - USCITA EARLY`);
             return;
         }
-        
+
         const modelFilename = model.userData?.originalFilename || model.name;
         const stepElement = currentStep.properties.Elemento;
-        
+        console.log(`[DEBUG] 🎯 Model filename: "${modelFilename}", Step element: "${stepElement}"`);
+
         const cleanModelName = modelFilename.split('/').pop().replace('.glb', '');
         const cleanStepElement = stepElement.split('/').pop().replace('.glb', '');
-        
+        console.log(`[DEBUG] 🎯 Clean model: "${cleanModelName}", Clean step: "${cleanStepElement}"`);
+
         if (!stepElement || cleanModelName !== cleanStepElement) {
+            console.log(`[DEBUG] ❌ Model/element mismatch - USCITA EARLY`);
             return;
         }
-        
+
         if (this.isModelAnimating(model)) {
+            console.log(`[DEBUG] ❌ Model already animating - USCITA EARLY`);
             return;
         }
-        
+
+        console.log(`[DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation`);
         this.startModelAnimation(model, currentStep);
     },
 
@@ -2892,6 +2904,98 @@ const Scene3D = {
             
             console.log(`💾 EXPORT: File scaricato come: ${filename}`);
             
+        } catch (error) {
+            console.warn('⚠️ EXPORT: Download automatico non supportato:', error.message);
+            console.log('💡 EXPORT: Copia manualmente il contenuto dalla console sopra');
+        }
+    },
+
+    /**
+     * Esporta i centri del bounding box di tutti i modelli caricati
+     * Formato: Centro=nomeModello:(x,y,z)
+     * Uso: Scene3D.exportBoundingBoxCenters()
+     */
+    exportBoundingBoxCenters: function() {
+        console.log('📦 EXPORT: Inizio esportazione centri bounding box...');
+
+        if (this.loadedModels.length === 0) {
+            console.warn('⚠️ EXPORT: Nessun modello caricato nella scena');
+            return null;
+        }
+
+        let exportLines = [];
+        exportLines.push('# Centri Bounding Box Modelli - Esportati automaticamente');
+        exportLines.push('# Generato il: ' + new Date().toLocaleString('it-IT'));
+        exportLines.push('# Sintassi: Centro=nomeModello:(x,y,z)');
+        exportLines.push('# Nota: Questi sono i centri geometrici dei bounding box, non i pivot points');
+        exportLines.push('');
+
+        // Esporta centro bounding box di ogni modello
+        this.loadedModels.forEach((model, index) => {
+            const modelName = this.getModelDisplayName(model);
+
+            // Calcola bounding box e centro
+            const boundingBox = new THREE.Box3().setFromObject(model);
+            const center = boundingBox.getCenter(new THREE.Vector3());
+
+            // Calcola dimensioni per riferimento
+            const size = boundingBox.getSize(new THREE.Vector3());
+
+            // Formatta con 3 decimali per precisione
+            const centerStr = `(${center.x.toFixed(3)},${center.y.toFixed(3)},${center.z.toFixed(3)})`;
+            const sizeStr = `(${size.x.toFixed(3)},${size.y.toFixed(3)},${size.z.toFixed(3)})`;
+
+            // Aggiungi dati al file
+            exportLines.push(`# Modello ${index + 1}: ${modelName}`);
+            exportLines.push(`# Dimensioni: ${sizeStr}`);
+            exportLines.push(`Centro=${modelName}:${centerStr}`);
+            exportLines.push('');
+
+            console.log(`📦 EXPORT: ${modelName} - Centro: ${centerStr}, Dimensioni: ${sizeStr}`);
+        });
+
+        // Genera contenuto finale
+        const exportContent = exportLines.join('\n');
+
+        console.log('📦 EXPORT: Centri bounding box generati:');
+        console.log('═'.repeat(60));
+        console.log(exportContent);
+        console.log('═'.repeat(60));
+
+        // Scarica come file
+        this.downloadBoundingBoxCentersFile(exportContent);
+
+        return exportContent;
+    },
+
+    /**
+     * Scarica file con centri bounding box
+     */
+    downloadBoundingBoxCentersFile: function(content) {
+        try {
+            // Crea timestamp per nome file
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:\-]/g, '').replace('T', '_');
+            const filename = `bounding_box_centers_${timestamp}.txt`;
+
+            // Crea blob e download
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+
+            // Crea link temporaneo per download
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = filename;
+            downloadLink.style.display = 'none';
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            // Cleanup
+            URL.revokeObjectURL(url);
+
+            console.log(`💾 EXPORT: File scaricato come: ${filename}`);
+
         } catch (error) {
             console.warn('⚠️ EXPORT: Download automatico non supportato:', error.message);
             console.log('💡 EXPORT: Copia manualmente il contenuto dalla console sopra');
