@@ -607,9 +607,9 @@
     <!-- INFORMAZIONI VERSIONE -->
     <div class="version-info">
         <strong>Versione:</strong> 1.3 &nbsp;|&nbsp;
-        <strong>Data:</strong> 15 Dicembre 2025 &nbsp;|&nbsp;
+        <strong>Data:</strong> 17 Settembre 2025 &nbsp;|&nbsp;
         <strong>Target:</strong> Tecnici industriali &nbsp;|&nbsp;
-        <strong>Aggiornamento:</strong> Sistema Assemblaggio Sequenziale con insiemi intercambiabili, validazione dipendenze, riferimenti posizioni originali, effetti particellari realistici
+        <strong>Aggiornamento:</strong> Sistema Posizioni Scenario Originali, Reset Intelligente Tutorial, Assemblaggio Sequenziale Avanzato, Effetti Particellari Tool Aria
     </div>
 
     <!-- INDICE -->
@@ -673,6 +673,15 @@
                         <li><a href="#configurazione-json-assemblaggio">• Configurazione JSON Assembly</a></li>
                         <li><a href="#comportamenti-assemblaggio">• Feedback Visivo e Validazione</a></li>
                         <li><a href="#esempio-pompa-becker">• Esempio Completo Pompa Becker</a></li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px; padding: 15px; background: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800; border: 2px solid #ff9800;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">🏠 PARTE 6.7: Sistema Reset Posizioni Scenario 🆕</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><a href="#reset-posizioni-scenario">• Posizioni Scenario vs Tutorial</a></li>
+                        <li><a href="#comandi-reset-scenario">• Comandi Console Reset</a></li>
+                        <li><a href="#funzionamento-reset">• Funzionamento Automatico</a></li>
                     </ul>
                 </div>
 
@@ -1648,6 +1657,196 @@ AssemblySystem.validateConfiguration()      // Valida configurazione JSON
         </div>
     </div>
 
+    <!-- PARTE 6.7: SISTEMA RESET POSIZIONI SCENARIO ---->
+    <div class="section page-break" id="reset-posizioni-scenario">
+        <h2>🏠 PARTE 6.7: Sistema Reset Posizioni Scenario Originali</h2>
+
+        <div class="new-feature">
+            <div class="info">
+                <h4>🚀 RISOLUZIONE PROBLEMA FONDAMENTALE</h4>
+                <p><strong>Il Sistema Reset Posizioni Scenario risolve definitivamente il problema del reset tra tutorial:</strong> ora quando cambi tutorial, tutti i modelli tornano esattamente alle posizioni di caricamento dello scenario, poi applicano le impostazioni specifiche del nuovo tutorial.</p>
+                <ul>
+                    <li><strong>Doppio Salvataggio:</strong> Posizioni scenario pure + posizioni tutorial personalizzate</li>
+                    <li><strong>Reset Intelligente:</strong> Scenario originale → Applica impostazioni tutorial</li>
+                    <li><strong>Zero Confusione:</strong> Ogni tutorial inizia sempre da stato pulito</li>
+                    <li><strong>Backward Compatible:</strong> Tutorial esistenti continuano a funzionare</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="problema-risolto">
+            <h3>Problema Risolto</h3>
+
+            <div class="example">
+                <h4>❌ PRIMA: Problema Reset Tutorial</h4>
+                <p><strong>Scenario tipico problematico:</strong></p>
+                <ol class="step-list">
+                    <li><strong>Tutorial "Riassemblaggio":</strong> Modelli spostati durante training</li>
+                    <li><strong>Cambio a "Pulizia filtro":</strong> Modelli rimanevano nelle posizioni del tutorial precedente</li>
+                    <li><strong>Confusione Utente:</strong> Tutorial iniziava con setup sbagliato</li>
+                    <li><strong>Necessità Reload:</strong> Costretto a ricaricare intero scenario</li>
+                </ol>
+            </div>
+
+            <div class="example">
+                <h4>✅ DOPO: Reset Intelligente</h4>
+                <p><strong>Comportamento corretto implementato:</strong></p>
+                <ol class="step-list">
+                    <li><strong>Salvataggio Automatico:</strong> Posizioni pure memorizzate al caricamento scenario</li>
+                    <li><strong>Reset a Scenario:</strong> Tutti i modelli tornano alle posizioni di caricamento</li>
+                    <li><strong>Applicazione Tutorial:</strong> Impostazioni specifiche applicate sopra posizioni pulite</li>
+                    <li><strong>Tutorial Pronto:</strong> Stato perfetto per iniziare nuovo training</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="architettura-doppio-salvataggio">
+            <h3>Architettura Sistema</h3>
+
+            <h4>Doppio Sistema di Memorizzazione:</h4>
+            <table>
+                <tr>
+                    <th>Tipo Posizioni</th>
+                    <th>Quando Salvate</th>
+                    <th>Quando Usate</th>
+                    <th>Modificabili</th>
+                </tr>
+                <tr>
+                    <td><strong>🏠 Scenario Originali</strong></td>
+                    <td>Solo al caricamento scenario</td>
+                    <td>Reset tra tutorial</td>
+                    <td>❌ Immutabili</td>
+                </tr>
+                <tr>
+                    <td><strong>📝 Tutorial Correnti</strong></td>
+                    <td>Ad ogni cambio tutorial</td>
+                    <td>Reset interno tutorial</td>
+                    <td>✅ Aggiornabili</td>
+                </tr>
+            </table>
+
+            <div class="code-block" data-lang="Implementazione">
+🏗️ STRUTTURE DATI SISTEMA:
+
+// Posizioni pure scenario (immutabili)
+scenarioOriginalPositions: new Map()  // UUID → {position, rotation, scale}
+
+// Posizioni tutorial corrente (modificabili)
+initialModelPositions: new Map()      // UUID → {position, rotation, scale}
+            </div>
+        </div>
+
+        <div class="section" id="funzionamento-reset">
+            <h3>Funzionamento Automatico</h3>
+
+            <h4>Sequenza Reset Cambio Tutorial:</h4>
+            <ol class="step-list">
+                <li><strong>Click Nuovo Tutorial:</strong> Utente seleziona tutorial diverso dal menu</li>
+                <li><strong>Reset Scenario:</strong> <code>Scene3D.resetAllModelsToScenarioPositions()</code> eseguito automaticamente</li>
+                <li><strong>Posizioni Pure:</strong> Tutti i modelli tornano alle coordinate di caricamento scenario</li>
+                <li><strong>Applicazione Tutorial:</strong> Impostazioni specifiche tutorial (Posizione=, Rotazione=) applicate sopra</li>
+                <li><strong>Tutorial Pronto:</strong> Stato perfetto per iniziare training</li>
+            </ol>
+
+            <div class="info">
+                <h4>🎯 Vantaggi UX</h4>
+                <ul>
+                    <li><strong>Prevedibilità:</strong> Ogni tutorial inizia sempre dallo stesso stato</li>
+                    <li><strong>Pulizia:</strong> Nessuna "contaminazione" tra tutorial diversi</li>
+                    <li><strong>Velocità:</strong> Reset automatico senza intervento utente</li>
+                    <li><strong>Affidabilità:</strong> Sistema robusto senza possibilità di stati inconsistenti</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="comandi-reset-scenario">
+            <h3>Comandi Console Debug</h3>
+
+            <div class="code-block" data-lang="Console">
+// === RESET MANUALE POSIZIONI SCENARIO ===
+Scene3D.resetAllModelsToScenarioPositions()     // Reset completo a posizioni scenario
+Scene3D.resetModelToScenarioPosition(model)     // Reset singolo modello
+
+// === DEBUG SISTEMA RESET ===
+Scene3D.debugResetSystem()                      // Debug completo con confronto posizioni
+Scene3D.scenarioOriginalPositions.size          // Numero posizioni scenario salvate
+Scene3D.initialModelPositions.size              // Numero posizioni tutorial salvate
+
+// === VERIFICA STATO SALVATAGGIO ===
+console.log("Posizioni scenario:", Scene3D.scenarioOriginalPositions.size)
+console.log("Posizioni tutorial:", Scene3D.initialModelPositions.size)
+            </div>
+
+            <div class="example">
+                <h4>🔍 Output Debug Esempio</h4>
+                <div class="code-block" data-lang="Console Output">
+🔍 === DEBUG RESET SYSTEM ===
+📊 Modelli caricati: 19
+📊 Posizioni iniziali salvate: 19
+📊 Posizioni SCENARIO originali salvate: 19
+
+📋 Lista modelli caricati:
+  1. filtro - Tutorial pos: ✅ - Scenario pos: ✅
+     📝 Tutorial pos: (-0.560, 0.107, 0.500)
+     🏠 Scenario pos: (0.000, 0.100, 0.000)
+     📍 Pos corrente: (-0.560, 0.107, 0.500)
+
+  2. ingrassatore - Tutorial pos: ✅ - Scenario pos: ✅
+     📝 Tutorial pos: (-0.525, 0.018, -0.375)
+     🏠 Scenario pos: (-0.308, 0.243, 0.000)
+     📍 Pos corrente: (-0.525, 0.018, -0.375)
+                </div>
+
+                <p><strong>Interpretazione:</strong></p>
+                <ul>
+                    <li><strong>Tutorial pos:</strong> Posizione dopo applicazione impostazioni tutorial</li>
+                    <li><strong>Scenario pos:</strong> Posizione pura di caricamento scenario</li>
+                    <li><strong>Pos corrente:</strong> Posizione attuale nell'ambiente 3D</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="implementazione-tecnica">
+            <h3>Implementazione Tecnica</h3>
+
+            <div class="warning">
+                <h4>⚙️ File Modificati</h4>
+                <ul>
+                    <li><strong>scene3d-modular.js:</strong> Aggiunta scenarioOriginalPositions Map e funzioni reset</li>
+                    <li><strong>ui.js:</strong> Modificata selectTutorial() per usare reset scenario</li>
+                    <li><strong>Funzioni Aggiunte:</strong> saveScenarioOriginalPosition(), resetAllModelsToScenarioPositions()</li>
+                    <li><strong>Debug Esteso:</strong> debugResetSystem() con confronto posizioni scenario/tutorial</li>
+                </ul>
+            </div>
+
+            <h4>API Funzioni Principali:</h4>
+            <div class="code-block" data-lang="JavaScript">
+// Salvataggio automatico al caricamento (interno)
+Scene3D.saveScenarioOriginalPosition(model)
+
+// Reset completo scenario (pubblico)
+Scene3D.resetAllModelsToScenarioPositions()
+
+// Reset singolo modello scenario (pubblico)
+Scene3D.resetModelToScenarioPosition(model)
+
+// Debug sistema completo (pubblico)
+Scene3D.debugResetSystem()
+            </div>
+
+            <div class="tip">
+                <h4>💡 Integrazione Esistente</h4>
+                <p><strong>Il sistema è completamente automatico:</strong></p>
+                <ul>
+                    <li>Salvataggio posizioni scenario → Automatico al caricamento modelli</li>
+                    <li>Reset tra tutorial → Automatico alla selezione nuovo tutorial</li>
+                    <li>Zero configurazione → Funziona immediatamente con tutorial esistenti</li>
+                    <li>Backward compatible → Nessuna modifica necessaria ai tutorial</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== PARTE 7: DEBUG E COMANDI AVANZATI ===== -->
     <div class="section page-break" id="debug">
         <h2>🐛 PARTE 7: Debug e Comandi Avanzati</h2>
@@ -1704,6 +1903,12 @@ ToolsManager.activateToolFromTutorial('Aria') // Attiva da nome tutorial: 'Aria'
 DragDropSystem.isEnabled()                   // Verifica se drag&drop attivo
 DragDropSystem.getDraggableObjects()         // Lista oggetti draggabili  
 DragDropSystem.setCustomSnapTarget('obj', 'target') // Snap personalizzato
+
+// === SISTEMA RESET POSIZIONI SCENARIO (NUOVO) ===
+Scene3D.resetAllModelsToScenarioPositions() // Reset completo a posizioni scenario originali
+Scene3D.resetModelToScenarioPosition(model) // Reset singolo modello a posizione scenario
+Scene3D.debugResetSystem()                  // Debug confronto posizioni scenario/tutorial
+Scene3D.scenarioOriginalPositions.size      // Numero posizioni scenario salvate
 
 // === SISTEMA DEBUGGING COMPLETO ===
 Scene3D.camera                               // Oggetto camera Three.js

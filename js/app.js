@@ -200,7 +200,7 @@ window.App = {
 
             // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
             try {
-                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000021');
+                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000025');
                 console.log('✅ Sistema drag & drop caricato');
             } catch (error) {
                 console.warn('⚠️ DragDropSystem non caricato (opzionale):', error.message);
@@ -216,8 +216,35 @@ window.App = {
 
             await this.loadModule('./js/scene3d-modular.js?nocache=1000019');  // Modulo modulare compatibile
             await this.loadModule('./js/modelloader.js?nocache=1000011');
-            await this.loadModule('./js/ui.js?nocache=1000006');
-            
+
+            // Carica moduli UI refactorizzati in ordine di dipendenza
+            console.log('📦 Caricamento moduli UI refactorizzati...');
+            await this.loadModule('./js/ui/UICore.js?nocache=1000026');
+            await this.loadModule('./js/ui/ScenarioManager.js?nocache=1000026');
+            await this.loadModule('./js/ui/TutorialManager.js?nocache=1000026');
+            // ToolsManager.js è già caricato nell'HTML
+            await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
+            console.log('✅ Moduli UI refactorizzati caricati');
+
+            await this.loadModule('./js/ui.js?nocache=1000027');
+
+            // Inizializza il sistema UI refactorizzato se disponibile
+            if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager !== undefined) {
+                console.log('🚀 Inizializzazione sistema UI refactorizzato...');
+                try {
+                    const initSuccess = window.UI.init();
+                    if (initSuccess) {
+                        console.log('✅ Sistema UI refactorizzato inizializzato con successo');
+                    } else {
+                        console.warn('⚠️ Inizializzazione sistema UI refactorizzato fallita');
+                    }
+                } catch (error) {
+                    console.error('❌ Errore inizializzazione sistema UI refactorizzato:', error);
+                }
+            } else {
+                console.log('📦 Sistema UI legacy attivo');
+            }
+
             console.log('✅ Tutti i moduli caricati (architettura modulare ottimizzata)');
         } catch (error) {
             throw new Error(`Errore caricamento moduli: ${error.message}`);

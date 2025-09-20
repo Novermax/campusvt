@@ -8,15 +8,39 @@
   },
 
   "sequence": [
-    "base_assembly",
+    "tappini_assembly",   
     "filtro_assembly",
     "coperchio_assembly",
     "viti_coperchio_assembly",
-    "ingrassatori_assembly",
-    "tappini_assembly"
+    "ingrassatori_assembly"
+    
   ],
 
   "snapPoints": {
+
+    "tappino_grasso_dx": {
+      "nodeId": "tappini_assembly",
+      "positions": [
+        {
+          "id": "snap_tappino_dx_sede",
+          "position": [0.25, 0.15, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+    "tappino_grasso_sx": {
+      "nodeId": "tappini_assembly",
+      "positions": [
+        {
+          "id": "snap_tappino_sx_sede",
+          "position": [-0.25, 0.15, 0],
+          "rotation": [0, 0, 0]
+        }
+      ]
+    },
+
+
     "filtro": {
       "nodeId": "filtro_assembly",
       "positions": [
@@ -103,27 +127,7 @@
       ]
     },
 
-    "tappino_grasso_dx": {
-      "nodeId": "tappini_assembly",
-      "positions": [
-        {
-          "id": "snap_tappino_dx_sede",
-          "position": [0.25, 0.15, 0],
-          "rotation": [0, 0, 0]
-        }
-      ]
-    },
 
-    "tappino_grasso_sx": {
-      "nodeId": "tappini_assembly",
-      "positions": [
-        {
-          "id": "snap_tappino_sx_sede",
-          "position": [-0.25, 0.15, 0],
-          "rotation": [0, 0, 0]
-        }
-      ]
-    },
 
     "ingrassatore": {
       "nodeId": "ingrassatori_assembly",
@@ -151,21 +155,19 @@
   },
 
   "dependencies": {
-    "filtro_assembly": ["base_assembly"],
-    "coperchio_assembly": ["base_assembly", "filtro_assembly"],
+    "filtro_assembly": ["tappini_assembly"],
+    "coperchio_assembly": ["filtro_assembly"],
     "viti_coperchio_assembly": ["coperchio_assembly"],
-    "tappini_assembly": ["base_assembly"],
-    "ingrassatori_assembly": ["tappini_assembly"]
+    "ingrassatori_assembly": ["viti_coperchio_assembly"]
   },
 
   "assemblySteps": {
-    "base_assembly": {
-      "description": "La base della pompa deve essere posizionata per prima",
-      "requiredComponents": [],
+    "tappini_assembly": {
+      "description": "Monta i tappini degli ingrassatori (ordine libero)",
+      "requiredComponents": ["tappino_grasso_dx", "tappino_grasso_sx"],
       "optionalComponents": [],
-      "completionCriteria": "auto"
+      "completionCriteria": "all_required_mounted"
     },
-
     "filtro_assembly": {
       "description": "Inserisci il filtro nella sua sede",
       "requiredComponents": ["filtro"],
@@ -193,12 +195,7 @@
       "minimumRequired": 4
     },
 
-    "tappini_assembly": {
-      "description": "Monta i tappini degli ingrassatori (ordine libero)",
-      "requiredComponents": ["tappino_grasso_dx", "tappino_grasso_sx"],
-      "optionalComponents": [],
-      "completionCriteria": "all_required_mounted"
-    },
+
 
     "ingrassatori_assembly": {
       "description": "Riponi l'ingrassatore nella posizione di riposo",

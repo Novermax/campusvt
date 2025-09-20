@@ -1153,6 +1153,38 @@ body.tool-aria-active [role="button"] {
     cursor: pointer !important;
 }
 
+/* === TOOL MANO CURSORE === */
+body.tool-mano-active,
+body.tool-mano-active *,
+.tool-mano-active {
+    cursor: grab !important;
+}
+
+body.tool-mano-active:active,
+body.tool-mano-active:active *,
+body.tool-mano-active.mouse-pressed,
+body.tool-mano-active.mouse-pressed * {
+    cursor: grabbing !important;
+}
+
+/* Applica cursore mano a tutti gli elementi eccetto pulsanti e link */
+body.tool-mano-active * {
+    cursor: inherit !important;
+}
+
+/* Eccezioni: pulsanti e elementi interattivi mantengono cursore pointer */
+body.tool-mano-active button,
+body.tool-mano-active .tool-icon,
+body.tool-mano-active a,
+body.tool-mano-active input,
+body.tool-mano-active select,
+body.tool-mano-active textarea,
+body.tool-mano-active .btn,
+body.tool-mano-active .button,
+body.tool-mano-active [role="button"] {
+    cursor: pointer !important;
+}
+
 /* ===== MODAL CONGRATULAZIONI TUTORIAL ===== */
 .congratulations-modal {
     position: fixed;

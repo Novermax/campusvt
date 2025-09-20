@@ -43,7 +43,8 @@ const Scene3D = {
     },
     
     // Sistema salvataggio/ripristino posizioni iniziali
-    initialModelPositions: new Map(), // UUID -> {position, rotation, scale}
+    initialModelPositions: new Map(), // UUID -> {position, rotation, scale} (per tutorial corrente)
+    scenarioOriginalPositions: new Map(), // UUID -> {position, rotation, scale} (posizioni pure caricamento scenario)
     
     boundingBoxSphere: null,
     rotationCenterSphere: null,
@@ -558,6 +559,9 @@ const Scene3D = {
         // Salva la posizione iniziale del modello per reset futuro
         this.saveInitialModelPosition(model);
 
+        // Salva la posizione originale dello scenario (immutabile)
+        this.saveScenarioOriginalPosition(model);
+
         const modelFilename = model.userData?.originalFilename || model.name;
 
         // Nascondi immediatamente il modello planaxis (stato iniziale: spento)
@@ -726,7 +730,18 @@ const Scene3D = {
             }
             
             if (targetModel && this.isModelSelectable(targetModel)) {
-                this.handleModelAction(targetModel);
+                console.log(`[Scene3D] 🎯 Click rilevato su modello: ${targetModel.name}`);
+
+                // Il DragDropSystem gestisce automaticamente i click via event listeners
+                // Non interferire - lascia che il DragDropSystem processi l'evento
+
+                // Sistema legacy per tutorial tradizionali (solo se DragDropSystem non è attivo)
+                if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
+                    console.log(`[Scene3D] 📺 Uso sistema tutorial legacy per: ${targetModel.name}`);
+                    this.handleModelAction(targetModel);
+                } else {
+                    console.log(`[Scene3D] 🎮 DragDropSystem attivo - evento delegato automaticamente`);
+                }
             }
         }
     },
@@ -2327,18 +2342,44 @@ const Scene3D = {
     },
 
     /**
+     * Salva la posizione originale dello scenario (immutabile)
+     * Queste posizioni vengono salvate solo al caricamento e non vengono mai sovrascritte
+     */
+    saveScenarioOriginalPosition: function(model) {
+        if (!model || !model.uuid) return;
+
+        // Calcola il centro del bounding box come posizione di riferimento
+        const centerPosition = this.calculateBoundingBoxCenter(model);
+
+        this.scenarioOriginalPositions.set(model.uuid, {
+            position: centerPosition.clone(),  // Usa centro bounding box
+            rotation: model.rotation.clone(),
+            scale: model.scale.clone(),
+            modelPosition: model.position.clone()  // Salva anche model.position originale
+        });
+
+        console.log(`🏠 Posizione ORIGINALE SCENARIO salvata per modello: ${model.name || model.uuid} - Centro BB: (${centerPosition.x.toFixed(3)}, ${centerPosition.y.toFixed(3)}, ${centerPosition.z.toFixed(3)})`);
+    },
+
+    /**
      * Ripristina tutti i modelli alle posizioni iniziali
      * Se ci sono impostazioni tutorial da applicare, le applica prima del reset
      */
     resetAllModelsToInitialPositions: function(tutorialStep = null) {
         console.log('🔄 RESET: Ripristino posizioni iniziali di tutti i modelli...');
-        
+        console.log(`🔄 DEBUG: loadedModels count: ${this.loadedModels.length}`);
+        console.log(`🔄 DEBUG: initialModelPositions size: ${this.initialModelPositions.size}`);
+
         let resetCount = 0;
         
         // FASE 1: Ripristina alle posizioni iniziali salvate al caricamento
         for (const model of this.loadedModels) {
+            console.log(`🔄 DEBUG: Tentativo reset modello: ${model.name || model.uuid}`);
             if (this.resetModelToInitialPosition(model)) {
                 resetCount++;
+                console.log(`🔄 DEBUG: Reset riuscito per: ${model.name || model.uuid}`);
+            } else {
+                console.log(`🔄 DEBUG: Reset fallito per: ${model.name || model.uuid}`);
             }
         }
         
@@ -2356,6 +2397,63 @@ const Scene3D = {
         
         console.log(`🔄 RESET: ${resetCount} modelli ripristinati alle posizioni iniziali`);
         return resetCount;
+    },
+
+    /**
+     * Ripristina tutti i modelli alle posizioni ORIGINALI dello scenario
+     * Ignora le impostazioni dei tutorial e torna alle posizioni pure di caricamento
+     */
+    resetAllModelsToScenarioPositions: function() {
+        console.log('🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...');
+        console.log(`🏠 DEBUG: loadedModels count: ${this.loadedModels.length}`);
+        console.log(`🏠 DEBUG: scenarioOriginalPositions size: ${this.scenarioOriginalPositions.size}`);
+
+        let resetCount = 0;
+
+        // Ripristina alle posizioni originali dello scenario (NO impostazioni tutorial)
+        for (const model of this.loadedModels) {
+            console.log(`🏠 DEBUG: Tentativo reset SCENARIO modello: ${model.name || model.uuid}`);
+            if (this.resetModelToScenarioPosition(model)) {
+                resetCount++;
+                console.log(`🏠 DEBUG: Reset SCENARIO riuscito per: ${model.name || model.uuid}`);
+            } else {
+                console.log(`🏠 DEBUG: Reset SCENARIO fallito per: ${model.name || model.uuid}`);
+            }
+        }
+
+        console.log(`🏠 RESET SCENARIO: ${resetCount} modelli ripristinati alle posizioni originali dello scenario`);
+        return resetCount;
+    },
+
+    /**
+     * Funzione di debug per verificare stato reset system
+     */
+    debugResetSystem: function() {
+        console.log('🔍 === DEBUG RESET SYSTEM ===');
+        console.log(`📊 Modelli caricati: ${this.loadedModels.length}`);
+        console.log(`📊 Posizioni iniziali salvate: ${this.initialModelPositions.size}`);
+        console.log(`📊 Posizioni SCENARIO originali salvate: ${this.scenarioOriginalPositions.size}`);
+
+        console.log('📋 Lista modelli caricati:');
+        this.loadedModels.forEach((model, index) => {
+            const hasInitialPos = this.initialModelPositions.has(model.uuid);
+            const hasScenarioPos = this.scenarioOriginalPositions.has(model.uuid);
+            console.log(`  ${index + 1}. ${model.name || model.uuid} - Tutorial pos: ${hasInitialPos ? '✅' : '❌'} - Scenario pos: ${hasScenarioPos ? '✅' : '❌'}`);
+
+            if (hasInitialPos) {
+                const initial = this.initialModelPositions.get(model.uuid);
+                console.log(`     📝 Tutorial pos: (${initial.position.x.toFixed(3)}, ${initial.position.y.toFixed(3)}, ${initial.position.z.toFixed(3)})`);
+            }
+
+            if (hasScenarioPos) {
+                const scenario = this.scenarioOriginalPositions.get(model.uuid);
+                console.log(`     🏠 Scenario pos: (${scenario.position.x.toFixed(3)}, ${scenario.position.y.toFixed(3)}, ${scenario.position.z.toFixed(3)})`);
+            }
+
+            console.log(`     📍 Pos corrente: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
+        });
+
+        console.log('🔍 === FINE DEBUG ===');
     },
 
     /**
@@ -2383,6 +2481,34 @@ const Scene3D = {
         }
 
         console.log(`🔄 Modello ripristinato: ${model.name || model.uuid} - Pos: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
+        return true;
+    },
+
+    /**
+     * Ripristina un singolo modello alla posizione ORIGINALE dello scenario
+     */
+    resetModelToScenarioPosition: function(model) {
+        if (!model || !model.uuid) return false;
+
+        const scenarioState = this.scenarioOriginalPositions.get(model.uuid);
+        if (!scenarioState) {
+            console.warn(`⚠️ Nessuna posizione SCENARIO originale trovata per modello: ${model.name || model.uuid}`);
+            return false;
+        }
+
+        // Ripristina rotazione e scala
+        model.rotation.copy(scenarioState.rotation);
+        model.scale.copy(scenarioState.scale);
+
+        // Ripristina model.position utilizzando il valore originale dello scenario
+        if (scenarioState.modelPosition) {
+            model.position.copy(scenarioState.modelPosition);
+        } else {
+            // Fallback per compatibilità
+            model.position.copy(scenarioState.position);
+        }
+
+        console.log(`🏠 Modello ripristinato SCENARIO: ${model.name || model.uuid} - Pos: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
         return true;
     },
 

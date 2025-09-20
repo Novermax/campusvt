@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test DragDrop Enable</title>
+</head>
+<body>
+    <h1>Test DragDrop System</h1>
+    <div id="output"></div>
+
+    <script>
+        // Semplice test per abilitare il sistema drag
+        window.addEventListener('load', function() {
+            const output = document.getElementById('output');
+
+            // Simula caricamento sistema
+            setTimeout(() => {
+                if (typeof window.DragDropSystem !== 'undefined') {
+                    output.innerHTML += '<p>✅ DragDropSystem disponibile</p>';
+
+                    // Abilita con componenti tappini
+                    try {
+                        window.DragDropSystem.enable(['tappino_grasso_dx', 'tappino_grasso_sx']);
+                        output.innerHTML += '<p>✅ DragDropSystem abilitato con tappini</p>';
+
+                        // Debug stato
+                        window.DragDropSystem.debugDragSystem();
+                        output.innerHTML += '<p>📋 Debug eseguito - controlla console</p>';
+
+                    } catch (error) {
+                        output.innerHTML += '<p>❌ Errore abilitazione: ' + error.message + '</p>';
+                    }
+                } else {
+                    output.innerHTML += '<p>❌ DragDropSystem non disponibile</p>';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

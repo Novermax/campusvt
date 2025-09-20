@@ -9,6 +9,16 @@
  * - Animazioni UI e transizioni
  */
 
+// Backup del sistema UI refactorizzato se presente
+const UI_Refactored = window.UI;
+
+// Verifica se il sistema refactorizzato è già presente
+if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager) {
+    console.log('[ui.js] ✅ Sistema UI refactorizzato rilevato - mantengo quello esistente');
+    // Non sovrascrivere il sistema refactorizzato
+} else {
+    console.log('[ui.js] 📦 Caricamento sistema UI legacy');
+
 window.UI = {
     
     /* ===== HELPER FUNCTIONS ===== */
@@ -57,8 +67,8 @@ window.UI = {
             // Carica automaticamente la configurazione home se disponibile
             this.loadHomeConfigFromServer();
             
-            // Inizializza la legenda degli strumenti
-            this.initToolsLegend();
+            // Inizializza ToolsManager
+            this.initToolsManager();
             
             AppConfig.log(2, 'UI inizializzata con successo');
             
@@ -1798,9 +1808,39 @@ window.UI = {
      * Stato corrente degli strumenti
      */
     toolsState: {},
-    
+
     /**
-     * Inizializza la legenda strumenti
+     * Inizializza ToolsManager globale
+     */
+    initToolsManager: function() {
+        // Verifica che ToolsManager sia disponibile
+        if (typeof window.ToolsManager !== 'function') {
+            this.safeLog(1, 'ToolsManager class non disponibile - fallback su implementazione locale');
+            this.initToolsLegend();
+            return;
+        }
+
+        // Istanzia ToolsManager globalmente
+        if (!window.toolsManager) {
+            window.toolsManager = new window.ToolsManager();
+            this.safeLog(2, 'ToolsManager istanziato globalmente');
+        }
+
+        // Inizializza ToolsManager
+        const success = window.toolsManager.init();
+        if (success) {
+            this.safeLog(2, 'ToolsManager inizializzato con successo');
+
+            // Esponi anche come window.ToolsManager per compatibilità
+            window.ToolsManager = window.toolsManager;
+        } else {
+            this.safeLog(1, 'Errore inizializzazione ToolsManager - fallback su implementazione locale');
+            this.initToolsLegend();
+        }
+    },
+
+    /**
+     * Inizializza la legenda strumenti (FALLBACK)
      */
     initToolsLegend: function() {
         const toolsContainer = document.getElementById('toolsContainer');
@@ -2303,10 +2343,15 @@ window.UI = {
         if (window.Scene3D) {
             window.Scene3D.resetTutorialTracker();
 
-            // Applica le impostazioni del nuovo tutorial (se presenti) durante il reset
+            // OPZIONE 1: Reset alle posizioni originali dello scenario (senza impostazioni tutorial)
+            window.Scene3D.resetAllModelsToScenarioPositions();
+
+            // OPZIONE 2: Applica le impostazioni del nuovo tutorial sopra le posizioni scenario
             const tutorialWithSettings = this.availableTutorials[tutorialIndex];
-            const tutorialStep = tutorialWithSettings.properties ? { properties: tutorialWithSettings.properties } : null;
-            window.Scene3D.resetAllModelsToInitialPositions(tutorialStep);
+            if (tutorialWithSettings.properties) {
+                console.log('🔧 Applicazione impostazioni tutorial sopra posizioni scenario...');
+                window.Scene3D.applyModelSettings({ properties: tutorialWithSettings.properties });
+            }
         }
 
         // RESET: Disabilita sistema drag & drop quando si cambia tutorial
@@ -2647,14 +2692,16 @@ window.UI = {
      * Va a uno step specifico
      */
     goToStep: function(stepIndex) {
+        console.log(`[DEBUG] ⏭️ GOTO STEP chiamata con index: ${stepIndex}`);
         if (stepIndex < 0 || stepIndex >= this.tutorialSteps.length) {
             AppConfig.log(1, `Step index non valido: ${stepIndex}`);
             return;
         }
-        
+
         this.currentStepIndex = stepIndex;
         const step = this.tutorialSteps[stepIndex];
-        
+
+        console.log(`[DEBUG] ⏭️ Navigazione a step: "${step.title}"`);
         AppConfig.log(2, `Navigazione a step ${stepIndex + 1}: ${step.title}`);
         
         // I pulsanti tutorial mantengono il loro stato radio button
@@ -2674,6 +2721,8 @@ window.UI = {
      * Esegue un step del tutorial
      */
     executeStep: function(step) {
+        console.log(`[DEBUG] 🚀 EXECUTE STEP chiamata per: "${step.title}"`);
+        console.log(`[DEBUG] 🚀 Step properties:`, step.properties);
         AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
         
         // Qui si possono implementare le azioni specifiche basate sulle proprietà
@@ -2700,6 +2749,7 @@ window.UI = {
         
         // NUOVO: Gestione sistema Drag & Drop se abilitato nello step
         if (step.properties.DragDrop === 'true' && window.DragDropSystem) {
+            console.log(`[DEBUG] 🎯 DRAG & DROP: Processo abilitazione per step "${step.title}"`);
             AppConfig.log(2, `🎯 DRAG & DROP: Abilitato per step "${step.title}"`);
 
             // Configura oggetti draggabili se specificati
@@ -2710,8 +2760,14 @@ window.UI = {
                 const objects = cleanValue.split(',').map(obj => obj.trim()).filter(obj => obj.length > 0);
                 draggableObjects.push(...objects);
                 AppConfig.log(3, `🎯 DRAG & DROP: Oggetti draggabili: ${objects.join(', ')}`);
+            } else if (step.properties.AllowedComponents) {
+                // FALLBACK: Se non specificato DragDropObjects, usa AllowedComponents
+                const cleanValue = step.properties.AllowedComponents.split('#')[0].trim();
+                const objects = cleanValue.split(',').map(obj => obj.trim()).filter(obj => obj.length > 0);
+                draggableObjects.push(...objects);
+                AppConfig.log(3, `🎯 DRAG & DROP: Oggetti draggabili da AllowedComponents: ${objects.join(', ')}`);
             } else if (step.properties.Elemento) {
-                // Se non specificato DragDropObjects, usa l'elemento del tutorial
+                // Se non specificato né DragDropObjects né AllowedComponents, usa l'elemento del tutorial
                 const elementName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
                 draggableObjects.push(elementName);
                 AppConfig.log(3, `🎯 DRAG & DROP: Oggetto draggabile automatico: ${elementName}`);
@@ -2728,7 +2784,9 @@ window.UI = {
 
             // Abilita il sistema con oggetti specificati
             try {
+                console.log(`[DEBUG] 🎯 DRAG & DROP: Chiamata enable con oggetti:`, draggableObjects);
                 window.DragDropSystem.enable(draggableObjects);
+                console.log(`[DEBUG] ✅ DRAG & DROP: Sistema abilitato - status:`, window.DragDropSystem.enabled);
                 AppConfig.log(2, `✅ DRAG & DROP: Sistema abilitato con ${draggableObjects.length} oggetti`);
             } catch (error) {
                 console.error(`❌ DRAG & DROP: Errore abilitazione sistema:`, error);
@@ -2759,6 +2817,9 @@ window.UI = {
 
                             // Aggiorna UI o mostra notifica se necessario
                             this.updateAssemblyStepUI(stepName, assemblyStatus);
+
+                            // NUOVO: Sincronizza con sistema tutorial normale
+                            this.syncAssemblyStepWithTutorial(stepName, stepIndex, assemblyStatus);
                         });
 
                         // Imposta step corrente se specificato
@@ -2769,6 +2830,7 @@ window.UI = {
 
                         // Imposta componenti permessi se specificati
                         if (step.properties.AllowedComponents) {
+                            console.log(`[DEBUG] 🏗️ UI: Chiamata setAllowedComponents con: ${step.properties.AllowedComponents}`);
                             window.AssemblySystem.setAllowedComponents(step.properties.AllowedComponents);
                             AppConfig.log(3, `🏗️ ASSEMBLY: Componenti permessi: ${step.properties.AllowedComponents}`);
                         }
@@ -3021,9 +3083,75 @@ window.UI = {
                 AppConfig.log(3, `🏗️ UI UPDATE: Progresso aggiornato: ${currentIndex + 1}/${totalSteps}`);
             }
 
+            // IMPORTANTE: Aggiorna anche il fumetto tutorial per mostrare nuove istruzioni
+            if (assemblyStatus.currentStepConfig && assemblyStatus.currentStepConfig.description) {
+                try {
+                    // Simula un cambio step tradizionale per aggiornare il fumetto
+                    const bubbleElement = document.getElementById('stepSpeechBubble');
+                    if (bubbleElement) {
+                        const descriptionElement = bubbleElement.querySelector('.bubble-description');
+                        if (descriptionElement) {
+                            descriptionElement.textContent = assemblyStatus.currentStepConfig.description;
+                            console.log(`[UI] 💬 Fumetto aggiornato con nuova descrizione step assemblaggio`);
+                        }
+                    }
+                } catch (bubbleError) {
+                    console.warn(`[UI] ⚠️ Errore aggiornamento fumetto:`, bubbleError);
+                }
+            }
+
             console.log(`[UI] ✅ UI aggiornata per step assemblaggio: ${stepName}`);
         } catch (error) {
             console.error(`[UI] ❌ Errore aggiornamento UI step assemblaggio:`, error);
+        }
+    },
+
+    /**
+     * Sincronizza avanzamento AssemblySystem con sistema tutorial normale
+     * @param {string} stepName - Nome step AssemblySystem
+     * @param {number} stepIndex - Indice step AssemblySystem
+     * @param {Object} assemblyStatus - Stato assemblaggio
+     */
+    syncAssemblyStepWithTutorial: function(stepName, stepIndex, assemblyStatus) {
+        try {
+            AppConfig.log(3, `🔄 SYNC: Tentativo sincronizzazione "${stepName}" con tutorial normale`);
+
+            // Mappa step AssemblySystem a step tutorial normale
+            const assemblyToTutorialMap = {
+                'filtro_assembly': 1,      // Step 1 - Assemblaggio Sequenziale Guidato
+                'coperchio_assembly': 2,   // Step 2 - Coperchio
+                'viti_assembly': 3,        // Step 3 - Gruppo Viti Coperchio
+                'tappini_assembly': 4,     // Step 4 - Tappini e Ingrassaggio
+                'ingrassatori_assembly': 5 // Step 5 - Ingrassatore Finale
+            };
+
+            const tutorialStepNumber = assemblyToTutorialMap[stepName];
+            if (tutorialStepNumber) {
+                AppConfig.log(2, `🔄 SYNC: Avanzamento tutorial normale da AssemblySystem: Step ${tutorialStepNumber}`);
+
+                // Simula click su pulsante Next del tutorial per avanzare l'UI
+                const nextButton = document.getElementById('nextStepBtn');
+                if (nextButton && !nextButton.disabled) {
+                    // Avanza manualmente lo step counter se esiste una funzione globale
+                    if (window.Scene3D && typeof window.Scene3D.goToTutorialStep === 'function') {
+                        window.Scene3D.goToTutorialStep(tutorialStepNumber);
+                        AppConfig.log(2, `🔄 SYNC: Tutorial avanzato a step ${tutorialStepNumber} via Scene3D`);
+                    } else if (typeof this.goToTutorialStep === 'function') {
+                        this.goToTutorialStep(tutorialStepNumber);
+                        AppConfig.log(2, `🔄 SYNC: Tutorial avanzato a step ${tutorialStepNumber} via UI`);
+                    } else {
+                        // Fallback: click manuale su Next button
+                        nextButton.click();
+                        AppConfig.log(2, `🔄 SYNC: Tutorial avanzato via click Next button`);
+                    }
+                } else {
+                    AppConfig.log(1, `🔄 SYNC: Next button non disponibile o disabilitato`);
+                }
+            } else {
+                AppConfig.log(3, `🔄 SYNC: Step AssemblySystem "${stepName}" non mappato a tutorial normale`);
+            }
+        } catch (error) {
+            console.error(`[UI] ❌ Errore sincronizzazione AssemblySystem-Tutorial:`, error);
         }
     }
 };
@@ -3054,3 +3182,5 @@ window.startAnimation = function() {
 window.hideError = function() {
     if (window.UI) window.UI.hideError();
 };
+
+} // Fine if statement del sistema legacy

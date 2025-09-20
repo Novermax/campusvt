@@ -1,323 +1,355 @@
 /**
- * UICore.js - Modulo principale coordinatore UI
- * 
- * Gestisce l'inizializzazione e coordinamento di tutti i moduli UI.
- * Fornisce un'interfaccia unificata e logging sicuro.
+ * UICore.js - Core UI management and initialization
+ *
+ * Responsabilità:
+ * - Inizializzazione sistema UI
+ * - Navigazione tra pagine
+ * - Caching elementi DOM
+ * - Setup event listeners base
+ * - Gestione stato e feedback utente
+ *
+ * Versione: 2.0 Refactored
+ * Data: Dicembre 2025
  */
 
-window.UICore = {
-    
-    // Moduli gestiti
-    modules: {},
-    
-    // Stato di inizializzazione
-    initialized: false,
-    
+class UICore {
+    constructor() {
+        this.currentPage = 'home';
+        this.elements = {};
+        this.isInitialized = false;
+    }
+
     /**
      * Log sicuro che funziona anche se AppConfig non è caricato
      */
-    safeLog: function(level, message, ...args) {
+    safeLog(level, message, ...args) {
         if (window.AppConfig && AppConfig.log) {
             AppConfig.log(level, message, ...args);
         } else {
             const levelNames = ['ERROR', 'WARN', 'INFO', 'DEBUG'];
             const levelName = levelNames[level] || 'LOG';
-            console.log(`[${levelName}] UICore: ${message}`, ...args);
+            console.log(`[${levelName}] ${message}`, ...args);
         }
-    },
-    
-    /**
-     * Inizializza tutti i moduli UI
-     */
-    init: function() {
-        this.safeLog(2, 'Inizializzazione UICore...');
-        
-        try {
-            // Inizializza moduli in ordine di dipendenza
-            this.initFeedbackManager();
-            this.initPageManager();
-            this.initScenarioManager();
-            this.initModelManager();
-            this.initTutorialManager();
-            this.initToolsManager();
-            this.initMobileControlsManager();
-            
-            // Setup event listeners globali
-            this.setupGlobalEventListeners();
-            
-            // Inizializzazione completata
-            this.initialized = true;
-            this.safeLog(2, 'UICore inizializzato con successo');
-            
-            // Mostra pagina iniziale
-            this.modules.pageManager.showPage('home');
-            
-        } catch (error) {
-            this.safeLog(0, 'Errore inizializzazione UICore:', error);
-            if (this.modules.feedbackManager) {
-                this.modules.feedbackManager.showError('Errore inizializzazione interfaccia');
-            }
-        }
-    },
-    
-    /**
-     * Inizializza il modulo FeedbackManager
-     */
-    initFeedbackManager: function() {
-        if (window.FeedbackManager) {
-            this.modules.feedbackManager = window.FeedbackManager;
-            this.modules.feedbackManager.init();
-            this.safeLog(3, 'FeedbackManager inizializzato');
-        } else {
-            this.safeLog(1, 'FeedbackManager non disponibile');
-        }
-    },
-    
-    /**
-     * Inizializza il modulo PageManager
-     */
-    initPageManager: function() {
-        if (window.PageManager) {
-            this.modules.pageManager = window.PageManager;
-            this.modules.pageManager.init(this.modules.feedbackManager);
-            this.safeLog(3, 'PageManager inizializzato');
-        } else {
-            this.safeLog(0, 'PageManager non disponibile - richiesto per il funzionamento');
-            throw new Error('PageManager è richiesto');
-        }
-    },
-    
-    /**
-     * Inizializza il modulo ScenarioManager
-     */
-    initScenarioManager: function() {
-        if (window.ScenarioManager) {
-            this.modules.scenarioManager = window.ScenarioManager;
-            this.modules.scenarioManager.init(
-                this.modules.feedbackManager,
-                this.modules.pageManager
-            );
-            this.safeLog(3, 'ScenarioManager inizializzato');
-        } else {
-            this.safeLog(1, 'ScenarioManager non disponibile');
-        }
-    },
-    
-    /**
-     * Inizializza il modulo ModelManager
-     */
-    initModelManager: function() {
-        if (window.ModelManager) {
-            this.modules.modelManager = window.ModelManager;
-            this.modules.modelManager.init(this.modules.feedbackManager);
-            this.safeLog(3, 'ModelManager inizializzato');
-        } else {
-            this.safeLog(1, 'ModelManager non disponibile');
-        }
-    },
-    
-    /**
-     * Inizializza il modulo TutorialManager
-     */
-    initTutorialManager: function() {
-        if (window.TutorialManager) {
-            this.modules.tutorialManager = window.TutorialManager;
-            this.modules.tutorialManager.init(
-                this.modules.feedbackManager,
-                this.modules.toolsManager
-            );
-            this.safeLog(3, 'TutorialManager inizializzato');
-        } else {
-            this.safeLog(1, 'TutorialManager non disponibile');
-        }
-    },
-    
-    /**
-     * Inizializza il modulo ToolsManager
-     */
-    initToolsManager: function() {
-        if (window.ToolsManager) {
-            this.modules.toolsManager = window.ToolsManager;
-            this.modules.toolsManager.init(this.modules.feedbackManager);
-            this.safeLog(3, 'ToolsManager inizializzato');
-        } else {
-            this.safeLog(1, 'ToolsManager non disponibile');
-        }
-    },
-    
-    /**
-     * Inizializza il modulo MobileControlsManager
-     */
-    initMobileControlsManager: function() {
-        if (window.MobileControlsManager) {
-            this.modules.mobileControlsManager = window.MobileControlsManager;
-            this.modules.mobileControlsManager.init();
-            this.safeLog(3, 'MobileControlsManager inizializzato');
-        } else {
-            this.safeLog(1, 'MobileControlsManager non disponibile');
-        }
-    },
-    
-    /**
-     * Setup event listeners globali
-     */
-    setupGlobalEventListeners: function() {
-        // Event listener per rotazione schermo mobile
-        window.addEventListener('orientationchange', this.onOrientationChange.bind(this));
-        window.addEventListener('resize', this.onWindowResize.bind(this));
-        
-        // Event listeners per comunicazione inter-modulo
-        document.addEventListener('scenarioChanged', this.onScenarioChanged.bind(this));
-        document.addEventListener('tutorialStepChanged', this.onTutorialStepChanged.bind(this));
-        document.addEventListener('toolStateChanged', this.onToolStateChanged.bind(this));
-        
-        this.safeLog(3, 'Event listeners globali configurati');
-    },
-    
-    /**
-     * Gestisce cambio orientamento
-     */
-    onOrientationChange: function() {
-        this.safeLog(3, 'Orientamento schermo cambiato');
-        if (this.modules.mobileControlsManager) {
-            this.modules.mobileControlsManager.onOrientationChange();
-        }
-    },
-    
-    /**
-     * Gestisce ridimensionamento finestra
-     */
-    onWindowResize: function() {
-        this.safeLog(3, 'Finestra ridimensionata');
-        if (this.modules.mobileControlsManager) {
-            this.modules.mobileControlsManager.onWindowResize();
-        }
-    },
-    
-    /**
-     * Gestisce cambio scenario
-     */
-    onScenarioChanged: function(event) {
-        const scenario = event.detail.scenario;
-        this.safeLog(2, `Scenario cambiato: ${scenario.name}`);
-        
-        // Notifica altri moduli del cambio scenario
-        if (this.modules.tutorialManager && scenario.tutorial) {
-            this.modules.tutorialManager.loadTutorial(scenario.tutorial);
-        }
-        
-        if (this.modules.modelManager && scenario.files) {
-            this.modules.modelManager.loadScenarioModels(scenario);
-        }
-    },
-    
-    /**
-     * Gestisce cambio step tutorial
-     */
-    onTutorialStepChanged: function(event) {
-        const { step, index } = event.detail;
-        this.safeLog(3, `Tutorial step cambiato: ${index + 1} - ${step.title}`);
-        
-        // NON evidenziare strumento automaticamente - lascia che l'utente impari
-        if (step.properties.Utensile && this.modules.toolsManager) {
-            const toolName = this.mapToolName(step.properties.Utensile);
-            if (toolName) {
-                // Solo log del tool richiesto, senza evidenziazione automatica
-                this.safeLog(2, `Strumento richiesto per step: ${toolName} (senza evidenziazione automatica)`);
-                // NON chiamare highlightRequiredTool - l'utente deve scegliere il tool da solo
-                // if (this.modules.toolsManager.highlightRequiredTool) {
-                //     this.modules.toolsManager.highlightRequiredTool(toolName);
-                // }
-            }
-        }
-    },
-    
-    /**
-     * Gestisce cambio stato strumenti
-     */
-    onToolStateChanged: function(event) {
-        const { toolName, isActive } = event.detail;
-        this.safeLog(3, `Strumento ${toolName}: ${isActive ? 'attivato' : 'disattivato'}`);
-    },
-    
-    /**
-     * Mappa i nomi degli strumenti dal tutorial ai nomi interni
-     */
-    mapToolName: function(tutorialToolName) {
-        const mapping = {
-            'ChiaveBrugola': 'brugola',
-            'ChiaveInglese': 'chiave_inglese',
-            'Mani': 'mano',
-            'Martello': 'martello'
-        };
-        
-        return mapping[tutorialToolName] || null;
-    },
-    
-    /**
-     * Ottiene un modulo specifico
-     */
-    getModule: function(moduleName) {
-        return this.modules[moduleName] || null;
-    },
-    
-    /**
-     * Verifica se tutti i moduli essenziali sono disponibili
-     */
-    checkModules: function() {
-        const requiredModules = ['feedbackManager', 'pageManager'];
-        const optionalModules = ['scenarioManager', 'modelManager', 'tutorialManager', 'toolsManager', 'mobileControlsManager'];
-        
-        let allRequired = true;
-        let availableOptional = 0;
-        
-        // Controlla moduli richiesti
-        for (const moduleName of requiredModules) {
-            if (!this.modules[moduleName]) {
-                this.safeLog(0, `Modulo richiesto mancante: ${moduleName}`);
-                allRequired = false;
-            }
-        }
-        
-        // Conta moduli opzionali disponibili
-        for (const moduleName of optionalModules) {
-            if (this.modules[moduleName]) {
-                availableOptional++;
-            }
-        }
-        
-        this.safeLog(2, `Status moduli: Richiesti ${allRequired ? 'OK' : 'MANCANTI'}, Opzionali ${availableOptional}/${optionalModules.length}`);
-        
-        return {
-            allRequiredAvailable: allRequired,
-            availableOptionalCount: availableOptional,
-            totalOptionalCount: optionalModules.length
-        };
-    },
-    
-    /**
-     * Cleanup completo di tutti i moduli
-     */
-    cleanup: function() {
-        this.safeLog(2, 'Cleanup UICore...');
-        
-        // Cleanup moduli nell'ordine inverso di inizializzazione
-        Object.keys(this.modules).reverse().forEach(moduleName => {
-            const module = this.modules[moduleName];
-            if (module && typeof module.cleanup === 'function') {
-                try {
-                    module.cleanup();
-                    this.safeLog(3, `${moduleName} cleanup completato`);
-                } catch (error) {
-                    this.safeLog(1, `Errore cleanup ${moduleName}:`, error);
-                }
-            }
-        });
-        
-        // Reset stato
-        this.modules = {};
-        this.initialized = false;
-        
-        this.safeLog(2, 'UICore cleanup completato');
     }
-};
+
+    /**
+     * Inizializza il sistema UI core
+     */
+    init() {
+        this.safeLog(2, '[UICore] Inizializzazione core UI...');
+
+        try {
+            // Caching elementi DOM
+            this.cacheElements();
+
+            // Setup event listeners base
+            this.setupEventListeners();
+
+            // Mostra pagina iniziale
+            this.showPage('home');
+
+            // Aggiorna stato iniziale
+            this.updateStatus('Pronto');
+
+            this.isInitialized = true;
+            this.safeLog(2, '[UICore] Core UI inizializzato con successo');
+            return true;
+
+        } catch (error) {
+            this.safeLog(0, '[UICore] Errore inizializzazione core UI:', error);
+            this.showError('Errore inizializzazione interfaccia');
+            return false;
+        }
+    }
+
+    /**
+     * Cachea i riferimenti agli elementi DOM per performance migliori
+     */
+    cacheElements() {
+        // Elementi principali pagine
+        this.elements.homePage = document.getElementById('homePage');
+        this.elements.scenarioPage = document.getElementById('scenarioPage');
+        this.elements.scenariosList = document.getElementById('scenariosList');
+
+        // Controlli input
+        this.elements.fileInput = document.getElementById('fileInput');
+        this.elements.animationInput = document.getElementById('animationInput');
+        this.elements.scenarioBtn = document.getElementById('scenarioBtn');
+        this.elements.animationBtn = document.getElementById('animationBtn');
+
+        // Elementi feedback
+        this.elements.status = document.getElementById('status');
+        this.elements.loader = document.getElementById('loader');
+        this.elements.error = document.getElementById('error');
+        this.elements.errorMessage = document.getElementById('errorMessage');
+        this.elements.scenarioTitle = document.getElementById('scenarioTitle');
+
+        // Elementi tutorial UI
+        this.elements.tutorialStepsBar = document.getElementById('tutorialStepsBar');
+        this.elements.stepSpeechBubble = document.getElementById('stepSpeechBubble');
+        this.elements.speechBubbleContent = document.getElementById('speechBubbleContent');
+
+        this.safeLog(3, '[UICore] Elementi DOM cachati');
+    }
+
+    /**
+     * Configura event listeners base del core UI
+     */
+    setupEventListeners() {
+        // Event listener per resize finestra
+        window.addEventListener('resize', this.onWindowResize.bind(this));
+
+        // Event listener per orientazione dispositivi mobili
+        window.addEventListener('orientationchange', this.onOrientationChange.bind(this));
+
+        // Event listeners per navigation
+        if (this.elements.scenariosList) {
+            // Gestione navigazione da tastiera
+            this.elements.scenariosList.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    // Delega alla gesture management (scenario selection)
+                    if (window.UI && window.UI.scenarioManager) {
+                        window.UI.scenarioManager.onScenarioCardClick(event);
+                    }
+                }
+            });
+        }
+
+        this.safeLog(3, '[UICore] Event listeners base configurati');
+    }
+
+    /**
+     * Mostra una specifica pagina
+     * @param {string} page - Nome della pagina ('home' o 'scenario')
+     */
+    showPage(page) {
+        this.safeLog(3, `[UICore] Navigazione verso pagina: ${page}`);
+
+        // Nascondi tutte le pagine
+        if (this.elements.homePage) {
+            this.elements.homePage.classList.add('hidden');
+        }
+        if (this.elements.scenarioPage) {
+            this.elements.scenarioPage.classList.add('hidden');
+        }
+
+        // Mostra la pagina richiesta
+        if (page === 'home' && this.elements.homePage) {
+            this.elements.homePage.classList.remove('hidden');
+            this.currentPage = 'home';
+            this.onHomePageShown();
+        } else if (page === 'scenario' && this.elements.scenarioPage) {
+            this.elements.scenarioPage.classList.remove('hidden');
+            this.currentPage = 'scenario';
+            this.onScenarioPageShown();
+        }
+
+        this.safeLog(3, `[UICore] Pagina mostrata: ${page}`);
+    }
+
+    /**
+     * Callback quando viene mostrata la home page
+     */
+    onHomePageShown() {
+        // Cleanup controlli mobile se attivi
+        if (window.UI && window.UI.mobileManager) {
+            window.UI.mobileManager.cleanupMobileControls();
+        }
+
+        // Reset UI tutorial
+        this.hideTutorialStepsBar();
+        this.hideStepSpeechBubble();
+
+        this.safeLog(3, '[UICore] Home page mostrata');
+    }
+
+    /**
+     * Callback quando viene mostrata la pagina scenario
+     */
+    onScenarioPageShown() {
+        // Inizializza controlli mobile se su dispositivo mobile
+        if (window.UI && window.UI.mobileManager) {
+            window.UI.mobileManager.initMobileControls();
+        }
+
+        // Inizializza il cursore del canvas quando si entra nella pagina scenario
+        setTimeout(() => {
+            if (window.UI && window.UI.toolsManager) {
+                window.UI.toolsManager.updateCanvasCursor();
+            }
+        }, 100);
+
+        // Inizializza la scena 3D se non già fatto
+        if (window.Scene3D && !window.Scene3D.scene) {
+            try {
+                window.Scene3D.init();
+                this.safeLog(2, '[UICore] Scena 3D inizializzata da callback pagina scenario');
+            } catch (error) {
+                this.safeLog(0, '[UICore] Errore inizializzazione scena 3D:', error);
+            }
+        }
+
+        this.safeLog(3, '[UICore] Pagina scenario mostrata');
+    }
+
+    /**
+     * Torna alla home page
+     */
+    goHome() {
+        // Pulisci la scena 3D
+        if (window.Scene3D && window.Scene3D.clearAllModels) {
+            window.Scene3D.clearAllModels();
+        }
+
+        // Reset stato scenario nel scenario manager
+        if (window.UI && window.UI.scenarioManager) {
+            window.UI.scenarioManager.resetCurrentScenario();
+        }
+
+        // Nasconde la barra tutorial e il fumetto
+        this.hideTutorialStepsBar();
+        this.hideStepSpeechBubble();
+
+        // Aggiorna UI
+        this.updateStatus('Home');
+        this.showPage('home');
+
+        this.safeLog(2, '[UICore] Ritorno alla home');
+    }
+
+    /**
+     * Aggiorna messaggio di stato
+     * @param {string} message - Messaggio da mostrare
+     */
+    updateStatus(message) {
+        if (this.elements.status) {
+            this.elements.status.textContent = message;
+        }
+        this.safeLog(3, `[UICore] Status aggiornato: ${message}`);
+    }
+
+    /**
+     * Mostra loader con messaggio
+     * @param {string} message - Messaggio del loader
+     */
+    showLoader(message = 'Caricamento...') {
+        if (this.elements.loader) {
+            this.elements.loader.style.display = 'flex';
+            const loaderText = this.elements.loader.querySelector('.loader-text');
+            if (loaderText) {
+                loaderText.textContent = message;
+            }
+        }
+        this.safeLog(3, `[UICore] Loader mostrato: ${message}`);
+    }
+
+    /**
+     * Nasconde loader
+     */
+    hideLoader() {
+        if (this.elements.loader) {
+            this.elements.loader.style.display = 'none';
+        }
+        this.safeLog(3, '[UICore] Loader nascosto');
+    }
+
+    /**
+     * Mostra messaggio di errore
+     * @param {string} message - Messaggio di errore
+     */
+    showError(message) {
+        if (this.elements.error && this.elements.errorMessage) {
+            this.elements.errorMessage.textContent = message;
+            this.elements.error.style.display = 'block';
+        }
+        this.safeLog(0, `[UICore] Errore mostrato: ${message}`);
+    }
+
+    /**
+     * Nasconde messaggio di errore
+     */
+    hideError() {
+        if (this.elements.error) {
+            this.elements.error.style.display = 'none';
+        }
+        this.safeLog(3, '[UICore] Errore nascosto');
+    }
+
+    /**
+     * Nasconde la barra dei passi tutorial
+     */
+    hideTutorialStepsBar() {
+        if (this.elements.tutorialStepsBar) {
+            this.elements.tutorialStepsBar.style.display = 'none';
+        }
+    }
+
+    /**
+     * Nasconde il fumetto delle descrizioni step
+     */
+    hideStepSpeechBubble() {
+        if (this.elements.stepSpeechBubble) {
+            this.elements.stepSpeechBubble.style.display = 'none';
+        }
+    }
+
+    /**
+     * Gestisce resize della finestra
+     */
+    onWindowResize() {
+        // Delega la gestione resize ai manager specializzati
+        if (window.UI && window.UI.mobileManager) {
+            window.UI.mobileManager.onWindowResize();
+        }
+
+        // Notifica Scene3D per aggiornamento camera/renderer
+        if (window.Scene3D && window.Scene3D.onWindowResize) {
+            window.Scene3D.onWindowResize();
+        }
+
+        this.safeLog(3, '[UICore] Window resize gestito');
+    }
+
+    /**
+     * Gestisce cambio orientamento su mobile
+     */
+    onOrientationChange() {
+        // Delega la gestione orientamento al mobile manager
+        if (window.UI && window.UI.mobileManager) {
+            window.UI.mobileManager.onOrientationChange();
+        }
+
+        this.safeLog(3, '[UICore] Orientation change gestito');
+    }
+
+    /**
+     * Ottiene stato corrente del core UI
+     */
+    getState() {
+        return {
+            isInitialized: this.isInitialized,
+            currentPage: this.currentPage,
+            elementsCount: Object.keys(this.elements).length
+        };
+    }
+
+    /**
+     * Cleanup risorse
+     */
+    dispose() {
+        // Rimuovi event listeners
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
+        window.removeEventListener('orientationchange', this.onOrientationChange.bind(this));
+
+        // Reset stato
+        this.currentPage = 'home';
+        this.elements = {};
+        this.isInitialized = false;
+
+        this.safeLog(2, '[UICore] Cleanup completato');
+    }
+}
+
+// Export per uso come modulo
+window.UICore = UICore;
+console.log('[UICore] ✅ Modulo caricato e disponibile su window.UICore');

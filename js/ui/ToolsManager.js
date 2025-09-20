@@ -1,521 +1,418 @@
 /**
  * ToolsManager.js - Gestione strumenti e legenda
- * 
+ *
  * Responsabilità:
- * - Inizializzazione legenda strumenti
- * - Gestione stati strumenti (attivo/inattivo)
- * - Modalità esclusiva (solo uno strumento attivo)
- * - Eventi cambio stato per comunicazione inter-modulo
- * - Integrazione con tutorial steps
+ * - Inizializzazione legenda strumenti con icone
+ * - Gestione stato attivazione/disattivazione strumenti
+ * - Aggiornamento cursori canvas personalizzati
+ * - Mappatura nomi strumenti da tutorial a nomi interni
+ * - Evidenziazione strumenti richiesti (opzionale)
+ * - Eventi customizzati per notifiche cambio stato
+ *
+ * Versione: 2.0 Refactored
+ * Data: Dicembre 2025
  */
 
-window.ToolsManager = {
-    
-    // Stato strumenti
-    toolsState: {},
-    
-    // Configurazione strumenti disponibili
-    availableTools: [
-        { name: 'brugola', icon: 'utilimages/brugola.png', displayName: 'Brugola' },
-        { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png', displayName: 'Chiave Inglese' },
-        { name: 'mano', icon: 'utilimages/mano.png', displayName: 'Mano' },
-        { name: 'aria', icon: 'utilimages/air.png', displayName: 'Aria' }
-    ],
-    
-    // Riferimenti ai moduli
-    feedbackManager: null,
-    
-    // Cache elementi DOM
-    elements: {},
-    
+class ToolsManager {
+    constructor() {
+        this.toolsState = {};
+        this.availableTools = [
+            { name: 'brugola', icon: 'utilimages/brugola.png' },
+            { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png' },
+            { name: 'mano', icon: 'utilimages/mano.png' },
+            { name: 'aria', icon: 'utilimages/air.png' }
+        ];
+        this.isInitialized = false;
+    }
+
     /**
-     * Inizializzazione ToolsManager
+     * Log sicuro che funziona anche se AppConfig non è caricato
      */
-    init: function(feedbackManager) {
-        this.feedbackManager = feedbackManager;
-        
-        // Cache elementi DOM
-        this.cacheElements();
-        
-        // Inizializza la legenda degli strumenti
-        this.initToolsLegend();
-        
-        console.log('[ToolsManager] Inizializzato');
-    },
-    
+    safeLog(level, message, ...args) {
+        if (window.AppConfig && AppConfig.log) {
+            AppConfig.log(level, message, ...args);
+        } else {
+            const levelNames = ['ERROR', 'WARN', 'INFO', 'DEBUG'];
+            const levelName = levelNames[level] || 'LOG';
+            console.log(`[${levelName}] ${message}`, ...args);
+        }
+    }
+
     /**
-     * Cache elementi DOM
+     * Inizializza il sistema di gestione strumenti
      */
-    cacheElements: function() {
-        this.elements.toolsContainer = document.getElementById('toolsContainer');
-        
-        console.log('[ToolsManager] Elementi DOM cachati');
-    },
-    
+    init() {
+        this.safeLog(2, '[ToolsManager] Inizializzazione gestione strumenti...');
+
+        try {
+            this.initToolsLegend();
+            this.isInitialized = true;
+            this.safeLog(2, '[ToolsManager] Sistema strumenti inizializzato con successo');
+            return true;
+
+        } catch (error) {
+            this.safeLog(0, '[ToolsManager] Errore inizializzazione:', error);
+            return false;
+        }
+    }
+
     /**
-     * Inizializza la legenda strumenti
+     * Inizializza la legenda strumenti con icone
      */
-    initToolsLegend: function() {
-        if (!this.elements.toolsContainer) {
-            console.warn('[ToolsManager] Container strumenti non trovato');
+    initToolsLegend() {
+        const toolsContainer = document.getElementById('toolsContainer');
+        if (!toolsContainer) {
+            this.safeLog(1, '[ToolsManager] Contenitore strumenti non trovato');
             return;
         }
-        
+
         // Pulisce il container
-        this.elements.toolsContainer.innerHTML = '';
-        
+        toolsContainer.innerHTML = '';
+
         // Crea le icone degli strumenti
         this.availableTools.forEach(tool => {
-            const toolElement = this.createToolElement(tool);
-            this.elements.toolsContainer.appendChild(toolElement);
-            
+            const toolElement = document.createElement('div');
+            toolElement.className = 'tool-icon';
+            toolElement.dataset.tool = tool.name;
+            toolElement.title = tool.name.replace('_', ' ');
+
+            const img = document.createElement('img');
+            img.src = tool.icon;
+            img.alt = tool.name;
+            img.onerror = () => {
+                this.safeLog(1, `[ToolsManager] Icona non trovata: ${tool.icon}`);
+                img.style.display = 'none';
+            };
+
+            toolElement.appendChild(img);
+            toolElement.addEventListener('click', () => this.toggleTool(tool.name));
+
+            toolsContainer.appendChild(toolElement);
+
             // Inizializza lo stato dello strumento
             this.toolsState[tool.name] = false;
         });
-        
-        console.log('[ToolsManager] Legenda strumenti inizializzata');
-    },
-    
+
+        this.safeLog(2, '[ToolsManager] Legenda strumenti inizializzata');
+    }
+
     /**
-     * Crea elemento strumento
+     * Attiva/disattiva uno strumento (modalità esclusiva)
+     * @param {string} toolName - Nome dello strumento
      */
-    createToolElement: function(tool) {
-        const toolElement = document.createElement('div');
-        toolElement.className = 'tool-icon';
-        toolElement.dataset.tool = tool.name;
-        toolElement.title = tool.displayName;
-        
-        const img = document.createElement('img');
-        img.src = tool.icon;
-        img.alt = tool.displayName;
-        img.onerror = function() {
-            console.warn(`[ToolsManager] Icona non trovata: ${tool.icon}`);
-            this.style.display = 'none';
-        };
-        
-        toolElement.appendChild(img);
-        toolElement.addEventListener('click', () => this.toggleTool(tool.name));
-        
-        return toolElement;
-    },
-    
-    /**
-     * Attiva/disattiva uno strumento
-     */
-    toggleTool: function(toolName) {
-        // Se lo strumento è già attivo, riapplica comunque il cursore (specialmente per aria)
+    toggleTool(toolName) {
+        // Se lo strumento è già attivo, non fare nulla (rimane attivo)
         if (this.toolsState[toolName]) {
-            console.log(`[ToolsManager] Strumento già attivo: ${toolName} - riapplico cursore`);
-            // Riapplica cursore anche se già attivo (fix per cursore aria)
-            this.applyCursorForTool(toolName);
+            this.safeLog(2, `[ToolsManager] Strumento già attivo: ${toolName}`);
             return;
         }
-        
+
         // Disattiva tutti gli altri strumenti (modalità esclusiva)
-        this.deactivateAllToolsExcept(toolName);
-        
-        // Attiva lo strumento corrente
-        this.activateTool(toolName);
-    },
-    
-    /**
-     * Disattiva tutti gli strumenti eccetto quello specificato
-     */
-    deactivateAllToolsExcept: function(exceptToolName) {
         Object.keys(this.toolsState).forEach(tool => {
-            if (tool !== exceptToolName && this.toolsState[tool]) {
-                this.deactivateToolInternal(tool);
+            if (tool !== toolName) {
+                this.toolsState[tool] = false;
+                const element = document.querySelector(`[data-tool="${tool}"]`);
+                if (element) element.classList.remove('active');
             }
         });
-    },
-    
-    /**
-     * Attiva uno strumento specifico
-     */
-    activateTool: function(toolName) {
-        if (!this.availableTools.find(tool => tool.name === toolName)) {
-            console.warn(`[ToolsManager] Strumento sconosciuto: ${toolName}`);
-            return;
-        }
-        
-        // Disattiva tutti gli altri tool prima di attivare quello nuovo
-        Object.keys(this.toolsState).forEach(otherTool => {
-            if (otherTool !== toolName && this.toolsState[otherTool]) {
-                this.deactivateTool(otherTool);
-            }
-        });
-        
+
+        // Attiva lo strumento corrente
         this.toolsState[toolName] = true;
-        
-        const element = this.getToolElement(toolName);
+        const element = document.querySelector(`[data-tool="${toolName}"]`);
+
         if (element) {
             element.classList.add('active');
         }
-        
-        // Applica cursore personalizzato per tool Aria
-        this.applyCursorForTool(toolName);
-        
-        const displayName = this.getToolDisplayName(toolName);
-        if (this.feedbackManager) {
-            this.feedbackManager.updateStatus(`Strumento attivo: ${displayName}`);
-        }
-        
-        console.log(`[ToolsManager] Strumento attivato: ${toolName}`);
-        
-        // Notifica il cambio di stato
-        this.notifyToolStateChanged(toolName, true);
-    },
-    
+
+        // Aggiorna interfaccia e notifica cambio stato
+        this.updateStatus(`Strumento attivo: ${toolName.replace('_', ' ')}`);
+        this.safeLog(2, `[ToolsManager] Strumento attivato: ${toolName}`);
+        this.onToolStateChanged(toolName, true);
+    }
+
     /**
      * Disattiva manualmente uno strumento specifico
+     * @param {string} toolName - Nome dello strumento
      */
-    deactivateTool: function(toolName) {
-        if (!this.toolsState[toolName]) {
-            return; // Già disattivato
-        }
-        
-        this.deactivateToolInternal(toolName);
-        
-        if (this.feedbackManager) {
-            this.feedbackManager.updateStatus('Nessuno strumento attivo');
-        }
-        
-        console.log(`[ToolsManager] Strumento disattivato: ${toolName}`);
-    },
-    
-    /**
-     * Disattivazione interna di uno strumento
-     */
-    deactivateToolInternal: function(toolName) {
+    deactivateTool(toolName) {
+        if (!this.toolsState[toolName]) return; // Già disattivato
+
         this.toolsState[toolName] = false;
-        
-        const element = this.getToolElement(toolName);
-        if (element) {
-            element.classList.remove('active');
-        }
-        
-        // Rimuovi cursore personalizzato
-        this.removeCursorForTool(toolName);
-        
-        // Notifica il cambio di stato
-        this.notifyToolStateChanged(toolName, false);
-    },
-    
+        const element = document.querySelector(`[data-tool="${toolName}"]`);
+        if (element) element.classList.remove('active');
+
+        this.updateStatus('Nessuno strumento attivo');
+        this.safeLog(2, `[ToolsManager] Strumento disattivato: ${toolName}`);
+        this.onToolStateChanged(toolName, false);
+    }
+
     /**
      * Disattiva tutti gli strumenti
      */
-    deactivateAllTools: function() {
-        let wasAnyActive = false;
-        
+    deactivateAllTools() {
         Object.keys(this.toolsState).forEach(toolName => {
-            if (this.toolsState[toolName]) {
-                this.deactivateToolInternal(toolName);
-                wasAnyActive = true;
-            }
+            this.deactivateTool(toolName);
         });
-        
-        if (wasAnyActive && this.feedbackManager) {
-            this.feedbackManager.updateStatus('Tutti gli strumenti disattivati');
+        this.safeLog(2, '[ToolsManager] Tutti gli strumenti disattivati');
+    }
+
+    /**
+     * Attiva strumento da nome tutorial (mapping automatico)
+     * @param {string} tutorialToolName - Nome strumento da tutorial
+     */
+    activateToolFromTutorial(tutorialToolName) {
+        const internalName = this.mapToolName(tutorialToolName);
+        if (internalName) {
+            this.toggleTool(internalName);
+            this.safeLog(3, `[ToolsManager] Tool attivato da tutorial: ${tutorialToolName} → ${internalName}`);
+        } else {
+            this.safeLog(1, `[ToolsManager] Tool tutorial non riconosciuto: ${tutorialToolName}`);
         }
-        
-        console.log('[ToolsManager] Tutti gli strumenti disattivati');
-    },
-    
+    }
+
     /**
      * Ottiene lo stato di uno strumento
+     * @param {string} toolName - Nome dello strumento
+     * @returns {boolean} Stato dello strumento
      */
-    getToolState: function(toolName) {
+    getToolState(toolName) {
         return this.toolsState[toolName] || false;
-    },
-    
+    }
+
     /**
      * Ottiene lo strumento attualmente attivo
+     * @returns {string|null} Nome dello strumento attivo o null
      */
-    getActiveTool: function() {
+    getActiveTool() {
         for (const [toolName, isActive] of Object.entries(this.toolsState)) {
             if (isActive) return toolName;
         }
         return null;
-    },
-    
+    }
+
     /**
-     * Verifica se almeno uno strumento è attivo
+     * Ottiene tutti gli stati strumenti
+     * @returns {Object} Oggetto con stati di tutti gli strumenti
      */
-    hasActiveTool: function() {
-        return Object.values(this.toolsState).some(isActive => isActive);
-    },
-    
-    /**
-     * Ottiene tutti gli stati degli strumenti
-     */
-    getAllToolsState: function() {
+    getToolsState() {
         return { ...this.toolsState };
-    },
-    
+    }
+
     /**
-     * Ottiene elemento DOM di uno strumento
+     * Mappa i nomi degli strumenti dal tutorial ai nomi interni
+     * @param {string} tutorialToolName - Nome strumento da tutorial
+     * @returns {string|null} Nome interno o null se non trovato
      */
-    getToolElement: function(toolName) {
-        return document.querySelector(`[data-tool="${toolName}"]`);
-    },
-    
-    /**
-     * Ottiene nome display di uno strumento
-     */
-    getToolDisplayName: function(toolName) {
-        const tool = this.availableTools.find(t => t.name === toolName);
-        return tool ? tool.displayName : toolName;
-    },
-    
-    /**
-     * Notifica cambio stato strumento
-     */
-    notifyToolStateChanged: function(toolName, isActive) {
-        // Dispatch evento personalizzato per altri moduli
-        const event = new CustomEvent('toolStateChanged', {
-            detail: {
-                toolName: toolName,
-                isActive: isActive,
-                allStates: this.getAllToolsState(),
-                activeTool: this.getActiveTool()
-            }
-        });
-        document.dispatchEvent(event);
-    },
-    
-    /**
-     * Attiva strumento da nome tutorial
-     */
-    activateToolFromTutorial: function(tutorialToolName) {
+    mapToolName(tutorialToolName) {
         const mapping = {
             'ChiaveBrugola': 'brugola',
             'ChiaveInglese': 'chiave_inglese',
             'Mani': 'mano',
             'Aria': 'aria'
         };
-        
-        const toolName = mapping[tutorialToolName];
-        if (toolName) {
-            console.log(`[ToolsManager] Attivazione strumento da tutorial: ${tutorialToolName} -> ${toolName}`);
-            this.toggleTool(toolName);
-            return true;
-        }
-        
-        console.warn(`[ToolsManager] Strumento tutorial non riconosciuto: ${tutorialToolName}`);
-        return false;
-    },
-    
+
+        return mapping[tutorialToolName] || null;
+    }
+
     /**
-     * Evidenzia lo strumento richiesto senza attivarlo
+     * Evidenzia lo strumento richiesto senza attivarlo (per tutorial)
+     * @param {string} toolName - Nome dello strumento
      */
-    highlightRequiredTool: function(toolName) {
+    highlightRequiredTool(toolName) {
         if (!toolName) return;
-        
+
         // Trova elemento DOM del tool
-        const toolElement = this.getToolElement(toolName);
+        const toolElement = document.querySelector(`[data-tool="${toolName}"]`);
         if (!toolElement) {
-            console.log(`[ToolsManager] Elemento tool non trovato: ${toolName}`);
+            this.safeLog(1, `[ToolsManager] Elemento tool non trovato: ${toolName}`);
             return;
         }
-        
+
         // Rimuovi evidenziazione precedente da tutti i tool
         document.querySelectorAll('.tool-icon').forEach(icon => {
             icon.classList.remove('required', 'tool-highlight');
         });
-        
+
         // Aggiungi evidenziazione al tool richiesto
         toolElement.classList.add('required', 'tool-highlight');
-        
-        console.log(`[ToolsManager] Tool evidenziato come richiesto: ${toolName}`);
-        
-        // Rimuovi evidenziazione dopo un certo tempo (se non viene cliccato)
+        this.safeLog(3, `[ToolsManager] Tool evidenziato come richiesto: ${toolName}`);
+
+        // Rimuovi evidenziazione dopo un timeout se non viene cliccato
         setTimeout(() => {
             if (toolElement && !this.toolsState[toolName]) {
                 toolElement.classList.remove('required', 'tool-highlight');
-                console.log(`[ToolsManager] Evidenziazione tool rimossa: ${toolName}`);
+                this.safeLog(3, `[ToolsManager] Evidenziazione tool rimossa: ${toolName}`);
             }
         }, 10000); // 10 secondi
-    },
-    
-    /**
-     * Reset tutti gli strumenti allo stato iniziale
-     */
-    resetAllTools: function() {
-        console.log('[ToolsManager] Reset di tutti gli strumenti');
-        
-        Object.keys(this.toolsState).forEach(toolName => {
-            this.toolsState[toolName] = false;
-            const element = this.getToolElement(toolName);
-            if (element) {
-                element.classList.remove('active');
-            }
-        });
-        
-        if (this.feedbackManager) {
-            this.feedbackManager.updateStatus('Strumenti resettati');
-        }
-    },
-    
-    /**
-     * Aggiorna visibilità pannello strumenti
-     */
-    setToolsVisibility: function(visible) {
-        if (this.elements.toolsContainer) {
-            if (visible) {
-                this.elements.toolsContainer.classList.remove('hidden');
-            } else {
-                this.elements.toolsContainer.classList.add('hidden');
-            }
-        }
-    },
-    
-    /**
-     * Ottiene statistiche utilizzo strumenti
-     */
-    getToolsStats: function() {
-        const stats = {
-            totalTools: this.availableTools.length,
-            activeTools: Object.values(this.toolsState).filter(Boolean).length,
-            inactiveTools: Object.values(this.toolsState).filter(state => !state).length,
-            activeTool: this.getActiveTool(),
-            allStates: this.getAllToolsState()
-        };
-        
-        return stats;
-    },
-    
-    /**
-     * Verifica integrità stato strumenti
-     */
-    validateToolsState: function() {
-        const issues = [];
-        
-        // Verifica che non ci siano più strumenti attivi contemporaneamente (modalità esclusiva)
-        const activeCount = Object.values(this.toolsState).filter(Boolean).length;
-        if (activeCount > 1) {
-            issues.push(`Modalità esclusiva violata: ${activeCount} strumenti attivi`);
-        }
-        
-        // Verifica che tutti gli strumenti configurati abbiano uno stato
-        this.availableTools.forEach(tool => {
-            if (!(tool.name in this.toolsState)) {
-                issues.push(`Strumento ${tool.name} non ha stato inizializzato`);
-            }
-        });
-        
-        // Verifica che gli elementi DOM esistano
-        Object.keys(this.toolsState).forEach(toolName => {
-            if (!this.getToolElement(toolName)) {
-                issues.push(`Elemento DOM mancante per strumento ${toolName}`);
-            }
-        });
-        
-        if (issues.length > 0) {
-            console.warn('[ToolsManager] Problemi rilevati:', issues);
-        } else {
-            console.log('[ToolsManager] Stato strumenti valido');
-        }
-        
-        return issues;
-    },
-    
-    /**
-     * Applica cursore personalizzato per strumento
-     */
-    applyCursorForTool: function(toolName) {
-        console.log(`[ToolsManager] applyCursorForTool chiamata con: ${toolName}`);
-        
-        // Rimuovi tutte le classi cursore precedenti
-        document.body.classList.remove('tool-aria-active', 'mouse-pressed');
-        console.log(`[ToolsManager] Classi cursore precedenti rimosse`);
-        
-        if (toolName === 'aria') {
-            document.body.classList.add('tool-aria-active');
-            console.log(`[ToolsManager] Classe 'tool-aria-active' aggiunta al body`);
-            console.log(`[ToolsManager] Body classes attuali:`, Array.from(document.body.classList));
-            console.log(`[ToolsManager] Body cursor computed:`, getComputedStyle(document.body).cursor);
-            
-            // Aggiungi event listeners per stato mouse premuto/rilasciato
-            this.addMouseStateListeners();
-            console.log(`[ToolsManager] Mouse state listeners aggiunti`);
-        }
-    },
-    
-    /**
-     * Rimuovi cursore personalizzato per strumento
-     */
-    removeCursorForTool: function(toolName) {
-        if (toolName === 'aria') {
-            document.body.classList.remove('tool-aria-active', 'mouse-pressed');
-            this.removeMouseStateListeners();
-            console.log(`[ToolsManager] Cursore personalizzato rimosso per: ${toolName}`);
-        }
-    },
-    
-    /**
-     * Aggiungi event listeners per stati mouse
-     */
-    addMouseStateListeners: function() {
-        // Evita duplicazioni
-        this.removeMouseStateListeners();
-        
-        this.mouseDownHandler = (event) => {
-            if (this.getActiveTool() === 'aria') {
-                document.body.classList.add('mouse-pressed');
-            }
-        };
-        
-        this.mouseUpHandler = (event) => {
-            if (this.getActiveTool() === 'aria') {
-                document.body.classList.remove('mouse-pressed');
-            }
-        };
-        
-        document.addEventListener('mousedown', this.mouseDownHandler);
-        document.addEventListener('mouseup', this.mouseUpHandler);
-    },
-    
-    /**
-     * Rimuovi event listeners per stati mouse
-     */
-    removeMouseStateListeners: function() {
-        if (this.mouseDownHandler) {
-            document.removeEventListener('mousedown', this.mouseDownHandler);
-            this.mouseDownHandler = null;
-        }
-        
-        if (this.mouseUpHandler) {
-            document.removeEventListener('mouseup', this.mouseUpHandler);
-            this.mouseUpHandler = null;
-        }
-    },
+    }
 
     /**
-     * Cleanup del modulo
+     * Rimuove evidenziazione da tutti gli strumenti
      */
-    cleanup: function() {
-        console.log('[ToolsManager] Cleanup...');
-        
+    clearToolHighlights() {
+        document.querySelectorAll('.tool-icon').forEach(icon => {
+            icon.classList.remove('required', 'tool-highlight');
+        });
+        this.safeLog(3, '[ToolsManager] Evidenziazioni strumenti rimosse');
+    }
+
+    /**
+     * Callback chiamata quando cambia lo stato di uno strumento
+     * @param {string} toolName - Nome dello strumento
+     * @param {boolean} isActive - Stato attivo/inattivo
+     */
+    onToolStateChanged(toolName, isActive) {
+        // Aggiorna cursore del canvas 3D
+        this.updateCanvasCursor();
+
+        // Evento personalizzabile per altri moduli
+        const event = new CustomEvent('toolStateChanged', {
+            detail: {
+                toolName,
+                isActive,
+                allStates: this.toolsState,
+                activeTool: this.getActiveTool()
+            }
+        });
+        document.dispatchEvent(event);
+
+        this.safeLog(3, `[ToolsManager] Evento toolStateChanged emesso per: ${toolName}`);
+    }
+
+    /**
+     * Aggiorna il cursore del canvas 3D basato sullo strumento attivo
+     */
+    updateCanvasCursor() {
+        const canvas = document.querySelector('#canvas3d, canvas');
+        if (!canvas) {
+            this.safeLog(1, '[ToolsManager] Canvas 3D non trovato per aggiornamento cursore');
+            return;
+        }
+
+        const activeTool = this.getActiveTool();
+
+        // Rimuovi tutte le classi body tool prima di applicare la nuova
+        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active', 'tool-mano-active');
+
+        // Gestione cursori personalizzati via body class per tool specifici
+        if (activeTool === 'aria' || activeTool === 'Aria') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore aria direttamente al body
+            document.body.classList.remove('tool-aria-active');
+            document.body.classList.add('tool-aria-active');
+            this.safeLog(3, `[ToolsManager] Cursore aria applicato direttamente al body`);
+            return;
+        }
+
+        if (activeTool === 'chiave_inglese' || activeTool === 'ChiaveInglese') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore chiave inglese direttamente al body
+            document.body.classList.add('tool-chiave_inglese-active');
+            this.safeLog(3, `[ToolsManager] Cursore chiave inglese applicato direttamente al body`);
+            return;
+        }
+
+        if (activeTool === 'brugola' || activeTool === 'ChiaveBrugola') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore brugola direttamente al body
+            document.body.classList.add('tool-brugola-active');
+            this.safeLog(3, `[ToolsManager] Cursore brugola applicato direttamente al body`);
+            return;
+        }
+
+        if (activeTool === 'mano' || activeTool === 'Mani') {
+            // Rimuovi classi cursore canvas
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            // Applica cursore mano direttamente al body (sistema unificato)
+            document.body.classList.add('tool-mano-active');
+            this.safeLog(3, `[ToolsManager] Cursore mano applicato direttamente al body`);
+            return;
+        }
+
+        // Per tool rimanenti o default, usa il sistema canvas
+        canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+        canvas.classList.add('cursor-default');
+
+        this.safeLog(3, `[ToolsManager] Cursore default applicato: ${activeTool || 'nessuno'}`);
+    }
+
+    /**
+     * OPZIONALE: Inizializza cursore canvas animato per tool complessi
+     * @param {string} toolName - Nome dello strumento
+     */
+    initAnimatedCursor(toolName) {
+        // Solo per tool che beneficiano di animazioni avanzate
+        const animatedTools = ['brugola', 'ChiaveBrugola', 'aria', 'Aria'];
+
+        if (!animatedTools.includes(toolName)) {
+            this.removeAnimatedCursor();
+            return;
+        }
+
+        // Implementazione cursore canvas (da attivare se necessario)
+        this.safeLog(3, `[ToolsManager] Cursore animato disponibile per: ${toolName}`);
+    }
+
+    /**
+     * Rimuove cursore animato se presente
+     */
+    removeAnimatedCursor() {
+        // Cleanup cursore canvas se presente
+        const animatedCursor = document.getElementById('animatedCursor');
+        if (animatedCursor) {
+            animatedCursor.remove();
+            this.safeLog(3, '[ToolsManager] Cursore animato rimosso');
+        }
+    }
+
+    /**
+     * Aggiorna messaggio di stato (delega al core UI)
+     * @param {string} message - Messaggio da mostrare
+     */
+    updateStatus(message) {
+        if (window.UI && window.UI.core && window.UI.core.updateStatus) {
+            window.UI.core.updateStatus(message);
+        } else {
+            this.safeLog(3, `[ToolsManager] Status: ${message}`);
+        }
+    }
+
+    /**
+     * Ottiene stato corrente del sistema strumenti
+     * @returns {Object} Stato completo sistema
+     */
+    getState() {
+        return {
+            isInitialized: this.isInitialized,
+            activeTool: this.getActiveTool(),
+            toolsState: this.getToolsState(),
+            availableTools: this.availableTools.map(tool => tool.name)
+        };
+    }
+
+    /**
+     * Cleanup risorse
+     */
+    dispose() {
         // Disattiva tutti gli strumenti
         this.deactivateAllTools();
-        
-        // Rimuovi event listeners mouse
-        this.removeMouseStateListeners();
-        
-        // Rimuovi classi cursore
-        document.body.classList.remove('tool-aria-active', 'mouse-pressed');
-        
+
+        // Rimuovi cursori animati
+        this.removeAnimatedCursor();
+
+        // Rimuovi evidenziazioni
+        this.clearToolHighlights();
+
         // Reset stato
         this.toolsState = {};
-        this.elements = {};
-        this.feedbackManager = null;
-        
-        // Pulisci container se presente
-        const toolsContainer = document.getElementById('toolsContainer');
-        if (toolsContainer) {
-            toolsContainer.innerHTML = '';
-        }
-        
-        console.log('[ToolsManager] Cleanup completato');
+        this.isInitialized = false;
+
+        this.safeLog(2, '[ToolsManager] Cleanup completato');
     }
-};
+}
+
+// Export per uso come modulo
+window.ToolsManager = ToolsManager;

@@ -149,7 +149,9 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
 
   Azione21=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
 
-  Azione22=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+
+  Azione22=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione23=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
 
 [Step 12 - Ingrassatore3]                                        // Decimo step: movimento ingrassatore
 
@@ -177,9 +179,10 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione18=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
   Azione19=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
   Azione20=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione20=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione21=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
-  appoggia(0.5)
+  Azione21=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione22=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione23=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  Azione24=appoggia(0.5)
 
 [Riassemblaggio]
 # Tutorial inverso - sequenza di rimontaggio
@@ -238,26 +241,39 @@ Rotazione=vite_coperchio_3:(-360.0,0.0,0.0)
 Posizione=vite_coperchio_4:(-0.500,-0.117,-0.100)
 Rotazione=vite_coperchio_4:(-360.0,0.0,0.0)
 
-# Modello 11: tappino_grasso_sx
-Posizione=tappino_grasso_sx:(-0.300,-0.243,0.000)
-Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
-
-# Modello 12: ingrassatore
+# Modello 11: ingrassatore
 Posizione=ingrassatore:(-0.308,0.243,0.000)
 Rotazione=ingrassatore:(0.0,0.0,90.0)
 
-# Modello 13: tappino_grasso_dx
-Posizione=tappino_grasso_dx:(-0.300,-0.243,0.000)
+# Modello 12: tappino_grasso_dx (posizionato a destra)
+Posizione=tappino_grasso_dx:(-0.100,-0.243,0.000)
 Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
 
+# Modello 13: tappino_grasso_sx (posizionato a sinistra)
+Posizione=tappino_grasso_sx:(-0.100,-0.243,-0.0)
+Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
 
-
-[Step 1 - Assemblaggio Sequenziale Guidato]
-Elemento=models/filtro.glb
-Descrizione=Inizia il riassemblaggio seguendo la sequenza corretta. Prima inserisci il filtro nella sua sede.
+[Step 1 - Tappini Ingrassatori]
+Descrizione=Monta i tappini degli ingrassatori in qualsiasi ordine. Puoi iniziare dal destro o dal sinistro.
 Utensile=Mani
 
-# Sistema assemblaggio sequenziale con nodi intercambiabili
+# Nodo intercambiabile - ordine libero per i tappini (NO Elemento specifico)
+DragDrop=true
+AssemblyMode=true
+AssemblyConfig=assembly_configs/pompa_becker_reale.json
+CurrentStep=tappini_assembly
+AllowedComponents=tappino_grasso_dx,tappino_grasso_sx
+InterchangeableNode=tappini_assembly
+DragDropDistance=0.2
+ShowSnapPoints=tappino_grasso_dx,tappino_grasso_sx
+ValidateAssembly=true
+
+[Step 2 - Filtro]
+Elemento=models/filtro.glb
+Descrizione=Inserisci il filtro nella sua sede. Richiede che i tappini siano già stati montati.
+Utensile=Mani
+
+# Sistema assemblaggio sequenziale - filtro
 DragDrop=true
 AssemblyMode=true
 AssemblyConfig=assembly_configs/pompa_becker_reale.json
@@ -269,12 +285,13 @@ DragDropDistance=0.3
 ShowSnapPoints=filtro
 ValidateAssembly=true
 
-[Step 2 - Coperchio]
+[Step 3 - Coperchio]
 Elemento=models/coperchio.glb
-Descrizione=Ora posiziona il coperchio sopra il filtro. Nota che senza il filtro non puoi montare il coperchio.
+Descrizione=Posiziona il coperchio sopra il filtro. Richiede che il filtro sia già montato.
 Utensile=Mani
 
-# Continua assemblaggio sequenziale
+# Continua assemblaggio sequenziale - coperchio
+DragDrop=true
 AssemblyMode=true
 AssemblyConfig=assembly_configs/pompa_becker_reale.json
 CurrentStep=coperchio_assembly
@@ -283,12 +300,13 @@ DragDropDistance=0.3
 ShowSnapPoints=coperchio
 ValidateAssembly=true
 
-[Step 3 - Gruppo Viti Coperchio]
+[Step 4 - Gruppo Viti Coperchio]
 Elemento=models/vite_coperchio_1.glb
-Descrizione=Monta le 4 viti del coperchio in qualsiasi ordine. Questo è un "insieme intercambiabile" - l'ordine non importa.
+Descrizione=Monta le 4 viti del coperchio in qualsiasi ordine. Richiede che il coperchio sia già montato.
 Utensile=Mani
 
 # Nodo intercambiabile - ordine libero per le viti
+DragDrop=true
 AssemblyMode=true
 AssemblyConfig=assembly_configs/pompa_becker_reale.json
 CurrentStep=viti_coperchio_assembly
@@ -299,27 +317,15 @@ DragDropDistance=0.2
 ShowSnapPoints=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
 ValidateAssembly=true
 
-[Step 4 - Tappini Ingrassatori]
-Elemento=models/tappino_grasso_dx.glb
-Descrizione=Monta i tappini degli ingrassatori. Anche questo è un insieme intercambiabile - puoi montare prima quello destro o sinistro.
-Utensile=Mani
 
-# Altro nodo intercambiabile - ordine libero per i tappini
-AssemblyMode=true
-AssemblyConfig=assembly_configs/pompa_becker_reale.json
-CurrentStep=tappini_assembly
-AllowedComponents=tappino_grasso_dx,tappino_grasso_sx
-InterchangeableNode=tappini_assembly
-DragDropDistance=0.2
-ShowSnapPoints=tappino_grasso_dx,tappino_grasso_sx
-ValidateAssembly=true
 
 [Step 5 - Ingrassatore Finale]
 Elemento=models/ingrassatore.glb
-Descrizione=Infine, riponi l'ingrassatore nella posizione di riposo. Assemblaggio completato!
+Descrizione=Infine, riponi l'ingrassatore nella posizione di riposo. Richiede che tutte le viti siano montate.
 Utensile=Mani
 
 # Step finale - richiede tutti i prerequisiti
+DragDrop=true
 AssemblyMode=true
 AssemblyConfig=assembly_configs/pompa_becker_reale.json
 CurrentStep=ingrassatori_assembly

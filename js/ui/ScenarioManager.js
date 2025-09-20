@@ -1,62 +1,68 @@
 /**
  * ScenarioManager.js - Gestione scenari e configurazioni
- * 
+ *
  * Responsabilità:
- * - Caricamento configurazioni scenari
- * - Parsing file home_config.txt
- * - Rendering card scenari
- * - Gestione configurazioni camera e luci
- * - Applicazione impostazioni scenario
+ * - Caricamento configurazioni scenari dal server
+ * - Parsing e gestione file di configurazione home
+ * - Rendering delle card scenari nell'interfaccia
+ * - Caricamento scenario selezionato
+ * - Applicazione configurazioni camera e luci scenario
+ * - Caricamento modelli 3D dello scenario
+ *
+ * Versione: 2.0 Refactored
+ * Data: Dicembre 2025
  */
 
-window.ScenarioManager = {
-    
-    // Configurazioni scenari
-    scenariosConfig: null,
-    currentScenario: null,
-    
-    // Riferimenti ai moduli
-    feedbackManager: null,
-    pageManager: null,
-    
+class ScenarioManager {
+    constructor() {
+        this.scenariosConfig = null;
+        this.currentScenario = null;
+        this.homeConfig = null;
+        this.isInitialized = false;
+    }
+
     /**
-     * Inizializzazione ScenarioManager
+     * Log sicuro che funziona anche se AppConfig non è caricato
      */
-    init: function(feedbackManager, pageManager) {
-        this.feedbackManager = feedbackManager;
-        this.pageManager = pageManager;
-        
-        // Setup event listeners
-        this.setupEventListeners();
-        
-        // Carica automaticamente la configurazione home se disponibile
-        this.loadHomeConfigFromServer();
-        
-        console.log('[ScenarioManager] Inizializzato');
-    },
-    
-    /**
-     * Setup event listeners
-     */
-    setupEventListeners: function() {
-        // Ascolta eventi di selezione scenario
-        document.addEventListener('scenarioSelected', this.onScenarioSelected.bind(this));
-        
-        // Ascolta cambi pagina per cleanup
-        document.addEventListener('pageChanged', this.onPageChanged.bind(this));
-    },
-    
-    /**
-     * Carica automaticamente il file home_config.txt dal server
-     */
-    loadHomeConfigFromServer: function() {
-        console.log('[ScenarioManager] Tentativo caricamento home_config.txt dal server...');
-        
-        if (this.feedbackManager) {
-            this.feedbackManager.updateStatus('Caricamento configurazione...');
+    safeLog(level, message, ...args) {
+        if (window.AppConfig && AppConfig.log) {
+            AppConfig.log(level, message, ...args);
+        } else {
+            const levelNames = ['ERROR', 'WARN', 'INFO', 'DEBUG'];
+            const levelName = levelNames[level] || 'LOG';
+            console.log(`[${levelName}] ${message}`, ...args);
         }
-        
-        fetch(`./home_config.txt?v=${Date.now()}`)
+    }
+
+    /**
+     * Inizializza il sistema scenari
+     */
+    init() {
+        this.safeLog(2, '[ScenarioManager] Inizializzazione...');
+
+        try {
+            // Carica automaticamente la configurazione home se disponibile
+            this.loadHomeConfigFromServer();
+
+            this.isInitialized = true;
+            this.safeLog(2, '[ScenarioManager] Inizializzato con successo');
+            return true;
+
+        } catch (error) {
+            this.safeLog(0, '[ScenarioManager] Errore inizializzazione:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Carica la configurazione home dal server
+     */
+    loadHomeConfigFromServer() {
+        this.safeLog(2, '[ScenarioManager] Caricamento configurazione home dal server...');
+
+        const configUrl = './scenes/home.config';
+
+        fetch(configUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -64,387 +70,338 @@ window.ScenarioManager = {
                 return response.text();
             })
             .then(content => {
-                console.log('[ScenarioManager] home_config.txt caricato con successo dal server');
+                this.safeLog(2, '[ScenarioManager] File home.config caricato con successo');
                 this.parseHomeConfig(content);
-                if (this.feedbackManager) {
-                    this.feedbackManager.updateStatus('Configurazione caricata automaticamente');
-                }
             })
             .catch(error => {
-                console.warn('[ScenarioManager] Impossibile caricare home_config.txt dal server:', error.message);
-                if (this.feedbackManager) {
-                    this.feedbackManager.updateStatus('Nessuna configurazione - usa caricamento manuale');
-                }
-            });
-    },
-    
-    /**
-     * Analizza il file di configurazione home e genera le card scenari
-     */
-    parseHomeConfig: function(content) {
-        const lines = content.split('\\n');
-        const scenarios = [];
-        let currentScenario = null;
-        
-        lines.forEach(line => {
-            line = line.trim();
-            if (!line || line.startsWith('#') || line.startsWith('//')) return;
-            
-            // Rimuovi commenti inline
-            const commentIndex = line.indexOf('//');
-            if (commentIndex !== -1) {
-                line = line.substring(0, commentIndex).trim();
-                if (!line) return;
-            }
-            
-            if (line.startsWith('[') && line.endsWith(']')) {
-                // Salva scenario precedente
-                if (currentScenario) {
-                    scenarios.push(currentScenario);
-                }
-                
-                // Nuovo scenario
-                const scenarioName = line.slice(1, -1);
-                currentScenario = {
-                    name: scenarioName,
-                    description: '',
-                    image: '',
-                    files: [],
-                    positions: []
+                this.safeLog(1, '[ScenarioManager] Impossibile caricare home.config dal server:', error);
+                this.safeLog(2, '[ScenarioManager] Modalità manuale attivata automaticamente');
+
+                // Crea configurazione di fallback per modalità manuale
+                this.scenariosConfig = {
+                    scenarios: [],
+                    manualMode: true
                 };
-                
-                console.log(`[ScenarioManager] 📋 Scenario trovato: ${scenarioName}`);
-                
-            } else if (currentScenario) {
-                this.parseScenarioProperty(currentScenario, line);
+                this.renderScenarioCards();
+            });
+    }
+
+    /**
+     * Parsing del file home.config
+     */
+    parseHomeConfig(content) {
+        this.safeLog(3, '[ScenarioManager] Parsing configurazione home...');
+
+        try {
+            const scenarios = [];
+            const lines = content.split('\n');
+            let currentScenario = null;
+
+            for (let line of lines) {
+                line = line.trim();
+
+                // Skip linee vuote e commenti
+                if (!line || line.startsWith('#') || line.startsWith('//')) {
+                    continue;
+                }
+
+                // Riconoscimento sezioni scenario
+                if (line.startsWith('[') && line.endsWith(']')) {
+                    // Salva scenario precedente se esisteva
+                    if (currentScenario) {
+                        scenarios.push(currentScenario);
+                    }
+
+                    // Crea nuovo scenario
+                    const scenarioName = line.slice(1, -1);
+                    currentScenario = {
+                        name: scenarioName,
+                        files: [],
+                        path: `./scenes/${scenarioName}/`
+                    };
+                    continue;
+                }
+
+                // Parsing proprietà scenario
+                if (currentScenario && line.includes('=')) {
+                    const [key, value] = line.split('=', 2);
+                    const cleanKey = key.trim();
+                    const cleanValue = value.trim();
+
+                    switch (cleanKey) {
+                        case 'files':
+                            currentScenario.files = cleanValue.split(',').map(f => f.trim());
+                            break;
+                        case 'tutorial':
+                            currentScenario.tutorial = cleanValue;
+                            break;
+                        case 'cameraPos':
+                            currentScenario.cameraPos = cleanValue;
+                            break;
+                        case 'cameraTarget':
+                            currentScenario.cameraTarget = cleanValue;
+                            break;
+                        case 'ambientLight':
+                            currentScenario.ambientLight = cleanValue;
+                            break;
+                        case 'directionalLight':
+                            currentScenario.directionalLight = cleanValue;
+                            break;
+                        case 'backLight':
+                            currentScenario.backLight = cleanValue;
+                            break;
+                        default:
+                            // Proprietà generica
+                            currentScenario[cleanKey] = cleanValue;
+                    }
+                }
             }
-        });
-        
-        // Aggiungi ultimo scenario
-        if (currentScenario) {
-            this.debugScenarioDirections(currentScenario);
-            scenarios.push(currentScenario);
-        }
-        
-        this.scenariosConfig = scenarios;
-        this.renderScenarioCards();
-        
-        console.log(`[ScenarioManager] Configurazione home caricata: ${scenarios.length} scenari`);
-    },
-    
-    /**
-     * Parsa una proprietà dello scenario
-     */
-    parseScenarioProperty: function(scenario, line) {
-        if (line.startsWith('description=')) {
-            scenario.description = line.substring(12);
-            console.log(`[ScenarioManager]   📝 Descrizione: ${scenario.description}`);
-            
-        } else if (line.startsWith('image=')) {
-            scenario.image = line.substring(6);
-            console.log(`[ScenarioManager]   🖼️ Immagine: ${scenario.image}`);
-            
-        } else if (line.startsWith('tutorial=')) {
-            scenario.tutorial = line.substring(9);
-            console.log(`[ScenarioManager]   📚 Tutorial: ${scenario.tutorial}`);
-            
-        } else if (line.startsWith('CameraPos=')) {
-            scenario.cameraPos = line.substring(10);
-            console.log(`[ScenarioManager]   📷 Camera Position: ${scenario.cameraPos}`);
-            
-        } else if (line.startsWith('CameraTarget=')) {
-            scenario.cameraTarget = line.substring(13);
-            console.log(`[ScenarioManager]   🎯 Camera Target: ${scenario.cameraTarget}`);
-            
-        } else if (line.startsWith('AmbientLight=')) {
-            scenario.ambientLight = line.substring(13);
-            console.log(`[ScenarioManager]   💡 Ambient Light: ${scenario.ambientLight}`);
-            
-        } else if (line.startsWith('DirectionalLight=')) {
-            scenario.directionalLight = line.substring(17);
-            console.log(`[ScenarioManager]   🔆 Directional Light: ${scenario.directionalLight}`);
-            
-        } else if (line.startsWith('BackLight=')) {
-            scenario.backLight = line.substring(10);
-            console.log(`[ScenarioManager]   🔅 Back Light: ${scenario.backLight}`);
-            
-        } else if (line.startsWith('position=')) {
-            this.parsePosition(scenario, line);
-            
-        } else if (line.includes('=')) {
-            this.parseFileOrDirection(scenario, line);
-        }
-    },
-    
-    /**
-     * Parsa posizione modello
-     */
-    parsePosition: function(scenario, line) {
-        const positionStr = line.substring(9);
-        const coords = positionStr.split(',').map(n => parseFloat(n.trim()));
-        if (coords.length === 3) {
-            scenario.positions.push({ x: coords[0], y: coords[1], z: coords[2] });
-            console.log(`[ScenarioManager]   📍 Posizione: (${coords[0]}, ${coords[1]}, ${coords[2]})`);
-        } else {
-            console.warn(`[ScenarioManager]   ❌ Posizione non valida: ${positionStr}`);
-        }
-    },
-    
-    /**
-     * Parsa file da caricare o direzione
-     */
-    parseFileOrDirection: function(scenario, line) {
-        const [label, path] = line.split('=', 2).map(s => s.trim());
-        
-        if (label === 'direzione') {
-            // Parsing direzione per l'ultimo file aggiunto
-            const coords = path.split(',').map(n => parseFloat(n.trim()));
-            if (coords.length === 3 && scenario.files.length > 0) {
-                const lastFileIndex = scenario.files.length - 1;
-                const direction = { x: coords[0], y: coords[1], z: coords[2] };
-                scenario.files[lastFileIndex].direction = direction;
-                console.log(`[ScenarioManager]   🧭 Direzione: (${coords[0]}, ${coords[1]}, ${coords[2]}) per ${scenario.files[lastFileIndex].path}`);
-            } else {
-                console.warn(`[ScenarioManager]   ❌ Direzione non valida o nessun file precedente: ${path}`);
+
+            // Aggiungi ultimo scenario
+            if (currentScenario) {
+                scenarios.push(currentScenario);
             }
-        } else {
-            // File da caricare
-            scenario.files.push({ label, path, direction: null });
-            console.log(`[ScenarioManager]   📁 File: ${label} -> ${path}`);
+
+            // Salva configurazione
+            this.scenariosConfig = { scenarios };
+            this.homeConfig = content;
+
+            this.safeLog(2, `[ScenarioManager] Configurazione parsata: ${scenarios.length} scenari trovati`);
+            scenarios.forEach((scenario, index) => {
+                this.safeLog(3, `  ${index + 1}. ${scenario.name} (${scenario.files ? scenario.files.length : 0} files)`);
+            });
+
+            // Renderizza le card scenari
+            this.renderScenarioCards();
+
+        } catch (error) {
+            this.safeLog(0, '[ScenarioManager] Errore parsing home.config:', error);
+            // Fallback a modalità manuale
+            this.scenariosConfig = { scenarios: [], manualMode: true };
+            this.renderScenarioCards();
         }
-    },
-    
+    }
+
     /**
-     * Debug direzioni scenario
+     * Renderizza le card degli scenari nella UI
      */
-    debugScenarioDirections: function(scenario) {
-        console.log(`[ScenarioManager] 🧭 RIEPILOGO DIREZIONI per scenario "${scenario.name}":`);
-        scenario.files.forEach((file, index) => {
-            console.log(`[ScenarioManager]   ${index}: ${file.path} -> direzione:`, file.direction);
-        });
-    },
-    
-    /**
-     * Renderizza le card degli scenari nella home page
-     */
-    renderScenarioCards: function() {
+    renderScenarioCards() {
         const scenariosList = document.getElementById('scenariosList');
-        if (!scenariosList || !this.scenariosConfig) return;
-        
-        // Pulisci lista esistente
+        if (!scenariosList) {
+            this.safeLog(1, '[ScenarioManager] Elemento scenariosList non trovato');
+            return;
+        }
+
+        // Pulisci contenuto esistente
         scenariosList.innerHTML = '';
-        
+
         // Crea card per ogni scenario
-        this.scenariosConfig.forEach((scenario, index) => {
-            const card = this.createScenarioCard(scenario, index);
-            scenariosList.appendChild(card);
-        });
-        
-        // Aggiungi sempre la card "Modalità Manuale" alla fine
+        if (this.scenariosConfig && this.scenariosConfig.scenarios) {
+            this.scenariosConfig.scenarios.forEach((scenario, index) => {
+                const card = this.createScenarioCard(scenario, index);
+                scenariosList.appendChild(card);
+            });
+        }
+
+        // Aggiungi sempre la card modalità manuale
         const manualCard = this.createManualModeCard();
         scenariosList.appendChild(manualCard);
-        
-        console.log(`[ScenarioManager] Renderizzate ${this.scenariosConfig.length} card scenario + modalità manuale`);
-    },
-    
+
+        // Setup event listeners per le card
+        this.setupScenarioCardListeners();
+
+        this.safeLog(3, '[ScenarioManager] Card scenari renderizzate');
+    }
+
     /**
-     * Crea una singola card scenario
+     * Crea una card scenario
      */
-    createScenarioCard: function(scenario, index) {
+    createScenarioCard(scenario, index) {
         const card = document.createElement('div');
         card.className = 'scenario-card';
-        card.dataset.scenarioIndex = index;
-        
-        // Sezione immagine
-        const imageSection = this.createImageSection(scenario);
-        
-        // Sezione info
-        const infoSection = this.createInfoSection(scenario);
-        
-        // Assembla card
-        card.appendChild(imageSection);
-        card.appendChild(infoSection);
-        
-        return card;
-    },
-    
-    /**
-     * Crea sezione immagine della card
-     */
-    createImageSection: function(scenario) {
-        const imageSection = document.createElement('div');
-        imageSection.className = 'scenario-image';
-        
-        if (scenario.image) {
-            const img = document.createElement('img');
-            img.src = scenario.image;
-            img.alt = scenario.name;
-            img.onerror = () => {
-                imageSection.innerHTML = '<div class="placeholder-image">🎯</div>';
-            };
-            imageSection.appendChild(img);
-        } else {
-            imageSection.innerHTML = '<div class="placeholder-image">🎯</div>';
-        }
-        
-        return imageSection;
-    },
-    
-    /**
-     * Crea sezione info della card
-     */
-    createInfoSection: function(scenario) {
-        const infoSection = document.createElement('div');
-        infoSection.className = 'scenario-info';
-        
-        const title = document.createElement('h3');
-        title.textContent = scenario.name;
-        
-        const description = document.createElement('p');
-        description.textContent = scenario.description || 'Nessuna descrizione disponibile';
-        
-        infoSection.appendChild(title);
-        infoSection.appendChild(description);
-        
-        return infoSection;
-    },
-    
-    /**
-     * Crea la card "Modalità Manuale"
-     */
-    createManualModeCard: function() {
-        const card = document.createElement('div');
-        card.className = 'scenario-card manual-mode';
-        card.setAttribute('role', 'button');
+        card.setAttribute('data-scenario-index', index);
         card.setAttribute('tabindex', '0');
-        card.dataset.manual = 'true';
-        
-        // Sezione immagine
-        const imageSection = document.createElement('div');
-        imageSection.className = 'scenario-image';
-        const placeholderImage = document.createElement('div');
-        placeholderImage.className = 'placeholder-image';
-        placeholderImage.setAttribute('aria-hidden', 'true');
-        placeholderImage.textContent = '🔧';
-        imageSection.appendChild(placeholderImage);
-        
-        // Sezione info
-        const infoSection = document.createElement('div');
-        infoSection.className = 'scenario-info';
-        
-        const title = document.createElement('h3');
-        title.textContent = 'Modalità Manuale';
-        
-        const description = document.createElement('p');
-        description.textContent = 'Carica direttamente i tuoi modelli 3D senza utilizzare scenari predefiniti. Supporta OBJ, STL, GLTF/GLB con materiali e texture.';
-        
-        infoSection.appendChild(title);
-        infoSection.appendChild(description);
-        
-        // Assembla card
-        card.appendChild(imageSection);
-        card.appendChild(infoSection);
-        
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Carica scenario ${scenario.name}`);
+
+        const filesCount = scenario.files ? scenario.files.length : 0;
+        const hasTutorial = scenario.tutorial ? '🎓' : '';
+
+        card.innerHTML = `
+            <h3>${scenario.name} ${hasTutorial}</h3>
+            <p>📁 ${filesCount} file${filesCount !== 1 ? 's' : ''}</p>
+            <p class="scenario-path">${scenario.path}</p>
+        `;
+
         return card;
-    },
-    
+    }
+
     /**
-     * Gestisce selezione scenario
+     * Crea la card modalità manuale
      */
-    onScenarioSelected: function(event) {
-        const scenarioIndex = event.detail.scenarioIndex;
-        
-        if (scenarioIndex < 0 || scenarioIndex >= this.scenariosConfig.length) {
-            console.error('[ScenarioManager] Indice scenario non valido:', scenarioIndex);
-            if (this.feedbackManager) {
-                this.feedbackManager.showError('Scenario non trovato');
+    createManualModeCard() {
+        const card = document.createElement('div');
+        card.className = 'scenario-card manual-mode-card';
+        card.setAttribute('data-manual-mode', 'true');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', 'Modalità manuale');
+
+        card.innerHTML = `
+            <h3>⚙️ Modalità Manuale</h3>
+            <p>Carica modelli e animazioni personalizzati</p>
+            <p class="scenario-manual">Usa i controlli file per caricare contenuti</p>
+        `;
+
+        return card;
+    }
+
+    /**
+     * Setup event listeners per le card scenario
+     */
+    setupScenarioCardListeners() {
+        const scenariosList = document.getElementById('scenariosList');
+        if (!scenariosList) return;
+
+        // Click sulle card scenario
+        scenariosList.addEventListener('click', this.onScenarioCardClick.bind(this));
+
+        // Gestione navigazione da tastiera (già gestita da UICore)
+        this.safeLog(3, '[ScenarioManager] Event listeners card configurati');
+    }
+
+    /**
+     * Gestisce il click su una card scenario
+     */
+    onScenarioCardClick(event) {
+        const card = event.target.closest('.scenario-card');
+        if (!card) return;
+
+        // Modalità manuale
+        if (card.hasAttribute('data-manual-mode')) {
+            this.safeLog(2, '[ScenarioManager] Modalità manuale selezionata');
+
+            // Vai alla pagina scenario senza caricare contenuti automatici
+            if (window.UI && window.UI.core) {
+                window.UI.core.showPage('scenario');
+                window.UI.core.updateStatus('Modalità manuale - Usa i controlli per caricare file');
             }
             return;
         }
-        
-        const scenario = this.scenariosConfig[scenarioIndex];
-        console.log(`[ScenarioManager] Scenario selezionato: ${scenario.name}`);
-        
+
+        // Scenario specifico
+        const scenarioIndex = parseInt(card.getAttribute('data-scenario-index'));
+        if (isNaN(scenarioIndex) || !this.scenariosConfig || !this.scenariosConfig.scenarios[scenarioIndex]) {
+            this.safeLog(1, '[ScenarioManager] Indice scenario non valido');
+            return;
+        }
+
+        const scenario = this.scenariosConfig.scenarios[scenarioIndex];
+        this.safeLog(2, `[ScenarioManager] Scenario selezionato: ${scenario.name}`);
+
         this.loadScenario(scenario);
-    },
-    
+    }
+
     /**
      * Carica uno scenario specifico
      */
-    loadScenario: function(scenario) {
+    loadScenario(scenario) {
         this.currentScenario = scenario;
-        
+
         // Aggiorna titolo scenario
-        if (this.pageManager) {
-            this.pageManager.updateScenarioTitle(scenario.name);
+        const scenarioTitle = document.getElementById('scenarioTitle');
+        if (scenarioTitle) {
+            scenarioTitle.textContent = scenario.name;
         }
-        
-        // Aggiorna status
-        if (this.feedbackManager) {
-            this.feedbackManager.updateStatus(`Caricamento scenario: ${scenario.name}`);
+
+        // Passa alla pagina scenario
+        if (window.UI && window.UI.core) {
+            window.UI.core.showPage('scenario');
+            window.UI.core.updateStatus(`Caricamento scenario: ${scenario.name}`);
         }
-        
+
         // Applica le configurazioni camera e luci dello scenario
         this.applyScenarioConfiguration(scenario);
-        
-        // Dispatch evento per altri moduli
-        this.dispatchScenarioChangedEvent(scenario);
-        
-        console.log(`[ScenarioManager] Scenario ${scenario.name} caricato`);
-    },
-    
+
+        // Carica automaticamente tutti i modelli dello scenario
+        this.loadScenarioModels(scenario);
+
+        // Carica il tutorial se specificato
+        if (scenario.tutorial) {
+            this.safeLog(2, `[ScenarioManager] 🎓 Caricamento tutorial: ${scenario.tutorial}`);
+            if (window.UI && window.UI.tutorialManager) {
+                window.UI.tutorialManager.loadTutorial(scenario.tutorial);
+            }
+        } else {
+            this.safeLog(2, `[ScenarioManager] ❌ Nessun tutorial per scenario: ${scenario.name}`);
+            // Nasconde la barra tutorial se non c'è tutorial
+            if (window.UI && window.UI.core) {
+                window.UI.core.hideTutorialStepsBar();
+            }
+        }
+
+        this.safeLog(2, `[ScenarioManager] ✅ Scenario caricato: ${scenario.name}`);
+    }
+
     /**
      * Applica le configurazioni di camera e luci specifiche dello scenario
      */
-    applyScenarioConfiguration: function(scenario) {
+    applyScenarioConfiguration(scenario) {
         if (!window.Scene3D) {
-            console.warn('[ScenarioManager] ⚠️ Scene3D non disponibile per configurazione scenario');
+            this.safeLog(1, '[ScenarioManager] ⚠️ Scene3D non disponibile per configurazione scenario');
+            // Ritenta dopo un delay
             setTimeout(() => {
                 this.applyScenarioConfiguration(scenario);
             }, 500);
             return;
         }
-        
-        console.log(`[ScenarioManager] 🎭 Applicazione configurazione per scenario: ${scenario.name}`);
-        
+
+        this.safeLog(2, `[ScenarioManager] 🎭 Applicazione configurazione: ${scenario.name}`);
+
         // Applica posizione camera se specificata
         if (scenario.cameraPos) {
             const pos = this.parseVector3(scenario.cameraPos);
             if (pos) {
                 window.Scene3D.camera.position.set(pos.x, pos.y, pos.z);
+                // Imposta flag per disabilitare auto-fitting
                 window.Scene3D.manualCameraSet = true;
-                console.log(`[ScenarioManager] 📷 Camera position applicata: (${pos.x}, ${pos.y}, ${pos.z}) - Auto-fitting disabilitato`);
+                this.safeLog(2, `[ScenarioManager] 📷 Camera position: (${pos.x}, ${pos.y}, ${pos.z})`);
             }
         }
-        
+
         // Applica target camera se specificato
         if (scenario.cameraTarget) {
             const target = this.parseVector3(scenario.cameraTarget);
             if (target) {
                 window.Scene3D.camera.lookAt(target.x, target.y, target.z);
-                console.log(`[ScenarioManager] 🎯 Camera target applicato: (${target.x}, ${target.y}, ${target.z})`);
+                this.safeLog(2, `[ScenarioManager] 🎯 Camera target: (${target.x}, ${target.y}, ${target.z})`);
             }
         }
-        
-        // Applica configurazioni luci dopo un breve delay
+
+        // Applica configurazioni luci
         setTimeout(() => {
             this.applyScenarioLights(scenario);
         }, 100);
-        
-        console.log(`[ScenarioManager] ✅ Configurazione scenario applicata per: ${scenario.name}`);
-    },
-    
+
+        this.safeLog(2, `[ScenarioManager] ✅ Configurazione applicata: ${scenario.name}`);
+    }
+
     /**
      * Applica le configurazioni delle luci dello scenario
      */
-    applyScenarioLights: function(scenario) {
-        if (!window.Scene3D || !window.Scene3D.scene || !window.THREE) {
-            console.warn('[ScenarioManager] ⚠️ Scene3D o THREE.js non disponibile per applicazione luci');
+    applyScenarioLights(scenario) {
+        if (!window.Scene3D || !window.Scene3D.scene) {
+            this.safeLog(1, '[ScenarioManager] ⚠️ Scene3D non disponibile per luci');
             return;
         }
-        
-        console.log('[ScenarioManager] 🔄 Rimozione luci esistenti...');
-        
+
+        if (!window.THREE) {
+            this.safeLog(1, '[ScenarioManager] ⚠️ THREE.js non disponibile per luci');
+            return;
+        }
+
+        this.safeLog(2, '[ScenarioManager] 🔄 Applicazione luci scenario...');
+
         // Rimuovi le luci esistenti
         const lightsToRemove = [];
         window.Scene3D.scene.traverse(function(child) {
@@ -453,192 +410,196 @@ window.ScenarioManager = {
             }
         });
         lightsToRemove.forEach(light => window.Scene3D.scene.remove(light));
-        console.log(`[ScenarioManager] 🗑️ Rimosse ${lightsToRemove.length} luci esistenti`);
-        
-        // Applica nuove luci
-        this.applyAmbientLight(scenario);
-        this.applyDirectionalLight(scenario);
-        this.applyBackLight(scenario);
-        
-        // Forza il re-rendering
-        if (window.Scene3D.renderer) {
-            window.Scene3D.renderer.render(window.Scene3D.scene, window.Scene3D.camera);
-        }
-        
-        console.log('[ScenarioManager] ✅ Applicazione luci scenario completata');
-    },
-    
-    /**
-     * Applica luce ambientale
-     */
-    applyAmbientLight: function(scenario) {
-        if (!scenario.ambientLight) return;
-        
-        const ambient = this.parseLightConfig(scenario.ambientLight);
-        if (ambient) {
-            try {
-                const ambientLight = new THREE.AmbientLight(ambient.color, ambient.intensity);
-                window.Scene3D.scene.add(ambientLight);
-                console.log(`[ScenarioManager] 💡 Luce ambientale applicata: colore=${ambient.color.toString(16)}, intensità=${ambient.intensity}`);
-            } catch (error) {
-                console.error('[ScenarioManager] ❌ Errore creazione luce ambientale:', error);
-            }
-        }
-    },
-    
-    /**
-     * Applica luce direzionale
-     */
-    applyDirectionalLight: function(scenario) {
-        if (!scenario.directionalLight) return;
-        
-        const directional = this.parseDirectionalLightConfig(scenario.directionalLight);
-        if (directional) {
-            try {
-                const directionalLight = new THREE.DirectionalLight(directional.color, directional.intensity);
-                directionalLight.position.set(directional.position.x, directional.position.y, directional.position.z);
-                directionalLight.castShadow = true;
-                directionalLight.shadow.mapSize.width = 2048;
-                directionalLight.shadow.mapSize.height = 2048;
-                directionalLight.shadow.camera.near = 0.5;
-                directionalLight.shadow.camera.far = 500;
-                window.Scene3D.scene.add(directionalLight);
-                console.log(`[ScenarioManager] 🔆 Luce direzionale applicata: pos=(${directional.position.x}, ${directional.position.y}, ${directional.position.z}), intensità=${directional.intensity}`);
-            } catch (error) {
-                console.error('[ScenarioManager] ❌ Errore creazione luce direzionale:', error);
-            }
-        }
-    },
-    
-    /**
-     * Applica luce posteriore
-     */
-    applyBackLight: function(scenario) {
-        if (!scenario.backLight) return;
-        
-        const back = this.parseDirectionalLightConfig(scenario.backLight);
-        if (back) {
-            try {
-                const backLight = new THREE.DirectionalLight(back.color, back.intensity);
-                backLight.position.set(back.position.x, back.position.y, back.position.z);
-                backLight.castShadow = false;
-                window.Scene3D.scene.add(backLight);
-                console.log(`[ScenarioManager] 🔅 Luce posteriore applicata: pos=(${back.position.x}, ${back.position.y}, ${back.position.z}), intensità=${back.intensity}`);
-            } catch (error) {
-                console.error('[ScenarioManager] ❌ Errore creazione luce posteriore:', error);
-            }
-        }
-    },
-    
-    /**
-     * Parsing di una stringa vector3 "(x, y, z)" in oggetto
-     */
-    parseVector3: function(vectorString) {
-        try {
-            const cleanString = vectorString.replace(/[()]/g, '').trim();
-            const parts = cleanString.split(',').map(n => parseFloat(n.trim()));
-            if (parts.length === 3 && parts.every(n => !isNaN(n))) {
-                return { x: parts[0], y: parts[1], z: parts[2] };
-            }
-        } catch (error) {
-            console.warn(`[ScenarioManager] ⚠️ Errore parsing vector3: ${vectorString}`, error);
-        }
-        return null;
-    },
-    
-    /**
-     * Parsing configurazione luce ambientale "0x606060,2.0"
-     */
-    parseLightConfig: function(lightString) {
-        try {
-            const parts = lightString.split(',');
-            if (parts.length === 2) {
-                const color = parseInt(parts[0].trim(), 16);
-                const intensity = parseFloat(parts[1].trim());
-                if (!isNaN(color) && !isNaN(intensity)) {
-                    return { color: color, intensity: intensity };
+        this.safeLog(2, `[ScenarioManager] 🗑️ Rimosse ${lightsToRemove.length} luci esistenti`);
+
+        // Aggiungi luce ambientale se specificata
+        if (scenario.ambientLight) {
+            const ambient = this.parseLightConfig(scenario.ambientLight);
+            if (ambient) {
+                try {
+                    const ambientLight = new THREE.AmbientLight(ambient.color, ambient.intensity);
+                    window.Scene3D.scene.add(ambientLight);
+                    this.safeLog(2, `[ScenarioManager] 💡 Luce ambientale: colore=${ambient.color.toString(16)}, intensità=${ambient.intensity}`);
+                } catch (error) {
+                    this.safeLog(1, '[ScenarioManager] ❌ Errore luce ambientale:', error);
                 }
             }
-        } catch (error) {
-            console.warn(`[ScenarioManager] ⚠️ Errore parsing light config: ${lightString}`, error);
         }
-        return null;
-    },
-    
-    /**
-     * Parsing configurazione luce direzionale "0xffffff,3.3,(1, 1, 1)"
-     */
-    parseDirectionalLightConfig: function(lightString) {
-        try {
-            const parts = lightString.split(',');
-            if (parts.length >= 5) {
-                const color = parseInt(parts[0].trim(), 16);
-                const intensity = parseFloat(parts[1].trim());
-                const x = parseFloat(parts[2].replace(/[()]/g, '').trim());
-                const y = parseFloat(parts[3].trim());
-                const z = parseFloat(parts[4].replace(/[()]/g, '').trim());
-                
-                if (!isNaN(color) && !isNaN(intensity) && !isNaN(x) && !isNaN(y) && !isNaN(z)) {
-                    return {
-                        color: color,
-                        intensity: intensity,
-                        position: { x: x, y: y, z: z }
-                    };
+
+        // Aggiungi luce direzionale se specificata
+        if (scenario.directionalLight) {
+            const directional = this.parseDirectionalLightConfig(scenario.directionalLight);
+            if (directional) {
+                try {
+                    const directionalLight = new THREE.DirectionalLight(directional.color, directional.intensity);
+                    directionalLight.position.set(directional.position.x, directional.position.y, directional.position.z);
+                    directionalLight.castShadow = true;
+                    directionalLight.shadow.mapSize.width = 2048;
+                    directionalLight.shadow.mapSize.height = 2048;
+                    directionalLight.shadow.camera.near = 0.5;
+                    directionalLight.shadow.camera.far = 500;
+                    window.Scene3D.scene.add(directionalLight);
+                    this.safeLog(2, `[ScenarioManager] 🔆 Luce direzionale: pos=(${directional.position.x}, ${directional.position.y}, ${directional.position.z})`);
+                } catch (error) {
+                    this.safeLog(1, '[ScenarioManager] ❌ Errore luce direzionale:', error);
                 }
             }
-        } catch (error) {
-            console.warn(`[ScenarioManager] ⚠️ Errore parsing directional light config: ${lightString}`, error);
         }
-        return null;
-    },
-    
-    /**
-     * Gestisce cambi pagina
-     */
-    onPageChanged: function(event) {
-        if (event.detail.newPage === 'home') {
-            // Reset scenario corrente quando si torna alla home
-            this.currentScenario = null;
-            console.log('[ScenarioManager] Scenario corrente resettato per ritorno home');
+
+        // Aggiungi luce posteriore se specificata
+        if (scenario.backLight) {
+            const back = this.parseDirectionalLightConfig(scenario.backLight);
+            if (back) {
+                try {
+                    const backLight = new THREE.DirectionalLight(back.color, back.intensity);
+                    backLight.position.set(back.position.x, back.position.y, back.position.z);
+                    backLight.castShadow = false;
+                    window.Scene3D.scene.add(backLight);
+                    this.safeLog(2, `[ScenarioManager] 🔅 Luce posteriore: pos=(${back.position.x}, ${back.position.y}, ${back.position.z})`);
+                } catch (error) {
+                    this.safeLog(1, '[ScenarioManager] ❌ Errore luce posteriore:', error);
+                }
+            }
         }
-    },
-    
+    }
+
     /**
-     * Dispatch evento cambio scenario
+     * Carica i modelli 3D dello scenario
      */
-    dispatchScenarioChangedEvent: function(scenario) {
-        const event = new CustomEvent('scenarioChanged', {
-            detail: { scenario: scenario }
+    loadScenarioModels(scenario) {
+        this.safeLog(2, `[ScenarioManager] 🔄 Caricamento modelli per: ${scenario.name}`);
+
+        if (!scenario.files || scenario.files.length === 0) {
+            this.safeLog(1, '[ScenarioManager] Nessun file specificato per lo scenario');
+            if (window.UI && window.UI.core) {
+                window.UI.core.updateStatus('Scenario caricato - Nessun modello');
+            }
+            return;
+        }
+
+        // Costruisci URL completi per i modelli
+        const modelUrls = scenario.files.map(file => {
+            // Se il file non ha un path assoluto, usa il path dello scenario
+            if (!file.startsWith('http') && !file.startsWith('./') && !file.startsWith('/')) {
+                return scenario.path + file;
+            }
+            return file;
         });
-        document.dispatchEvent(event);
-    },
-    
+
+        this.safeLog(3, `[ScenarioManager] URL modelli:`, modelUrls);
+
+        // Delega il caricamento al ModelLoader
+        if (window.ModelLoader) {
+            window.ModelLoader.loadModelsFromUrls(modelUrls);
+        } else {
+            this.safeLog(1, '[ScenarioManager] ⚠️ ModelLoader non disponibile');
+        }
+    }
+
     /**
-     * Ottiene lo scenario corrente
+     * Reset dello scenario corrente
      */
-    getCurrentScenario: function() {
-        return this.currentScenario;
-    },
-    
+    resetCurrentScenario() {
+        this.currentScenario = null;
+        this.safeLog(3, '[ScenarioManager] Scenario corrente resettato');
+    }
+
     /**
-     * Ottiene tutti gli scenari configurati
+     * Utility: Parser Vector3 da stringa
      */
-    getAllScenarios: function() {
-        return this.scenariosConfig || [];
-    },
-    
+    parseVector3(vectorString) {
+        try {
+            // Formato: (x,y,z)
+            const match = vectorString.match(/\(([^)]+)\)/);
+            if (match) {
+                const coords = match[1].split(',').map(s => parseFloat(s.trim()));
+                if (coords.length === 3 && coords.every(c => !isNaN(c))) {
+                    return { x: coords[0], y: coords[1], z: coords[2] };
+                }
+            }
+        } catch (error) {
+            this.safeLog(1, '[ScenarioManager] Errore parsing Vector3:', error);
+        }
+        return null;
+    }
+
     /**
-     * Cleanup del modulo
+     * Utility: Parser configurazione luce
      */
-    cleanup: function() {
-        console.log('[ScenarioManager] Cleanup...');
-        
-        // Reset stato
+    parseLightConfig(lightString) {
+        try {
+            // Formato: color=0xffffff,intensity=1.0
+            const config = {};
+            const pairs = lightString.split(',');
+
+            for (const pair of pairs) {
+                const [key, value] = pair.split('=').map(s => s.trim());
+                if (key === 'color') {
+                    config.color = parseInt(value, 16);
+                } else if (key === 'intensity') {
+                    config.intensity = parseFloat(value);
+                }
+            }
+
+            return config.color !== undefined && config.intensity !== undefined ? config : null;
+        } catch (error) {
+            this.safeLog(1, '[ScenarioManager] Errore parsing light config:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Utility: Parser configurazione luce direzionale
+     */
+    parseDirectionalLightConfig(lightString) {
+        try {
+            // Formato: color=0xffffff,intensity=1.0,position=(x,y,z)
+            const config = {};
+            const pairs = lightString.split(',');
+
+            for (const pair of pairs) {
+                const [key, value] = pair.split('=').map(s => s.trim());
+                if (key === 'color') {
+                    config.color = parseInt(value, 16);
+                } else if (key === 'intensity') {
+                    config.intensity = parseFloat(value);
+                } else if (key === 'position') {
+                    config.position = this.parseVector3(value);
+                }
+            }
+
+            return config.color !== undefined && config.intensity !== undefined && config.position ? config : null;
+        } catch (error) {
+            this.safeLog(1, '[ScenarioManager] Errore parsing directional light config:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Ottiene stato corrente
+     */
+    getState() {
+        return {
+            isInitialized: this.isInitialized,
+            currentScenario: this.currentScenario ? this.currentScenario.name : null,
+            scenariosCount: this.scenariosConfig ? this.scenariosConfig.scenarios.length : 0,
+            homeConfigLoaded: !!this.homeConfig
+        };
+    }
+
+    /**
+     * Cleanup risorse
+     */
+    dispose() {
         this.scenariosConfig = null;
         this.currentScenario = null;
-        this.feedbackManager = null;
-        this.pageManager = null;
-        
-        console.log('[ScenarioManager] Cleanup completato');
+        this.homeConfig = null;
+        this.isInitialized = false;
+
+        this.safeLog(2, '[ScenarioManager] Cleanup completato');
     }
-};
+}
+
+// Export per uso come modulo
+window.ScenarioManager = ScenarioManager;
+console.log('[ScenarioManager] ✅ Modulo caricato e disponibile su window.ScenarioManager');

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Sincronizzazione Sistemi</title>
+</head>
+<body>
+    <h1>Test Sincronizzazione AssemblySystem ↔ DragDropSystem</h1>
+    <div id="output"></div>
+    <button onclick="testSync()">Test Sync</button>
+
+    <script>
+        function testSync() {
+            console.log('\n🔄 TEST SINCRONIZZAZIONE SISTEMI');
+
+            // Simula sincronizzazione manuale per test
+            console.log('if (window.AssemblySystem) {');
+            console.log('  window.AssemblySystem.setAllowedComponents("tappino_grasso_dx,tappino_grasso_sx");');
+            console.log('}');
+            console.log('\n🔍 Dopo sync, verifica whitelist:');
+            console.log('window.DragDropSystem.debugDragSystem();');
+
+            document.getElementById('output').innerHTML = `
+                <p>✅ Sincronizzazione implementata in AssemblySystem.setAllowedComponents()</p>
+                <p>📋 Ora quando l'UI chiama setAllowedComponents, dovrebbe auto-sincronizzare DragDropSystem</p>
+                <p>🔍 Testa manualmente in console con i comandi sopra</p>
+            `;
+        }
+    </script>
+</body>
+</html>

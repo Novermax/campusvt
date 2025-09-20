@@ -151,6 +151,7 @@ window.AssemblySystem = {
      * @param {Array} components - Lista nomi componenti
      */
     setAllowedComponents: function(components) {
+        console.log(`[DEBUG] 🎯 setAllowedComponents chiamata con:`, components);
         this.allowedComponents.clear();
 
         if (Array.isArray(components)) {
@@ -165,6 +166,18 @@ window.AssemblySystem = {
         }
 
         console.log(`[AssemblySystem] 🎯 Componenti permessi: ${Array.from(this.allowedComponents).join(', ')}`);
+
+        // SYNC: Aggiorna anche la whitelist del DragDropSystem
+        if (window.DragDropSystem && typeof window.DragDropSystem.enable === 'function') {
+            const componentsArray = Array.from(this.allowedComponents);
+            console.log(`[AssemblySystem] 🔄 Sincronizzazione con DragDropSystem: ${componentsArray.join(', ')}`);
+            try {
+                window.DragDropSystem.enable(componentsArray);
+                console.log(`[AssemblySystem] ✅ DragDropSystem sincronizzato con ${componentsArray.length} componenti`);
+            } catch (error) {
+                console.error(`[AssemblySystem] ❌ Errore sincronizzazione DragDropSystem:`, error);
+            }
+        }
     },
 
     /**
@@ -291,6 +304,7 @@ window.AssemblySystem = {
      * @param {string} snapPointId - ID del punto snap utilizzato
      */
     markComponentMounted: function(componentName, snapPointId = null) {
+        console.log(`[DEBUG] 🎯 markComponentMounted chiamata: "${componentName}" → "${snapPointId}"`);
         this.mountedComponents.set(componentName, snapPointId);
 
         if (snapPointId) {
@@ -421,6 +435,52 @@ window.AssemblySystem = {
      */
     getAssemblyHistory: function() {
         return this.assemblyHistory.slice(); // Copia
+    },
+
+    /**
+     * Reset al primo step per test
+     */
+    resetToFirstStep: function() {
+        console.log('\n[AssemblySystem] 🔄 RESET AL PRIMO STEP');
+
+        // Reset componenti montati
+        this.mountedComponents.clear();
+
+        // Torna al primo step
+        this.setCurrentStep('tappini_assembly');
+
+        // Sincronizza con DragDropSystem
+        if (window.DragDropSystem) {
+            window.DragDropSystem.enable(['tappino_grasso_dx', 'tappino_grasso_sx']);
+        }
+
+        console.log('✅ Reset completato - ora sistema dovrebbe aspettare entrambi i tappini');
+    },
+
+    /**
+     * Test manuale completamento step
+     */
+    testStepCompletion: function() {
+        console.log('\n[AssemblySystem] 🧪 TEST MANUALE COMPLETAMENTO STEP');
+        console.log('====================================================');
+        console.log(`Step corrente: ${this.currentStepName}`);
+        console.log(`Componenti montati: [${Array.from(this.mountedComponents.keys()).join(', ')}]`);
+
+        if (this.currentStepName === 'tappini_assembly') {
+            console.log('✅ Step corretto - controllo tappini');
+            const hasDx = this.mountedComponents.has('tappino_grasso_dx');
+            const hasSx = this.mountedComponents.has('tappino_grasso_sx');
+            console.log(`  - tappino_grasso_dx montato: ${hasDx}`);
+            console.log(`  - tappino_grasso_sx montato: ${hasSx}`);
+            console.log(`  - Step completo: ${hasDx && hasSx}`);
+
+            if (hasDx && hasSx) {
+                console.log('🎯 DOVREBBE AVANZARE AL PROSSIMO STEP!');
+            }
+        } else {
+            console.log(`❌ Step sbagliato - dovrebbe essere "tappini_assembly" non "${this.currentStepName}"`);
+        }
+        console.log('====================================================\n');
     },
 
     /**
