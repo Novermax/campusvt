@@ -1240,6 +1240,21 @@ window.DragDropSystem = {
                                 }
                             } else {
                                 console.log(`[DragDropSystem] ⚠️ getNextStep() ha restituito: ${nextStep}`);
+
+                                // NUOVO: Controllo completamento assemblaggio - avanza tutorial UI
+                                if (assemblyStatus.currentStepComplete && nextStep === null) {
+                                    console.log(`[DragDropSystem] 🎉 ASSEMBLAGGIO COMPLETATO! Ultimo step assembly completato - avanzando tutorial UI...`);
+
+                                    // Avanza al prossimo step del tutorial UI (o mostra congratulazioni se ultimo)
+                                    if (window.Scene3D && typeof window.Scene3D.advanceToNextTutorialStep === 'function') {
+                                        setTimeout(() => {
+                                            window.Scene3D.advanceToNextTutorialStep();
+                                            console.log(`[DragDropSystem] ✅ Tutorial UI avanzato dopo completamento assemblaggio`);
+                                        }, 500); // Delay per dare tempo all'animazione
+                                    } else {
+                                        console.warn(`[DragDropSystem] ⚠️ advanceToNextTutorialStep non disponibile`);
+                                    }
+                                }
                             }
                         } else {
                             console.log(`[DragDropSystem] ⏸️ Step NON pronto per avanzamento automatico`);
@@ -1568,6 +1583,33 @@ window.DragDropSystem = {
                 console.log(`[DragDropSystem] 🎯 Percorso accesso: ${accessPath}`);
                 console.log(`[DragDropSystem] 🔍 Step corrente prima avanzamento: ${window.UI?.currentStepIndex || 'N/A'}`);
                 console.log(`[DragDropSystem] 🔍 Tutorial attivo: ${window.UI?.currentTutorial?.name || 'nessuno'}`);
+
+                // CONTROLLO STEP FINALE: Se siamo all'ultimo step, mostra congratulazioni invece di avanzare
+                const currentIndex = window.UI?.currentStepIndex || 0;
+                const totalSteps = window.UI?.tutorialSteps?.length || 0;
+
+                if (totalSteps > 0 && currentIndex === totalSteps - 1) {
+                    console.log(`[DragDropSystem] 🎉 STEP FINALE COMPLETATO! Mostrando congratulazioni invece di avanzare (${currentIndex + 1}/${totalSteps})`);
+
+                    // Usa Scene3D per mostrare congratulazioni se disponibile
+                    if (window.Scene3D && typeof window.Scene3D.showTutorialCompletionCongratulations === 'function') {
+                        // Blocca interazioni
+                        if (window.Scene3D.tutorialTracker) {
+                            window.Scene3D.tutorialTracker.interactionsBlocked = true;
+                            console.log('[DragDropSystem] 🔒 INTERAZIONI BLOCCATE: Tutorial completato');
+                        }
+
+                        setTimeout(() => {
+                            window.Scene3D.showTutorialCompletionCongratulations();
+                            console.log(`[DragDropSystem] ✅ Congratulazioni mostrate (${context})`);
+                        }, 500);
+                    } else {
+                        console.warn(`[DragDropSystem] ⚠️ Scene3D.showTutorialCompletionCongratulations non disponibile`);
+                    }
+                    return; // Successo, esci senza avanzare
+                }
+
+                console.log(`[DragDropSystem] 📊 Step intermedio (${currentIndex + 1}/${totalSteps}) - procedo con avanzamento normale`);
 
                 if (useDirectMethod) {
                     // Usa metodi diretti legacy

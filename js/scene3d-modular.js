@@ -2637,10 +2637,11 @@ const Scene3D = {
         const closeBtn = document.getElementById('congratulationsCloseBtn');
         if (closeBtn) {
             closeBtn.onclick = () => {
-                // NOTA: Non resettare qui - il reset avviene solo quando si seleziona un nuovo tutorial
-                // Questo permette all'utente di vedere il risultato finale prima di decidere
                 this.removeCongratulationsModal();
-                console.log('ℹ️ Tutorial completato. Seleziona un nuovo tutorial per ripristinare le posizioni iniziali.');
+                console.log('🎉 Congratulazioni chiuse - determinando prossima azione...');
+
+                // NUOVO: Logica navigazione automatica al prossimo tutorial o home page
+                this.navigateToNextTutorialOrHome(tutorialName);
             };
         }
 
@@ -2664,6 +2665,66 @@ const Scene3D = {
                     modal.parentNode.removeChild(modal);
                 }
             }, 300); // Tempo per l'animazione di uscita
+        }
+    },
+
+    /**
+     * Naviga al prossimo tutorial disponibile o torna alla home page
+     * @param {string} currentTutorialName - Nome del tutorial appena completato
+     */
+    navigateToNextTutorialOrHome: function(currentTutorialName) {
+        if (!window.UI || !window.UI.availableTutorials) {
+            console.warn('⚠️ NAVIGAZIONE: UI o availableTutorials non disponibili - torno alla home');
+            this.goToHomePage();
+            return;
+        }
+
+        const tutorials = window.UI.availableTutorials;
+        const currentIndex = tutorials.findIndex(tutorial => tutorial.name === currentTutorialName);
+
+        console.log(`🧭 NAVIGAZIONE: Tutorial corrente "${currentTutorialName}" trovato all'indice: ${currentIndex}`);
+        console.log(`📋 NAVIGAZIONE: Tutorial disponibili: [${tutorials.map(t => t.name).join(', ')}]`);
+
+        if (currentIndex === -1) {
+            console.warn(`⚠️ NAVIGAZIONE: Tutorial "${currentTutorialName}" non trovato nella lista - torno alla home`);
+            this.goToHomePage();
+            return;
+        }
+
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < tutorials.length) {
+            // C'è un prossimo tutorial
+            const nextTutorial = tutorials[nextIndex];
+            console.log(`🎯 NAVIGAZIONE: Prossimo tutorial trovato: "${nextTutorial.name}" (indice: ${nextIndex})`);
+
+            // Seleziona automaticamente il prossimo tutorial
+            setTimeout(() => {
+                if (window.UI && typeof window.UI.selectTutorial === 'function') {
+                    console.log(`⏭️ NAVIGAZIONE: Selezione automatica tutorial "${nextTutorial.name}" (indice: ${nextIndex})...`);
+                    window.UI.selectTutorial(nextIndex);
+                } else {
+                    console.warn('⚠️ NAVIGAZIONE: selectTutorial non disponibile - torno alla home');
+                    this.goToHomePage();
+                }
+            }, 1000); // Delay per transizione smooth
+        } else {
+            // Non ci sono più tutorial - torna alla home page
+            console.log('🏠 NAVIGAZIONE: Nessun tutorial successivo - torno alla home page');
+            setTimeout(() => {
+                this.goToHomePage();
+            }, 1000); // Delay per transizione smooth
+        }
+    },
+
+    /**
+     * Torna alla home page
+     */
+    goToHomePage: function() {
+        console.log('🏠 NAVIGAZIONE: Ritorno alla home page...');
+        if (window.UI && typeof window.UI.goHome === 'function') {
+            window.UI.goHome();
+        } else {
+            console.warn('⚠️ NAVIGAZIONE: goHome non disponibile');
         }
     },
 
