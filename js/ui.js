@@ -2609,8 +2609,10 @@ window.UI = {
             const tutorialBtn = document.createElement('div');
             tutorialBtn.className = 'tutorial-arrow-btn';
             tutorialBtn.onclick = () => {
+                console.log(`🔥 CLICK TUTORIAL BUTTON: index=${index}, name="${tutorial.name}"`);
                 this.selectTutorial(index);
                 this.updateTutorialButtonsState(index);
+                console.log(`🔥 Tutorial button state updated for index: ${index}`);
             };
             
             // Applica classi speciali per forma
@@ -2679,17 +2681,22 @@ window.UI = {
     updateTutorialButtonsState: function(activeIndex) {
         // Trova tutti i pulsanti tutorial
         const allButtons = document.querySelectorAll('.tutorial-arrow-btn');
-        
+
+        console.log(`🔥 updateTutorialButtonsState: activeIndex=${activeIndex}, totalButtons=${allButtons.length}`);
+
         allButtons.forEach((button, index) => {
             // Rimuovi tutti gli stati
             button.classList.remove('active');
-            
+
             // Aggiungi 'active' solo al pulsante selezionato
             if (index === activeIndex) {
                 button.classList.add('active');
+                console.log(`🔥 Button ${index} set to ACTIVE (green)`);
+            } else {
+                console.log(`🔥 Button ${index} set to INACTIVE (blue)`);
             }
         });
-        
+
         AppConfig.log(2, `Tutorial ${activeIndex + 1} attivato (comportamento radio button)`);
     },
     
@@ -2802,56 +2809,43 @@ window.UI = {
             AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per step "${step.title}"`);
         }
 
-        // NUOVO: Gestione sistema Assemblaggio Sequenziale se abilitato nello step
-        if (step.properties.AssemblyMode === 'true' && window.AssemblySystem) {
-            AppConfig.log(2, `🏗️ ASSEMBLY: Modalità assemblaggio abilitata per step "${step.title}"`);
+        // NUOVO: Gestione sistema Assemblaggio Semplificato
+        if (step.properties.AssemblyMode === 'true') {
+            AppConfig.log(2, `🏗️ ASSEMBLY: Modalità assemblaggio semplificata abilitata per step "${step.title}"`);
 
-            // Carica configurazione assemblaggio se specificata
-            if (step.properties.AssemblyConfig) {
-                const configPath = step.properties.AssemblyConfig;
-                AppConfig.log(3, `🏗️ ASSEMBLY: Caricamento configurazione: ${configPath}`);
+            // Usa il nuovo AssemblySystemSimplified se disponibile, altrimenti fallback a AssemblySystem
+            const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
 
-                // Carica configurazione JSON (implementazione semplificata)
-                this.loadAssemblyConfig(configPath).then(config => {
-                    if (config) {
-                        window.AssemblySystem.enableAssemblyMode(config);
+            if (assemblySystem) {
+                // Abilita modalità assemblaggio con AllowedComponents
+                if (step.properties.AllowedComponents) {
+                    console.log(`🔥 ASSEMBLY DEBUG: step.title="${step.title}", AllowedComponents="${step.properties.AllowedComponents}"`);
 
-                        // Registra callback per aggiornamenti UI su cambio step
-                        window.AssemblySystem.setStepChangeCallback((stepName, stepIndex, assemblyStatus) => {
-                            AppConfig.log(2, `🏗️ ASSEMBLY: Cambio automatico step → "${stepName}" (${stepIndex})`);
+                    const result = assemblySystem.enableAssemblyMode(step.properties.AllowedComponents, step.title);
+                    console.log(`🔥 ASSEMBLY DEBUG: enableAssemblyMode result=${result}`);
 
-                            // Aggiorna UI o mostra notifica se necessario
-                            this.updateAssemblyStepUI(stepName, assemblyStatus);
+                    AppConfig.log(3, `🏗️ ASSEMBLY: Componenti permessi: ${step.properties.AllowedComponents}`);
+                } else {
+                    console.log(`🔥 ASSEMBLY DEBUG: step.title="${step.title}", NO AllowedComponents - base mode`);
 
-                            // NUOVO: Sincronizza con sistema tutorial normale
-                            this.syncAssemblyStepWithTutorial(stepName, stepIndex, assemblyStatus);
-                        });
+                    // Modalità assemblaggio senza componenti specifici
+                    const result = assemblySystem.enableAssemblyMode(null, step.title);
+                    console.log(`🔥 ASSEMBLY DEBUG: enableAssemblyMode base result=${result}`);
 
-                        // Imposta step corrente se specificato
-                        if (step.properties.CurrentStep) {
-                            window.AssemblySystem.setCurrentStep(step.properties.CurrentStep);
-                            AppConfig.log(3, `🏗️ ASSEMBLY: Step corrente: ${step.properties.CurrentStep}`);
-                        }
+                    AppConfig.log(3, `🏗️ ASSEMBLY: Modalità assemblaggio base abilitata`);
+                }
 
-                        // Imposta componenti permessi se specificati
-                        if (step.properties.AllowedComponents) {
-                            console.log(`[DEBUG] 🏗️ UI: Chiamata setAllowedComponents con: ${step.properties.AllowedComponents}`);
-                            window.AssemblySystem.setAllowedComponents(step.properties.AllowedComponents);
-                            AppConfig.log(3, `🏗️ ASSEMBLY: Componenti permessi: ${step.properties.AllowedComponents}`);
-                        }
-
-                        AppConfig.log(2, `✅ ASSEMBLY: Sistema assemblaggio configurato`);
-                    }
-                }).catch(error => {
-                    console.error(`❌ ASSEMBLY: Errore caricamento configurazione:`, error);
-                });
+                AppConfig.log(2, `✅ ASSEMBLY: Sistema assemblaggio semplificato configurato`);
             } else {
-                console.warn('⚠️ ASSEMBLY: AssemblyMode=true ma AssemblyConfig non specificato');
+                console.warn('⚠️ ASSEMBLY: Nessun sistema di assemblaggio disponibile');
             }
-        } else if (step.properties.AssemblyMode === 'false' && window.AssemblySystem) {
+        } else if (step.properties.AssemblyMode === 'false') {
             // Disabilita esplicitamente il sistema se richiesto
-            window.AssemblySystem.disableAssemblyMode();
-            AppConfig.log(2, `🚫 ASSEMBLY: Sistema assemblaggio disabilitato per step "${step.title}"`);
+            const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
+            if (assemblySystem && assemblySystem.disableAssemblyMode) {
+                assemblySystem.disableAssemblyMode();
+                AppConfig.log(2, `🚫 ASSEMBLY: Sistema assemblaggio disabilitato per step "${step.title}"`);
+            }
         }
 
         // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente

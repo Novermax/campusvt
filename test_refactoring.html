@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Refactoring - InterchangeableTracker</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-result {
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #00ff00;
+        }
+        .test-error {
+            border-left-color: #ff0000;
+        }
+        .test-warning {
+            border-left-color: #ffaa00;
+        }
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Test Refactoring - Fase 1: InterchangeableTracker</h1>
+        <p>Test di verifica del refactoring del sistema tracking intercambiabili</p>
+
+        <div id="results"></div>
+
+        <h3>Comandi Test Console:</h3>
+        <ul>
+            <li><code>testRefactoring.testModuleLoading()</code> - Test caricamento moduli</li>
+            <li><code>testRefactoring.testAPIs()</code> - Test API pubbliche</li>
+            <li><code>testRefactoring.testDelegation()</code> - Test delegazione DragDropSystem</li>
+            <li><code>InterchangeableTracker.getStats()</code> - Statistiche tracker</li>
+        </ul>
+    </div>
+
+    <script>
+        // Risultati test
+        const results = document.getElementById('results');
+
+        function addResult(message, type = 'success') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type === 'error' ? 'test-error' : type === 'warning' ? 'test-warning' : ''}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+
+        // Test caricamento moduli
+        async function testModuleLoading() {
+            addResult('🔄 Iniziando test caricamento moduli...');
+
+            try {
+                // Simula Scene3D minimo
+                if (!window.Scene3D) {
+                    window.Scene3D = {
+                        findModelByName: () => null,
+                        scene: null,
+                        camera: null,
+                        renderer: null,
+                        raycaster: null,
+                        mouse: null,
+                        canvas: null
+                    };
+                }
+
+                // Carica AssemblySystem
+                await loadScript('./js/core/AssemblySystem.js');
+                addResult('✅ AssemblySystem caricato');
+
+                // Carica InterchangeableTracker
+                await loadScript('./js/core/InterchangeableTracker.js');
+                addResult('✅ InterchangeableTracker caricato');
+
+                // Verifica disponibilità
+                if (window.InterchangeableTracker) {
+                    addResult('✅ window.InterchangeableTracker disponibile');
+                } else {
+                    addResult('❌ window.InterchangeableTracker NON disponibile', 'error');
+                }
+
+                // Carica SnapSystem
+                await loadScript('./js/core/SnapSystem.js');
+                addResult('✅ SnapSystem caricato');
+
+                // Verifica disponibilità
+                if (window.SnapSystem) {
+                    addResult('✅ window.SnapSystem disponibile');
+                } else {
+                    addResult('❌ window.SnapSystem NON disponibile', 'error');
+                }
+
+                // Carica DragDropSystem
+                await loadScript('./js/core/DragDropSystem.js');
+                addResult('✅ DragDropSystem caricato');
+
+                return true;
+            } catch (error) {
+                addResult(`❌ Errore caricamento: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Test API pubbliche
+        function testAPIs() {
+            addResult('🔄 Test API pubbliche...');
+
+            try {
+                // Test InterchangeableTracker
+                if (window.InterchangeableTracker) {
+                    const requiredMethods = [
+                        'init', 'enable', 'disable', 'reset',
+                        'getPositionKey', 'markInterchangeablePositionOccupied',
+                        'freeInterchangeablePosition', 'isInterchangeablePositionOccupied',
+                        'handlePositionChange', 'initializeInterchangeableOccupations',
+                        'debugOccupiedPositions', 'getStats'
+                    ];
+
+                    let missingMethods = [];
+                    requiredMethods.forEach(method => {
+                        if (typeof window.InterchangeableTracker[method] !== 'function') {
+                            missingMethods.push(method);
+                        }
+                    });
+
+                    if (missingMethods.length === 0) {
+                        addResult('✅ Tutte le API InterchangeableTracker presenti');
+                    } else {
+                        addResult(`❌ API mancanti: ${missingMethods.join(', ')}`, 'error');
+                    }
+                } else {
+                    addResult('❌ InterchangeableTracker non disponibile', 'error');
+                }
+
+                // Test SnapSystem
+                if (window.SnapSystem) {
+                    const snapMethods = [
+                        'init', 'findSnapTarget', 'performSnap', 'enableSnapIndicators',
+                        'disableSnapIndicators', 'updateSnapIndicators', 'setSnapDistance'
+                    ];
+
+                    let missingSnapMethods = [];
+                    snapMethods.forEach(method => {
+                        if (typeof window.SnapSystem[method] !== 'function') {
+                            missingSnapMethods.push(method);
+                        }
+                    });
+
+                    if (missingSnapMethods.length === 0) {
+                        addResult('✅ Tutte le API SnapSystem presenti');
+                    } else {
+                        addResult(`❌ API SnapSystem mancanti: ${missingSnapMethods.join(', ')}`, 'error');
+                    }
+                } else {
+                    addResult('❌ SnapSystem non disponibile', 'error');
+                }
+
+                // Test DragDropSystem delegation
+                if (window.DragDropSystem) {
+                    if (typeof window.DragDropSystem.debugOccupiedPositions === 'function') {
+                        addResult('✅ API delegation DragDropSystem presenti');
+                    } else {
+                        addResult('❌ API delegation DragDropSystem mancanti', 'error');
+                    }
+                } else {
+                    addResult('❌ DragDropSystem non disponibile', 'error');
+                }
+
+            } catch (error) {
+                addResult(`❌ Errore test API: ${error.message}`, 'error');
+            }
+        }
+
+        // Test delegazione
+        function testDelegation() {
+            addResult('🔄 Test delegazione sistemi modulari...');
+
+            try {
+                if (window.DragDropSystem && window.InterchangeableTracker && window.SnapSystem) {
+                    // Simula inizializzazione sistemi modulari
+                    window.InterchangeableTracker.init(window.DragDropSystem);
+                    window.InterchangeableTracker.enable();
+
+                    window.SnapSystem.init(null, null); // Scene e assemblySystem simulati
+
+                    // Test delegazione debugOccupiedPositions
+                    console.log('--- Test delegazione debugOccupiedPositions ---');
+                    window.DragDropSystem.debugOccupiedPositions();
+                    addResult('✅ Delegazione debugOccupiedPositions funziona');
+
+                    // Test stats InterchangeableTracker
+                    const stats = window.InterchangeableTracker.getStats();
+                    addResult(`✅ Stats tracker: enabled=${stats.enabled}, posizioni=${stats.occupiedPositionsCount}`);
+
+                    // Test SnapSystem integration
+                    if (window.SnapSystem.setSnapDistance) {
+                        window.SnapSystem.setSnapDistance(1.5);
+                        addResult('✅ Integrazione SnapSystem funziona');
+                    }
+
+                } else {
+                    addResult('❌ Sistemi non disponibili per test delegazione', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Errore test delegazione: ${error.message}`, 'error');
+            }
+        }
+
+        // Utility per caricare script
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // Esegui test automaticamente
+        async function runAllTests() {
+            addResult('🚀 Avvio test automatico refactoring Fase 1...');
+
+            const moduleLoadingOk = await testModuleLoading();
+            if (moduleLoadingOk) {
+                testAPIs();
+                testDelegation();
+                addResult('🎉 Test refactoring Fase 1 completato!');
+            } else {
+                addResult('❌ Test interrotto per errori caricamento moduli', 'error');
+            }
+        }
+
+        // API pubblica per test manuali
+        window.testRefactoring = {
+            testModuleLoading,
+            testAPIs,
+            testDelegation,
+            runAllTests
+        };
+
+        // Avvia test automaticamente
+        window.addEventListener('load', runAllTests);
+    </script>
+</body>
+</html>

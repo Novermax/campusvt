@@ -3865,6 +3865,84 @@ const Scene3D = {
             originalRefsCount: originalRefsCount,
             systemAvailable: originalRefsCount > 0
         };
+    },
+
+    /**
+     * DEBUG: Testa sistema _original per verificare che le posizioni siano fisse
+     */
+    debugOriginalSystem: function() {
+        console.log('\n🔍 === DEBUG SISTEMA _ORIGINAL ===');
+
+        if (!this.initialModelPositions) {
+            console.log('❌ initialModelPositions non inizializzato');
+            return;
+        }
+
+        console.log(`📊 Posizioni iniziali salvate: ${this.initialModelPositions.size}`);
+
+        // Test su alcuni oggetti chiave
+        const testObjects = ['ingrassatore', 'filtro', 'tappino_grasso_dx', 'tappino_grasso_sx'];
+
+        testObjects.forEach(objName => {
+            console.log(`\n🧪 Test ${objName}:`);
+
+            // Trova oggetto normale
+            const normalObj = this.findModelByName(objName);
+            if (!normalObj) {
+                console.log(`  ❌ ${objName} non trovato`);
+                return;
+            }
+
+            console.log(`  📍 Posizione attuale: (${normalObj.position.x.toFixed(3)}, ${normalObj.position.y.toFixed(3)}, ${normalObj.position.z.toFixed(3)})`);
+
+            // Test riferimento _original
+            const originalRef = this.findModelByName(objName + '_original');
+            if (originalRef) {
+                console.log(`  🎯 ${objName}_original: (${originalRef.position.x.toFixed(3)}, ${originalRef.position.y.toFixed(3)}, ${originalRef.position.z.toFixed(3)})`);
+                console.log(`  ✅ Reference type: ${originalRef.isOriginalReference ? 'CORRETTO' : 'ERRATO'}`);
+
+                // Verifica che sia dalla initialModelPositions
+                const savedPos = this.initialModelPositions.get(normalObj.uuid);
+                if (savedPos) {
+                    const savedCenter = savedPos.position;
+                    const refDistance = originalRef.position.distanceTo(savedCenter);
+                    console.log(`  📏 Distanza da posizione salvata: ${refDistance.toFixed(6)} (dovrebbe essere ~0)`);
+
+                    if (refDistance < 0.001) {
+                        console.log(`  ✅ _original usa correttamente la posizione salvata`);
+                    } else {
+                        console.log(`  ❌ _original NON usa la posizione salvata!`);
+                    }
+                } else {
+                    console.log(`  ❌ Nessuna posizione salvata per ${objName}`);
+                }
+            } else {
+                console.log(`  ❌ ${objName}_original non trovato`);
+            }
+        });
+
+        // Test stabilità - chiama _original due volte per vedere se cambia
+        console.log('\n🔄 Test stabilità ingrassatore_original:');
+        const ref1 = this.findModelByName('ingrassatore_original');
+        const ref2 = this.findModelByName('ingrassatore_original');
+
+        if (ref1 && ref2) {
+            const distance = ref1.position.distanceTo(ref2.position);
+            console.log(`  📏 Distanza tra due chiamate: ${distance.toFixed(6)}`);
+
+            if (distance < 0.0001) {
+                console.log(`  ✅ Posizione stabile tra chiamate multiple`);
+            } else {
+                console.log(`  ❌ Posizione INSTABILE tra chiamate! Bug trovato!`);
+            }
+        }
+
+        console.log('\n=== FINE DEBUG SISTEMA _ORIGINAL ===\n');
+
+        return {
+            initialPositionsCount: this.initialModelPositions.size,
+            systemWorking: this.initialModelPositions.size > 0
+        };
     }
 };
 

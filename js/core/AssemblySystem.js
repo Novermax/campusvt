@@ -510,6 +510,110 @@ window.AssemblySystem = {
         const result = this.validateConfig(this.currentConfig);
         console.log(`[AssemblySystem] ${result ? '✅' : '❌'} Validazione configurazione:`, result);
         return result;
+    },
+
+    /**
+     * Trova il gruppo intercambiabile di un componente
+     * @param {string} componentName - Nome del componente
+     * @returns {string|null} - Nome del gruppo intercambiabile o null se non trovato
+     */
+    findInterchangeableGroup: function(componentName) {
+        if (!this.currentConfig || !this.currentConfig.interchangeableNodes) {
+            return null;
+        }
+
+        const cleanComponentName = componentName.toLowerCase().trim();
+
+        for (const [groupName, components] of Object.entries(this.currentConfig.interchangeableNodes)) {
+            if (components.some(comp => comp.toLowerCase().trim() === cleanComponentName)) {
+                console.log(`[AssemblySystem] 🔄 Componente "${componentName}" appartiene al gruppo intercambiabile: "${groupName}"`);
+                return groupName;
+            }
+        }
+
+        return null;
+    },
+
+    /**
+     * Ottiene le posizioni originali (centro bounding box) degli altri componenti intercambiabili nello stesso gruppo
+     * @param {string} componentName - Nome del componente
+     * @returns {Array} - Lista delle posizioni originali disponibili {targetName, position}
+     */
+    getInterchangeableSnapTargets: function(componentName) {
+        const snapTargets = [];
+
+        const interchangeableGroup = this.findInterchangeableGroup(componentName);
+        if (!interchangeableGroup) {
+            console.log(`[AssemblySystem] ℹ️ Componente "${componentName}" non è intercambiabile`);
+            return snapTargets;
+        }
+
+        console.log(`[AssemblySystem] 🎯 Ricerca posizioni originali per componente intercambiabile "${componentName}" nel gruppo "${interchangeableGroup}"`);
+
+        // Ottieni tutti i componenti dello stesso gruppo intercambiabile (escluso se stesso)
+        const groupComponents = this.currentConfig.interchangeableNodes[interchangeableGroup] || [];
+
+        groupComponents.forEach(groupComponent => {
+            // Salta il componente stesso - vogliamo solo le posizioni degli ALTRI elementi
+            if (groupComponent.toLowerCase().trim() === componentName.toLowerCase().trim()) {
+                return;
+            }
+
+            // Trova l'oggetto 3D nella scena e la sua posizione originale salvata nel DragDropSystem
+            if (window.Scene3D && typeof window.Scene3D.findModelByName === 'function') {
+                const targetObject = window.Scene3D.findModelByName(groupComponent);
+                if (targetObject) {
+                    // IMPORTANTE: Usa le posizioni originali salvate dal DragDropSystem (centro bounding box)
+                    if (window.DragDropSystem && window.DragDropSystem.originalPositions) {
+                        const originalPosition = window.DragDropSystem.originalPositions.get(targetObject.uuid);
+                        if (originalPosition) {
+                            // NUOVO: Verifica se la posizione è già occupata da un altro elemento intercambiabile
+                            const isPositionOccupied = window.InterchangeableTracker && window.InterchangeableTracker.isInterchangeablePositionOccupied(originalPosition);
+
+                            if (isPositionOccupied) {
+                                console.log(`[AssemblySystem] 🔒 Posizione di "${groupComponent}" già occupata - esclusa dai targets disponibili`);
+                            } else {
+                                snapTargets.push({
+                                    targetName: groupComponent,
+                                    position: originalPosition.clone(),
+                                    isInterchangeable: true
+                                });
+
+                                console.log(`[AssemblySystem] ➕ Aggiunta posizione originale (centro BB) di "${groupComponent}" (${originalPosition.x.toFixed(2)}, ${originalPosition.y.toFixed(2)}, ${originalPosition.z.toFixed(2)})`);
+                            }
+                        } else {
+                            console.warn(`[AssemblySystem] ⚠️ Posizione originale per "${groupComponent}" non trovata nel DragDropSystem`);
+                        }
+                    } else {
+                        console.warn(`[AssemblySystem] ⚠️ DragDropSystem non disponibile o originalPositions non inizializzate`);
+                    }
+                } else {
+                    console.warn(`[AssemblySystem] ⚠️ Oggetto "${groupComponent}" non trovato nella scena`);
+                }
+            }
+        });
+
+        console.log(`[AssemblySystem] 📊 Totale posizioni intercambiabili per "${componentName}": ${snapTargets.length}`);
+        return snapTargets;
+    },
+
+    /**
+     * Verifica se due componenti sono intercambiabili tra loro
+     * @param {string} component1 - Nome primo componente
+     * @param {string} component2 - Nome secondo componente
+     * @returns {boolean} - true se sono nello stesso gruppo intercambiabile
+     */
+    areComponentsInterchangeable: function(component1, component2) {
+        const group1 = this.findInterchangeableGroup(component1);
+        const group2 = this.findInterchangeableGroup(component2);
+
+        if (!group1 || !group2) {
+            return false;
+        }
+
+        const areInterchangeable = group1 === group2;
+        console.log(`[AssemblySystem] 🔄 Componenti "${component1}" e "${component2}" ${areInterchangeable ? 'SONO' : 'NON SONO'} intercambiabili`);
+        return areInterchangeable;
     }
 };
 

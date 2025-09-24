@@ -198,20 +198,52 @@ window.App = {
             await this.loadModule('./js/core/ParticleSystem.js?v=1000018');
             console.log('✅ Sistema particellare caricato');
 
+            // Carica InterchangeableTracker prima di DragDropSystem (richiesto per tracking posizioni)
+            try {
+                await this.loadModule('./js/core/InterchangeableTracker.js?v=1000001');
+                console.log('✅ Sistema tracking intercambiabili caricato');
+            } catch (error) {
+                console.warn('⚠️ InterchangeableTracker non caricato (opzionale):', error.message);
+            }
+
+            // Carica SnapSystem prima di DragDropSystem (richiesto per logica snap)
+            try {
+                await this.loadModule('./js/core/SnapSystem.js?v=1000001');
+                console.log('✅ Sistema snap caricato');
+            } catch (error) {
+                console.warn('⚠️ SnapSystem non caricato (opzionale):', error.message);
+            }
+
             // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
             try {
                 await this.loadModule('./js/core/DragDropSystem.js?nocache=1000025');
                 console.log('✅ Sistema drag & drop caricato');
+
+                // Carica debug helpers per DragDropSystem
+                try {
+                    await this.loadModule('./js/core/DragDropDebugHelpers.js?v=1000001');
+                    console.log('✅ Debug helpers drag & drop caricati');
+                } catch (debugError) {
+                    console.warn('⚠️ Debug helpers non caricati (opzionale):', debugError.message);
+                }
             } catch (error) {
                 console.warn('⚠️ DragDropSystem non caricato (opzionale):', error.message);
             }
 
-            // Carica AssemblySystem per assemblaggio sequenziale
+            // Carica AssemblySystemSimplified (nuovo sistema semplificato)
             try {
-                await this.loadModule('./js/core/AssemblySystem.js?nocache=1000022');
-                console.log('✅ Sistema assemblaggio sequenziale caricato');
+                await this.loadModule('./js/core/AssemblySystemSimplified.js?v=2000001');
+                console.log('✅ Sistema assemblaggio semplificato caricato');
             } catch (error) {
-                console.warn('⚠️ AssemblySystem non caricato (opzionale):', error.message);
+                console.warn('⚠️ AssemblySystemSimplified non caricato:', error.message);
+
+                // Fallback al sistema vecchio se quello nuovo non è disponibile
+                try {
+                    await this.loadModule('./js/core/AssemblySystem.js?nocache=1000022');
+                    console.log('✅ Sistema assemblaggio sequenziale (fallback) caricato');
+                } catch (fallbackError) {
+                    console.warn('⚠️ Nessun sistema di assemblaggio disponibile:', fallbackError.message);
+                }
             }
 
             await this.loadModule('./js/scene3d-modular.js?nocache=1000019');  // Modulo modulare compatibile

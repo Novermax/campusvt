@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Sistema _original</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug Sistema _original</h1>
+
+        <div class="info-box">
+            <h4>🎯 Problema da verificare:</h4>
+            <p><strong>ingrassatore_original</strong> dovrebbe sempre puntare al centro del bounding box dell'ingrassatore nella sua posizione iniziale,
+            ma sembra spostarsi rispetto alla posizione attuale invece che alla posizione originale.</p>
+            <p><strong>Test:</strong> Verificheremo se le posizioni _original sono davvero fisse e immutabili.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>1. Controllo Sistema Scene3D</h3>
+            <button class="test-button" onclick="checkScene3DSystem()">Verifica Sistema</button>
+            <div id="system-status" class="log-area"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test Posizioni _original</h3>
+            <button class="test-button" onclick="testOriginalPositions()">Test Posizioni Iniziali</button>
+            <button class="test-button" onclick="testIngrassatoreOriginal()">Test ingrassatore_original</button>
+            <button class="test-button" onclick="monitorOriginalPositions()">Monitor Continuo</button>
+            <button class="test-button" onclick="stopMonitoring()">Stop Monitor</button>
+            <div id="original-status" class="log-area"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Simulazione Movimento</h3>
+            <button class="test-button" onclick="moveIngrassatore()">Muovi Ingrassatore</button>
+            <button class="test-button" onclick="checkAfterMove()">Verifica Dopo Movimento</button>
+            <button class="test-button" onclick="resetPositions()">Reset Posizioni</button>
+            <div id="movement-status" class="log-area"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Debug Comandi Console</h3>
+            <div class="info-box">
+                <h4>📋 Comandi disponibili in console:</h4>
+                <pre>
+// Verifica sistema _original
+debugOriginal()
+
+// Test posizione fissa ingrassatore
+testIngrassatoreOriginal()
+
+// Lista posizioni iniziali salvate
+listInitialPositions()
+
+// Monitor cambiamenti
+monitorOriginalPositions()
+</pre>
+            </div>
+            <button class="test-button" onclick="showConsoleCommands()">Mostra Comandi Console</button>
+            <div id="console-status" class="log-area"></div>
+        </div>
+    </div>
+
+    <script>
+        let monitorInterval = null;
+        let lastIngrassatoreOriginalPos = null;
+
+        function log(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            container.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearContainer(containerId) {
+            document.getElementById(containerId).textContent = '';
+        }
+
+        function checkScene3DSystem() {
+            clearContainer('system-status');
+            log('system-status', 'Verifica disponibilità sistema Scene3D...');
+
+            if (!window.Scene3D) {
+                log('system-status', 'Scene3D non disponibile - carica prima l\'applicazione principale', 'error');
+                return;
+            }
+
+            log('system-status', 'Scene3D trovato!', 'success');
+            log('system-status', `Metodi disponibili: ${Object.keys(window.Scene3D).slice(0, 10).join(', ')}...`);
+
+            if (window.Scene3D.initialModelPositions) {
+                const count = window.Scene3D.initialModelPositions.size;
+                log('system-status', `initialModelPositions: ${count} posizioni salvate`, count > 0 ? 'success' : 'warning');
+
+                if (count > 0) {
+                    log('system-status', 'Lista modelli con posizioni salvate:');
+                    window.Scene3D.initialModelPositions.forEach((pos, uuid) => {
+                        const model = window.Scene3D.scene.children.find(child => child.uuid === uuid);
+                        const name = model ? model.name : 'UNKNOWN';
+                        log('system-status', `  - ${name}: (${pos.position.x.toFixed(2)}, ${pos.position.y.toFixed(2)}, ${pos.position.z.toFixed(2)})`);
+                    });
+                }
+            } else {
+                log('system-status', 'initialModelPositions non trovato', 'error');
+            }
+
+            if (window.Scene3D.findModelByName) {
+                log('system-status', 'findModelByName disponibile', 'success');
+            } else {
+                log('system-status', 'findModelByName non disponibile', 'error');
+            }
+        }
+
+        function testOriginalPositions() {
+            clearContainer('original-status');
+            log('original-status', 'Test sistema posizioni _original...');
+
+            if (!window.Scene3D) {
+                log('original-status', 'Scene3D non disponibile', 'error');
+                return;
+            }
+
+            const testObjects = ['ingrassatore', 'filtro', 'tappino_grasso_dx', 'tappino_grasso_sx'];
+
+            testObjects.forEach(objName => {
+                log('original-status', `\n🧪 Test ${objName}:`);
+
+                // Trova oggetto normale
+                const normalObj = window.Scene3D.findModelByName(objName);
+                if (normalObj) {
+                    log('original-status', `  ✅ ${objName} trovato: (${normalObj.position.x.toFixed(3)}, ${normalObj.position.y.toFixed(3)}, ${normalObj.position.z.toFixed(3)})`);
+                } else {
+                    log('original-status', `  ❌ ${objName} non trovato`, 'error');
+                    return;
+                }
+
+                // Trova riferimento _original
+                const originalRef = window.Scene3D.findModelByName(objName + '_original');
+                if (originalRef) {
+                    log('original-status', `  ✅ ${objName}_original trovato: (${originalRef.position.x.toFixed(3)}, ${originalRef.position.y.toFixed(3)}, ${originalRef.position.z.toFixed(3)})`);
+
+                    if (originalRef.isOriginalReference) {
+                        log('original-status', `  ✅ Correttamente marcato come reference originale`, 'success');
+                    } else {
+                        log('original-status', `  ⚠️ Non marcato come reference originale`, 'warning');
+                    }
+                } else {
+                    log('original-status', `  ❌ ${objName}_original non trovato`, 'error');
+                }
+            });
+        }
+
+        function testIngrassatoreOriginal() {
+            clearContainer('original-status');
+            log('original-status', '🎯 Test specifico ingrassatore_original...');
+
+            if (!window.Scene3D) {
+                log('original-status', 'Scene3D non disponibile', 'error');
+                return;
+            }
+
+            // Test multipli per verificare consistenza
+            for (let i = 1; i <= 5; i++) {
+                const originalRef = window.Scene3D.findModelByName('ingrassatore_original');
+                if (originalRef) {
+                    const pos = originalRef.position;
+                    log('original-status', `Test ${i}: ingrassatore_original → (${pos.x.toFixed(3)}, ${pos.y.toFixed(3)}, ${pos.z.toFixed(3)})`);
+
+                    if (lastIngrassatoreOriginalPos) {
+                        const distance = lastIngrassatoreOriginalPos.distanceTo(pos);
+                        if (distance < 0.0001) {
+                            log('original-status', `  ✅ Posizione stabile (delta: ${distance.toFixed(6)})`, 'success');
+                        } else {
+                            log('original-status', `  ❌ POSIZIONE CAMBIATA! (delta: ${distance.toFixed(6)})`, 'error');
+                        }
+                    }
+
+                    lastIngrassatoreOriginalPos = pos.clone();
+                } else {
+                    log('original-status', `Test ${i}: ingrassatore_original NON TROVATO`, 'error');
+                }
+            }
+        }
+
+        function monitorOriginalPositions() {
+            if (monitorInterval) {
+                clearInterval(monitorInterval);
+            }
+
+            clearContainer('original-status');
+            log('original-status', '👁️ Avvio monitoraggio continuo posizioni _original...');
+
+            monitorInterval = setInterval(() => {
+                const originalRef = window.Scene3D?.findModelByName('ingrassatore_original');
+                const normalRef = window.Scene3D?.findModelByName('ingrassatore');
+
+                if (originalRef && normalRef) {
+                    const origPos = originalRef.position;
+                    const normPos = normalRef.position;
+
+                    log('original-status', `🔍 ingrassatore: (${normPos.x.toFixed(3)}, ${normPos.y.toFixed(3)}, ${normPos.z.toFixed(3)})`);
+                    log('original-status', `🎯 ingrassatore_original: (${origPos.x.toFixed(3)}, ${origPos.y.toFixed(3)}, ${origPos.z.toFixed(3)})`);
+
+                    const distance = origPos.distanceTo(normPos);
+                    log('original-status', `📏 Distanza: ${distance.toFixed(3)} unità\n`);
+                } else {
+                    log('original-status', '❌ Oggetti non trovati', 'error');
+                }
+            }, 2000);
+
+            log('original-status', '✅ Monitor attivo - controlla ogni 2 secondi', 'success');
+        }
+
+        function stopMonitoring() {
+            if (monitorInterval) {
+                clearInterval(monitorInterval);
+                monitorInterval = null;
+                log('original-status', '⏹️ Monitor fermato', 'success');
+            }
+        }
+
+        function moveIngrassatore() {
+            clearContainer('movement-status');
+            log('movement-status', '🚚 Test movimento ingrassatore...');
+
+            const normalObj = window.Scene3D?.findModelByName('ingrassatore');
+            if (!normalObj) {
+                log('movement-status', 'Ingrassatore non trovato', 'error');
+                return;
+            }
+
+            const oldPos = normalObj.position.clone();
+            log('movement-status', `Posizione iniziale: (${oldPos.x.toFixed(3)}, ${oldPos.y.toFixed(3)}, ${oldPos.z.toFixed(3)})`);
+
+            // Sposta l'ingrassatore
+            normalObj.position.x += 0.5;
+            normalObj.position.y += 0.2;
+            normalObj.position.z -= 0.3;
+
+            const newPos = normalObj.position;
+            log('movement-status', `Nuova posizione: (${newPos.x.toFixed(3)}, ${newPos.y.toFixed(3)}, ${newPos.z.toFixed(3)})`, 'success');
+
+            log('movement-status', 'Oggetto spostato! Ora testa se _original è rimasto fisso.');
+        }
+
+        function checkAfterMove() {
+            clearContainer('movement-status');
+            log('movement-status', '🔍 Verifica posizioni dopo movimento...');
+
+            const normalObj = window.Scene3D?.findModelByName('ingrassatore');
+            const originalRef = window.Scene3D?.findModelByName('ingrassatore_original');
+
+            if (normalObj && originalRef) {
+                const normPos = normalObj.position;
+                const origPos = originalRef.position;
+
+                log('movement-status', `ingrassatore attuale: (${normPos.x.toFixed(3)}, ${normPos.y.toFixed(3)}, ${normPos.z.toFixed(3)})`);
+                log('movement-status', `ingrassatore_original: (${origPos.x.toFixed(3)}, ${origPos.y.toFixed(3)}, ${origPos.z.toFixed(3)})`);
+
+                const distance = origPos.distanceTo(normPos);
+                log('movement-status', `Distanza tra oggetto e _original: ${distance.toFixed(3)} unità`);
+
+                if (distance > 0.1) {
+                    log('movement-status', '✅ CORRETTO: _original è rimasto fisso mentre oggetto si è mosso!', 'success');
+                } else {
+                    log('movement-status', '❌ PROBLEMA: _original si è mosso insieme all\'oggetto!', 'error');
+                }
+            } else {
+                log('movement-status', 'Oggetti non trovati', 'error');
+            }
+        }
+
+        function resetPositions() {
+            clearContainer('movement-status');
+            log('movement-status', '🔄 Reset posizioni...');
+
+            if (window.Scene3D && window.Scene3D.resetAllModelsToCenteredOriginalPositions) {
+                window.Scene3D.resetAllModelsToCenteredOriginalPositions();
+                log('movement-status', 'Reset completato!', 'success');
+            } else {
+                log('movement-status', 'Funzione reset non disponibile', 'error');
+            }
+        }
+
+        function showConsoleCommands() {
+            clearContainer('console-status');
+            log('console-status', '📋 Comandi console aggiunti a window:');
+
+            // Aggiungi comandi globali
+            window.debugOriginal = function() {
+                console.log('🔍 DEBUG SISTEMA _ORIGINAL:');
+                testOriginalPositions();
+            };
+
+            window.testIngrassatoreOriginal = function() {
+                console.log('🎯 TEST INGRASSATORE_ORIGINAL:');
+                testIngrassatoreOriginal();
+            };
+
+            window.listInitialPositions = function() {
+                if (window.Scene3D && window.Scene3D.initialModelPositions) {
+                    console.log('📋 POSIZIONI INIZIALI SALVATE:');
+                    window.Scene3D.initialModelPositions.forEach((pos, uuid) => {
+                        const model = window.Scene3D.scene.children.find(child => child.uuid === uuid);
+                        const name = model ? model.name : 'UNKNOWN';
+                        console.log(`${name}: (${pos.position.x.toFixed(3)}, ${pos.position.y.toFixed(3)}, ${pos.position.z.toFixed(3)})`);
+                    });
+                } else {
+                    console.log('❌ initialModelPositions non disponibile');
+                }
+            };
+
+            window.monitorOriginalPositions = monitorOriginalPositions;
+
+            log('console-status', '✅ debugOriginal() - Debug completo sistema');
+            log('console-status', '✅ testIngrassatoreOriginal() - Test specifico');
+            log('console-status', '✅ listInitialPositions() - Lista posizioni salvate');
+            log('console-status', '✅ monitorOriginalPositions() - Monitor continuo');
+            log('console-status', '\n💡 Usa questi comandi nella console del browser!');
+        }
+
+        // Auto-caricamento
+        window.addEventListener('load', () => {
+            log('system-status', '🚀 Debug sistema _original caricato');
+            log('system-status', '💡 Apri prima l\'applicazione principale, poi torna qui per i test');
+        });
+    </script>
+</body>
+</html>

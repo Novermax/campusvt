@@ -30,17 +30,17 @@ window.DragDropSystem = {
     
     // Sistema snap personalizzati con riferimenti _original
     customSnapTargets: new Map(), // objectUuid -> { targetName: string, isOriginalRef: bool, offset: Vector3 }
-    
+    snapIndicators: new Map(), // Indicatori visivi snap (sfere verdi)
+
     // Drag state
     draggedObject: null,
     dragOffset: null, // Inizializzato in init()
     dragPlane: null,
     dragStartPosition: null, // Inizializzato in init()
     
-    // Snap system
-    snapDistance: 1.0,
-    snapIndicators: new Map(),
-    snapAnimationDuration: 0.8,
+    // Riferimenti ai sistemi modulari
+    interchangeableTracker: null,
+    snapSystem: null,
     
     // Visual feedback
     snapZoneMaterial: null,
@@ -115,7 +115,13 @@ window.DragDropSystem = {
         
         // Setup event listeners (inizialmente disabilitati)
         this.setupEventListeners();
-        
+
+        // Inizializza sistema di tracking intercambiabili
+        this.initInterchangeableTracker();
+
+        // Inizializza sistema di snap
+        this.initSnapSystem();
+
         console.log('[DragDropSystem] Sistema inizializzato correttamente');
         return true;
     },
@@ -179,10 +185,40 @@ window.DragDropSystem = {
         this.boundMouseDown = this.onMouseDown.bind(this);
         this.boundMouseMove = this.onMouseMove.bind(this);
         this.boundMouseUp = this.onMouseUp.bind(this);
-        
-        console.log('[DragDropSystem] Event listeners configurati (disabilitati)');
+        this.boundKeyDown = this.onKeyDown.bind(this);
+
+        // Aggiungi listener per tasto ESC di emergenza
+        document.addEventListener('keydown', this.boundKeyDown);
+
+        console.log('[DragDropSystem] Event listeners configurati (ESC = force reset)');
     },
-    
+
+    /**
+     * Inizializza il sistema di tracking intercambiabili
+     */
+    initInterchangeableTracker: function() {
+        if (window.InterchangeableTracker) {
+            this.interchangeableTracker = window.InterchangeableTracker;
+            this.interchangeableTracker.init(this);
+            console.log('[DragDropSystem] ✅ InterchangeableTracker collegato');
+        } else {
+            console.warn('[DragDropSystem] ⚠️ InterchangeableTracker non disponibile');
+        }
+    },
+
+    /**
+     * Inizializza il sistema di snap
+     */
+    initSnapSystem: function() {
+        if (window.SnapSystem) {
+            this.snapSystem = window.SnapSystem;
+            this.snapSystem.init(this);
+            console.log('[DragDropSystem] ✅ SnapSystem collegato');
+        } else {
+            console.warn('[DragDropSystem] ⚠️ SnapSystem non disponibile');
+        }
+    },
+
     /**
      * Abilita il sistema drag & drop
      * @param {Array} objectNames - Lista nomi oggetti draggabili (opzionale)
@@ -226,7 +262,15 @@ window.DragDropSystem = {
         // this.createSnapIndicators();
         
         this.enabled = true;
-        
+
+        // Abilita i sistemi modulari
+        if (this.interchangeableTracker && window.AssemblySystem && window.AssemblySystem.assemblyMode) {
+            this.interchangeableTracker.enable();
+        }
+        if (this.snapSystem) {
+            this.snapSystem.enable();
+        }
+
         console.log(`[DragDropSystem] ✅ Sistema abilitato con ${this.draggableObjects.length} oggetti draggabili`);
         console.log('[DragDropSystem] Oggetti draggabili:', this.draggableObjects.map(obj => obj.name));
     },
@@ -255,6 +299,14 @@ window.DragDropSystem = {
         // Rimuove indicatori snap
         this.removeAllSnapIndicators();
         
+        // Disabilita i sistemi modulari
+        if (this.interchangeableTracker) {
+            this.interchangeableTracker.disable();
+        }
+        if (this.snapSystem) {
+            this.snapSystem.disable();
+        }
+
         // Reset stato
         this.enabled = false;
         this.draggableObjects = [];
@@ -421,6 +473,11 @@ window.DragDropSystem = {
         });
 
         console.log(`[DragDropSystem] ✅ Salvate ${this.originalPositions.size} posizioni originali`);
+
+        // NUOVO: Inizializza tracking occupazioni per elementi intercambiabili
+        if (this.interchangeableTracker) {
+            this.interchangeableTracker.initializeInterchangeableOccupations();
+        }
     },
     
     /**
@@ -479,6 +536,83 @@ window.DragDropSystem = {
             indicator.material?.dispose();
         });
         this.snapIndicators.clear();
+    },
+
+    /**
+     * Aggiorna gli indicatori snap in base al componente correntemente trascinato
+     * Mostra punti di snap originali + quelli intercambiabili
+     */
+    updateSnapIndicators: function() {
+        // Prima rimuovi tutti gli indicatori esistenti
+        this.removeAllSnapIndicators();
+
+        // Se non c'è un oggetto trascinato, non mostrare indicatori
+        if (!this.draggedObject) {
+            return;
+        }
+
+        const objectName = this.draggedObject.name.toLowerCase().trim();
+        console.log(`[DragDropSystem] 🔄 Aggiornamento indicatori snap per "${objectName}"`);
+
+        // 1. Crea indicatore per posizione originale (sempre)
+        const originalPos = this.originalPositions.get(this.draggedObject.uuid);
+        if (originalPos) {
+            this.createSingleSnapIndicator(this.draggedObject.uuid, originalPos, 0x00ff00, `Original_${objectName}`);
+            console.log(`[DragDropSystem] ➕ Indicatore posizione originale creato`);
+        }
+
+        // 2. Crea indicatori per posizioni originali di altri componenti intercambiabili
+        if (window.AssemblySystem && window.AssemblySystem.assemblyMode && window.AssemblySystem.currentConfig) {
+            const interchangeableTargets = window.AssemblySystem.getInterchangeableSnapTargets(objectName);
+
+            if (interchangeableTargets.length > 0) {
+                console.log(`[DragDropSystem] 🎯 Creazione ${interchangeableTargets.length} indicatori per posizioni intercambiabili`);
+
+                interchangeableTargets.forEach((target, index) => {
+                    // DEBUG: Verifica posizioni
+                    console.log(`[DragDropSystem] 🔍 Target ${index + 1}: "${target.targetName}" alla posizione (${target.position.x.toFixed(3)}, ${target.position.y.toFixed(3)}, ${target.position.z.toFixed(3)})`);
+
+                    // Colore arancione per posizioni di altri componenti intercambiabili
+                    const color = 0xff8800;
+                    const uniqueId = `${this.draggedObject.uuid}_interchangeable_${index}`;
+
+                    this.createSingleSnapIndicator(uniqueId, target.position, color, `Interch_${target.targetName}`);
+                });
+
+                console.log(`[DragDropSystem] ✅ Creati ${interchangeableTargets.length} indicatori intercambiabili`);
+            } else {
+                console.log(`[DragDropSystem] ℹ️ Nessun target intercambiabile trovato per "${objectName}"`);
+            }
+        }
+
+        console.log(`[DragDropSystem] 📊 Totale indicatori snap attivi: ${this.snapIndicators.size}`);
+    },
+
+    /**
+     * Crea un singolo indicatore snap
+     * @param {string} id - ID univoco per l'indicatore
+     * @param {THREE.Vector3} position - Posizione dell'indicatore
+     * @param {number} color - Colore esadecimale
+     * @param {string} name - Nome dell'indicatore
+     */
+    createSingleSnapIndicator: function(id, position, color, name) {
+        const sphereGeometry = new THREE.SphereGeometry(0.05, 12, 8);
+        const material = new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: 0.7,
+            wireframe: false
+        });
+
+        const sphere = new THREE.Mesh(sphereGeometry, material);
+        sphere.position.copy(position);
+        sphere.name = `SnapIndicator_${name}`;
+        sphere.visible = true; // Visibile quando viene creato durante il drag
+
+        this.snapIndicators.set(id, sphere);
+        this.scene.add(sphere);
+
+        console.log(`[DragDropSystem] 🎯 Indicatore "${name}" creato alla posizione (${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)})`);
     },
     
     /* ===== EVENT HANDLERS ===== */
@@ -561,8 +695,13 @@ window.DragDropSystem = {
      */
     onMouseUp: function(event) {
         console.log(`[DragDropSystem] 🖱️ MOUSE UP - enabled: ${this.enabled}, isDragging: ${this.isDragging}, hasMoved: ${this.mouseState.hasMoved}`);
+        console.log(`[DragDropSystem] 🖱️ MOUSE UP - draggedObject: ${this.draggedObject?.name || 'null'}`);
 
-        if (!this.enabled) return;
+        if (!this.enabled) {
+            console.log(`[DragDropSystem] 🖱️ Sistema disabilitato - reset forzato stato drag`);
+            this.forceResetDragState();
+            return;
+        }
 
         const hadMoved = this.mouseState.hasMoved;
 
@@ -576,7 +715,7 @@ window.DragDropSystem = {
             event.preventDefault();
             return; // Non eseguire click se stavamo draggando
         }
-        
+
         // Se il mouse non si è mosso, potrebbe essere un click normale
         // Lascia che il sistema esistente gestisca il click
         if (!hadMoved && event.button === 0) {
@@ -584,7 +723,19 @@ window.DragDropSystem = {
             // Non preventDefault() per permettere al sistema click esistente di funzionare
         }
     },
-    
+
+    /**
+     * Gestisce il tasto ESC per reset di emergenza
+     */
+    onKeyDown: function(event) {
+        // Tasto ESC = reset forzato
+        if (event.key === 'Escape' && this.isDragging) {
+            console.log(`[DragDropSystem] 🚨 ESC premuto durante drag - FORCE RESET`);
+            this.forceResetDragState();
+            event.preventDefault();
+        }
+    },
+
     /* ===== DRAG LOGIC ===== */
     
     /**
@@ -615,9 +766,10 @@ window.DragDropSystem = {
         // NUOVO: Crea piano di drag perpendicolare alla camera, passando per il punto cliccato
         this.updateDragPlaneToCamera(intersectionPoint);
 
-        // Mostra indicatori snap per tutti gli oggetti tranne quello draggato
-        // DISABILITATO: Non mostriamo più indicatori snap (sfere verdi)
-        // this.showSnapIndicators(object);
+        // Aggiorna indicatori snap per mostrare punti disponibili (originali + intercambiabili)
+        if (this.snapSystem) {
+            this.snapSystem.updateSnapIndicators(this.draggedObject);
+        }
 
         // Cambia cursore
         this.canvas.style.cursor = 'grabbing';
@@ -748,7 +900,9 @@ window.DragDropSystem = {
             this.draggedObject.position.copy(newPosition);
 
             // Controlla e evidenzia zone di snap
-            this.checkSnapZones();
+            if (this.snapSystem) {
+                this.snapSystem.checkSnapZones(this.draggedObject);
+            }
         }
     },
     
@@ -794,8 +948,44 @@ window.DragDropSystem = {
             console.log(`[DragDropSystem] 🎯 Custom snap target trovato per ${this.draggedObject.name}:`, customTarget);
         }
 
-        const snapTarget = this.findSnapTarget(this.draggedObject);
-        console.log(`[DragDropSystem] 🎯 findSnapTarget risultato:`, snapTarget ? `Posizione (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})` : 'null');
+        // Utilizza prima AssemblySystemSimplified, poi fallback al SnapSystem
+        let snapTarget = null;
+
+        if (window.AssemblySystemSimplified && window.AssemblySystemSimplified.assemblyMode) {
+            // Sistema semplificato: usa snap targets del gruppo corrente
+            const groupSnapTargets = window.AssemblySystemSimplified.getCurrentGroupSnapTargets(this.draggedObject.name);
+            console.log(`[DragDropSystem] 🎯 AssemblySystemSimplified trovato ${groupSnapTargets.length} snap targets`);
+
+            if (groupSnapTargets.length > 0) {
+                // Trova il target più vicino
+                const currentBoundingBox = new THREE.Box3().setFromObject(this.draggedObject);
+                const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
+
+                let closestTarget = null;
+                let closestDistance = Infinity;
+
+                groupSnapTargets.forEach(target => {
+                    const distance = currentCenter.distanceTo(target.position);
+                    if (distance <= this.snapDistance && distance < closestDistance) {
+                        closestTarget = target.position;
+                        closestDistance = distance;
+                    }
+                });
+
+                if (closestTarget) {
+                    snapTarget = closestTarget;
+                    console.log(`[DragDropSystem] 🎯 Snap target trovato tramite AssemblySystemSimplified: (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})`);
+                }
+            }
+        }
+
+        // Fallback al sistema vecchio se nessun target trovato
+        if (!snapTarget && this.snapSystem) {
+            snapTarget = this.snapSystem.findSnapTarget(this.draggedObject);
+            console.log(`[DragDropSystem] 🎯 Fallback SnapSystem risultato:`, snapTarget ? `Posizione (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})` : 'null');
+        }
+
+        console.log(`[DragDropSystem] 🎯 findSnapTarget finale:`, snapTarget ? `Posizione (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})` : 'null');
 
         // SEMPRE fare cleanup base prima di tutto
         console.log(`[DragDropSystem] 🧹 CLEANUP BASE: hiding snap indicators e reset cursore...`);
@@ -860,29 +1050,32 @@ window.DragDropSystem = {
 
         if (snapTarget) {
             // IMPORTANTE: Salva stato da resettare dopo l'animazione
-            // Debug dettagliato per AssemblySystem
-            const assemblyEnabled = window.AssemblySystem && window.AssemblySystem.assemblyMode;
+            // Debug dettagliato per sistema Assembly
+            const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
+            const assemblyEnabled = assemblySystem && assemblySystem.assemblyMode;
             const componentName = this.getCleanModelName(this.draggedObject.name);
-            const snapTargetId = snapTarget.id || `snap_${componentName}_sede`;
 
             console.log(`[DragDropSystem] 🏗️ DEBUG ASSEMBLY INTEGRATION:`);
-            console.log(`  window.AssemblySystem: ${window.AssemblySystem ? 'presente' : 'assente'}`);
-            console.log(`  AssemblySystem.assemblyMode: ${window.AssemblySystem?.assemblyMode}`);
+            console.log(`  assemblySystem: ${assemblySystem ? (window.AssemblySystemSimplified ? 'AssemblySystemSimplified' : 'AssemblySystem') : 'assente'}`);
+            console.log(`  assemblyMode: ${assemblySystem?.assemblyMode}`);
             console.log(`  assemblyEnabled: ${assemblyEnabled}`);
             console.log(`  componentName: "${componentName}"`);
-            console.log(`  snapTargetId: "${snapTargetId}"`);
 
             const snapContext = {
                 draggedObject: this.draggedObject,
                 assemblyIntegration: {
                     enabled: assemblyEnabled,
                     componentName: componentName,
-                    snapTargetId: snapTargetId
+                    snapTargetPosition: snapTarget
                 }
             };
 
             // Esegui snap animato - colore originale mantenuto
-            this.performSnap(this.draggedObject, snapTarget, snapContext);
+            if (this.snapSystem) {
+                // Aggiungi callback per integrazione AssemblySystem
+                snapContext.onComplete = this.handleSnapComplete.bind(this);
+                this.snapSystem.performSnap(this.draggedObject, snapTarget, snapContext);
+            }
             // Rimuovi dal blocco ma NON riapplicare silhouette (snap riuscito)
             this.silhouetteBlocked.delete(this.draggedObject.name);
             console.log(`[DragDropSystem] ✅ Snap riuscito - mantengo colore originale per ${this.draggedObject.name}`);
@@ -895,6 +1088,13 @@ window.DragDropSystem = {
                 window.Scene3D.highlightModel(this.draggedObject);
                 console.log(`[DragDropSystem] ❌ Snap fallito - riapplicato highlight giallo a ${this.draggedObject.name}`);
             }
+
+            // TRACKING OCCUPAZIONI: Delega al modulo InterchangeableTracker (snap fallito)
+            if (this.interchangeableTracker) {
+                const currentBoundingBox = new THREE.Box3().setFromObject(this.draggedObject);
+                const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
+                this.interchangeableTracker.handlePositionChange(this.draggedObject, currentCenter);
+            }
         }
 
         // Reset stato SEMPRE (anche con snap riuscito)
@@ -905,6 +1105,42 @@ window.DragDropSystem = {
         this.lastPlanePoint = null;  // Reset cache piano
 
         console.log(`[DragDropSystem] 🔄 RESET COMPLETO: isDragging=${this.isDragging}, draggedObject=${this.draggedObject ? this.draggedObject.name : 'null'}`);
+    },
+
+    /**
+     * Forza il reset dello stato di drag (per situazioni di emergenza)
+     */
+    forceResetDragState: function() {
+        console.log(`[DragDropSystem] 🚨 FORCE RESET DRAG STATE`);
+
+        // Reset completo stato
+        this.isDragging = false;
+        this.draggedObject = null;
+        this.dragOffset.set(0, 0, 0);
+        this.dragStartPosition.set(0, 0, 0);
+        this.lastPlanePoint = null;
+
+        // Reset stato mouse
+        this.mouseState.isDown = false;
+        this.mouseState.hasMoved = false;
+
+        // Nascondi indicatori snap
+        this.hideAllSnapIndicators();
+
+        // Riabilita controlli camera se erano disabilitati
+        if (window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
+            window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
+            console.log(`[DragDropSystem] 🔄 Controlli camera riabilitati forzatamente: ${this.cameraControlsWereEnabled}`);
+            this.cameraControlsWereEnabled = undefined;
+        }
+
+        // Riapplica cursore tool tramite ToolsManager
+        if (window.ToolsManager && typeof window.ToolsManager.updateCanvasCursor === 'function') {
+            window.ToolsManager.updateCanvasCursor();
+            console.log(`[DragDropSystem] 🔧 Cursore tool riapplicato forzatamente`);
+        }
+
+        console.log(`[DragDropSystem] ✅ Force reset completato`);
     },
 
     /**
@@ -934,7 +1170,71 @@ window.DragDropSystem = {
         this.dragPlane.matrixWorldNeedsUpdate = true;
     },
 
-    /* ===== SNAP SYSTEM ===== */
+    /**
+     * Gestisce il completamento di uno snap (callback da SnapSystem)
+     * @param {THREE.Object3D} object - Oggetto che ha fatto snap
+     * @param {THREE.Vector3} targetPosition - Posizione finale
+     * @param {Object} snapContext - Contesto del snap
+     */
+    handleSnapComplete: function(object, targetPosition, snapContext) {
+        console.log(`[DragDropSystem] 🎯 Handling snap completion per ${object.name}`);
+
+        // Usa AssemblySystemSimplified se disponibile, altrimenti fallback a AssemblySystem
+        const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
+        const shouldResetDragState = snapContext !== null;
+
+        console.log(`[DragDropSystem] 🔍 VERIFICA INTEGRAZIONE ASSEMBLY:`);
+        console.log(`  shouldResetDragState: ${shouldResetDragState}`);
+        console.log(`  snapContext: ${snapContext ? 'presente' : 'assente'}`);
+        console.log(`  assemblySystem: ${assemblySystem ? (window.AssemblySystemSimplified ? 'AssemblySystemSimplified' : 'AssemblySystem') : 'assente'}`);
+        console.log(`  assemblyMode: ${assemblySystem?.assemblyMode}`);
+
+        if (shouldResetDragState && snapContext && assemblySystem && assemblySystem.assemblyMode) {
+            try {
+                const componentName = snapContext.assemblyIntegration.componentName;
+                console.log(`[DragDropSystem] 🏗️ CHIAMANDO markComponentMounted con:`);
+                console.log(`  componentName: "${componentName}"`);
+                console.log(`  targetPosition: (${targetPosition.x.toFixed(3)}, ${targetPosition.y.toFixed(3)}, ${targetPosition.z.toFixed(3)})`);
+
+                assemblySystem.markComponentMounted(componentName, targetPosition);
+                console.log(`[DragDropSystem] 🏗️ Componente "${componentName}" marcato come montato nel sistema assemblaggio`);
+
+                // Verifica se il passo corrente è completato
+                const assemblyStatus = assemblySystem.getAssemblyStatus();
+                console.log(`[DragDropSystem] 📋 Stato Assembly dopo mount:`);
+                console.log(`  currentStep: "${assemblyStatus.currentStep}"`);
+                console.log(`  currentStepComplete: ${assemblyStatus.currentStepComplete}`);
+                console.log(`  mountedComponents: [${assemblyStatus.mountedComponents.join(', ')}]`);
+                console.log(`  allowedComponents: [${assemblyStatus.allowedComponents.join(', ')}]`);
+                console.log(`  canAdvanceToNext: ${assemblyStatus.canAdvanceToNext}`);
+
+                if (assemblyStatus.currentStepComplete) {
+                    console.log(`[DragDropSystem] 🎯 Step "${assemblyStatus.currentStep}" completato!`);
+
+                    // Check if we can advance to next step
+                    if (assemblyStatus.canAdvanceToNext) {
+                        console.log(`[DragDropSystem] 🎯 Step completato e avanzamento consentito, chiamando getNextStep()...`);
+                        const nextStep = assemblySystem.getNextStep();
+
+                        if (nextStep) {
+                            console.log(`[DragDropSystem] ⏭️ Avanzamento interno assembly a step: "${nextStep}"`);
+                            assemblySystem.setCurrentStep(nextStep);
+                        } else {
+                            console.log(`[DragDropSystem] 🎉 getNextStep() ha restituito null - delegando avanzamento a UI tutorial`);
+                            // Avanza il tutorial UI quando l'assembly system indica step management delegato
+                            this.tryAdvanceTutorialStep('assembly_step_completed');
+                        }
+                    } else {
+                        console.log(`[DragDropSystem] ⏸️ Step completato ma canAdvanceToNext: false`);
+                    }
+                }
+            } catch (error) {
+                console.warn(`[DragDropSystem] ⚠️ Errore integrazione AssemblySystem:`, error);
+            }
+        }
+    },
+
+    /* ===== SNAP SYSTEM DELEGATION ===== */
     
     /**
      * Verifica se l'oggetto è vicino a una zona di snap (per assemblaggio)
@@ -1053,7 +1353,44 @@ window.DragDropSystem = {
                 return originalPos;
             }
         }
-        
+
+        // 3. Controllo snap intercambiabili (solo se AssemblySystem abilitato)
+        if (window.AssemblySystem && window.AssemblySystem.assemblyMode && window.AssemblySystem.currentConfig) {
+            const objectName = object.name.toLowerCase().trim();
+            console.log(`[DragDropSystem] 🔄 Verifica snap intercambiabili per "${objectName}"`);
+
+            const interchangeableTargets = window.AssemblySystem.getInterchangeableSnapTargets(objectName);
+
+            if (interchangeableTargets.length > 0) {
+                console.log(`[DragDropSystem] 🎯 Trovati ${interchangeableTargets.length} snap targets intercambiabili`);
+
+                // Trova il target più vicino tra quelli intercambiabili
+                let closestTarget = null;
+                let closestDistance = Infinity;
+
+                interchangeableTargets.forEach((target, index) => {
+                    // La posizione è già un Vector3 dalla scena
+                    const targetPosition = target.position;
+                    const distance = currentCenter.distanceTo(targetPosition);
+
+                    console.log(`[DragDropSystem] 📏 Target ${index + 1}/${interchangeableTargets.length}: "${target.targetName}" - Distanza: ${distance.toFixed(3)}`);
+
+                    if (distance <= this.snapDistance && distance < closestDistance) {
+                        closestTarget = targetPosition;
+                        closestDistance = distance;
+                        console.log(`[DragDropSystem] ⭐ Nuovo target più vicino: "${target.targetName}" a distanza ${distance.toFixed(3)}`);
+                    }
+                });
+
+                if (closestTarget) {
+                    console.log(`[DragDropSystem] 🧲 Snap intercambiabile disponibile per ${object.name} (distanza centro BB: ${closestDistance.toFixed(2)})`);
+                    return closestTarget;
+                }
+            } else {
+                console.log(`[DragDropSystem] ℹ️ Nessun snap target intercambiabile trovato per "${objectName}"`);
+            }
+        }
+
         return null;
     },
     
@@ -1142,6 +1479,11 @@ window.DragDropSystem = {
                 const finalDistance = finalCenter.distanceTo(targetPosition);
                 console.log(`[DragDropSystem] 🔍 Verifica finale - Distanza centro da target: ${finalDistance.toFixed(3)}`);
 
+                // TRACKING OCCUPAZIONI: Delega al modulo InterchangeableTracker
+                if (this.interchangeableTracker) {
+                    this.interchangeableTracker.handlePositionChange(object, targetPosition);
+                }
+
                 // NUOVO: Integrazione con AssemblySystem dopo snap completato
                 console.log(`[DragDropSystem] 🔍 VERIFICA INTEGRAZIONE ASSEMBLY:`);
                 console.log(`  shouldResetDragState: ${shouldResetDragState}`);
@@ -1164,29 +1506,29 @@ window.DragDropSystem = {
                         console.log(`  componentName: "${snapContext.assemblyIntegration.componentName}"`);
                         console.log(`  snapTargetId: "${snapContext.assemblyIntegration.snapTargetId}"`);
 
-                        window.AssemblySystem.markComponentMounted(
+                        assemblySystem.markComponentMounted(
                             snapContext.assemblyIntegration.componentName,
                             snapContext.assemblyIntegration.snapTargetId
                         );
-                        console.log(`[DragDropSystem] 🏗️ Componente "${snapContext.assemblyIntegration.componentName}" marcato come montato nell'AssemblySystem`);
+                        console.log(`[DragDropSystem] 🏗️ Componente "${snapContext.assemblyIntegration.componentName}" marcato come montato nel sistema assemblaggio`);
 
                         // Verifica se il passo corrente è completato e avanza automaticamente
-                        const assemblyStatus = window.AssemblySystem.getAssemblyStatus();
-                        console.log(`[DragDropSystem] 📋 Stato AssemblySystem dopo mount:`);
+                        const assemblyStatus = assemblySystem.getAssemblyStatus();
+                        console.log(`[DragDropSystem] 📋 Stato Assembly dopo mount:`);
                         console.log(`  currentStep: "${assemblyStatus.currentStep}"`);
                         console.log(`  currentStepComplete: ${assemblyStatus.currentStepComplete}`);
                         console.log(`  canAdvanceToNext: ${assemblyStatus.canAdvanceToNext}`);
 
                         if (assemblyStatus.currentStepComplete && assemblyStatus.canAdvanceToNext) {
                             console.log(`[DragDropSystem] 🎯 Step "${assemblyStatus.currentStep}" completato, avanzamento automatico...`);
-                            const nextStep = window.AssemblySystem.getNextStep();
+                            const nextStep = assemblySystem.getNextStep();
                             if (nextStep) {
-                                window.AssemblySystem.setCurrentStep(nextStep);
+                                assemblySystem.setCurrentStep(nextStep);
                                 console.log(`[DragDropSystem] ⏭️ Avanzato automaticamente a step: "${nextStep}"`);
 
                                 // ⭐ AGGIORNAMENTO CRUCIALE: Sincronizza DragDropSystem con nuovo step
                                 try {
-                                    const newAssemblyStatus = window.AssemblySystem.getAssemblyStatus();
+                                    const newAssemblyStatus = assemblySystem.getAssemblyStatus();
                                     if (newAssemblyStatus.currentStepConfig && newAssemblyStatus.currentStepConfig.requiredComponents) {
                                         const newDraggableElements = newAssemblyStatus.currentStepConfig.requiredComponents;
                                         console.log(`[DragDropSystem] 🔄 Aggiornamento elementi draggabili per step "${nextStep}": [${newDraggableElements.join(', ')}]`);
@@ -1243,17 +1585,10 @@ window.DragDropSystem = {
 
                                 // NUOVO: Controllo completamento assemblaggio - avanza tutorial UI
                                 if (assemblyStatus.currentStepComplete && nextStep === null) {
-                                    console.log(`[DragDropSystem] 🎉 ASSEMBLAGGIO COMPLETATO! Ultimo step assembly completato - avanzando tutorial UI...`);
+                                    console.log(`[DragDropSystem] 🎉 STEP ASSEMBLY COMPLETATO! Step management delegato a UI - avanzando tutorial...`);
 
-                                    // Avanza al prossimo step del tutorial UI (o mostra congratulazioni se ultimo)
-                                    if (window.Scene3D && typeof window.Scene3D.advanceToNextTutorialStep === 'function') {
-                                        setTimeout(() => {
-                                            window.Scene3D.advanceToNextTutorialStep();
-                                            console.log(`[DragDropSystem] ✅ Tutorial UI avanzato dopo completamento assemblaggio`);
-                                        }, 500); // Delay per dare tempo all'animazione
-                                    } else {
-                                        console.warn(`[DragDropSystem] ⚠️ advanceToNextTutorialStep non disponibile`);
-                                    }
+                                    // Avanza al prossimo step del tutorial UI usando diversi metodi disponibili
+                                    this.tryAdvanceTutorialStep('assembly_step_completed');
                                 }
                             }
                         } else {
@@ -1318,14 +1653,14 @@ window.DragDropSystem = {
                 // NUOVO: Integrazione con AssemblySystem dopo snap immediato
                 if (shouldResetDragState && snapContext && snapContext.assemblyIntegration.enabled) {
                     try {
-                        window.AssemblySystem.markComponentMounted(
+                        assemblySystem.markComponentMounted(
                             snapContext.assemblyIntegration.componentName,
                             snapContext.assemblyIntegration.snapTargetId
                         );
-                        console.log(`[DragDropSystem] 🏗️ Componente "${snapContext.assemblyIntegration.componentName}" marcato come montato nell'AssemblySystem (immediato)`);
+                        console.log(`[DragDropSystem] 🏗️ Componente "${snapContext.assemblyIntegration.componentName}" marcato come montato nel sistema assemblaggio (immediato)`);
 
                         // Verifica se il passo corrente è completato e avanza automaticamente
-                        const assemblyStatus = window.AssemblySystem.getAssemblyStatus();
+                        const assemblyStatus = assemblySystem.getAssemblyStatus();
                         console.log(`[DEBUG] 🔍 AssemblyStatus dopo mounting:`, assemblyStatus);
                         console.log(`[DEBUG] 🔍 currentStepComplete: ${assemblyStatus.currentStepComplete}`);
                         console.log(`[DEBUG] 🔍 canAdvanceToNext: ${assemblyStatus.canAdvanceToNext}`);
@@ -2046,8 +2381,35 @@ window.DragDropSystem = {
         if (!window.AssemblySystem) {
             return true; // Se AssemblySystem non disponibile, permette montaggio normale
         }
-        
+
         return window.AssemblySystem.isComponentMountable(componentName);
+    },
+
+    /**
+     * Debug: Mostra tutte le posizioni originali salvate
+     */
+    debugOriginalPositions: function() {
+        console.log(`[DragDropSystem] 🔍 POSIZIONI ORIGINALI SALVATE (${this.originalPositions.size} oggetti):`);
+        this.originalPositions.forEach((position, uuid) => {
+            const object = this.draggableObjects.find(obj => obj.uuid === uuid);
+            const objectName = object ? object.name : 'SCONOSCIUTO';
+            console.log(`  📍 "${objectName}" (${uuid.substring(0,8)}...): (${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)})`);
+        });
+    },
+
+    // ===== DELEGATION TO INTERCHANGEABLE TRACKER =====
+    // Le seguenti funzioni delegano al modulo InterchangeableTracker per compatibilità API
+
+    /**
+     * Debug: Mostra tutte le posizioni intercambiabili occupate
+     * @deprecated - Usa InterchangeableTracker.debugOccupiedPositions() direttamente
+     */
+    debugOccupiedPositions: function() {
+        if (this.interchangeableTracker) {
+            this.interchangeableTracker.debugOccupiedPositions();
+        } else {
+            console.warn('[DragDropSystem] ⚠️ InterchangeableTracker non disponibile');
+        }
     },
     
     /**
@@ -2270,3 +2632,4 @@ window.DragDropSystem = {
         console.log('[DragDropSystem] 🔬 FINE DIAGNOSI\n');
     }
 };
+// Funzioni globali di debug
