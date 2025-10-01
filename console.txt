@@ -1,0 +1,9 @@
+scene3d-modular.js?nocache=1000019:723 [Scene3D] Click su modello - ToolsManager: brugola, Body class aria: false
+scene3d-modular.js?nocache=1000019:733 [Scene3D] 🎯 Click rilevato su modello: culatta
+scene3d-modular.js?nocache=1000019:740 [Scene3D] 📺 Uso sistema tutorial legacy per: culatta
+scene3d-modular.js?nocache=1000019:945 [DEBUG] 🎬 handleModelAction chiamato per: culatta
+scene3d-modular.js?nocache=1000019:948 [DEBUG] 📋 Current step: Step 3 - Rimuovi vite 3 culatta
+scene3d-modular.js?nocache=1000019:952 [DEBUG] 🔧 Tool required: "brugola", active: "brugola"
+scene3d-modular.js?nocache=1000019:973 [DEBUG] 🎯 Model filename: "culatta", Step element: "models/vite_culatta_3.glb"
+scene3d-modular.js?nocache=1000019:977 [DEBUG] 🎯 Clean model: "culatta", Clean step: "vite_culatta_3"
+scene3d-modular.js?nocache=1000019:980 [DEBUG] ❌ Model/element mismatch - USCITA EARLY

@@ -82,6 +82,13 @@ const Scene3D = {
         }
     },
 
+    // Sistema animazione cursori tool
+    cursorAnimation: {
+        intervalId: null,
+        currentFrame: 1,
+        isAnimating: false
+    },
+
     init: function() {
         try {
             if (typeof THREE === 'undefined') {
@@ -423,7 +430,12 @@ const Scene3D = {
         this.mouseControls.mouseButton = event.button;
         this.mouseControls.lastPosition.x = event.clientX;
         this.mouseControls.lastPosition.y = event.clientY;
-        
+
+        // Avvia animazione cursore per tool brugola/chiave inglese
+        if (event.button === 0) {
+            this.startCursorAnimation();
+        }
+
         event.preventDefault();
         if (event.button === 1) {
             event.stopPropagation();
@@ -448,21 +460,26 @@ const Scene3D = {
         if (event.button === 0 && this.animationSystem.clickEnabled) {
             const deltaX = Math.abs(event.clientX - this.mouseControls.lastPosition.x);
             const deltaY = Math.abs(event.clientY - this.mouseControls.lastPosition.y);
-            
+
             if (deltaX < 5 && deltaY < 5) {
                 this.handleModelClick(event);
             }
         }
-        
+
         if (event.button === 1) {
             const deltaX = Math.abs(event.clientX - this.mouseControls.lastPosition.x);
             const deltaY = Math.abs(event.clientY - this.mouseControls.lastPosition.y);
-            
+
             if (deltaX < 5 && deltaY < 5) {
                 this.handlePivotClick(event);
             }
         }
-        
+
+        // Ferma animazione cursore
+        if (event.button === 0) {
+            this.stopCursorAnimation();
+        }
+
         this.mouseControls.isMouseDown = false;
         this.mouseControls.isPanning = false;
     },
@@ -473,6 +490,65 @@ const Scene3D = {
         const delta = normalizedDelta * this.mouseControls.sensitivity.zoom;
         this.zoomCamera(delta);
         event.preventDefault();
+    },
+
+    // Avvia animazione cursore per tool (brugola/chiave inglese)
+    startCursorAnimation: function() {
+        // Verifica se ToolsManager è disponibile
+        if (!window.ToolsManager) return;
+
+        const activeTool = window.ToolsManager.getActiveTool ? window.ToolsManager.getActiveTool() : null;
+
+        // Solo per brugola e chiave_inglese
+        if (activeTool !== 'brugola' && activeTool !== 'chiave_inglese') return;
+
+        // Se già in animazione, non riavviare
+        if (this.cursorAnimation.isAnimating) return;
+
+        this.cursorAnimation.isAnimating = true;
+        this.cursorAnimation.currentFrame = 1;
+
+        const toolName = activeTool === 'brugola' ? 'brugola' : 'chiave_inglese';
+        const hotspotX = activeTool === 'brugola' ? 4 : 8;
+        const hotspotY = activeTool === 'brugola' ? 9 : 8;
+
+        // Applica subito il frame1 senza attendere
+        const cursorUrlFrame1 = `url("../cursors/${toolName}_premuto_frame1.svg") ${hotspotX} ${hotspotY}, auto`;
+        document.body.style.cursor = cursorUrlFrame1;
+        document.body.style.setProperty('cursor', cursorUrlFrame1, 'important');
+
+        // Loop animazione 0.5s (250ms per frame)
+        this.cursorAnimation.intervalId = setInterval(() => {
+            const frame = this.cursorAnimation.currentFrame === 1 ? 2 : 1;
+            this.cursorAnimation.currentFrame = frame;
+
+            const cursorUrl = `url("../cursors/${toolName}_premuto_frame${frame}.svg") ${hotspotX} ${hotspotY}, auto`;
+            document.body.style.cursor = cursorUrl;
+
+            // Applica anche a tutti gli elementi figli
+            document.body.style.setProperty('cursor', cursorUrl, 'important');
+        }, 250);
+
+        console.log(`[Scene3D] 🎬 Animazione cursore avviata per: ${toolName}`);
+    },
+
+    // Ferma animazione cursore
+    stopCursorAnimation: function() {
+        if (!this.cursorAnimation.isAnimating) return;
+
+        if (this.cursorAnimation.intervalId) {
+            clearInterval(this.cursorAnimation.intervalId);
+            this.cursorAnimation.intervalId = null;
+        }
+
+        this.cursorAnimation.isAnimating = false;
+        this.cursorAnimation.currentFrame = 1;
+
+        // Ripristina cursore normale del tool
+        document.body.style.cursor = '';
+        document.body.style.removeProperty('cursor');
+
+        console.log('[Scene3D] ⏹️ Animazione cursore fermata');
     },
 
     onTouchStart: function(event) {
@@ -1676,41 +1752,43 @@ const Scene3D = {
             }
         } else if (type === 'svita') {
             // Comando semplificato: svita = rotazione attorno asse direction + traslazione lungo direction
+            // Il verso della rotazione segue il segno della direction dal home_config.txt
             const direction = this.getModelDirection(modelFilename);
-            const rotazione = { 
-                x: Math.abs(direction.x) * -360, // Rotazione attorno asse X se direction è lungo X
-                y: Math.abs(direction.y) * -360, // Rotazione attorno asse Y se direction è lungo Y  
-                z: Math.abs(direction.z) * -360, // Rotazione attorno asse Z se direction è lungo Z
-                durata: 1.0 
+            const rotazione = {
+                x: direction.x * 1800, // 5 giri completi, verso coerente con direction
+                y: direction.y * 1800, // 5 giri completi, verso coerente con direction
+                z: direction.z * 1800, // 5 giri completi, verso coerente con direction
+                durata: 1.0
             };
             console.log(`🔄 SVITA per ${modelFilename}: direction=`, direction, `rotazione=`, rotazione);
             return {
                 tipo: 'svita',
                 rotazione: rotazione,
-                traslazione: { 
-                    x: direction.x * 0.5, 
-                    y: direction.y * 0.5, 
-                    z: direction.z * 0.5, 
-                    durata: 1.0 
+                traslazione: {
+                    x: direction.x * 0.5,
+                    y: direction.y * 0.5,
+                    z: direction.z * 0.5,
+                    durata: 1.0
                 },
                 durata: 2.0
             };
         } else if (type === 'avvita') {
             // Comando semplificato: avvita = rotazione attorno asse direction + traslazione inversa lungo direction
+            // Il verso della rotazione è opposto a svita, ma segue il segno della direction
             const direction = this.getModelDirection(modelFilename);
             return {
                 tipo: 'avvita',
-                rotazione: { 
-                    x: Math.abs(direction.x) * 360, // Rotazione attorno asse X se direction è lungo X
-                    y: Math.abs(direction.y) * 360, // Rotazione attorno asse Y se direction è lungo Y
-                    z: Math.abs(direction.z) * 360, // Rotazione attorno asse Z se direction è lungo Z
-                    durata: 1.0 
+                rotazione: {
+                    x: direction.x * -1800, // 5 giri completi, verso opposto a svita, coerente con direction
+                    y: direction.y * -1800, // 5 giri completi, verso opposto a svita, coerente con direction
+                    z: direction.z * -1800, // 5 giri completi, verso opposto a svita, coerente con direction
+                    durata: 1.0
                 },
-                traslazione: { 
-                    x: -direction.x * 0.5, 
-                    y: -direction.y * 0.5, 
-                    z: -direction.z * 0.5, 
-                    durata: 1.0 
+                traslazione: {
+                    x: -direction.x * 0.5,
+                    y: -direction.y * 0.5,
+                    z: -direction.z * 0.5,
+                    durata: 1.0
                 },
                 durata: 2.0
             };
@@ -1978,7 +2056,11 @@ const Scene3D = {
             // Comando semplificato svita: rotazione + traslazione
             // Imposta il centro di rotazione al centro del bounding box del modello
             rotationCenter = this.calculateBoundingBoxCenter(model);
-            
+
+            console.log(`🔩 SVITA DEBUG per ${model.name}:`);
+            console.log(`   Rotazione gradi:`, currentStep.svita.rotazione);
+            console.log(`   Rotazione radianti: x=${THREE.MathUtils.degToRad(currentStep.svita.rotazione.x)}, y=${THREE.MathUtils.degToRad(currentStep.svita.rotazione.y)}, z=${THREE.MathUtils.degToRad(currentStep.svita.rotazione.z)}`);
+
             targetRotation.x += THREE.MathUtils.degToRad(currentStep.svita.rotazione.x);
             targetRotation.y += THREE.MathUtils.degToRad(currentStep.svita.rotazione.y);
             targetRotation.z += THREE.MathUtils.degToRad(currentStep.svita.rotazione.z);
@@ -2186,12 +2268,22 @@ const Scene3D = {
             
             if (progress >= 1.0) {
                 anim.finished = true;
-                
-                anim.model.position.copy(anim.targetPosition);
+
+                // Per animazioni con rotazione attorno a centro (svita/avvita), NON copiare targetPosition
+                // perché la posizione finale corretta è già stata calcolata da applyRotationAroundCenter
+                if (!anim.modelCenter && !(anim.hasSvita || anim.hasAvvita)) {
+                    anim.model.position.copy(anim.targetPosition);
+                }
+
                 if (anim.targetRotation) {
                     anim.model.rotation.copy(anim.targetRotation);
                 }
-                
+
+                // DEBUG: Log posizione finale dopo animazione
+                if (anim.model.name && anim.model.name.includes('vite_culatta')) {
+                    console.log(`✅ ANIMAZIONE COMPLETATA ${anim.model.name}: posizione finale (${anim.model.position.x.toFixed(2)}, ${anim.model.position.y.toFixed(2)}, ${anim.model.position.z.toFixed(2)})`);
+                }
+
                 if (anim.isMultiStep) {
                     this.onMultiStepCompleted(anim.modelUuid);
                 } else {
@@ -2210,35 +2302,78 @@ const Scene3D = {
             anim.initialRotation.y + (anim.targetRotation.y - anim.initialRotation.y) * progress,
             anim.initialRotation.z + (anim.targetRotation.z - anim.initialRotation.z) * progress
         );
-        
+
+        console.log(`🔄 ROTATE AROUND CENTER ${anim.model.name}: progress=${progress.toFixed(3)}, currentRotation=`, currentRotation, `modelCenter=`, anim.modelCenter);
+        console.log(`🔍 DEBUG POSITIONS: initialPos=`, anim.initialPosition, `targetPos=`, anim.targetPosition);
+
         const linearMovement = new THREE.Vector3().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+        console.log(`🔍 LINEAR MOVEMENT (progress=${progress.toFixed(3)}):`, linearMovement);
         
         if (anim.modelCenter && anim.modelCenter.length() > 0.001) {
             const pivot = anim.modelCenter;
             
             // Per animazioni multistep con rotazione, calcola la posizione interpolando l'angolo
             if (anim.isMultiStep && anim.hasRotation) {
-                // Calcola la posizione attuale basandosi sulla rotazione attorno al pivot
-                const rotationDelta = new THREE.Euler(
-                    currentRotation.x - anim.initialRotation.x,
-                    currentRotation.y - anim.initialRotation.y,
-                    currentRotation.z - anim.initialRotation.z
-                );
-                
-                const rotationMatrix = new THREE.Matrix4();
-                rotationMatrix.makeRotationFromEuler(rotationDelta);
-                
-                const relativePosition = anim.initialPosition.clone().sub(pivot);
-                relativePosition.applyMatrix4(rotationMatrix);
-                const newPosition = pivot.clone().add(relativePosition);
-                
-                // Aggiungi traslazione SOLO se è esplicitamente richiesta (non per rotazioni pure)
-                if (anim.hasTranslation) {
-                    const translationProgress = linearMovement.clone().sub(anim.initialPosition);
-                    newPosition.add(translationProgress);
+                let newPosition;
+
+                // Per svita/avvita: traslazione lineare del CENTRO BB + rotazione attorno al centro BB
+                if (anim.hasSvita || anim.hasAvvita) {
+                    // 1. Il centro del BB si muove linearmente
+                    const initialBBCenter = anim.modelCenter.clone();
+                    const traslazione = new THREE.Vector3(
+                        anim.targetPosition.x - anim.initialPosition.x,
+                        anim.targetPosition.y - anim.initialPosition.y,
+                        anim.targetPosition.z - anim.initialPosition.z
+                    );
+                    const finalBBCenter = initialBBCenter.clone().add(traslazione);
+                    const currentBBCenter = new THREE.Vector3().lerpVectors(initialBBCenter, finalBBCenter, progress);
+
+                    // 2. Offset tra model.position e BB center (all'inizio)
+                    const initialOffset = anim.initialPosition.clone().sub(initialBBCenter);
+
+                    // 3. Ruota l'offset attorno all'origine (per compensare che model.rotation ruota attorno al suo origin locale)
+                    const rotationDelta = new THREE.Euler(
+                        currentRotation.x - anim.initialRotation.x,
+                        currentRotation.y - anim.initialRotation.y,
+                        currentRotation.z - anim.initialRotation.z
+                    );
+                    const rotationMatrix = new THREE.Matrix4();
+                    rotationMatrix.makeRotationFromEuler(rotationDelta);
+                    const rotatedOffset = initialOffset.clone().applyMatrix4(rotationMatrix);
+
+                    // 4. Nuova posizione = centro BB corrente + offset ruotato
+                    newPosition = currentBBCenter.clone().add(rotatedOffset);
+
+                    // 5. Applica rotazione al modello
+                    anim.model.rotation.x = anim.initialRotation.x + rotationDelta.x;
+                    anim.model.rotation.y = anim.initialRotation.y + rotationDelta.y;
+                    anim.model.rotation.z = anim.initialRotation.z + rotationDelta.z;
+
+                    console.log(`🔩 SVITA: BBCenter ${currentBBCenter.x.toFixed(3)},${currentBBCenter.y.toFixed(3)},${currentBBCenter.z.toFixed(3)} | Pos ${newPosition.x.toFixed(3)},${newPosition.y.toFixed(3)},${newPosition.z.toFixed(3)} | Offset ${rotatedOffset.x.toFixed(3)},${rotatedOffset.y.toFixed(3)},${rotatedOffset.z.toFixed(3)} | Rot ${(rotationDelta.z * 180/Math.PI).toFixed(1)}°`);
+                } else {
+                    // Per altre rotazioni: usa rotazione orbitale attorno al pivot
+                    const rotationDelta = new THREE.Euler(
+                        currentRotation.x - anim.initialRotation.x,
+                        currentRotation.y - anim.initialRotation.y,
+                        currentRotation.z - anim.initialRotation.z
+                    );
+
+                    const rotationMatrix = new THREE.Matrix4();
+                    rotationMatrix.makeRotationFromEuler(rotationDelta);
+
+                    const relativePosition = anim.initialPosition.clone().sub(pivot);
+                    relativePosition.applyMatrix4(rotationMatrix);
+                    newPosition = pivot.clone().add(relativePosition);
+
+                    // Aggiungi traslazione SOLO se è esplicitamente richiesta (non per rotazioni pure)
+                    if (anim.hasTranslation) {
+                        const translationProgress = linearMovement.clone().sub(anim.initialPosition);
+                        newPosition.add(translationProgress);
+                    }
+
+                    anim.model.rotation.copy(currentRotation);
                 }
-                
-                anim.model.rotation.copy(currentRotation);
+
                 anim.model.position.copy(newPosition);
                 
                 console.log(`🔄 MultiStep rotazione attorno a pivot (${pivot.x.toFixed(3)}, ${pivot.y.toFixed(3)}, ${pivot.z.toFixed(3)}): nuova pos (${newPosition.x.toFixed(3)}, ${newPosition.y.toFixed(3)}, ${newPosition.z.toFixed(3)})`);
@@ -3347,6 +3482,11 @@ const Scene3D = {
             // Applica a modello specifico
             const model = this.findModelByName(modelName);
             if (model) {
+                // DEBUG: Log speciale per viti_culatta
+                if (modelName.includes('vite_culatta')) {
+                    console.warn(`⚠️ RESET POSIZIONE RILEVATO per ${modelName}: da (${model.position.x.toFixed(2)}, ${model.position.y.toFixed(2)}, ${model.position.z.toFixed(2)}) a (${coords[0]}, ${coords[1]}, ${coords[2]})`);
+                    console.trace('Stack trace per capire chi ha chiamato applyModelPosition');
+                }
                 model.position.copy(position);
                 console.log(`🔧 MODEL: Posizione applicata a "${modelName}": (${coords[0]}, ${coords[1]}, ${coords[2]})`);
             } else {
@@ -3943,6 +4083,83 @@ const Scene3D = {
             initialPositionsCount: this.initialModelPositions.size,
             systemWorking: this.initialModelPositions.size > 0
         };
+    },
+
+    // === SISTEMA DEBUG SILHOUETTE PER OGGETTI OCCLUSI ===
+    addDebugSilhouette: function(targetObject, color = 0xff0000) {
+        // Rimuovi silhouette esistenti
+        this.removeDebugSilhouette(targetObject);
+
+        if (!targetObject.geometry) return null;
+
+        // Crea geometria wireframe
+        const wireframe = new THREE.WireframeGeometry(targetObject.geometry);
+        const material = new THREE.LineBasicMaterial({
+            color: color,
+            linewidth: 3,
+            transparent: true,
+            opacity: 1.0,
+            depthTest: false // Mostra sempre sopra tutto
+        });
+        const silhouette = new THREE.LineSegments(wireframe, material);
+
+        // Copia posizione e rotazione
+        silhouette.position.copy(targetObject.position);
+        silhouette.rotation.copy(targetObject.rotation);
+        silhouette.scale.copy(targetObject.scale);
+
+        // Marca come silhouette debug
+        silhouette.userData.isDebugSilhouette = true;
+        silhouette.userData.originalObject = targetObject;
+        silhouette.name = `debug_silhouette_${targetObject.name}`;
+
+        this.scene.add(silhouette);
+        console.log(`🔴 Silhouette debug aggiunta per ${targetObject.name}`);
+
+        return silhouette;
+    },
+
+    removeDebugSilhouette: function(targetObject) {
+        const toRemove = [];
+        this.scene.traverse((child) => {
+            if (child.userData?.isDebugSilhouette && child.userData?.originalObject === targetObject) {
+                toRemove.push(child);
+            }
+        });
+        toRemove.forEach(silhouette => {
+            this.scene.remove(silhouette);
+            console.log(`❌ Silhouette debug rimossa per ${targetObject.name}`);
+        });
+    },
+
+    // Debug command per oggetti nascosti
+    debugHiddenObjects: function() {
+        console.log('🔍 Cercando oggetti potenzialmente nascosti...');
+        let foundCount = 0;
+
+        this.scene.traverse((child) => {
+            // Cerca sia Group che Mesh con "vite_culatta" nel nome
+            if (child.visible && child.name && child.name.includes('vite_culatta')) {
+                console.log(`🔴 Trovato ${child.type}: ${child.name} (posizione: ${child.position.x.toFixed(2)}, ${child.position.y.toFixed(2)}, ${child.position.z.toFixed(2)})`);
+
+                // Se è un Group, attraversa i children per trovare le mesh
+                if (child.isGroup) {
+                    child.traverse((subChild) => {
+                        if (subChild.isMesh && subChild.geometry) {
+                            console.log(`  🔴 Aggiunta silhouette per mesh interna: ${subChild.name || 'unnamed'}`);
+                            this.addDebugSilhouette(subChild, 0xff0000);
+                            foundCount++;
+                        }
+                    });
+                } else if (child.isMesh && child.geometry) {
+                    console.log(`  🔴 Aggiunta silhouette per mesh: ${child.name}`);
+                    this.addDebugSilhouette(child, 0xff0000);
+                    foundCount++;
+                }
+            }
+        });
+
+        console.log(`✅ Silhouettes create: ${foundCount}`);
     }
 };
 

@@ -327,6 +327,11 @@ window.SnapSystem = {
     updateSnapIndicators: function(draggedObject) {
         if (!this.enabled) return;
 
+        // Se gli indicatori sono disabilitati nel DragDropSystem, non creare nulla
+        if (this.dragDropSystem && !this.dragDropSystem.showSnapIndicators) {
+            return;
+        }
+
         // Prima rimuovi tutti gli indicatori esistenti
         this.removeAllSnapIndicators();
 

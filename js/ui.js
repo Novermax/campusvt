@@ -2794,6 +2794,20 @@ window.UI = {
                 }
             }
 
+            // Configura visibilità indicatori snap (sfere verdi)
+            if (step.properties.ShowSnapIndicators !== undefined) {
+                window.DragDropSystem.showSnapIndicators = (step.properties.ShowSnapIndicators === 'true');
+                AppConfig.log(3, `🎯 DRAG & DROP: Indicatori snap ${window.DragDropSystem.showSnapIndicators ? 'visibili' : 'nascosti'}`);
+            } else {
+                // Default: nascosti
+                window.DragDropSystem.showSnapIndicators = false;
+            }
+
+            // Rimuovi eventuali indicatori esistenti se disabilitati
+            if (!window.DragDropSystem.showSnapIndicators && window.DragDropSystem.removeAllSnapIndicators) {
+                window.DragDropSystem.removeAllSnapIndicators();
+            }
+
             // Abilita il sistema con oggetti specificati
             try {
                 console.log(`[DEBUG] 🎯 DRAG & DROP: Chiamata enable con oggetti:`, draggableObjects);

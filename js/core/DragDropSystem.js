@@ -20,6 +20,7 @@ window.DragDropSystem = {
     isDragging: false,
     isStepSyncing: false, // Flag per bypassare AssemblySystem durante sincronizzazione
     debugMode: false, // Flag per bypass temporaneo durante debug
+    showSnapIndicators: false, // Flag per mostrare/nascondere sfere verdi snap
 
     // Oggetti e configurazioni
     draggableObjects: [],
@@ -27,7 +28,7 @@ window.DragDropSystem = {
     originalRotations: new Map(),
     whitelistedObjects: new Set(),
     blacklistedObjects: new Set(['corpo', 'pavimento', 'planaxis']), // Oggetti mai draggabili
-    
+
     // Sistema snap personalizzati con riferimenti _original
     customSnapTargets: new Map(), // objectUuid -> { targetName: string, isOriginalRef: bool, offset: Vector3 }
     snapIndicators: new Map(), // Indicatori visivi snap (sfere verdi)
@@ -543,6 +544,11 @@ window.DragDropSystem = {
      * Mostra punti di snap originali + quelli intercambiabili
      */
     updateSnapIndicators: function() {
+        // Se gli indicatori sono disabilitati, non creare nulla
+        if (!this.showSnapIndicators) {
+            return;
+        }
+
         // Prima rimuovi tutti gli indicatori esistenti
         this.removeAllSnapIndicators();
 
@@ -2111,8 +2117,8 @@ window.DragDropSystem = {
         console.log(`  📤 Valore applicato: ${this.snapDistance} (minimo tecnico: 0.001)`);
         console.log(`  🔄 Cambio: ${oldDistance} → ${this.snapDistance}`);
 
-        // Ricrea indicatori con nuova distanza se abilitato
-        if (this.enabled) {
+        // Ricrea indicatori con nuova distanza se abilitato E se showSnapIndicators è true
+        if (this.enabled && this.showSnapIndicators) {
             this.createSnapIndicators();
         }
     },

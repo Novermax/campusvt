@@ -406,3 +406,339 @@ if (distanceFromCenter <= this.snapDistance) // Center-based
 ---
 
 **Ultimo aggiornamento**: 15 Dicembre 2025 - Sistema Snap Basato su Centro Bounding Box completato con debug avanzato
+
+## 🎯 Sistema Rotazione Viti Durante Svitamento (Gennaio 2026)
+
+**Problema Risolto**: Viti non ruotavano visibilmente durante animazione svita, apparivano immobili mentre si svitavano
+
+### Causa Root
+- **Origin Locale GLB**: `model.rotation` in Three.js ruota attorno all'origin locale del modello GLB, non al centro geometrico del bounding box
+- **Offset Non Compensato**: Se l'origin del GLB è spostato rispetto al centro BB, la rotazione genera movimento orbitale indesiderato
+- **Posizione Statica**: La posizione del modello non veniva aggiornata per compensare la rotazione attorno a un centro diverso dall'origin
+
+### Soluzione Implementata
+
+#### 1. Algoritmo Rotazione Compensata
+**File**: `js/scene3d-modular.js:2241-2274`
+
+```javascript
+// Per svita/avvita: traslazione lineare del CENTRO BB + rotazione attorno al centro BB
+if (anim.hasSvita || anim.hasAvvita) {
+    // 1. Il centro del BB si muove linearmente
+    const initialBBCenter = anim.modelCenter.clone();
+    const traslazione = new THREE.Vector3(...);
+    const finalBBCenter = initialBBCenter.clone().add(traslazione);
+    const currentBBCenter = new THREE.Vector3().lerpVectors(initialBBCenter, finalBBCenter, progress);
+
+    // 2. Offset tra model.position e BB center (all'inizio)
+    const initialOffset = anim.initialPosition.clone().sub(initialBBCenter);
+
+    // 3. Ruota l'offset per compensare la rotazione attorno all'origin locale
+    const rotationMatrix = new THREE.Matrix4();
+    rotationMatrix.makeRotationFromEuler(rotationDelta);
+    const rotatedOffset = initialOffset.clone().applyMatrix4(rotationMatrix);
+
+    // 4. Nuova posizione = centro BB corrente + offset ruotato
+    newPosition = currentBBCenter.clone().add(rotatedOffset);
+
+    // 5. Applica rotazione al modello
+    anim.model.rotation.x = anim.initialRotation.x + rotationDelta.x;
+    anim.model.rotation.y = anim.initialRotation.y + rotationDelta.y;
+    anim.model.rotation.z = anim.initialRotation.z + rotationDelta.z;
+}
+```
+
+#### 2. Sistema Debug Avanzato
+**File**: `js/scene3d-modular.js:2228-2232`
+
+```javascript
+console.log(`🔄 ROTATE AROUND CENTER ${anim.model.name}: progress=${progress.toFixed(3)}, currentRotation=`, currentRotation, `modelCenter=`, anim.modelCenter);
+console.log(`🔍 DEBUG POSITIONS: initialPos=`, anim.initialPosition, `targetPos=`, anim.targetPosition);
+const linearMovement = new THREE.Vector3().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+console.log(`🔍 LINEAR MOVEMENT (progress=${progress.toFixed(3)}):`, linearMovement);
+console.log(`🔩 SVITA: BBCenter ${currentBBCenter.x.toFixed(3)},... | Pos ... | Offset ... | Rot ${(rotationDelta.z * 180/Math.PI).toFixed(1)}°`);
+```
+
+### Caratteristiche Chiave
+
+#### Movimento Centro Bounding Box
+- **Traslazione Lineare**: Il centro del BB si muove lungo la direzione specificata (es. Z per viti culatta)
+- **Interpolazione Smooth**: `lerpVectors(initialBBCenter, finalBBCenter, progress)`
+- **Indipendente da Origin**: Funziona indipendentemente da dove è posizionato l'origin nel file GLB
+
+#### Compensazione Offset
+- **Calcolo Offset Iniziale**: `initialOffset = model.position - BBCenter`
+- **Rotazione Offset**: Applica la rotazione all'offset per mantenere la geometria intatta
+- **Posizione Finale**: `newPosition = currentBBCenter + rotatedOffset`
+
+#### Rotazione Visibile
+- **Angolo Configurabile**: Usa `direction=0,0,1` da `home_config.txt` per determinare asse rotazione
+- **Rotazione 180°**: Per svita (configurabile)
+- **Rotazione Applicata**: Direttamente a `model.rotation` per visibilità immediata
+
+### Compatibilità e Performance
+- ✅ **Zero Breaking Changes**: Tutorial esistenti continuano a funzionare
+- ✅ **Performance**: Calcoli ottimizzati con clonazione minima di vettori
+- ✅ **Debug Ready**: Log completi per troubleshooting senza overhead in produzione
+- ✅ **Multi-formato**: Funziona con tutti i formati GLB/GLTF indipendentemente dall'origin
+
+### Test e Verifica
+- **Test Rotazione Visibile**: Viti ruotano visibilmente di 180° durante svitamento
+- **Test Movimento Lineare**: Centro BB si muove linearmente lungo direzione configurata
+- **Test Compensazione**: Nessun movimento orbitale indesiderato
+- **Test Multi-vite**: Tutte le viti_culatta (1-4) si comportano uniformemente
+
+### File Modificati
+- `js/scene3d-modular.js:2228-2232` - Sistema debug avanzato posizioni/offset
+- `js/scene3d-modular.js:2241-2274` - Algoritmo rotazione compensata per svita/avvita
+
+### Configurazione Tutorial
+```ini
+# home_config.txt
+model=models/vite_culatta_1.glb
+direction=0,0,1    # Direzione svitamento e asse rotazione (Z)
+
+# tutorial.txt
+[Tutorial Step 1 - Rimuovi vite 1 culatta]
+Elemento=models/vite_culatta_1.glb
+Utensile=ChiaveBrugola
+Azione1=svita          # Rotazione -180° + traslazione 0.5 lungo direction
+Azione2=traslazione:(-0.1,0,0,0.2)  # Spostamento laterale dopo svitamento
+```
+
+### Known Behavior
+- **Origin Locale Preservato**: La rotazione rispetta l'origin locale del GLB per compatibilità
+- **Centro BB Dinamico**: Ricalcolato all'inizio di ogni animazione per precisione
+- **Offset Costante**: L'offset `model.position - BBCenter` rimane costante durante rotazione
+
+---
+
+**Ultimo aggiornamento**: 1 Gennaio 2026 - Sistema Rotazione Viti Durante Svitamento completato e testato
+
+## 🎨 Sistema Animazione Cursori Tool (Gennaio 2026)
+
+**Implementazione**: Animazione a 2 frame per cursori tool durante click mouse
+
+### Problema Risolto
+- **Limitazione CSS**: Le animazioni CSS (`@keyframes`) non possono modificare la proprietà `cursor`
+- **Soluzione JavaScript**: Sistema loop manuale con `setInterval` per alternare frame cursori
+
+### Implementazione
+
+#### 1. Sistema Gestione Stato (`scene3d-modular.js:85-90`)
+```javascript
+cursorAnimation: {
+    intervalId: null,
+    currentFrame: 1,
+    isAnimating: false
+}
+```
+
+#### 2. Metodi Animazione (`scene3d-modular.js:495-537`)
+- **`startCursorAnimation()`**:
+  - Verifica tool attivo (solo brugola/chiave_inglese)
+  - Applica subito frame1 al mousedown
+  - Avvia loop 250ms/frame (ciclo totale 0.5s)
+  - Alterna frame1 ↔ frame2 continuamente
+
+- **`stopCursorAnimation()`**:
+  - Ferma loop al mouseup
+  - Ripristina cursore normale del tool
+  - Cleanup stato animazione
+
+#### 3. Integrazione Eventi Mouse
+**File**: `scene3d-modular.js:428-485`
+```javascript
+onMouseDown: function(event) {
+    // Avvia animazione cursore per tool brugola/chiave inglese
+    if (event.button === 0) {
+        this.startCursorAnimation();
+    }
+}
+
+onMouseUp: function(event) {
+    // Ferma animazione cursore
+    if (event.button === 0) {
+        this.stopCursorAnimation();
+    }
+}
+```
+
+### File SVG Richiesti
+**Percorso**: `cursors/`
+```
+brugola_premuto_frame1.svg           # Frame 1 brugola premuta
+brugola_premuto_frame2.svg           # Frame 2 brugola premuta
+chiave_inglese_premuto_frame1.svg    # Frame 1 chiave inglese premuta
+chiave_inglese_premuto_frame2.svg    # Frame 2 chiave inglese premuta
+```
+
+### Timeline Animazione
+```
+t=0ms    → FRAME1 (immediato al click)
+t=250ms  → FRAME2
+t=500ms  → FRAME1
+t=750ms  → FRAME2
+... loop continuo finché mouse premuto
+```
+
+### Caratteristiche
+- ✅ **Avvio Immediato**: Frame1 visibile subito al click, zero delay
+- ✅ **Solo Tool Specifici**: Attivo solo per brugola e chiave_inglese
+- ✅ **Auto-cleanup**: Stop automatico al rilascio mouse
+- ✅ **Zero Overhead**: Sistema attivo solo durante click
+- ✅ **Hotspot Preservati**: Ogni tool mantiene posizione hotspot corretta (brugola: 4,9 | chiave: 8,8)
+
+### Compatibilità
+- ✅ **CSS Cleanup**: Rimossi `@keyframes` non funzionanti da `components.css`
+- ✅ **Backward Compatible**: Tool Aria e Mano mantengono cursori statici
+- ✅ **Performance**: Nessun impatto quando tool non attivi
+
+---
+
+## 🔩 Aggiornamento Rotazioni Svita/Avvita (Gennaio 2026)
+
+**Modifica**: Inversione direzione e aumento giri per animazioni svita/avvita
+
+### Modifiche Implementate (`scene3d-modular.js:1753-1792`)
+
+#### Svita (Prima vs Dopo)
+```javascript
+// PRIMA: -180° (mezzo giro antiorario)
+x: Math.abs(direction.x) * -180
+
+// DOPO: +1800° (5 giri completi orario)
+x: Math.abs(direction.x) * 1800
+```
+
+#### Avvita (Prima vs Dopo)
+```javascript
+// PRIMA: +360° (1 giro orario)
+x: Math.abs(direction.x) * 360
+
+// DOPO: -1800° (5 giri completi antiorario)
+x: Math.abs(direction.x) * -1800
+```
+
+### Caratteristiche
+- **Inversione Direzione**: Svita ruota in senso opposto rispetto a prima (orario invece di antiorario)
+- **Aumento Rotazione**: Da 0.5-1 giri a 5 giri completi (1800°)
+- **Consistenza**: Avvita è sempre l'opposto esatto di svita (-1800° vs +1800°)
+- **Applicazione**: Automatica per tutti i comandi `Azione1=svita` e `Azione1=avvita`
+
+### Impatto Visivo
+- **Rotazione Marcata**: 5 giri completi rendono l'animazione molto più visibile
+- **Realismo**: Movimento compatibile con operazioni reali di svitamento/avvitamento
+- **Direzione Corretta**: Senso orario per svita, antiorario per avvita
+
+### File Modificati
+- `js/scene3d-modular.js:1753-1773` - Configurazione rotazione svita (1800°)
+- `js/scene3d-modular.js:1774-1792` - Configurazione rotazione avvita (-1800°)
+
+### Compatibilità
+- ✅ **Zero Breaking Changes**: Tutorial esistenti continuano a funzionare
+- ✅ **Traslazione Invariata**: Movimento lineare (0.5 unità) rimane invariato
+- ✅ **Multi-asse**: Funziona correttamente su assi X, Y, Z configurati via `direction`
+
+---
+
+## 🔄 Rotazioni Coerenti con Direction (Gennaio 2026)
+
+**Modifica**: Rotazioni svita/avvita ora rispettano il segno della `direction` da `home_config.txt`
+
+### Problema Risolto
+- **Prima**: Usava `Math.abs(direction.x)` → rotazioni sempre positive indipendentemente dal segno
+- **Ora**: Usa direttamente `direction.x` → rotazioni coerenti con segno configurato
+
+### Implementazione (`scene3d-modular.js:1753-1792`)
+
+```javascript
+// PRIMA (non coerente)
+x: Math.abs(direction.x) * 1800
+
+// DOPO (coerente con segno)
+x: direction.x * 1800
+```
+
+### Esempi Comportamento
+
+#### Viti con `direction=-1,0,0` (es. vite_coperchio)
+- **Svita**: `rotazione.x = -1 × 1800 = -1800°` (5 giri antiorario)
+- **Avvita**: `rotazione.x = -1 × -1800 = +1800°` (5 giri orario)
+
+#### Viti con `direction=0,0,1` (es. vite_culatta)
+- **Svita**: `rotazione.z = 1 × 1800 = +1800°` (5 giri orario)
+- **Avvita**: `rotazione.z = 1 × -1800 = -1800°` (5 giri antiorario)
+
+### File Modificati
+- `js/scene3d-modular.js:1758-1760` - Svita: rimosso `Math.abs()`, rotazione diretta
+- `js/scene3d-modular.js:1782-1784` - Avvita: rimosso `Math.abs()`, rotazione diretta
+
+---
+
+## 👁️ Sistema Visibilità Indicatori Snap (Gennaio 2026)
+
+**Implementazione**: Parametro `ShowSnapIndicators` per controllare visibilità sfere verdi durante drag & drop
+
+### Problema Risolto
+- Sfere verdi sempre visibili durante riassemblaggio (distrattive)
+- Necessità di nasconderle mantenendo funzionalità snap attiva
+
+### Implementazione
+
+#### 1. Flag Globale (`DragDropSystem.js:23`)
+```javascript
+showSnapIndicators: false, // Flag per mostrare/nascondere sfere verdi snap
+```
+
+#### 2. Controlli Prevenzione Creazione
+- `DragDropSystem.js:547-549` - Check in `updateSnapIndicators()`
+- `DragDropSystem.js:2116` - Check in `setSnapDistance()`
+- `SnapSystem.js:330-333` - Check in `updateSnapIndicators()`
+
+#### 3. Parsing Tutorial (`ui.js:2797-2809`)
+```javascript
+// Configura visibilità indicatori snap
+if (step.properties.ShowSnapIndicators !== undefined) {
+    window.DragDropSystem.showSnapIndicators = (step.properties.ShowSnapIndicators === 'true');
+} else {
+    // Default: nascosti
+    window.DragDropSystem.showSnapIndicators = false;
+}
+```
+
+### Sintassi Tutorial
+
+#### Default (nascosto - raccomandato per riassemblaggio)
+```ini
+[Tutorial Step 1]
+DragDrop=true
+DragDropObjects=filtro,vite
+# ShowSnapIndicators non specificato = nascosto (default)
+```
+
+#### Esplicitamente nascosto
+```ini
+ShowSnapIndicators=false
+```
+
+#### Mostra sfere verdi
+```ini
+ShowSnapIndicators=true
+```
+
+### Caratteristiche
+- ✅ **Default Nascosto**: Nessun disturbo visivo durante riassemblaggio
+- ✅ **Snap Attivo**: Funzionalità snap rimane attiva anche con sfere nascoste
+- ✅ **Zero Overhead**: Sfere non vengono create se disabilitate
+- ✅ **Backward Compatible**: Tutorial esistenti continuano a funzionare
+
+### File Modificati
+- `js/core/DragDropSystem.js:23` - Flag `showSnapIndicators: false`
+- `js/core/DragDropSystem.js:547-549,2116` - Controlli creazione indicatori
+- `js/core/SnapSystem.js:330-333` - Controllo creazione indicatori
+- `js/ui.js:2797-2809` - Parsing parametro tutorial e cleanup automatico
+
+---
+
+**Ultimo aggiornamento**: 15 Gennaio 2026 - Rotazioni Coerenti e Sistema Visibilità Indicatori Snap completati

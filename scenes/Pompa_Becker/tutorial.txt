@@ -1,3 +1,4 @@
+
 # Tutorial per Manutenzione Pompa del Vuoto
 # Questo file definisce la sequenza guidata per la sostituzione del filtro
 # e l'ingrassaggio della pompa del vuoto Pompa Becker U5.40
@@ -321,8 +322,120 @@ DragDropDistance=0.3
 
 
   
-[Sostituzione Palette]                                   // Tutorial futuro per sostituzione palette pompa
-// Da implementare: procedura per cambio palette rotore
+[Sostituzione Palette Smontaggio]                                   // Tutorial futuro per sostituzione palette pompa
+CameraPos=(0, 0.5,1)                                       // Posizione assoluta per test
+  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  Azione1=resetCenteredOriginal
+
+
+[Step 1 - Rimuovi vite 1 culatta]
+Elemento=models/vite_culatta_1.glb  
+Descrizione=Rimuovi la prima vite a brugola della culatta con la chiave a brugola da 6mm.
+Utensile=ChiaveBrugola
+Azione1=svita
+Azione2=appoggia(0.2)
+
+[Step 2 - Rimuovi vite 2 culatta]
+Elemento=models/vite_culatta_2.glb
+Descrizione=Rimuovi la seconda vite a brugola della culatta con la chiave a brugola da 6mm.
+Utensile=ChiaveBrugola
+Azione1=svita
+Azione2=appoggia(0.2)
+
+
+[Step 3 - Rimuovi vite 3 culatta]
+Elemento=models/vite_culatta_3.glb
+Descrizione=Rimuovi la terza vite a brugola della culatta con la chiave a brugola da 6mm. Nota che le viti più in basso sono più corte
+Utensile=ChiaveBrugola
+Azione1=svita
+Azione2=traslazione:( -0.1,0,0,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 4 - Rimuovi vite 4 culatta]
+Elemento=models/vite_culatta_4.glb
+Descrizione=Rimuovi la quarta vite a brugola della culatta con la chiave a brugola da 6mm. Nota che le viti più in basso sono più corte
+Utensile=ChiaveBrugola
+Azione1=svita
+Azione2=traslazione:( -0.1,0,0,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 5 - Rimuovi la culatta]
+Elemento=models/culatta.glb
+Descrizione=Rimuovi la culatta della pompa con lo strumento "Mano".
+Utensile=Mani
+Azione1=traslazione:( 0.5,0,0.5,0.5) 
+Azione2=rotazione:(-90,0,0,0.8)
+Azione3=appoggia(0.2)
+
+[Step 6 - Rimuovi vite 1 flangia]
+Elemento=models/vite_flangia_1.glb
+Descrizione=Rimuovi la prima vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 7 - Rimuovi vite 2 flangia]
+Elemento=models/vite_flangia_2.glb
+Descrizione=Rimuovi la seconda vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 8 - Rimuovi vite 3 flangia]
+Elemento=models/vite_flangia_3.glb
+Descrizione=Rimuovi la terza vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 9 - Rimuovi vite 4 flangia]
+Elemento=models/vite_flangia_4.glb
+Descrizione=Rimuovi la quarta vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 10 - Rimuovi vite 5 flangia]
+Elemento=models/vite_flangia_5.glb
+Descrizione=Rimuovi la quinta vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+[Step 11 - Rimuovi vite 6 flangia]
+Elemento=models/vite_flangia_6.glb
+Descrizione=Rimuovi la sesta vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+
+[Step 12 - Rimuovi vite 7 flangia]
+Elemento=models/vite_flangia_7.glb
+Descrizione=Rimuovi la settima vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+
+[Step 13 - Rimuovi vite 8 flangia]
+Elemento=models/vite_flangia_8.glb
+Descrizione=Rimuovi la ottava vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+Azione1=svita
+Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione3=appoggia(0.2)
+
+
 
 [Sostituzione Palette Reverse]                           // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette
