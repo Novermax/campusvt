@@ -2364,7 +2364,29 @@ window.UI = {
             window.DragDropSystem.disable();
             AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per nuovo tutorial "${this.availableTutorials[tutorialIndex].name}"`);
         }
-        
+
+        // RESET: Disattiva tutti i tool e ripristina cursore di default
+        if (window.ToolsManager && window.ToolsManager.deactivateAllTools) {
+            window.ToolsManager.deactivateAllTools();
+            AppConfig.log(2, `🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial`);
+        }
+
+        // RESET: Ferma eventuali animazioni cursore in corso
+        if (window.Scene3D && window.Scene3D.stopCursorAnimation) {
+            window.Scene3D.stopCursorAnimation();
+        }
+
+        // RESET: Rimuovi classi cursori personalizzati dal body
+        document.body.classList.remove(
+            'tool-aria-active',
+            'tool-chiave_inglese-active',
+            'tool-brugola-active',
+            'tool-mano-active',
+            'cursor-frame-1',
+            'cursor-frame-2'
+        );
+        AppConfig.log(3, `🖱️ CURSOR: Ripristinato cursore di default`);
+
         this.currentTutorial = this.availableTutorials[tutorialIndex];
         this.tutorialSteps = this.currentTutorial.steps;
         this.currentStepIndex = 0;
