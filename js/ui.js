@@ -2716,6 +2716,9 @@ window.UI = {
         console.log(`[DEBUG] ⏭️ Navigazione a step: "${step.title}"`);
         AppConfig.log(2, `Navigazione a step ${stepIndex + 1}: ${step.title}`);
 
+        // Aggiorna fumetto PRIMA di eseguire lo step (così è visibile durante modal)
+        this.updateStepSpeechBubble();
+
         // I pulsanti tutorial mantengono il loro stato radio button
         // Non c'è bisogno di aggiornarli per ogni step
 
@@ -2764,16 +2767,11 @@ window.UI = {
                                    !step.properties.AssemblyMode;
 
             if (hasOnlyMessage) {
-                AppConfig.log(2, `[UI] Step solo messaggio - avanzamento automatico allo step successivo`);
+                AppConfig.log(2, `[UI] Step con solo messaggio informativo completato`);
 
-                // Passa allo step successivo dopo un piccolo delay
-                setTimeout(() => {
-                    if (this.currentStepIndex < this.tutorialSteps.length - 1) {
-                        this.nextStep();
-                    } else {
-                        AppConfig.log(2, `[UI] Ultimo step raggiunto`);
-                    }
-                }, 500);
+                // IMPORTANTE: Non auto-avanzare - lascia che l'utente controlli la navigazione
+                // L'utente può usare i pulsanti "Avanti/Indietro" per navigare
+                // Lo step rimane attivo con il fumetto visibile che mostra la descrizione
 
                 return; // Esci dalla funzione, non eseguire altre azioni
             }
@@ -2834,6 +2832,31 @@ window.UI = {
                     window.DragDropSystem.setSnapDistance(distance);
                     AppConfig.log(3, `🎯 DRAG & DROP: Distanza snap impostata: ${distance}`);
                 }
+            }
+
+            // NUOVO: Configura punti di snap a coordinate arbitrarie
+            if (step.properties.SnapPoint) {
+                const snapDeclarations = step.properties.SnapPoint.split(';').map(s => s.trim()).filter(s => s.length > 0);
+
+                snapDeclarations.forEach(declaration => {
+                    // Parsing formato: oggetto:(x,y,z)
+                    const match = declaration.match(/^([^:]+):\(([^,]+),([^,]+),([^)]+)\)$/);
+                    if (match) {
+                        const objectName = match[1].trim();
+                        const x = parseFloat(match[2].trim());
+                        const y = parseFloat(match[3].trim());
+                        const z = parseFloat(match[4].trim());
+
+                        if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+                            window.DragDropSystem.setCustomSnapPosition(objectName, x, y, z);
+                            AppConfig.log(3, `🎯 DRAG & DROP: Snap point per "${objectName}" a (${x}, ${y}, ${z})`);
+                        } else {
+                            AppConfig.log(1, `⚠️ DRAG & DROP: Coordinate non valide in SnapPoint: ${declaration}`);
+                        }
+                    } else {
+                        AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapPoint non valido: ${declaration} (usare formato oggetto:(x,y,z))`);
+                    }
+                });
             }
 
             // Configura visibilità indicatori snap (sfere verdi)
@@ -2968,10 +2991,28 @@ window.UI = {
         }, 10000); // 10 secondi
     },
     
-    /* Le funzioni nextStep() e previousStep() sono state rimosse
-     * per assicurare che la sequenza sia controllata solo dal sistema
-     * tramite click sui modelli 3D e avanzamento automatico */
-    
+    /**
+     * Avanza allo step successivo del tutorial
+     */
+    nextStep: function() {
+        if (this.currentStepIndex < this.tutorialSteps.length - 1) {
+            this.goToStep(this.currentStepIndex + 1);
+        } else {
+            AppConfig.log(2, `[UI] Ultimo step del tutorial raggiunto`);
+        }
+    },
+
+    /**
+     * Torna allo step precedente del tutorial
+     */
+    prevStep: function() {
+        if (this.currentStepIndex > 0) {
+            this.goToStep(this.currentStepIndex - 1);
+        } else {
+            AppConfig.log(2, `[UI] Primo step del tutorial raggiunto`);
+        }
+    },
+
     /* ===== GESTIONE FUMETTO STEP TUTORIAL ===== */
     
     /**

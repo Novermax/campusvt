@@ -1259,12 +1259,19 @@ window.DragDropSystem = {
         if (customTarget) {
             let targetPosition = null;
 
-            if (customTarget.isOriginalRef && window.Scene3D) {
+            // Coordinate dirette (x,y,z)
+            if (customTarget.isDirectPosition && customTarget.directPosition) {
+                targetPosition = customTarget.directPosition.clone();
+            }
+            // Riferimenti _original
+            else if (customTarget.isOriginalRef && window.Scene3D) {
                 const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
                 if (originalRef && originalRef.position) {
                     targetPosition = originalRef.position.clone();
                 }
-            } else {
+            }
+            // Target standard
+            else if (customTarget.targetName) {
                 const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
                 if (targetModel && targetModel.position) {
                     targetPosition = targetModel.position.clone();
@@ -1303,29 +1310,35 @@ window.DragDropSystem = {
         const customTarget = this.customSnapTargets.get(object.uuid);
         if (customTarget) {
             let targetPosition = null;
-            
-            if (customTarget.isOriginalRef && window.Scene3D) {
-                // Usa il sistema Scene3D per riferimenti _original
+
+            // NUOVO: Coordinate dirette (x,y,z)
+            if (customTarget.isDirectPosition && customTarget.directPosition) {
+                targetPosition = customTarget.directPosition.clone();
+                console.log(`[DragDropSystem] 🎯 Custom snap target (coordinate dirette): (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+            }
+            // Riferimenti _original
+            else if (customTarget.isOriginalRef && window.Scene3D) {
                 const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
                 if (originalRef && originalRef.position) {
                     targetPosition = originalRef.position.clone();
                     console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
                 }
-            } else {
-                // Target standard (cerca l'oggetto nella scena)
+            }
+            // Target standard (cerca l'oggetto nella scena)
+            else if (customTarget.targetName) {
                 const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
                 if (targetModel && targetModel.position) {
                     targetPosition = targetModel.position.clone();
                     console.log(`[DragDropSystem] 🎯 Custom snap target (current): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
                 }
             }
-            
+
             if (targetPosition) {
-                // Applica offset se specificato
-                if (customTarget.offset) {
+                // Applica offset se specificato (solo per target con nome, non coordinate dirette)
+                if (customTarget.offset && !customTarget.isDirectPosition) {
                     targetPosition.add(customTarget.offset);
                 }
-                
+
                 const distance = currentCenter.distanceTo(targetPosition);
                 if (distance <= this.snapDistance) {
                     console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
@@ -2160,12 +2173,39 @@ window.DragDropSystem = {
     },
     
     /**
+     * Imposta snap a coordinate arbitrarie (x,y,z) nello spazio
+     * @param {string} objectName - Nome dell'oggetto
+     * @param {number} x - Coordinata X
+     * @param {number} y - Coordinata Y
+     * @param {number} z - Coordinata Z
+     */
+    setCustomSnapPosition: function(objectName, x, y, z) {
+        if (!window.Scene3D) {
+            console.warn('[DragDropSystem] Scene3D non disponibile per configurare snap personalizzati');
+            return;
+        }
+
+        const object = window.Scene3D.findModelByName(objectName);
+        if (!object) {
+            console.warn(`[DragDropSystem] Oggetto "${objectName}" non trovato per snap personalizzato`);
+            return;
+        }
+
+        this.customSnapTargets.set(object.uuid, {
+            directPosition: new THREE.Vector3(x, y, z),
+            isDirectPosition: true
+        });
+
+        console.log(`[DragDropSystem] 🎯 Snap a coordinate dirette per "${objectName}" -> (${x}, ${y}, ${z})`);
+    },
+
+    /**
      * Rimuove target di snap personalizzato per un oggetto
      * @param {string} objectName - Nome dell'oggetto
      */
     removeCustomSnapTarget: function(objectName) {
         if (!window.Scene3D) return;
-        
+
         const object = window.Scene3D.findModelByName(objectName);
         if (object) {
             this.customSnapTargets.delete(object.uuid);

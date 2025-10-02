@@ -513,7 +513,7 @@ const Scene3D = {
         const hotspotY = activeTool === 'brugola' ? 9 : 8;
 
         // Applica subito il frame1 senza attendere
-        const cursorUrlFrame1 = `url("../cursors/${toolName}_premuto_frame1.svg") ${hotspotX} ${hotspotY}, auto`;
+        const cursorUrlFrame1 = `url("cursors/${toolName}_premuto_frame1.svg") ${hotspotX} ${hotspotY}, auto`;
         document.body.style.cursor = cursorUrlFrame1;
         document.body.style.setProperty('cursor', cursorUrlFrame1, 'important');
 
@@ -522,7 +522,7 @@ const Scene3D = {
             const frame = this.cursorAnimation.currentFrame === 1 ? 2 : 1;
             this.cursorAnimation.currentFrame = frame;
 
-            const cursorUrl = `url("../cursors/${toolName}_premuto_frame${frame}.svg") ${hotspotX} ${hotspotY}, auto`;
+            const cursorUrl = `url("cursors/${toolName}_premuto_frame${frame}.svg") ${hotspotX} ${hotspotY}, auto`;
             document.body.style.cursor = cursorUrl;
 
             // Applica anche a tutti gli elementi figli

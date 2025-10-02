@@ -161,6 +161,9 @@ Azione1=traslazione:(x,y,z,durata)   # Traslazione animata
 Azione1=appoggia(durata)             # Appoggia al pavimento
 DragDrop=true                        # Abilita drag & drop
 DragDropObjects=filtro,vite          # Oggetti draggabili
+DragDropDistance=0.3                 # Distanza snap
+SnapPoint=filtro:(x,y,z)             # Snap a coordinate arbitrarie
+SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)  # Multi-oggetto
 AssemblyMode=true                    # Modalità assemblaggio
 ```
 
@@ -181,6 +184,7 @@ Scene3D.exportCurrentModelPositions()    // Export posizioni correnti
 DragDropSystem.isEnabled()               // Stato sistema
 DragDropSystem.enable(['filtro'])        // Abilita oggetti specifici
 DragDropSystem.setSnapDistance(1.5)      // Distanza snap
+DragDropSystem.setCustomSnapPosition('filtro', 0.5, 0.2, 0.3)  // Snap coordinate dirette
 
 // Assemblaggio
 DragDropSystem.enableAssemblyMode(config)   // Modalità assemblaggio
@@ -218,9 +222,21 @@ ParticleSystem.clearAllEffects()         // Rimuovi effetti
 - **API**: `setCustomSnapTarget('obj', 'target_original')`, zero breaking changes
 - **Performance**: On-demand, caching intelligente, zero overhead operazioni normali
 
+### Sistema Snap a Coordinate Arbitrarie (Gennaio 2026)
+- **Funzionalità**: Definizione punti di snap a coordinate x,y,z arbitrarie nello spazio
+- **Core**: `DragDropSystem.setCustomSnapPosition(oggetto, x, y, z)` (DragDropSystem.js:2169-2187)
+- **Sintassi Tutorial**: `SnapPoint=oggetto:(x,y,z)` - esempio: `SnapPoint=filtro:(0.5,0.2,0.3)`
+- **Multi-oggetto**: Separare con `;` - esempio: `SnapPoint=filtro:(0.5,0.2,0.3);vite_1:(-0.1,0,0.5)`
+- **Integrazione**: Funziona con DragDropDistance, ShowSnapIndicators, e sistema assembly
+- **Priorità**: Coordinate dirette > riferimenti _original > posizioni originali salvate
+- **API Console**:
+  ```javascript
+  DragDropSystem.setCustomSnapPosition('filtro', 0.5, 0.2, 0.3)  // Snap diretto
+  ```
+
 ---
 
-**Ultimo aggiornamento**: 13 Dicembre 2025 - Sistema Effetti Particellari completamente funzionante
+**Ultimo aggiornamento**: 15 Gennaio 2026 - Sistema Snap a Coordinate Arbitrarie completato
 
 ## 🎯 Sessione di Lavoro 13 Dicembre 2025
 
