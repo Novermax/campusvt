@@ -1464,7 +1464,19 @@ body.tool-chiave_inglese-active *,
 .tool-chiave_inglese-active {
     cursor: url("../cursors/chiave_inglese_normale.svg") 8 8, auto !important;
 }
-/* Cursore premuto gestito via JavaScript per animazione 2 frame */
+
+/* Animazione chiave inglese - frame 1 */
+body.tool-chiave_inglese-active.cursor-frame-1,
+body.tool-chiave_inglese-active.cursor-frame-1 * {
+    cursor: url("../cursors/chiave_inglese_premuto_frame1.svg") 8 8, auto !important;
+}
+
+/* Animazione chiave inglese - frame 2 */
+body.tool-chiave_inglese-active.cursor-frame-2,
+body.tool-chiave_inglese-active.cursor-frame-2 * {
+    cursor: url("../cursors/chiave_inglese_premuto_frame2.svg") 8 8, auto !important;
+}
+
 /* Applica cursore chiave inglese a tutti gli elementi eccetto pulsanti e link */
 body.tool-chiave_inglese-active * {
     cursor: inherit !important;
@@ -1488,7 +1500,19 @@ body.tool-brugola-active *,
 .tool-brugola-active {
     cursor: url("../cursors/brugola_normale.svg") 4 9, auto !important;
 }
-/* Cursore premuto gestito via JavaScript per animazione 2 frame */
+
+/* Animazione brugola - frame 1 */
+body.tool-brugola-active.cursor-frame-1,
+body.tool-brugola-active.cursor-frame-1 * {
+    cursor: url("../cursors/brugola_premuto_frame1.svg") 4 9, auto !important;
+}
+
+/* Animazione brugola - frame 2 */
+body.tool-brugola-active.cursor-frame-2,
+body.tool-brugola-active.cursor-frame-2 * {
+    cursor: url("../cursors/brugola_premuto_frame2.svg") 4 9, auto !important;
+}
+
 /* Applica cursore brugola a tutti gli elementi eccetto pulsanti e link */
 body.tool-brugola-active * {
     cursor: inherit !important;

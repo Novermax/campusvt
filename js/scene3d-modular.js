@@ -508,28 +508,20 @@ const Scene3D = {
         this.cursorAnimation.isAnimating = true;
         this.cursorAnimation.currentFrame = 1;
 
-        const toolName = activeTool === 'brugola' ? 'brugola' : 'chiave_inglese';
-        const hotspotX = activeTool === 'brugola' ? 4 : 8;
-        const hotspotY = activeTool === 'brugola' ? 9 : 8;
-
-        // Applica subito il frame1 senza attendere
-        const cursorUrlFrame1 = `url("cursors/${toolName}_premuto_frame1.svg") ${hotspotX} ${hotspotY}, auto`;
-        document.body.style.cursor = cursorUrlFrame1;
-        document.body.style.setProperty('cursor', cursorUrlFrame1, 'important');
+        // Applica subito la classe frame1
+        document.body.classList.add('cursor-frame-1');
 
         // Loop animazione 0.5s (250ms per frame)
         this.cursorAnimation.intervalId = setInterval(() => {
             const frame = this.cursorAnimation.currentFrame === 1 ? 2 : 1;
             this.cursorAnimation.currentFrame = frame;
 
-            const cursorUrl = `url("cursors/${toolName}_premuto_frame${frame}.svg") ${hotspotX} ${hotspotY}, auto`;
-            document.body.style.cursor = cursorUrl;
-
-            // Applica anche a tutti gli elementi figli
-            document.body.style.setProperty('cursor', cursorUrl, 'important');
+            // Rimuovi classe frame opposto e aggiungi nuova
+            document.body.classList.remove('cursor-frame-1', 'cursor-frame-2');
+            document.body.classList.add(`cursor-frame-${frame}`);
         }, 250);
 
-        console.log(`[Scene3D] 🎬 Animazione cursore avviata per: ${toolName}`);
+        console.log(`[Scene3D] 🎬 Animazione cursore avviata per: ${activeTool}`);
     },
 
     // Ferma animazione cursore
@@ -544,9 +536,8 @@ const Scene3D = {
         this.cursorAnimation.isAnimating = false;
         this.cursorAnimation.currentFrame = 1;
 
-        // Ripristina cursore normale del tool
-        document.body.style.cursor = '';
-        document.body.style.removeProperty('cursor');
+        // Rimuovi classi frame per ripristinare cursore normale
+        document.body.classList.remove('cursor-frame-1', 'cursor-frame-2');
 
         console.log('[Scene3D] ⏹️ Animazione cursore fermata');
     },
