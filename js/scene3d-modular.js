@@ -200,8 +200,9 @@ const Scene3D = {
         directionalLight.shadow.camera.far = 500;
         
         this.scene.add(directionalLight);
-        
-        const backLight = new THREE.DirectionalLight(0xffffff, 0.4);
+
+        // Seconda luce direzionale dalla parte opposta (senza ombre)
+        const backLight = new THREE.DirectionalLight(0xffffff, 1.2);
         backLight.position.set(
             -directionalConfig.position.x,
             directionalConfig.position.y,
@@ -209,6 +210,8 @@ const Scene3D = {
         );
         backLight.castShadow = false;
         this.scene.add(backLight);
+
+        console.log('[Scene3D] ✅ Luci configurate: Ambient + Directional (ombre) + BackLight (no ombre)');
     },
 
 

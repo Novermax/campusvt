@@ -839,16 +839,54 @@ window.UI = {
      */
     loadModelsFromUrls: function(modelUrls) {
         console.log('🌐 Avvio fetch per:', modelUrls);
-        
+
         let completedFiles = 0;
         const totalFiles = modelUrls.length;
-        
+
+        // Conta file grandi
+        const largeFiles = modelUrls.filter(m => /culatta|corpo|coperchio/i.test(m.name));
+        if (largeFiles.length > 0) {
+            console.log(`⏳ Rilevati ${largeFiles.length} file di grandi dimensioni (${largeFiles.map(f => f.name).join(', ')}). Il caricamento potrebbe richiedere fino a 2 minuti.`);
+            this.updateStatus(`Caricamento ${totalFiles} modelli (${largeFiles.length} file grandi)... potrebbe richiedere fino a 2 minuti`);
+        }
+
+        // Helper function per fetch con timeout e retry
+        const fetchWithTimeoutAndRetry = (url, filename, maxRetries = 2) => {
+            // Timeout dinamico basato su dimensione stimata del file
+            const isLargeFile = /culatta|corpo|coperchio|pavimento|filtro/i.test(filename);
+            const timeout = isLargeFile ? 120000 : 60000; // 120s per file grandi, 60s per altri
+
+            console.log(`🌐 Timeout per ${filename}: ${timeout/1000}s (isLarge: ${isLargeFile})`);
+
+            const attemptFetch = (retriesLeft) => {
+                return Promise.race([
+                    fetch(url),
+                    new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error(`Timeout dopo ${timeout/1000}s`)), timeout)
+                    )
+                ]).catch(error => {
+                    if (retriesLeft > 0) {
+                        console.warn(`⚠️ Retry ${maxRetries - retriesLeft + 1}/${maxRetries} per ${filename}:`, error.message);
+                        return new Promise(resolve => setTimeout(resolve, 2000))
+                            .then(() => attemptFetch(retriesLeft - 1));
+                    }
+                    throw error;
+                });
+            };
+
+            return attemptFetch(maxRetries);
+        };
+
         const loadPromises = modelUrls.map(model => {
             console.log(`🌐 Fetching: ${model.path}`);
             // Aggiorna progress bar - fetch iniziato
             this.updateModelProgress(completedFiles, totalFiles, model.name);
-            
-            return fetch(model.path)
+
+            // Aggiungi cache-busting parameter per evitare problemi di cache
+            const cacheBuster = `?v=${Date.now()}`;
+            const urlWithCacheBuster = model.path + cacheBuster;
+
+            return fetchWithTimeoutAndRetry(urlWithCacheBuster, model.name)
                 .then(response => {
                     console.log(`🌐 Response per ${model.path}:`, response.status, response.statusText);
                     if (!response.ok) {
@@ -858,18 +896,18 @@ window.UI = {
                 })
                 .then(blob => {
                     console.log(`🌐 Blob creato per ${model.name}:`, blob.size, 'bytes');
-                    
+
                     // Aggiorna progress bar - file completato
                     completedFiles++;
                     this.updateModelProgress(completedFiles, totalFiles, model.name);
-                    
+
                     // Crea un File object dal blob
                     const file = new File([blob], model.name, { type: blob.type });
                     return { file, model };
                 })
                 .catch(error => {
-                    console.error(`❌ Errore fetch ${model.name}:`, error);
-                    AppConfig.log(1, `Errore caricamento ${model.name}: ${error.message}`);
+                    console.error(`❌ ERRORE FETCH ${model.name}:`, error);
+                    AppConfig.log(0, `⚠️ FILE MANCANTE: ${model.name} - ${error.message}`);
                     return null;
                 });
         });
@@ -877,20 +915,32 @@ window.UI = {
         Promise.allSettled(loadPromises)
             .then(results => {
                 console.log('🌐 Risultati fetch:', results);
-                
+
                 const validFiles = results
                     .filter(result => result.status === 'fulfilled' && result.value !== null)
                     .map(result => result.value.file);
-                
-                const failedFiles = results.filter(result => result.status === 'rejected').length;
-                
-                console.log('🌐 File validi:', validFiles.length, 'File falliti:', failedFiles);
+
+                const failedCount = results.filter(result =>
+                    result.status === 'rejected' ||
+                    (result.status === 'fulfilled' && result.value === null)
+                ).length;
+
+                const failedNames = results
+                    .map((result, index) => ({result, model: modelUrls[index]}))
+                    .filter(({result}) => result.status === 'rejected' || (result.status === 'fulfilled' && result.value === null))
+                    .map(({model}) => model.name);
+
+                console.log('🌐 File validi:', validFiles.length, 'File falliti:', failedCount);
                 console.log('🌐 ValidFiles dettaglio:', validFiles);
-                
+                if (failedCount > 0) {
+                    console.error('❌ File falliti:', failedNames);
+                }
+
                 if (validFiles.length > 0) {
-                    AppConfig.log(2, `${validFiles.length} modelli caricati con successo`);
-                    if (failedFiles > 0) {
-                        AppConfig.log(1, `${failedFiles} modelli non caricati`);
+                    AppConfig.log(2, `✅ ${validFiles.length}/${totalFiles} modelli caricati con successo`);
+                    if (failedCount > 0) {
+                        AppConfig.log(0, `⚠️ ATTENZIONE: ${failedCount} file mancanti: ${failedNames.join(', ')}`);
+                        this.showError(`Caricati ${validFiles.length}/${totalFiles} modelli. Mancanti: ${failedNames.join(', ')}`);
                     }
                     
                     this.updateStatus(`Rendering ${validFiles.length} modelli...`);

@@ -169,35 +169,57 @@ window.ModelLoader = {
         // Carica ogni modello con i suoi file associati
         const loadNextModel = () => {
             if (currentStep >= groups.models.length) {
-                // Tutti i modelli caricati
+                // Tutti i modelli caricati - Delay finale per assicurare rendering completo
+                console.log('⏳ Tutti i file processati, attesa rendering completo...');
                 this.isLoading = false;
-                if (onComplete) onComplete(loadedModels);
+
+                // Delay finale di 500ms per assicurare che Three.js abbia finito di processare tutto
+                setTimeout(() => {
+                    console.log('✅ Rendering completato, invio callback con', loadedModels.length, 'modelli');
+                    if (onComplete) onComplete(loadedModels);
+                }, 500);
                 return;
             }
-            
+
             const modelFile = groups.models[currentStep];
             const baseName = this.getBaseName(modelFile.name);
-            
+
             // Trova file associati con nome simile
-            const associatedMaterial = groups.materials.find(f => 
+            const associatedMaterial = groups.materials.find(f =>
                 this.getBaseName(f.name) === baseName);
-            const associatedTextures = groups.textures.filter(f => 
+            const associatedTextures = groups.textures.filter(f =>
                 this.getBaseName(f.name) === baseName);
-            
+
             // Aggiorna progresso
             if (onProgress) {
                 onProgress(`Caricamento ${modelFile.name}...`, currentStep / totalSteps);
             }
-            
+
             // Carica il modello
             this.loadSingleModel(
-                modelFile, 
-                associatedMaterial, 
+                modelFile,
+                associatedMaterial,
                 associatedTextures,
                 (model) => {
                     loadedModels.push(model);
+                    console.log(`✅ Modello ${currentStep + 1}/${totalSteps} caricato: ${modelFile.name}`);
                     currentStep++;
-                    setTimeout(loadNextModel, 100);
+
+                    // Forza rendering del modello appena caricato se Scene3D disponibile
+                    if (window.Scene3D && typeof window.Scene3D.render === 'function') {
+                        requestAnimationFrame(() => {
+                            window.Scene3D.render();
+                            console.log('🎨 Rendering forzato per', modelFile.name);
+                        });
+                    }
+
+                    // Delay aumentato a 350ms per dare tempo al rendering del modello precedente
+                    // Delay extra per file grandi (pavimento, base, culatta)
+                    const isLargeFile = /pavimento|base|culatta|corpo|pompa/i.test(modelFile.name);
+                    const delay = isLargeFile ? 500 : 350;
+
+                    console.log(`⏱️ Attesa ${delay}ms prima del prossimo modello...`);
+                    setTimeout(loadNextModel, delay);
                 },
                 onError
             );
