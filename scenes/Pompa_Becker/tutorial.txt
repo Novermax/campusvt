@@ -406,7 +406,7 @@ Elemento=models/vite_flangia_5.glb
 Descrizione=Rimuovi la quinta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
 Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione2=traslazione:( -0.1,0,-0.1,0.2) 
 Azione3=appoggia(0.2)
 
 [Step 11 - Rimuovi vite 6 flangia]
@@ -414,7 +414,7 @@ Elemento=models/vite_flangia_6.glb
 Descrizione=Rimuovi la sesta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
 Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione2=traslazione:( -0.1,0,-0.1,0.2) 
 Azione3=appoggia(0.2)
 
 
@@ -423,7 +423,7 @@ Elemento=models/vite_flangia_7.glb
 Descrizione=Rimuovi la settima vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
 Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione2=traslazione:( -0.1,0,-0.1,0.2) 
 Azione3=appoggia(0.2)
 
 
@@ -432,10 +432,14 @@ Elemento=models/vite_flangia_8.glb
 Descrizione=Rimuovi la ottava vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
 Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
+Azione2=traslazione:( -0.1,0,-0.1,0.2) 
 Azione3=appoggia(0.2)
 
-
+[Step 14 - Istruzioni Ismontaggio flangia]
+  Message=Prima di iniziare, Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
+  MessageTitle=⚠️ Importante
+  MessageVideo=media/estrattore.mp4
+  Descrizione=Fase preparatoria
 
 [Sostituzione Palette Reverse]                           // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette

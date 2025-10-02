@@ -741,4 +741,206 @@ ShowSnapIndicators=true
 
 ---
 
-**Ultimo aggiornamento**: 15 Gennaio 2026 - Rotazioni Coerenti e Sistema Visibilità Indicatori Snap completati
+## 💬 Sistema Modal Messaggi Informativi Tutorial (Gennaio 2026)
+
+**Implementazione**: Modal informativo con messaggio personalizzato e pulsante OK per step tutorial
+
+### Funzionalità
+- Modal con messaggio personalizzato durante gli step
+- Blocco del flusso tutorial fino alla chiusura del modal
+- Titolo personalizzabile
+- Posizionamento pulsante OK in basso a destra
+
+### Implementazione
+
+#### 1. CSS Modal (`components.css:1329-1424`)
+```css
+.info-modal {
+    /* Overlay schermo intero con sfondo scuro */
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+}
+
+.info-content {
+    /* Box centrale con gradiente e bordo blu */
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.info-ok-btn {
+    /* Pulsante OK in basso a destra */
+    background: linear-gradient(145deg, #007bff, #0056b3);
+}
+```
+
+#### 2. HTML Modal (`index.html:414-430`)
+```html
+<div id="infoModal" class="info-modal">
+    <div class="info-content">
+        <div class="info-header">
+            <h2 id="infoModalTitle">Informazione</h2>
+        </div>
+        <div class="info-body">
+            <p id="infoModalMessage">Messaggio informativo</p>
+        </div>
+        <div class="info-footer">
+            <button id="infoModalOkBtn">OK</button>
+        </div>
+    </div>
+</div>
+```
+
+#### 3. Logica JavaScript (`ui.js:3046-3094`)
+```javascript
+showInfoModal: function(message, title = 'Informazione') {
+    return new Promise((resolve) => {
+        // Mostra modal e blocca esecuzione
+        // Risolve promessa quando utente clicca OK
+    });
+}
+```
+
+#### 4. Integrazione Tutorial (`ui.js:2740-2748`)
+```javascript
+executeStep: async function(step) {
+    // Mostra modal se presente parametro Message
+    if (step.properties.Message) {
+        await this.showInfoModal(step.properties.Message, messageTitle);
+    }
+    // ... continua con altre azioni step
+}
+```
+
+### Sintassi Tutorial
+
+#### Esempio Base
+```ini
+[Tutorial Step 1 - Istruzioni Sicurezza]
+Message=Assicurati di indossare i dispositivi di protezione prima di procedere.
+Descrizione=Preparazione area di lavoro
+```
+
+#### Con Titolo Personalizzato
+```ini
+[Tutorial Step 2 - Avviso Importante]
+Message=Questa operazione richiede particolare attenzione. Procedi lentamente.
+MessageTitle=⚠️ Attenzione
+Elemento=models/filtro.glb
+Utensile=ChiaveBrugola
+```
+
+#### Con Immagine
+```ini
+[Tutorial Step 3 - Schema Componenti]
+Message=Ecco lo schema dei componenti da smontare
+MessageTitle=Riferimento Visivo
+MessageImage=scenes/Pompa_Becker/images/schema_componenti.jpg
+Descrizione=Visualizza schema
+```
+
+#### Con Video
+```ini
+[Tutorial Step 4 - Procedura Smontaggio]
+Message=Guarda attentamente questa procedura prima di procedere
+MessageTitle=🎬 Video Tutorial
+MessageVideo=scenes/Pompa_Becker/videos/smontaggio_filtro.mp4
+Descrizione=Video dimostrativo
+```
+
+#### Step Solo Messaggio
+```ini
+[Tutorial Step 5 - Pausa Informativa]
+Message=Ottimo lavoro! Hai completato la prima fase.\n\nOra passeremo allo smontaggio del coperchio.
+MessageTitle=✅ Fase Completata
+```
+
+### Parametri Disponibili
+
+- **`Message`** - Testo del messaggio (obbligatorio per mostrare modal)
+  - Supporta `\n` per andare a capo
+  - Supporto `pre-wrap` per formattazione testo
+
+- **`MessageTitle`** - Titolo del modal (opzionale)
+  - Default: titolo dello step
+  - Supporta emoji e testo formattato
+
+- **`MessageImage`** - Percorso immagine da mostrare (opzionale)
+  - Formati supportati: JPG, PNG, GIF, WEBP
+  - Percorso relativo alla root del progetto
+  - Max-height: 400px con auto-resize
+  - Esempio: `scenes/Pompa_Becker/images/schema.jpg`
+
+- **`MessageVideo`** - Percorso video da mostrare (opzionale)
+  - Formati supportati: MP4, WEBM, OGG
+  - Controlli player integrati (play, pause, volume, fullscreen)
+  - Preload metadata per preview
+  - Max-height: 400px con auto-resize
+  - Esempio: `scenes/Pompa_Becker/videos/demo.mp4`
+  - **Nota**: Video si ferma automaticamente alla chiusura modal
+
+### Caratteristiche
+
+- ✅ **Blocco Flusso**: Tutorial si ferma fino al click su OK
+- ✅ **Async/Await**: Gestione asincrona promesse
+- ✅ **Responsive**: Max-height 80vh con scroll automatico
+- ✅ **Accessibilità**: Attributi ARIA corretti
+- ✅ **Animazioni**: Transizioni fluide apertura/chiusura
+- ✅ **Multi-riga**: Supporto testi lunghi con word-wrap
+- ✅ **Supporto Immagini**: JPG, PNG, GIF, WEBP con auto-resize
+- ✅ **Supporto Video**: MP4, WEBM con controlli player integrati
+- ✅ **Auto-cleanup**: Video fermato e risorse liberate alla chiusura
+- ✅ **Error Handling**: Gestione errori caricamento media con fallback
+
+### Comportamento
+
+1. **Attivazione**: Modal appare automaticamente quando step contiene `Message`
+2. **Interazione**: Utente deve cliccare OK per procedere
+3. **Chiusura**: Animazione fade-out (300ms)
+4. **Avanzamento Automatico**:
+   - **Step solo messaggio**: Click OK → avanza automaticamente allo step successivo (500ms delay)
+   - **Step messaggio + azioni**: Click OK → chiude modal, poi esegui azione per avanzare
+5. **Rilevamento**: Sistema controlla presenza `Elemento`, `Utensile`, `DragDrop`, `AssemblyMode`
+
+### File Modificati
+
+- `css/components.css:1329-1444` - Stili modal informativo + contenitore media
+- `index.html:414-432` - HTML struttura modal con contenitore media
+- `js/ui.js:3071-3170` - Funzioni `showInfoModal()` con supporto media e `hideInfoModal()`
+- `js/ui.js:2740-2770` - Integrazione in `executeStep()` con parsing MessageImage/MessageVideo
+- `js/ui.js:2706,2723,2381` - Gestione async/await per setTimeout e goToStep
+
+### Compatibilità
+
+- ✅ **Zero Breaking Changes**: Step senza `Message` funzionano normalmente
+- ✅ **Combinabile**: Funziona insieme a tutte le altre direttive step
+- ✅ **Backward Compatible**: Tutorial esistenti continuano a funzionare
+
+### Supporto Multimediale
+
+#### Immagini
+- **Formati**: JPG, PNG, GIF, WEBP
+- **Dimensioni**: Auto-resize max 400px altezza
+- **Stile**: Bordi arrotondati + ombra
+- **Gestione Errori**: Nascosto automaticamente se caricamento fallisce
+
+#### Video
+- **Formati**: MP4, WEBM, OGG
+- **Controlli**: Play, pause, volume, fullscreen nativi
+- **Preload**: Metadata per preview immediata
+- **Auto-stop**: Video fermato e resettato alla chiusura modal
+- **Responsive**: Auto-resize max 400px altezza
+
+### Casi d'Uso
+
+1. **Istruzioni Sicurezza**: Avvisi importanti prima operazioni critiche
+2. **Pause Didattiche**: Spiegazioni teoriche tra step pratici
+3. **Schema Componenti**: Immagini esplicative per identificazione parti
+4. **Video Dimostrativi**: Clip procedurali per operazioni complesse
+5. **Congratulazioni Intermedie**: Feedback positivo durante tutorial
+6. **Note Tecniche**: Informazioni aggiuntive contestuali con supporto visivo
+7. **Checklist Preparazione**: Liste verifiche con riferimenti visivi
+
+---
+
+**Ultimo aggiornamento**: 15 Gennaio 2026 - Sistema Modal Messaggi Informativi Tutorial con Supporto Multimediale (Immagini e Video) completato

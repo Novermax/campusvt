@@ -411,6 +411,26 @@
         </button>
     </div>
 
+    <!-- ===== MODAL MESSAGGIO INFORMATIVO TUTORIAL ===== -->
+    <!-- Modal per mostrare messaggi informativi durante gli step del tutorial -->
+    <div id="infoModal" class="info-modal" role="dialog" aria-labelledby="infoModalTitle" aria-modal="true">
+        <div class="info-content">
+            <div class="info-header">
+                <h2 id="infoModalTitle">Informazione</h2>
+            </div>
+            <div class="info-body">
+                <p id="infoModalMessage" class="info-message">Messaggio informativo</p>
+                <!-- Contenitore per immagini o video -->
+                <div id="infoModalMedia" class="info-media hidden"></div>
+            </div>
+            <div class="info-footer">
+                <button id="infoModalOkBtn" class="info-ok-btn" aria-label="Chiudi messaggio">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== SCRIPT JAVASCRIPT ===== -->
     <!-- Caricamento modulare dei JavaScript per organizzazione e performance -->
     <!-- Ora usiamo ES Modules per Three.js moderno -->

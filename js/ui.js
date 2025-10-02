@@ -2378,15 +2378,15 @@ window.UI = {
         this.updateStepSpeechBubble();
         
         // Evidenzia il primo elemento del tutorial appena selezionato
-        setTimeout(() => {
+        setTimeout(async () => {
             console.log('🚀 Tutorial avviato dall\'utente - evidenzio primo elemento');
-            
+
             // ADESSO applica le impostazioni camera del tutorial (quando parte il primo step)
             this.applyTutorialCameraSettings();
-            
+
             // Applica anche le impostazioni modelli del tutorial
             this.applyTutorialModelSettings();
-            
+
             if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
                 window.Scene3D.highlightCurrentTutorialElement();
             }
@@ -2394,7 +2394,7 @@ window.UI = {
             // NUOVO: Esegui automaticamente il primo step per attivare le sue direttive
             if (this.tutorialSteps && this.tutorialSteps.length > 0) {
                 AppConfig.log(2, `🎯 AUTO-EXEC: Esecuzione automatica Step 1`);
-                this.executeStep(this.tutorialSteps[0]);
+                await this.executeStep(this.tutorialSteps[0]);
             }
         }, 200); // Piccolo delay per assicurarsi che la scena sia pronta
     },
@@ -2703,7 +2703,7 @@ window.UI = {
     /**
      * Va a uno step specifico
      */
-    goToStep: function(stepIndex) {
+    goToStep: async function(stepIndex) {
         console.log(`[DEBUG] ⏭️ GOTO STEP chiamata con index: ${stepIndex}`);
         if (stepIndex < 0 || stepIndex >= this.tutorialSteps.length) {
             AppConfig.log(1, `Step index non valido: ${stepIndex}`);
@@ -2715,13 +2715,13 @@ window.UI = {
 
         console.log(`[DEBUG] ⏭️ Navigazione a step: "${step.title}"`);
         AppConfig.log(2, `Navigazione a step ${stepIndex + 1}: ${step.title}`);
-        
+
         // I pulsanti tutorial mantengono il loro stato radio button
         // Non c'è bisogno di aggiornarli per ogni step
-        
-        // Esegue l'azione del tutorial step
-        this.executeStep(step);
-        
+
+        // Esegue l'azione del tutorial step (ora async per gestire modal)
+        await this.executeStep(step);
+
         // Aggiorna status
         this.updateStatus(`Step ${stepIndex + 1}/${this.tutorialSteps.length}: ${step.title}`);
     },
@@ -2732,14 +2732,56 @@ window.UI = {
     /**
      * Esegue un step del tutorial
      */
-    executeStep: function(step) {
+    executeStep: async function(step) {
         console.log(`[DEBUG] 🚀 EXECUTE STEP chiamata per: "${step.title}"`);
         console.log(`[DEBUG] 🚀 Step properties:`, step.properties);
         AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
-        
+
+        // NUOVO: Mostra modal informativo se presente parametro Message
+        if (step.properties.Message) {
+            const messageTitle = step.properties.MessageTitle || step.title || 'Informazione';
+            AppConfig.log(2, `[UI] Mostrando modal informativo per step: ${step.title}`);
+
+            // Prepara opzioni media (immagine o video)
+            const mediaOptions = {};
+            if (step.properties.MessageImage) {
+                mediaOptions.image = step.properties.MessageImage;
+                AppConfig.log(3, `[UI] Modal con immagine: ${mediaOptions.image}`);
+            }
+            if (step.properties.MessageVideo) {
+                mediaOptions.video = step.properties.MessageVideo;
+                AppConfig.log(3, `[UI] Modal con video: ${mediaOptions.video}`);
+            }
+
+            // Attendi che l'utente chiuda il modal prima di continuare
+            await this.showInfoModal(step.properties.Message, messageTitle, mediaOptions);
+            AppConfig.log(2, `[UI] Modal informativo chiuso`);
+
+            // Controlla se questo step ha SOLO il messaggio (nessuna altra azione)
+            const hasOnlyMessage = !step.properties.Elemento &&
+                                   !step.properties.Utensile &&
+                                   !step.properties.DragDrop &&
+                                   !step.properties.AssemblyMode;
+
+            if (hasOnlyMessage) {
+                AppConfig.log(2, `[UI] Step solo messaggio - avanzamento automatico allo step successivo`);
+
+                // Passa allo step successivo dopo un piccolo delay
+                setTimeout(() => {
+                    if (this.currentStepIndex < this.tutorialSteps.length - 1) {
+                        this.nextStep();
+                    } else {
+                        AppConfig.log(2, `[UI] Ultimo step raggiunto`);
+                    }
+                }, 500);
+
+                return; // Esci dalla funzione, non eseguire altre azioni
+            }
+        }
+
         // Qui si possono implementare le azioni specifiche basate sulle proprietà
         // Per ora logga le informazioni dello step
-        
+
         // Esempio di utilizzo delle proprietà:
         if (window.Scene3D && window.Scene3D.applyCameraSettings) {
             window.Scene3D.applyCameraSettings(step);
@@ -3035,6 +3077,111 @@ window.UI = {
         
         // Attiva l'effetto flash per attirare l'attenzione
         this.flashStepBubble();
+    },
+
+    /**
+     * Mostra modal informativo con messaggio e media opzionali
+     * @param {string} message - Messaggio da mostrare
+     * @param {string} title - Titolo del modal (opzionale)
+     * @param {Object} options - Opzioni aggiuntive { image: 'path/to/image.jpg', video: 'path/to/video.mp4' }
+     * @returns {Promise} - Promessa risolta quando l'utente clicca OK
+     */
+    showInfoModal: function(message, title = 'Informazione', options = {}) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('infoModal');
+            const titleElement = document.getElementById('infoModalTitle');
+            const messageElement = document.getElementById('infoModalMessage');
+            const mediaContainer = document.getElementById('infoModalMedia');
+            const okButton = document.getElementById('infoModalOkBtn');
+
+            if (!modal || !titleElement || !messageElement || !okButton || !mediaContainer) {
+                AppConfig.log(0, '[UI] Elementi modal informativo non trovati');
+                resolve();
+                return;
+            }
+
+            // Imposta contenuto testuale
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+
+            // Pulisci e nascondi contenitore media
+            mediaContainer.innerHTML = '';
+            mediaContainer.classList.add('hidden');
+
+            // Gestione immagine
+            if (options.image) {
+                const img = document.createElement('img');
+                img.src = options.image;
+                img.alt = 'Immagine informativa';
+                img.onerror = () => {
+                    AppConfig.log(1, `[UI] Errore caricamento immagine: ${options.image}`);
+                    mediaContainer.classList.add('hidden');
+                };
+                img.onload = () => {
+                    mediaContainer.classList.remove('hidden');
+                    AppConfig.log(2, `[UI] Immagine caricata: ${options.image}`);
+                };
+                mediaContainer.appendChild(img);
+            }
+
+            // Gestione video
+            if (options.video) {
+                const video = document.createElement('video');
+                video.src = options.video;
+                video.controls = true;
+                video.preload = 'metadata';
+                video.onerror = () => {
+                    AppConfig.log(1, `[UI] Errore caricamento video: ${options.video}`);
+                    mediaContainer.classList.add('hidden');
+                };
+                video.onloadedmetadata = () => {
+                    mediaContainer.classList.remove('hidden');
+                    AppConfig.log(2, `[UI] Video caricato: ${options.video}`);
+                };
+                mediaContainer.appendChild(video);
+            }
+
+            // Handler per chiusura
+            const closeModal = () => {
+                modal.classList.remove('show');
+                okButton.removeEventListener('click', closeModal);
+
+                // Ferma video se presente
+                const videoElement = mediaContainer.querySelector('video');
+                if (videoElement) {
+                    videoElement.pause();
+                    videoElement.currentTime = 0;
+                }
+
+                // Risolvi la promessa dopo l'animazione
+                setTimeout(() => {
+                    // Pulisci contenitore media
+                    mediaContainer.innerHTML = '';
+                    mediaContainer.classList.add('hidden');
+                    resolve();
+                }, 300);
+            };
+
+            // Aggiungi listener al pulsante OK
+            okButton.addEventListener('click', closeModal);
+
+            // Mostra modal
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 100);
+
+            AppConfig.log(2, `[UI] Modal informativo mostrato: "${message.substring(0, 50)}..."`);
+        });
+    },
+
+    /**
+     * Nasconde modal informativo
+     */
+    hideInfoModal: function() {
+        const modal = document.getElementById('infoModal');
+        if (modal) {
+            modal.classList.remove('show');
+        }
     },
 
     /**
