@@ -77,7 +77,11 @@ direction=0,0,1                                          // Movement direction: 
 model=models/vite_culatta_3.glb                         // Third breech screw
 direction=0,0,1                                          // Movement direction: towards X-
 model=models/vite_culatta_4.glb                         // Fourth breech screw
-directionle0,0,1                                          // Movement direction: towards X-
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/estrattoredx.glb                         // Fourth breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/estrattoresx.glb                         // Fourth breech screw
+direction=0,0,1                                          // Movement direction: towards X-
 model=models/flangia.glb                                    // Pump body 3D model
 direction=0,0,1 
 model=models/vite_flangia_1.glb                         // First cover screw

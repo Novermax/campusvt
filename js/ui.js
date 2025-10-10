@@ -879,8 +879,6 @@ window.UI = {
 
         const loadPromises = modelUrls.map(model => {
             console.log(`🌐 Fetching: ${model.path}`);
-            // Aggiorna progress bar - fetch iniziato
-            this.updateModelProgress(completedFiles, totalFiles, model.name);
 
             // Aggiungi cache-busting parameter per evitare problemi di cache
             const cacheBuster = `?v=${Date.now()}`;
@@ -897,9 +895,8 @@ window.UI = {
                 .then(blob => {
                     console.log(`🌐 Blob creato per ${model.name}:`, blob.size, 'bytes');
 
-                    // Aggiorna progress bar - file completato
+                    // Incrementa counter (solo per statistiche, non per UI)
                     completedFiles++;
-                    this.updateModelProgress(completedFiles, totalFiles, model.name);
 
                     // Crea un File object dal blob
                     const file = new File([blob], model.name, { type: blob.type });
@@ -954,9 +951,19 @@ window.UI = {
                         console.log('🌐 Avvio ModelLoader.loadFiles...');
                         window.ModelLoader.loadFiles(
                             validFiles,
-                            (progress) => {
-                                console.log('🌐 Progress:', progress);
-                                this.updateStatus(`Caricamento modelli: ${Math.round(progress * 100)}%`);
+                            (progress, info) => {
+                                // Callback progress con info dettagliate
+                                if (info && info.current && info.total) {
+                                    console.log(`🌐 Progress: ${info.current}/${info.total} - ${info.fileName}`);
+                                    // Usa updateModelProgress per aggiornare la progress bar
+                                    this.updateModelProgress(info.current, info.total, info.fileName, Math.round(progress * 100));
+                                    // Aggiorna anche lo status
+                                    this.updateStatus(info.message || `Caricamento ${info.current}/${info.total}...`);
+                                } else {
+                                    // Fallback se info non disponibile (backward compatibility)
+                                    console.log('🌐 Progress:', progress);
+                                    this.updateStatus(`Caricamento modelli: ${Math.round(progress * 100)}%`);
+                                }
                             },
                             (models) => {
                                 console.log('🌐 Modelli caricati, chiamando onModelLoadComplete:', models);
@@ -2834,12 +2841,11 @@ window.UI = {
 
             // Controlla se questo step ha SOLO il messaggio (nessuna altra azione)
             const hasOnlyMessage = !step.properties.Elemento &&
-                                   !step.properties.Utensile &&
-                                   !step.properties.DragDrop &&
-                                   !step.properties.AssemblyMode;
+                                   !step.properties.AssemblyMode &&
+                                   !step.properties.DragDrop;
 
             if (hasOnlyMessage) {
-                AppConfig.log(2, `[UI] Step con solo messaggio informativo completato`);
+                AppConfig.log(2, `[UI] Step puramente informativo (solo Message) - nessuna azione successiva`);
 
                 // IMPORTANTE: Non auto-avanzare - lascia che l'utente controlli la navigazione
                 // L'utente può usare i pulsanti "Avanti/Indietro" per navigare
@@ -2847,7 +2853,13 @@ window.UI = {
 
                 return; // Esci dalla funzione, non eseguire altre azioni
             }
+
+            // Se arriviamo qui, lo step ha Message + altre azioni (DragDrop, Elemento, AssemblyMode)
+            // Continuiamo l'esecuzione per abilitare queste funzionalità
+            AppConfig.log(2, `[UI] Modal chiuso - continuo esecuzione step con azioni aggiuntive`);
         }
+
+        // IMPORTANTE: Questo codice viene eseguito anche per step con Message + DragDrop/Elemento/AssemblyMode
 
         // Qui si possono implementare le azioni specifiche basate sulle proprietà
         // Per ora logga le informazioni dello step
@@ -2931,6 +2943,36 @@ window.UI = {
                 });
             }
 
+            // NUOVO: Configura snap targets multipli intercambiabili
+            if (step.properties.SnapTargets) {
+                console.log(`[UI] 🎯 Parsing SnapTargets: "${step.properties.SnapTargets}"`);
+                // Formato: oggetto1:target1,target2;oggetto2:target3,target4
+                const snapDeclarations = step.properties.SnapTargets.split(';').map(s => s.trim()).filter(s => s.length > 0);
+                console.log(`[UI] 🎯 Trovate ${snapDeclarations.length} dichiarazioni SnapTargets`);
+
+                snapDeclarations.forEach((declaration, idx) => {
+                    console.log(`[UI] 🎯 Parsing dichiarazione ${idx + 1}: "${declaration}"`);
+                    // Parsing formato: oggetto:target1,target2,target3
+                    const colonIndex = declaration.indexOf(':');
+                    if (colonIndex > 0) {
+                        const objectName = declaration.substring(0, colonIndex).trim();
+                        const targetsString = declaration.substring(colonIndex + 1).trim();
+                        const targetNames = targetsString.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
+                        console.log(`[UI] 🎯 Oggetto: "${objectName}", Targets: [${targetNames.join(', ')}]`);
+
+                        if (targetNames.length > 0) {
+                            window.DragDropSystem.setMultipleSnapTargets(objectName, targetNames);
+                            AppConfig.log(3, `🎯 DRAG & DROP: Snap targets per "${objectName}" -> [${targetNames.join(', ')}]`);
+                        } else {
+                            AppConfig.log(1, `⚠️ DRAG & DROP: Nessun target specificato in SnapTargets: ${declaration}`);
+                        }
+                    } else {
+                        AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapTargets non valido: ${declaration} (usare formato oggetto:target1,target2,...)`);
+                    }
+                });
+            }
+
             // Configura visibilità indicatori snap (sfere verdi)
             if (step.properties.ShowSnapIndicators !== undefined) {
                 window.DragDropSystem.showSnapIndicators = (step.properties.ShowSnapIndicators === 'true');
@@ -2951,13 +2993,27 @@ window.UI = {
                 window.DragDropSystem.enable(draggableObjects);
                 console.log(`[DEBUG] ✅ DRAG & DROP: Sistema abilitato - status:`, window.DragDropSystem.enabled);
                 AppConfig.log(2, `✅ DRAG & DROP: Sistema abilitato con ${draggableObjects.length} oggetti`);
+
+                // NUOVO: Configura auto-avanzamento per step DragDrop puri (senza Elemento/AssemblyMode)
+                const isPureDragDropStep = !step.properties.Elemento && !step.properties.AssemblyMode;
+                if (isPureDragDropStep && draggableObjects.length > 0) {
+                    console.log(`[UI] 🎯 Step DragDrop puro rilevato - configurazione auto-avanzamento`);
+                    window.DragDropSystem.resetSnapTracking();
+                    window.DragDropSystem.setRequiredSnapObjects(draggableObjects);
+                    window.DragDropSystem.enableAutoAdvance();
+                    AppConfig.log(2, `⏭️ Auto-avanzamento abilitato - richiesti ${draggableObjects.length} snap`);
+                } else {
+                    // Step con Elemento o AssemblyMode - reset tracking ma NO auto-advance
+                    window.DragDropSystem.resetSnapTracking();
+                    console.log(`[UI] 🎯 Step DragDrop con azioni - auto-avanzamento disabilitato`);
+                }
             } catch (error) {
                 console.error(`❌ DRAG & DROP: Errore abilitazione sistema:`, error);
             }
-        } else if (step.properties.DragDrop === 'false' && window.DragDropSystem) {
-            // Disabilita esplicitamente il sistema se richiesto
+        } else if (step.properties.DragDrop !== 'true' && window.DragDropSystem && window.DragDropSystem.isEnabled()) {
+            // Disabilita sistema se DragDrop non è esplicitamente 'true' (include 'false', undefined, null, ecc.)
             window.DragDropSystem.disable();
-            AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per step "${step.title}"`);
+            AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per step "${step.title}" (DragDrop=${step.properties.DragDrop})`);
         }
 
         // NUOVO: Gestione sistema Assemblaggio Semplificato

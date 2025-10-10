@@ -1042,11 +1042,17 @@ const Scene3D = {
         const stepElement = currentStep.properties.Elemento;
         console.log(`[DEBUG] 🎯 Model filename: "${modelFilename}", Step element: "${stepElement}"`);
 
+        // IMPORTANTE: Step DragDrop puri non hanno Elemento - esci subito
+        if (!stepElement) {
+            console.log(`[DEBUG] ℹ️ Step senza Elemento (DragDrop puro) - delego a DragDropSystem`);
+            return;
+        }
+
         const cleanModelName = modelFilename.split('/').pop().replace('.glb', '');
         const cleanStepElement = stepElement.split('/').pop().replace('.glb', '');
         console.log(`[DEBUG] 🎯 Clean model: "${cleanModelName}", Clean step: "${cleanStepElement}"`);
 
-        if (!stepElement || cleanModelName !== cleanStepElement) {
+        if (cleanModelName !== cleanStepElement) {
             console.log(`[DEBUG] ❌ Model/element mismatch - USCITA EARLY`);
             return;
         }
@@ -1577,13 +1583,13 @@ const Scene3D = {
                     step.appoggia = this.parseMovementOperation(trimmed, 'appoggia', modelFilename);
                 } else if (trimmed.startsWith('resetCenteredOriginal')) {
                     step.resetCenteredOriginal = this.parseMovementOperation(trimmed, 'resetCenteredOriginal', modelFilename);
-                } else if (trimmed === 'svita') {
+                } else if (trimmed.startsWith('svita')) {
                     step.svita = this.parseMovementOperation(trimmed, 'svita', modelFilename);
-                } else if (trimmed === 'avvita') {
+                } else if (trimmed.startsWith('avvita')) {
                     step.avvita = this.parseMovementOperation(trimmed, 'avvita', modelFilename);
-                } else if (trimmed === 'estrai') {
+                } else if (trimmed.startsWith('estrai')) {
                     step.estrai = this.parseMovementOperation(trimmed, 'estrai', modelFilename);
-                } else if (trimmed === 'inserisci') {
+                } else if (trimmed.startsWith('inserisci')) {
                     step.inserisci = this.parseMovementOperation(trimmed, 'inserisci', modelFilename);
                 } else if (trimmed.startsWith('centro:')) {
                     step.centro = this.parseMovementOperation(trimmed, 'centro', modelFilename);
@@ -1746,30 +1752,55 @@ const Scene3D = {
             }
         } else if (type === 'svita') {
             // Comando semplificato: svita = rotazione attorno asse direction + traslazione lungo direction
-            // Il verso della rotazione segue il segno della direction dal home_config.txt
+            // Supporta sintassi: svita oppure svita(distanza)
             const direction = this.getModelDirection(modelFilename);
+
+            // Estrai parametro distanza opzionale da svita(distanza)
+            let extractionDistance = 0.5; // Default
+            const distanceMatch = operationString.match(/svita\(([0-9.]+)\)/);
+            if (distanceMatch) {
+                extractionDistance = parseFloat(distanceMatch[1]);
+                if (isNaN(extractionDistance) || extractionDistance < 0) {
+                    console.warn(`⚠️ Distanza svita non valida: ${distanceMatch[1]}, uso default 0.5`);
+                    extractionDistance = 0.5;
+                }
+            }
+
             const rotazione = {
                 x: direction.x * 1800, // 5 giri completi, verso coerente con direction
                 y: direction.y * 1800, // 5 giri completi, verso coerente con direction
                 z: direction.z * 1800, // 5 giri completi, verso coerente con direction
                 durata: 1.0
             };
-            console.log(`🔄 SVITA per ${modelFilename}: direction=`, direction, `rotazione=`, rotazione);
+            console.log(`🔄 SVITA per ${modelFilename}: direction=`, direction, `distanza=${extractionDistance}`, `rotazione=`, rotazione);
             return {
                 tipo: 'svita',
                 rotazione: rotazione,
                 traslazione: {
-                    x: direction.x * 0.5,
-                    y: direction.y * 0.5,
-                    z: direction.z * 0.5,
+                    x: direction.x * extractionDistance,
+                    y: direction.y * extractionDistance,
+                    z: direction.z * extractionDistance,
                     durata: 1.0
                 },
                 durata: 2.0
             };
         } else if (type === 'avvita') {
             // Comando semplificato: avvita = rotazione attorno asse direction + traslazione inversa lungo direction
-            // Il verso della rotazione è opposto a svita, ma segue il segno della direction
+            // Supporta sintassi: avvita oppure avvita(distanza)
             const direction = this.getModelDirection(modelFilename);
+
+            // Estrai parametro distanza opzionale da avvita(distanza)
+            let insertionDistance = 0.5; // Default
+            const distanceMatch = operationString.match(/avvita\(([0-9.]+)\)/);
+            if (distanceMatch) {
+                insertionDistance = parseFloat(distanceMatch[1]);
+                if (isNaN(insertionDistance) || insertionDistance < 0) {
+                    console.warn(`⚠️ Distanza avvita non valida: ${distanceMatch[1]}, uso default 0.5`);
+                    insertionDistance = 0.5;
+                }
+            }
+
+            console.log(`🔄 AVVITA per ${modelFilename}: direction=`, direction, `distanza=${insertionDistance}`);
             return {
                 tipo: 'avvita',
                 rotazione: {
@@ -1779,36 +1810,64 @@ const Scene3D = {
                     durata: 1.0
                 },
                 traslazione: {
-                    x: -direction.x * 0.5,
-                    y: -direction.y * 0.5,
-                    z: -direction.z * 0.5,
+                    x: -direction.x * insertionDistance,
+                    y: -direction.y * insertionDistance,
+                    z: -direction.z * insertionDistance,
                     durata: 1.0
                 },
                 durata: 2.0
             };
         } else if (type === 'estrai') {
             // Comando semplificato: estrai = solo traslazione lungo direction
+            // Supporta sintassi: estrai oppure estrai(distanza)
             const direction = this.getModelDirection(modelFilename);
+
+            // Estrai parametro distanza opzionale da estrai(distanza)
+            let extractionDistance = 0.4; // Default
+            const distanceMatch = operationString.match(/estrai\(([0-9.]+)\)/);
+            if (distanceMatch) {
+                extractionDistance = parseFloat(distanceMatch[1]);
+                if (isNaN(extractionDistance) || extractionDistance < 0) {
+                    console.warn(`⚠️ Distanza estrai non valida: ${distanceMatch[1]}, uso default 0.4`);
+                    extractionDistance = 0.4;
+                }
+            }
+
+            console.log(`🔄 ESTRAI per ${modelFilename}: direction=`, direction, `distanza=${extractionDistance}`);
             return {
                 tipo: 'estrai',
-                traslazione: { 
-                    x: direction.x * 0.4, 
-                    y: direction.y * 0.4, 
-                    z: direction.z * 0.4, 
-                    durata: 1.0 
+                traslazione: {
+                    x: direction.x * extractionDistance,
+                    y: direction.y * extractionDistance,
+                    z: direction.z * extractionDistance,
+                    durata: 1.0
                 },
                 durata: 1.0
             };
         } else if (type === 'inserisci') {
             // Comando semplificato: inserisci = solo traslazione inversa lungo direction
+            // Supporta sintassi: inserisci oppure inserisci(distanza)
             const direction = this.getModelDirection(modelFilename);
+
+            // Estrai parametro distanza opzionale da inserisci(distanza)
+            let insertionDistance = 0.4; // Default
+            const distanceMatch = operationString.match(/inserisci\(([0-9.]+)\)/);
+            if (distanceMatch) {
+                insertionDistance = parseFloat(distanceMatch[1]);
+                if (isNaN(insertionDistance) || insertionDistance < 0) {
+                    console.warn(`⚠️ Distanza inserisci non valida: ${distanceMatch[1]}, uso default 0.4`);
+                    insertionDistance = 0.4;
+                }
+            }
+
+            console.log(`🔄 INSERISCI per ${modelFilename}: direction=`, direction, `distanza=${insertionDistance}`);
             return {
                 tipo: 'inserisci',
-                traslazione: { 
-                    x: -direction.x * 0.4, 
-                    y: -direction.y * 0.4, 
-                    z: -direction.z * 0.4, 
-                    durata: 1.0 
+                traslazione: {
+                    x: -direction.x * insertionDistance,
+                    y: -direction.y * insertionDistance,
+                    z: -direction.z * insertionDistance,
+                    durata: 1.0
                 },
                 durata: 1.0
             };
@@ -2125,7 +2184,13 @@ const Scene3D = {
 
     findModelByName: function(targetName) {
         let foundModel = null;
-        
+
+        // Protezione contro targetName undefined/null
+        if (!targetName || typeof targetName !== 'string') {
+            console.warn(`[Scene3D] findModelByName chiamato con targetName non valido:`, targetName);
+            return null;
+        }
+
         // Gestione suffisso _original per posizioni iniziali
         const isOriginalReference = targetName.endsWith('_original');
         const cleanTargetName = targetName

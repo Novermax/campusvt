@@ -29,6 +29,11 @@ window.DragDropSystem = {
     whitelistedObjects: new Set(),
     blacklistedObjects: new Set(['corpo', 'pavimento', 'planaxis']), // Oggetti mai draggabili
 
+    // Tracking snap completati per auto-avanzamento step
+    requiredSnapObjects: new Set(), // Oggetti che devono fare snap per completare lo step
+    completedSnapObjects: new Set(), // Oggetti che hanno già fatto snap con successo
+    autoAdvanceEnabled: false, // Se true, avanza automaticamente quando tutti gli snap sono completati
+
     // Sistema snap personalizzati con riferimenti _original
     customSnapTargets: new Map(), // objectUuid -> { targetName: string, isOriginalRef: bool, offset: Vector3 }
     snapIndicators: new Map(), // Indicatori visivi snap (sfere verdi)
@@ -1238,6 +1243,29 @@ window.DragDropSystem = {
                 console.warn(`[DragDropSystem] ⚠️ Errore integrazione AssemblySystem:`, error);
             }
         }
+
+        // NUOVO: Tracking snap completati per auto-avanzamento step (senza assembly system)
+        if (this.autoAdvanceEnabled && this.requiredSnapObjects.size > 0) {
+            const objectName = object.name.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+
+            // Aggiungi oggetto alla lista completati
+            this.completedSnapObjects.add(objectName);
+            console.log(`[DragDropSystem] ✅ Oggetto "${objectName}" snappato con successo`);
+            console.log(`[DragDropSystem] 📊 Progress: ${this.completedSnapObjects.size}/${this.requiredSnapObjects.size} oggetti snappati`);
+
+            // Controlla se tutti gli oggetti richiesti hanno fatto snap
+            const allSnapped = Array.from(this.requiredSnapObjects).every(req => this.completedSnapObjects.has(req));
+
+            if (allSnapped) {
+                console.log(`[DragDropSystem] 🎉 TUTTI GLI OGGETTI RICHIESTI SONO STATI SNAPPATI!`);
+                console.log(`[DragDropSystem] ⏭️ Auto-avanzamento allo step successivo...`);
+
+                // Piccolo delay per permettere all'animazione snap di completarsi
+                setTimeout(() => {
+                    this.tryAdvanceTutorialStep('all_snaps_completed');
+                }, 500);
+            }
+        }
     },
 
     /* ===== SNAP SYSTEM DELEGATION ===== */
@@ -1309,40 +1337,99 @@ window.DragDropSystem = {
         // 1. Controlla se esiste un target di snap personalizzato
         const customTarget = this.customSnapTargets.get(object.uuid);
         if (customTarget) {
-            let targetPosition = null;
+            // NUOVO: Multi-target intercambiabili
+            if (customTarget.isMultiTarget && customTarget.targets) {
+                console.log(`[DragDropSystem] 🔄 Verifica ${customTarget.targets.length} snap targets intercambiabili per "${object.name}"`);
 
-            // NUOVO: Coordinate dirette (x,y,z)
-            if (customTarget.isDirectPosition && customTarget.directPosition) {
-                targetPosition = customTarget.directPosition.clone();
-                console.log(`[DragDropSystem] 🎯 Custom snap target (coordinate dirette): (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
-            }
-            // Riferimenti _original
-            else if (customTarget.isOriginalRef && window.Scene3D) {
-                const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
-                if (originalRef && originalRef.position) {
-                    targetPosition = originalRef.position.clone();
-                    console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
-                }
-            }
-            // Target standard (cerca l'oggetto nella scena)
-            else if (customTarget.targetName) {
-                const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
-                if (targetModel && targetModel.position) {
-                    targetPosition = targetModel.position.clone();
-                    console.log(`[DragDropSystem] 🎯 Custom snap target (current): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
-                }
-            }
+                let closestTarget = null;
+                let closestDistance = Infinity;
+                let closestTargetName = null;
 
-            if (targetPosition) {
-                // Applica offset se specificato (solo per target con nome, non coordinate dirette)
-                if (customTarget.offset && !customTarget.isDirectPosition) {
-                    targetPosition.add(customTarget.offset);
+                customTarget.targets.forEach((target, index) => {
+                    let targetPosition = null;
+
+                    // Riferimenti _original
+                    if (target.isOriginalRef && window.Scene3D) {
+                        const originalRef = window.Scene3D.findModelByName(target.targetName);
+                        if (originalRef) {
+                            // Usa il CENTRO del bounding box invece del pivot
+                            const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                            console.log(`[DragDropSystem] 📦 Target ${target.targetName}: pivot=(${originalRef.position.x.toFixed(3)},${originalRef.position.y.toFixed(3)},${originalRef.position.z.toFixed(3)}), centro BB=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                        }
+                    }
+                    // Target standard (cerca l'oggetto nella scena)
+                    else if (target.targetName && window.Scene3D) {
+                        const targetModel = window.Scene3D.findModelByName(target.targetName);
+                        if (targetModel) {
+                            // Usa il CENTRO del bounding box invece del pivot
+                            const targetBoundingBox = new THREE.Box3().setFromObject(targetModel);
+                            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                            console.log(`[DragDropSystem] 📦 Target ${target.targetName}: pivot=(${targetModel.position.x.toFixed(3)},${targetModel.position.y.toFixed(3)},${targetModel.position.z.toFixed(3)}), centro BB=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                        }
+                    }
+
+                    if (targetPosition) {
+                        const distance = currentCenter.distanceTo(targetPosition);
+                        console.log(`[DragDropSystem] 📏 Target ${index + 1}/${customTarget.targets.length}: "${target.targetName}" - Distanza: ${distance.toFixed(3)}`);
+
+                        if (distance <= this.snapDistance && distance < closestDistance) {
+                            closestTarget = targetPosition;
+                            closestDistance = distance;
+                            closestTargetName = target.targetName;
+                            console.log(`[DragDropSystem] ⭐ Nuovo target più vicino: "${target.targetName}" a distanza ${distance.toFixed(3)}`);
+                        }
+                    }
+                });
+
+                if (closestTarget) {
+                    console.log(`[DragDropSystem] 🧲 Snap intercambiabile disponibile per ${object.name} -> "${closestTargetName}" (distanza: ${closestDistance.toFixed(2)})`);
+                    return closestTarget;
                 }
 
-                const distance = currentCenter.distanceTo(targetPosition);
-                if (distance <= this.snapDistance) {
-                    console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
-                    return targetPosition;
+                console.log(`[DragDropSystem] ❌ Nessun target intercambiabile entro distanza ${this.snapDistance} per "${object.name}"`);
+            }
+            // Single target (esistente)
+            else {
+                let targetPosition = null;
+
+                // NUOVO: Coordinate dirette (x,y,z)
+                if (customTarget.isDirectPosition && customTarget.directPosition) {
+                    targetPosition = customTarget.directPosition.clone();
+                    console.log(`[DragDropSystem] 🎯 Custom snap target (coordinate dirette): (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+                }
+                // Riferimenti _original
+                else if (customTarget.isOriginalRef && window.Scene3D) {
+                    const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
+                    if (originalRef) {
+                        // Usa il CENTRO del bounding box invece del pivot
+                        const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                        targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                        console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" - centro BB: (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+                    }
+                }
+                // Target standard (cerca l'oggetto nella scena)
+                else if (customTarget.targetName) {
+                    const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
+                    if (targetModel) {
+                        // Usa il CENTRO del bounding box invece del pivot
+                        const targetBoundingBox = new THREE.Box3().setFromObject(targetModel);
+                        targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                        console.log(`[DragDropSystem] 🎯 Custom snap target (current): "${customTarget.targetName}" - centro BB: (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+                    }
+                }
+
+                if (targetPosition) {
+                    // Applica offset se specificato (solo per target con nome, non coordinate dirette)
+                    if (customTarget.offset && !customTarget.isDirectPosition) {
+                        targetPosition.add(customTarget.offset);
+                    }
+
+                    const distance = currentCenter.distanceTo(targetPosition);
+                    if (distance <= this.snapDistance) {
+                        console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
+                        return targetPosition;
+                    }
                 }
             }
         }
@@ -2135,7 +2222,46 @@ window.DragDropSystem = {
             this.createSnapIndicators();
         }
     },
-    
+
+    /**
+     * Configura oggetti richiesti per auto-avanzamento step
+     * @param {Array<string>} objectNames - Array di nomi oggetti che devono fare snap
+     */
+    setRequiredSnapObjects: function(objectNames) {
+        this.requiredSnapObjects.clear();
+        objectNames.forEach(name => {
+            const cleanName = name.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+            this.requiredSnapObjects.add(cleanName);
+        });
+        console.log(`[DragDropSystem] 🎯 Oggetti richiesti per completamento: [${Array.from(this.requiredSnapObjects).join(', ')}]`);
+    },
+
+    /**
+     * Abilita auto-avanzamento quando tutti gli oggetti richiesti hanno fatto snap
+     */
+    enableAutoAdvance: function() {
+        this.autoAdvanceEnabled = true;
+        console.log(`[DragDropSystem] ⏭️ Auto-avanzamento step abilitato`);
+    },
+
+    /**
+     * Disabilita auto-avanzamento step
+     */
+    disableAutoAdvance: function() {
+        this.autoAdvanceEnabled = false;
+        console.log(`[DragDropSystem] ⏸️ Auto-avanzamento step disabilitato`);
+    },
+
+    /**
+     * Resetta tracking snap completati (chiamato quando si cambia step)
+     */
+    resetSnapTracking: function() {
+        this.completedSnapObjects.clear();
+        this.requiredSnapObjects.clear();
+        this.autoAdvanceEnabled = false;
+        console.log(`[DragDropSystem] 🔄 Tracking snap resettato`);
+    },
+
     /**
      * Ottiene lista oggetti draggabili
      * @returns {Array} - Array di oggetti 3D draggabili
@@ -2197,6 +2323,41 @@ window.DragDropSystem = {
         });
 
         console.log(`[DragDropSystem] 🎯 Snap a coordinate dirette per "${objectName}" -> (${x}, ${y}, ${z})`);
+    },
+
+    /**
+     * Imposta target di snap multipli intercambiabili per un oggetto
+     * @param {string} objectName - Nome dell'oggetto
+     * @param {Array<string>} targetNames - Array di nomi target (possono includere "_original")
+     */
+    setMultipleSnapTargets: function(objectName, targetNames) {
+        if (!window.Scene3D) {
+            console.warn('[DragDropSystem] Scene3D non disponibile per configurare snap multipli');
+            return;
+        }
+
+        const object = window.Scene3D.findModelByName(objectName);
+        if (!object) {
+            console.warn(`[DragDropSystem] Oggetto "${objectName}" non trovato per snap multipli`);
+            return;
+        }
+
+        // Converti array di nomi in array di configurazioni target
+        const targets = targetNames.map(targetName => {
+            const isOriginalRef = targetName.endsWith('_original');
+            return {
+                targetName: targetName,
+                isOriginalRef: isOriginalRef,
+                offset: null
+            };
+        });
+
+        this.customSnapTargets.set(object.uuid, {
+            isMultiTarget: true,
+            targets: targets
+        });
+
+        console.log(`[DragDropSystem] 🎯 Snap multipli per "${objectName}" -> [${targetNames.join(', ')}]`);
     },
 
     /**

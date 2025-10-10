@@ -334,14 +334,14 @@ CameraPos=(0, 0.5,1)                                       // Posizione assoluta
 Elemento=models/vite_culatta_1.glb  
 Descrizione=Rimuovi la prima vite a brugola della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
-Azione1=svita
+Azione1=svita(0.3)
 Azione2=appoggia(0.2)
 
 [Step 2 - Rimuovi vite 2 culatta]
 Elemento=models/vite_culatta_2.glb
 Descrizione=Rimuovi la seconda vite a brugola della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
-Azione1=svita
+Azione1=svita(0.3)
 Azione2=appoggia(0.2)
 
 
@@ -349,7 +349,7 @@ Azione2=appoggia(0.2)
 Elemento=models/vite_culatta_3.glb
 Descrizione=Rimuovi la terza vite a brugola della culatta con la chiave a brugola da 6mm. Nota che le viti più in basso sono più corte
 Utensile=ChiaveBrugola
-Azione1=svita
+Azione1=svita(0.3)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
 
@@ -357,7 +357,7 @@ Azione3=appoggia(0.2)
 Elemento=models/vite_culatta_4.glb
 Descrizione=Rimuovi la quarta vite a brugola della culatta con la chiave a brugola da 6mm. Nota che le viti più in basso sono più corte
 Utensile=ChiaveBrugola
-Azione1=svita
+Azione1=svita(0.3)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
 
@@ -373,48 +373,44 @@ Azione3=appoggia(0.2)
 Elemento=models/vite_flangia_1.glb
 Descrizione=Rimuovi la prima vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
-Azione3=appoggia(0.2)
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
 
 [Step 7 - Rimuovi vite 2 flangia]
 Elemento=models/vite_flangia_2.glb
 Descrizione=Rimuovi la seconda vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
-Azione3=appoggia(0.2)
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
 
 [Step 8 - Rimuovi vite 3 flangia]
 Elemento=models/vite_flangia_3.glb
 Descrizione=Rimuovi la terza vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
-Azione3=appoggia(0.2)
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
 
 [Step 9 - Rimuovi vite 4 flangia]
 Elemento=models/vite_flangia_4.glb
 Descrizione=Rimuovi la quarta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( 0,0,-0.1,0.2) 
-Azione3=appoggia(0.2)
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
 
 [Step 10 - Rimuovi vite 5 flangia]
 Elemento=models/vite_flangia_5.glb
 Descrizione=Rimuovi la quinta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( -0.1,0,-0.1,0.2) 
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
 
 [Step 11 - Rimuovi vite 6 flangia]
 Elemento=models/vite_flangia_6.glb
 Descrizione=Rimuovi la sesta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( -0.1,0,-0.1,0.2) 
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
 
 
@@ -422,8 +418,8 @@ Azione3=appoggia(0.2)
 Elemento=models/vite_flangia_7.glb
 Descrizione=Rimuovi la settima vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( -0.1,0,-0.1,0.2) 
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
 
 
@@ -431,15 +427,46 @@ Azione3=appoggia(0.2)
 Elemento=models/vite_flangia_8.glb
 Descrizione=Rimuovi la ottava vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
-Azione1=svita
-Azione2=traslazione:( -0.1,0,-0.1,0.2) 
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
 
-[Step 14 - Istruzioni Ismontaggio flangia]
-  Message=Prima di iniziare, Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
+[Step 14 - Istruzioni smontaggio flangia]
+  Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
   MessageTitle=⚠️ Importante
   MessageVideo=media/estrattore.mp4
-  Descrizione=Fase preparatoria
+  Descrizione=Fase estrazione flangia con viti estrattore
+  DragDrop=true
+  DragDropObjects=vite_culatta_1,vite_culatta_2  # Entrambi draggabili
+  DragDropDistance=0.1                     # Distanza di snap in unità 3D
+  SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original # Posizioni di snap per ogni vite
+  Utensile=Mani
+
+
+[Step 15 - stringi viti estrattore]
+  DragDrop=false
+CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
+  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+  CameraTransitionTime=1.0       
+ Descrizione=Stringi la vite culatta 1 con la chiave a brugola 
+ Utensile=ChiaveBrugola
+ Elemento=models/vite_culatta_1.glb
+ Azione1=avvita(0.05)
+
+[Step 16 - stringi viti estrattore]
+ Descrizione=Stringi la vite culatta 2 con la chiave a brugola 
+ Utensile=ChiaveBrugola
+ Elemento=models/vite_culatta_2.glb
+ Azione1=avvita(0.05)
+
+[Step 17 - Rimuovi flangia]
+Elemento=models/flangia.glb
+Descrizione=Rimuovi la flangia con le Mani.
+Utensile=Mani
+Azione1=traslazione:( 0.5,0,0.5,0.5)
+Azione2=rotazione:(-90,0,0,0.8)
+Azione3=appoggia(0.2)
 
 [Sostituzione Palette Reverse]                           // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette

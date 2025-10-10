@@ -691,6 +691,16 @@
                         <li><a href="#troubleshooting">• Risoluzione Problemi</a></li>
                     </ul>
                 </div>
+
+                <div style="margin-bottom: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">🚀 PARTE 8: Funzionalità Avanzate Recenti</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><a href="#modal-messaggi">• Sistema Modal Messaggi (Message, MessageImage, MessageVideo)</a></li>
+                        <li><a href="#snappoint-system">• Sistema SnapPoint (Coordinate Arbitrarie)</a></li>
+                        <li><a href="#snaptargets-system">• Sistema SnapTargets (Multipli Intercambiabili)</a></li>
+                        <li><a href="#distanza-configurabile">• Distanza Configurabile (svita, avvita, estrai, inserisci)</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -1947,9 +1957,352 @@ Scene3D.mouseControls.pivotPoint             // Punto pivot corrente
         </div>
     </div>
 
-    <!-- Continua con le altre parti... -->
-    <!-- Per brevità, mostro la struttura. Il file completo include tutte le 10 parti -->
+    <!-- ===== PARTE 8: FUNZIONALITÀ AVANZATE RECENTI ===== -->
+    <div class="section page-break" id="funzionalita-avanzate">
+        <h2>🚀 PARTE 8: Funzionalità Avanzate Recenti</h2>
 
+        <!-- Subsection: Modal Messaggi -->
+        <div class="section" id="modal-messaggi">
+            <h3>💬 Sistema Modal Messaggi Informativi</h3>
+
+            <div class="info">
+                <h4>📋 Panoramica</h4>
+                <p>Sistema per mostrare messaggi informativi, immagini e video durante gli step tutorial con blocco del flusso fino alla conferma utente.</p>
+                <ul>
+                    <li><strong>Supporto Multimediale:</strong> Testo, immagini (JPG/PNG/GIF/WEBP), video (MP4/WEBM/OGG)</li>
+                    <li><strong>Blocco Flusso:</strong> Tutorial si ferma fino al click su OK</li>
+                    <li><strong>Auto-avanzamento:</strong> Step con solo messaggio avanzano automaticamente</li>
+                </ul>
+            </div>
+
+            <h4>Parametri Disponibili</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Descrizione</th>
+                        <th>Esempio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Message</code></td>
+                        <td>Testo del messaggio (supporta \n per andare a capo)</td>
+                        <td><code>Message=Assicurati di...</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>MessageTitle</code></td>
+                        <td>Titolo del modal (opzionale, default: titolo step)</td>
+                        <td><code>MessageTitle=⚠️ Attenzione</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>MessageImage</code></td>
+                        <td>Percorso immagine da mostrare (opzionale)</td>
+                        <td><code>MessageImage=scenes/.../schema.jpg</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>MessageVideo</code></td>
+                        <td>Percorso video da mostrare (opzionale)</td>
+                        <td><code>MessageVideo=media/demo.mp4</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Esempi Pratici</h4>
+
+            <div class="example">
+                <h5>📝 Messaggio Solo Testo</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 1 - Avviso Sicurezza]
+Message=Indossa i dispositivi di protezione prima di procedere.
+MessageTitle=⚠️ Sicurezza
+Descrizione=Preparazione area di lavoro
+                </div>
+            </div>
+
+            <div class="example">
+                <h5>🖼️ Messaggio con Immagine</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 2 - Schema Componenti]
+Message=Ecco lo schema dei componenti da smontare
+MessageTitle=📐 Riferimento Visivo
+MessageImage=scenes/Pompa_Becker/images/schema_componenti.jpg
+Descrizione=Visualizza schema
+                </div>
+            </div>
+
+            <div class="example">
+                <h5>🎬 Messaggio con Video</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 3 - Procedura Smontaggio]
+Message=Guarda attentamente questa procedura prima di procedere
+MessageTitle=🎬 Video Tutorial
+MessageVideo=scenes/Pompa_Becker/videos/smontaggio_filtro.mp4
+Elemento=models/filtro.glb
+Utensile=Mani
+Azione1=traslazione:(0,0,0.5,1.0)
+                </div>
+            </div>
+
+            <div class="tip">
+                <h4>💡 Comportamento Auto-avanzamento</h4>
+                <p><strong>Step solo messaggio:</strong> Click OK → avanza automaticamente allo step successivo (500ms delay)</p>
+                <p><strong>Step messaggio + azioni:</strong> Click OK → chiude modal, poi esegui azione per avanzare</p>
+            </div>
+        </div>
+
+        <!-- Subsection: SnapPoint -->
+        <div class="section" id="snappoint-system">
+            <h3>🎯 Sistema SnapPoint (Coordinate Arbitrarie)</h3>
+
+            <div class="info">
+                <h4>📋 Panoramica</h4>
+                <p>Sistema per definire punti di snap a coordinate (x,y,z) arbitrarie nello spazio 3D.</p>
+                <ul>
+                    <li><strong>Coordinate Dirette:</strong> Specifica esattamente dove deve snappare l'oggetto</li>
+                    <li><strong>Multi-oggetto:</strong> Configurazione simultanea di più oggetti</li>
+                    <li><strong>Priorità Alta:</strong> Prevale su riferimenti _original e posizioni salvate</li>
+                </ul>
+            </div>
+
+            <h4>Sintassi</h4>
+            <div class="code-block" data-lang="Tutorial">
+# Sintassi base (singolo oggetto)
+SnapPoint=oggetto:(x,y,z)
+
+# Esempio
+SnapPoint=filtro:(0.5,0.2,0.3)
+
+# Multi-oggetto (separatore ;)
+SnapPoint=filtro:(0.5,0.2,0.3);vite_1:(-0.1,0,0.5);vite_2:(0.1,0,0.5)
+            </div>
+
+            <div class="example">
+                <h5>🔧 Esempio Pratico: Riposizionamento Filtro</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 10 - Posiziona Filtro Custom]
+DragDrop=true
+DragDropObjects=filtro
+DragDropDistance=0.3
+SnapPoint=filtro:(0.5,0.2,0.3)
+Utensile=Mani
+Descrizione=Posiziona il filtro nella posizione personalizzata
+                </div>
+                <p><strong>Comportamento:</strong> Il filtro snapperà esattamente alle coordinate (0.5, 0.2, 0.3) quando trascinato entro 0.3 unità.</p>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Note Importanti</h4>
+                <ul>
+                    <li><strong>Sistema Coordinate:</strong> +X destra, +Y alto, +Z verso di te</li>
+                    <li><strong>Snap Centro BB:</strong> Usa centro bounding box oggetto, non pivot</li>
+                    <li><strong>Validazione:</strong> Coordinate non numeriche vengono ignorate con warning</li>
+                </ul>
+            </div>
+
+            <h4>Comandi Console Debug</h4>
+            <div class="code-block" data-lang="Console">
+// Imposta snap a coordinate dirette
+DragDropSystem.setCustomSnapPosition('filtro', 0.5, 0.2, 0.3)
+
+// Verifica stato snap
+DragDropSystem.debugSnapSystem()
+
+// Export posizioni correnti per ottenere coordinate
+Scene3D.exportCurrentModelPositions()
+            </div>
+        </div>
+
+        <!-- Subsection: SnapTargets -->
+        <div class="section" id="snaptargets-system">
+            <h3>🔄 Sistema SnapTargets (Multipli Intercambiabili)</h3>
+
+            <div class="info">
+                <h4>📋 Panoramica</h4>
+                <p>Sistema per permettere a più oggetti di fare snap su posizioni originali di ALTRI oggetti in modo intercambiabile.</p>
+                <ul>
+                    <li><strong>Caso d'Uso:</strong> 2+ viti possono essere montate su 2+ fori, indipendentemente dall'ordine</li>
+                    <li><strong>Algoritmo Intelligente:</strong> Trova automaticamente il target più vicino</li>
+                    <li><strong>Snap Centro BB:</strong> Usa centro bounding box target, non pivot</li>
+                </ul>
+            </div>
+
+            <h4>Sintassi</h4>
+            <div class="code-block" data-lang="Tutorial">
+# Sintassi base (singolo oggetto)
+SnapTargets=oggetto:target1_original,target2_original
+
+# Esempio: 1 vite su 2 fori intercambiabili
+SnapTargets=vite_A:foro_1_original,foro_2_original
+
+# Multi-oggetto (separatore ;)
+SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original,foro_2_original
+            </div>
+
+            <div class="example">
+                <h5>🔩 Esempio Semplice: 2 Viti su 2 Fori</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 14 - Inserisci Viti Estrattore]
+DragDrop=true
+DragDropObjects=vite_culatta_1,vite_culatta_2
+DragDropDistance=0.1
+SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original
+Utensile=Mani
+Descrizione=Inserisci le viti negli estrattori (ordine libero)
+                </div>
+                <p><strong>Comportamento:</strong> Entrambe le viti possono snappare su entrambi gli estrattori. Il sistema sceglie automaticamente il più vicino.</p>
+            </div>
+
+            <div class="example">
+                <h5>🔧 Esempio Complesso: 4 Viti su 4 Fori</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 20 - Viti Intercambiabili]
+DragDrop=true
+DragDropObjects=vite_1,vite_2,vite_3,vite_4
+DragDropDistance=0.2
+SnapTargets=vite_1:foro_A_original,foro_B_original,foro_C_original,foro_D_original;vite_2:foro_A_original,foro_B_original,foro_C_original,foro_D_original;vite_3:foro_A_original,foro_B_original,foro_C_original,foro_D_original;vite_4:foro_A_original,foro_B_original,foro_C_original,foro_D_original
+Utensile=Mani
+                </div>
+                <p><strong>Comportamento:</strong> Tutte e 4 le viti possono andare su tutti e 4 i fori, ordine completamente libero.</p>
+            </div>
+
+            <div class="example">
+                <h5>⚖️ Esempio Asimmetrico: Vincoli Diversi</h5>
+                <div class="code-block" data-lang="Tutorial">
+SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original,foro_2_original,foro_3_original
+                </div>
+                <p><strong>Comportamento:</strong> vite_A solo su foro_1/foro_2, vite_B su tutti e 3 i fori.</p>
+            </div>
+
+            <div class="tip">
+                <h4>💡 Log Debug Console</h4>
+                <div class="code-block" data-lang="Console">
+[DragDropSystem] 🔄 Verifica 2 snap targets intercambiabili per "vite_A"
+[DragDropSystem] 📏 Target 1/2: "foro_1_original" - Distanza: 0.234
+[DragDropSystem] 📏 Target 2/2: "foro_2_original" - Distanza: 0.512
+[DragDropSystem] ⭐ Nuovo target più vicino: "foro_1_original" a distanza 0.234
+[DragDropSystem] 🧲 Snap intercambiabile disponibile
+                </div>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Differenza SnapPoint vs SnapTargets</h4>
+                <ul>
+                    <li><strong>SnapPoint:</strong> Usa coordinate (x,y,z) dirette</li>
+                    <li><strong>SnapTargets:</strong> Usa NOMI di oggetti con suffisso _original</li>
+                    <li><strong>Priorità:</strong> Multi-target > coordinate dirette > singolo target > posizione originale</li>
+                </ul>
+            </div>
+
+            <h4>Comandi Console Debug</h4>
+            <div class="code-block" data-lang="Console">
+// Imposta snap targets multipli
+DragDropSystem.setMultipleSnapTargets('vite_A', ['foro_1_original', 'foro_2_original'])
+
+// Debug completo sistema snap
+DragDropSystem.debugSnapSystem()
+
+// Verifica oggetti disponibili per _original
+Scene3D.listAvailableObjects()
+            </div>
+        </div>
+
+        <!-- Subsection: Distanza Configurabile -->
+        <div class="section" id="distanza-configurabile">
+            <h3>📏 Sistema Distanza Configurabile Comandi Movimento</h3>
+
+            <div class="info">
+                <h4>📋 Panoramica</h4>
+                <p>Sistema per personalizzare la distanza di traslazione dei comandi <code>svita</code>, <code>avvita</code>, <code>estrai</code>, <code>inserisci</code>.</p>
+                <ul>
+                    <li><strong>Sintassi Opzionale:</strong> Parametro distanza tra parentesi</li>
+                    <li><strong>Backward Compatible:</strong> Sintassi senza parametro usa distanze default</li>
+                    <li><strong>Validazione:</strong> Valori negativi o non numerici → warning + fallback a default</li>
+                </ul>
+            </div>
+
+            <h4>Valori Default</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Comando</th>
+                        <th>Distanza Default</th>
+                        <th>Sintassi Personalizzata</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>svita</code></td>
+                        <td>0.5 unità</td>
+                        <td><code>svita(0.8)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>avvita</code></td>
+                        <td>0.5 unità</td>
+                        <td><code>avvita(1.2)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>estrai</code></td>
+                        <td>0.4 unità</td>
+                        <td><code>estrai(0.6)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>inserisci</code></td>
+                        <td>0.4 unità</td>
+                        <td><code>inserisci(0.3)</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example">
+                <h5>🔩 Esempio: Svitamento con Estrazione Maggiorata</h5>
+                <div class="code-block" data-lang="Tutorial">
+[Step 1 - Rimuovi Vite con Estrazione Lunga]
+Elemento=models/vite_culatta_1.glb
+Utensile=ChiaveBrugola
+Azione1=svita(0.8)              # Estrae di 0.8 unità (default sarebbe 0.5)
+Azione2=traslazione:(-0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Descrizione=Svita vite con estrazione maggiorata
+                </div>
+                <p><strong>Comportamento:</strong> Ruota 5 giri (1800°) ed estrae di 0.8 unità lungo direction configurato in home_config.txt</p>
+            </div>
+
+            <div class="example">
+                <h5>🔧 Confronto Sintassi</h5>
+                <div class="code-block" data-lang="Tutorial">
+# Sintassi classica (usa default 0.5)
+Azione1=svita
+
+# Sintassi personalizzata (usa 0.8)
+Azione1=svita(0.8)
+
+# Entrambe ruotano 5 giri (1800°)
+# Ma estraggono distanze diverse
+                </div>
+            </div>
+
+            <div class="tip">
+                <h4>💡 Come Funziona</h4>
+                <ol>
+                    <li><strong>Direction da home_config.txt:</strong> Legge il vettore <code>direction</code> del modello</li>
+                    <li><strong>Calcolo Traslazione:</strong> distanza × vettore direction</li>
+                    <li><strong>Esempio:</strong> <code>svita(0.8)</code> con <code>direction=0,0,1</code> → traslazione <code>(0, 0, 0.8)</code></li>
+                </ol>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Configurazione home_config.txt</h4>
+                <p>Il vettore <code>direction</code> deve essere configurato per ogni modello che usa svita/avvita/estrai/inserisci:</p>
+                <div class="code-block" data-lang="Config">
+model=models/vite_culatta_1.glb
+direction=0,0,1    # Direzione asse Z positivo
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SEZIONE FINALE ===== -->
     <div class="section no-print" style="text-align: center; margin: 50px 0; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;">
         <h3>📄 Manuale Stampabile Completo</h3>
         <p>Questo manuale HTML è ottimizzato per la stampa. Utilizza <strong>Ctrl+P</strong> per stampare con layout professionale.</p>

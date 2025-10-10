@@ -159,73 +159,126 @@ window.ModelLoader = {
     },
     
     /**
-     * Processa i gruppi di file in sequenza
+     * Processa i gruppi di file in batch paralleli (OPZIONE 3: HYBRID)
      */
     processFileGroups: function(groups, onProgress, onComplete, onError) {
         const totalSteps = groups.models.length;
-        let currentStep = 0;
         const loadedModels = [];
-        
-        // Carica ogni modello con i suoi file associati
-        const loadNextModel = () => {
-            if (currentStep >= groups.models.length) {
-                // Tutti i modelli caricati - Delay finale per assicurare rendering completo
-                console.log('⏳ Tutti i file processati, attesa rendering completo...');
+        const BATCH_SIZE = 3; // Carica 3 modelli contemporaneamente
+        const BATCH_DELAY = 50; // 50ms tra batch
+
+        console.log(`🚀 [OPZIONE 3] Caricamento PARALLELO: ${totalSteps} modelli in batch di ${BATCH_SIZE}`);
+
+        // Aggiorna progress iniziale (0/total)
+        if (onProgress) {
+            onProgress(0, {
+                current: 0,
+                total: totalSteps,
+                fileName: '',
+                message: `Preparazione caricamento parallelo ${totalSteps} modelli...`
+            });
+        }
+
+        // Divide i modelli in batch
+        const batches = [];
+        for (let i = 0; i < groups.models.length; i += BATCH_SIZE) {
+            batches.push(groups.models.slice(i, i + BATCH_SIZE));
+        }
+
+        console.log(`📦 Divisi ${totalSteps} modelli in ${batches.length} batch di max ${BATCH_SIZE}`);
+
+        let currentBatchIndex = 0;
+
+        // Funzione per caricare un singolo batch
+        const loadBatch = (batch, batchIndex) => {
+            console.log(`📦 Avvio batch ${batchIndex + 1}/${batches.length} con ${batch.length} modelli`);
+
+            // Crea array di promesse per il caricamento parallelo
+            const batchPromises = batch.map((modelFile, indexInBatch) => {
+                return new Promise((resolve, reject) => {
+                    const baseName = this.getBaseName(modelFile.name);
+
+                    // Trova file associati
+                    const associatedMaterial = groups.materials.find(f =>
+                        this.getBaseName(f.name) === baseName);
+                    const associatedTextures = groups.textures.filter(f =>
+                        this.getBaseName(f.name) === baseName);
+
+                    // Carica modello
+                    this.loadSingleModel(
+                        modelFile,
+                        associatedMaterial,
+                        associatedTextures,
+                        (model) => {
+                            loadedModels.push(model);
+                            const globalIndex = batchIndex * BATCH_SIZE + indexInBatch + 1;
+                            console.log(`✅ Modello ${globalIndex}/${totalSteps} caricato (batch ${batchIndex + 1}): ${modelFile.name}`);
+
+                            // Aggiorna progress
+                            if (onProgress) {
+                                onProgress(loadedModels.length / totalSteps, {
+                                    current: loadedModels.length,
+                                    total: totalSteps,
+                                    fileName: modelFile.name,
+                                    message: `✓ ${loadedModels.length}/${totalSteps}: ${modelFile.name}`
+                                });
+                            }
+
+                            resolve(model);
+                        },
+                        (error) => {
+                            console.error(`❌ Errore caricamento ${modelFile.name}:`, error);
+                            reject(error);
+                        }
+                    );
+                });
+            });
+
+            // Aspetta che tutti i modelli del batch siano caricati
+            return Promise.all(batchPromises);
+        };
+
+        // Funzione ricorsiva per processare batch sequenzialmente
+        const processNextBatch = () => {
+            if (currentBatchIndex >= batches.length) {
+                // Tutti i batch completati
+                console.log('⏳ Tutti i batch completati, attesa rendering finale...');
                 this.isLoading = false;
 
-                // Delay finale di 500ms per assicurare che Three.js abbia finito di processare tutto
+                // Rendering finale UNICO
+                if (window.Scene3D && typeof window.Scene3D.render === 'function') {
+                    requestAnimationFrame(() => {
+                        window.Scene3D.render();
+                        console.log('🎨 Rendering finale di tutti i modelli');
+                    });
+                }
+
+                // Delay finale ridotto a 100ms
                 setTimeout(() => {
-                    console.log('✅ Rendering completato, invio callback con', loadedModels.length, 'modelli');
+                    console.log(`✅ Caricamento completato: ${loadedModels.length} modelli`);
                     if (onComplete) onComplete(loadedModels);
-                }, 500);
+                }, 100);
                 return;
             }
 
-            const modelFile = groups.models[currentStep];
-            const baseName = this.getBaseName(modelFile.name);
+            // Carica il batch corrente
+            const currentBatch = batches[currentBatchIndex];
+            loadBatch(currentBatch, currentBatchIndex)
+                .then(() => {
+                    console.log(`✅ Batch ${currentBatchIndex + 1}/${batches.length} completato`);
+                    currentBatchIndex++;
 
-            // Trova file associati con nome simile
-            const associatedMaterial = groups.materials.find(f =>
-                this.getBaseName(f.name) === baseName);
-            const associatedTextures = groups.textures.filter(f =>
-                this.getBaseName(f.name) === baseName);
-
-            // Aggiorna progresso
-            if (onProgress) {
-                onProgress(`Caricamento ${modelFile.name}...`, currentStep / totalSteps);
-            }
-
-            // Carica il modello
-            this.loadSingleModel(
-                modelFile,
-                associatedMaterial,
-                associatedTextures,
-                (model) => {
-                    loadedModels.push(model);
-                    console.log(`✅ Modello ${currentStep + 1}/${totalSteps} caricato: ${modelFile.name}`);
-                    currentStep++;
-
-                    // Forza rendering del modello appena caricato se Scene3D disponibile
-                    if (window.Scene3D && typeof window.Scene3D.render === 'function') {
-                        requestAnimationFrame(() => {
-                            window.Scene3D.render();
-                            console.log('🎨 Rendering forzato per', modelFile.name);
-                        });
-                    }
-
-                    // Delay aumentato a 350ms per dare tempo al rendering del modello precedente
-                    // Delay extra per file grandi (pavimento, base, culatta)
-                    const isLargeFile = /pavimento|base|culatta|corpo|pompa/i.test(modelFile.name);
-                    const delay = isLargeFile ? 500 : 350;
-
-                    console.log(`⏱️ Attesa ${delay}ms prima del prossimo modello...`);
-                    setTimeout(loadNextModel, delay);
-                },
-                onError
-            );
+                    // Delay minimo tra batch
+                    setTimeout(processNextBatch, BATCH_DELAY);
+                })
+                .catch((error) => {
+                    console.error(`❌ Errore nel batch ${currentBatchIndex + 1}:`, error);
+                    if (onError) onError(error);
+                });
         };
-        
-        loadNextModel();
+
+        // Avvia il processamento
+        processNextBatch();
     },
     
     /* ===== CARICAMENTO SINGOLO MODELLO ===== */

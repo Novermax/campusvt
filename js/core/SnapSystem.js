@@ -99,34 +99,96 @@ window.SnapSystem = {
         // 1. Controlla se esiste un target di snap personalizzato
         const customTarget = this.dragDropSystem.customSnapTargets?.get(object.uuid);
         if (customTarget) {
-            let targetPosition = null;
+            // NUOVO: Multi-target intercambiabili
+            if (customTarget.isMultiTarget && customTarget.targets) {
+                console.log(`[SnapSystem] 🔄 Verifica ${customTarget.targets.length} snap targets intercambiabili per "${object.name}"`);
+                console.log(`[SnapSystem] 🔍 Array targets:`, customTarget.targets.map(t => t.targetName));
 
-            if (customTarget.isOriginalRef && window.Scene3D) {
-                // Usa il sistema Scene3D per riferimenti _original
-                const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
-                if (originalRef && originalRef.position) {
-                    targetPosition = originalRef.position.clone();
-                    console.log(`[SnapSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
-                }
-            } else {
-                // Target standard (cerca l'oggetto nella scena)
-                const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
-                if (targetModel && targetModel.position) {
-                    targetPosition = targetModel.position.clone();
-                    console.log(`[SnapSystem] 🎯 Custom snap target (current): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+                let closestTarget = null;
+                let closestDistance = Infinity;
+                let closestTargetName = null;
+
+                customTarget.targets.forEach((target, index) => {
+                    console.log(`[SnapSystem] 🔍 INIZIO ITERAZIONE ${index + 1}/${customTarget.targets.length} - Target: "${target.targetName}"`);
+                    let targetPosition = null;
+
+                    // Riferimenti _original
+                    if (target.isOriginalRef && window.Scene3D) {
+                        const originalRef = window.Scene3D.findModelByName(target.targetName);
+                        if (originalRef) {
+                            // Usa il CENTRO del bounding box invece del pivot
+                            const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                            console.log(`[SnapSystem] 📦 Target ${target.targetName}: pivot=(${originalRef.position.x.toFixed(3)},${originalRef.position.y.toFixed(3)},${originalRef.position.z.toFixed(3)}), centro BB=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                        } else {
+                            console.log(`[SnapSystem] ❌ findModelByName("${target.targetName}") returned null`);
+                        }
+                    }
+                    // Target standard (cerca l'oggetto nella scena)
+                    else if (target.targetName && window.Scene3D) {
+                        const targetModel = window.Scene3D.findModelByName(target.targetName);
+                        if (targetModel) {
+                            // Usa il CENTRO del bounding box invece del pivot
+                            const targetBoundingBox = new THREE.Box3().setFromObject(targetModel);
+                            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                            console.log(`[SnapSystem] 📦 Target ${target.targetName}: pivot=(${targetModel.position.x.toFixed(3)},${targetModel.position.y.toFixed(3)},${targetModel.position.z.toFixed(3)}), centro BB=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                        } else {
+                            console.log(`[SnapSystem] ❌ findModelByName("${target.targetName}") returned null (standard target)`);
+                        }
+                    }
+
+                    if (targetPosition) {
+                        const distance = currentCenter.distanceTo(targetPosition);
+                        console.log(`[SnapSystem] 📏 Target ${index + 1}/${customTarget.targets.length}: "${target.targetName}" - Distanza: ${distance.toFixed(3)}`);
+
+                        if (distance <= this.snapDistance && distance < closestDistance) {
+                            closestTarget = targetPosition;
+                            closestDistance = distance;
+                            closestTargetName = target.targetName;
+                            console.log(`[SnapSystem] ⭐ Nuovo target più vicino: "${target.targetName}" a distanza ${distance.toFixed(3)}`);
+                        }
+                    } else {
+                        console.log(`[SnapSystem] ⚠️ targetPosition è null per "${target.targetName}"`);
+                    }
+                    console.log(`[SnapSystem] ✅ FINE ITERAZIONE ${index + 1}/${customTarget.targets.length}`);
+                });
+
+                if (closestTarget) {
+                    console.log(`[SnapSystem] 🧲 Snap intercambiabile disponibile per ${object.name} -> "${closestTargetName}" (distanza: ${closestDistance.toFixed(2)})`);
+                    return closestTarget;
                 }
             }
+            // Single custom target
+            else {
+                let targetPosition = null;
 
-            if (targetPosition) {
-                // Applica offset se specificato
-                if (customTarget.offset) {
-                    targetPosition.add(customTarget.offset);
+                if (customTarget.isOriginalRef && window.Scene3D) {
+                    // Usa il sistema Scene3D per riferimenti _original
+                    const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
+                    if (originalRef && originalRef.position) {
+                        targetPosition = originalRef.position.clone();
+                        console.log(`[SnapSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+                    }
+                } else {
+                    // Target standard (cerca l'oggetto nella scena)
+                    const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
+                    if (targetModel && targetModel.position) {
+                        targetPosition = targetModel.position.clone();
+                        console.log(`[SnapSystem] 🎯 Custom snap target (current): "${customTarget.targetName}" at (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+                    }
                 }
 
-                const distance = currentCenter.distanceTo(targetPosition);
-                if (distance <= this.snapDistance) {
-                    console.log(`[SnapSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
-                    return targetPosition;
+                if (targetPosition) {
+                    // Applica offset se specificato
+                    if (customTarget.offset) {
+                        targetPosition.add(customTarget.offset);
+                    }
+
+                    const distance = currentCenter.distanceTo(targetPosition);
+                    if (distance <= this.snapDistance) {
+                        console.log(`[SnapSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
+                        return targetPosition;
+                    }
                 }
             }
         }

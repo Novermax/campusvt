@@ -159,11 +159,21 @@ Rotazione=modello:(rx,ry,rz)         # Ruota modello (gradi)
 Utensile=Aria|ChiaveBrugola|ChiaveInglese|Mani
 Azione1=traslazione:(x,y,z,durata)   # Traslazione animata
 Azione1=appoggia(durata)             # Appoggia al pavimento
+Azione1=svita                        # Svita con distanza default 0.5
+Azione1=svita(0.8)                   # Svita con distanza personalizzata
+Azione1=avvita                       # Avvita con distanza default 0.5
+Azione1=avvita(0.8)                  # Avvita con distanza personalizzata
+Azione1=estrai                       # Estrai con distanza default 0.4
+Azione1=estrai(0.6)                  # Estrai con distanza personalizzata
+Azione1=inserisci                    # Inserisci con distanza default 0.4
+Azione1=inserisci(0.6)               # Inserisci con distanza personalizzata
 DragDrop=true                        # Abilita drag & drop
 DragDropObjects=filtro,vite          # Oggetti draggabili
 DragDropDistance=0.3                 # Distanza snap
 SnapPoint=filtro:(x,y,z)             # Snap a coordinate arbitrarie
 SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)  # Multi-oggetto
+SnapTargets=vite_A:foro_1_original,foro_2_original  # Snap multipli intercambiabili
+SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original,foro_2_original  # Multi-oggetto
 AssemblyMode=true                    # Modalità assemblaggio
 ```
 
@@ -185,6 +195,8 @@ DragDropSystem.isEnabled()               // Stato sistema
 DragDropSystem.enable(['filtro'])        // Abilita oggetti specifici
 DragDropSystem.setSnapDistance(1.5)      // Distanza snap
 DragDropSystem.setCustomSnapPosition('filtro', 0.5, 0.2, 0.3)  // Snap coordinate dirette
+DragDropSystem.setMultipleSnapTargets('vite_A', ['foro_1_original', 'foro_2_original'])  // Snap multipli
+DragDropSystem.debugSnapSystem()         // Debug completo sistema snap
 
 // Assemblaggio
 DragDropSystem.enableAssemblyMode(config)   // Modalità assemblaggio
@@ -234,9 +246,55 @@ ParticleSystem.clearAllEffects()         // Rimuovi effetti
   DragDropSystem.setCustomSnapPosition('filtro', 0.5, 0.2, 0.3)  // Snap diretto
   ```
 
+### Sistema Snap Targets Multipli Intercambiabili (Gennaio 2026)
+- **Funzionalità**: Permette a più oggetti di fare snap su posizioni originali di ALTRI oggetti in modo intercambiabile
+- **Caso d'Uso**: 2+ viti possono essere montate su 2+ fori, indipendentemente dall'ordine
+- **Core**: `DragDropSystem.setMultipleSnapTargets(oggetto, [target1, target2, ...])` (DragDropSystem.js:2202-2235)
+- **Algoritmo**: Trova automaticamente il target più vicino tra tutti quelli disponibili
+- **Sintassi Tutorial**: `SnapTargets=oggetto:target1,target2,...` - Separatore `;` per più oggetti
+- **Esempi**:
+  ```ini
+  # Caso semplice: 2 viti intercambiabili su 2 fori
+  SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original,foro_2_original
+
+  # Caso complesso: 4 viti su 4 fori qualsiasi
+  SnapTargets=vite_1:foro_A_original,foro_B_original,foro_C_original,foro_D_original;vite_2:foro_A_original,foro_B_original,foro_C_original,foro_D_original;vite_3:foro_A_original,foro_B_original,foro_C_original,foro_D_original;vite_4:foro_A_original,foro_B_original,foro_C_original,foro_D_original
+
+  # Caso asimmetrico: vite_A solo su foro_1/foro_2, vite_B su tutti i fori
+  SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original,foro_2_original,foro_3_original
+  ```
+- **Integrazione**: Compatibile con DragDropDistance, ShowSnapIndicators, riferimenti _original
+- **Priorità Snap**: Multi-target > coordinate dirette > singolo target > posizione originale oggetto
+- **Log Debug**: Console mostra distanze a tutti i target e quale viene scelto
+- **API Console**:
+  ```javascript
+  DragDropSystem.setMultipleSnapTargets('vite_A', ['foro_1_original', 'foro_2_original'])
+  DragDropSystem.debugSnapSystem()  // Debug completo stato snap
+  ```
+
+### Sistema Distanza Configurabile per Comandi Movimento (Gennaio 2026)
+- **Funzionalità**: Parametro distanza opzionale per comandi `svita`, `avvita`, `estrai`, `inserisci`
+- **Core**: `parseMovementOperation()` in scene3d-modular.js (1747-1867)
+- **Sintassi**:
+  - `svita` → distanza default 0.5 unità
+  - `svita(0.8)` → distanza personalizzata 0.8 unità
+  - `avvita(1.2)` → distanza personalizzata 1.2 unità
+  - `estrai(0.6)` → distanza personalizzata 0.6 unità (default 0.4)
+  - `inserisci(0.6)` → distanza personalizzata 0.6 unità (default 0.4)
+- **Comportamento**: La distanza moltiplica il vettore `direction` da `home_config.txt`
+- **Validazione**: Valori negativi o non numerici → warning + fallback a default
+- **Esempio Tutorial**:
+  ```ini
+  [Step 1 - Svita vite con estrazione lunga]
+  Elemento=models/vite_culatta_1.glb
+  Utensile=ChiaveBrugola
+  Azione1=svita(0.8)  # Estrae di 0.8 unità invece di 0.5
+  ```
+- **Compatibilità**: Zero breaking changes - sintassi senza parametro funziona come prima
+
 ---
 
-**Ultimo aggiornamento**: 15 Gennaio 2026 - Sistema Snap a Coordinate Arbitrarie completato
+**Ultimo aggiornamento**: 16 Gennaio 2026 - Sistema Distanza Configurabile per Comandi Movimento completato
 
 ## 🎯 Sessione di Lavoro 13 Dicembre 2025
 
@@ -422,6 +480,74 @@ if (distanceFromCenter <= this.snapDistance) // Center-based
 ---
 
 **Ultimo aggiornamento**: 15 Dicembre 2025 - Sistema Snap Basato su Centro Bounding Box completato con debug avanzato
+
+## 🐛 Fix Critico: Multi-Target Snap in SnapSystem (Gennaio 2026)
+
+**Problema**: Sistema multi-target snap (`SnapTargets=oggetto:target1_original,target2_original`) non funzionava - gli oggetti snappavano alla loro posizione originale invece che ai target specificati.
+
+### Causa Root
+- **SnapSystem.js** non gestiva il caso `isMultiTarget = true`
+- Tentava di accedere `customTarget.targetName` che è `undefined` per multi-target
+- Per multi-target, la struttura è `{isMultiTarget: true, targets: Array}`
+- Fallback automatico alla posizione originale dell'oggetto stesso
+
+### Sintomi
+```javascript
+// Console log
+[DragDropSystem] 🎯 Custom snap targets configurati: 2
+[Scene3D] findModelByName chiamato con targetName non valido: undefined
+🎯 Target snap: (0.100, 0.383, 0.197)  // ← Posizione VITE (sbagliata)
+// Invece di: (0.100, 0.236, 0.193)    // ← Posizione ESTRATTORE (corretta)
+```
+
+### Soluzione Implementata
+
+#### SnapSystem.js (linee 102-150)
+Aggiunto blocco multi-target identico a DragDropSystem.js:
+
+```javascript
+if (customTarget.isMultiTarget && customTarget.targets) {
+    // Itera tutti i target nell'array
+    customTarget.targets.forEach((target, index) => {
+        // Per _original: usa centro bounding box del modello referenziato
+        if (target.isOriginalRef && window.Scene3D) {
+            const originalRef = window.Scene3D.findModelByName(target.targetName);
+            const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+        }
+
+        // Trova target più vicino entro snapDistance
+        if (distance <= this.snapDistance && distance < closestDistance) {
+            closestTarget = targetPosition;
+        }
+    });
+
+    return closestTarget;  // Ritorna il target più vicino
+}
+```
+
+### Caratteristiche Fix
+- ✅ **Bounding Box Center**: Usa centro geometrico, non pivot
+- ✅ **Target Multipli**: Trova automaticamente il più vicino
+- ✅ **Log Diagnostici**: Debug completo con distanze e scelte
+- ✅ **Zero Breaking Changes**: Sintassi tutorial invariata
+
+### File Modificati
+- `js/core/SnapSystem.js:102-150` - Aggiunto blocco gestione multi-target con bounding box center
+- `js/core/SnapSystem.js:152-184` - Refactoring blocco single-target in else
+
+### Test Case Risolto
+```ini
+# tutorial.txt - Viti culatta intercambiabili su estrattori
+SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original
+
+# PRIMA: vite_culatta_1 snappava a (−0.100, 0.383, 0.197) ← posizione originale VITE
+# DOPO:  vite_culatta_1 snappa a    (−0.100, 0.236, 0.193) ← centro BB estrattoresx ✅
+```
+
+---
+
+**Ultimo aggiornamento**: 16 Gennaio 2026 - Fix Multi-Target Snap in SnapSystem completato
 
 ## 🎯 Sistema Rotazione Viti Durante Svitamento (Gennaio 2026)
 
@@ -960,3 +1086,129 @@ MessageTitle=✅ Fase Completata
 ---
 
 **Ultimo aggiornamento**: 15 Gennaio 2026 - Sistema Modal Messaggi Informativi Tutorial con Supporto Multimediale (Immagini e Video) completato
+
+## 🚀 Sistema Auto-Avanzamento Snap Completati (Gennaio 2026)
+
+**Funzionalità**: Auto-avanzamento automatico allo step successivo quando tutti gli oggetti richiesti hanno fatto snap con successo.
+
+### Problema Risolto
+Step DragDrop puri (senza `Elemento` o `AssemblyMode`) non avevano un trigger di completamento automatico - l'utente doveva cliccare manualmente sulla freccia → per avanzare.
+
+### Soluzione Implementata
+Sistema di tracking automatico che:
+1. Rileva step DragDrop puri (con `DragDrop=true` ma senza `Elemento`/`AssemblyMode`)
+2. Traccia quali oggetti devono fare snap (da `DragDropObjects`)
+3. Monitora quando ogni oggetto fa snap con successo
+4. Auto-avanza quando **tutti** gli oggetti richiesti hanno snappato
+
+### Funzionamento
+
+#### Step DragDrop Puro (Auto-avanzamento ATTIVO)
+```ini
+[Step 14 - Istruzioni smontaggio flangia]
+Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
+MessageVideo=media/estrattore.mp4
+DragDrop=true
+DragDropObjects=vite_culatta_1,vite_culatta_2  # Entrambi devono fare snap
+SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original
+Utensile=Mani
+
+# Comportamento:
+# 1. Utente chiude modal video
+# 2. Sistema abilita drag & drop per vite_culatta_1 e vite_culatta_2
+# 3. Sistema configura tracking: requiredSnapObjects = [vite_culatta_1, vite_culatta_2]
+# 4. Utente trascina vite_culatta_1 → snap ✅ → completedSnapObjects = [vite_culatta_1]
+# 5. Utente trascina vite_culatta_2 → snap ✅ → completedSnapObjects = [vite_culatta_1, vite_culatta_2]
+# 6. Tutti gli oggetti richiesti snappati → AUTO-AVANZA a Step 15 dopo 500ms ⏭️
+```
+
+#### Step DragDrop con Azioni (Auto-avanzamento DISATTIVO)
+```ini
+[Step X - Riposiziona filtro]
+Elemento=models/filtro.glb
+DragDrop=true
+Utensile=Mani
+Azione1=svita
+
+# Comportamento:
+# - Sistema NON abilita auto-avanzamento (ha Elemento con azioni)
+# - Avanzamento gestito dal sistema azioni tradizionale
+```
+
+### Implementazione Tecnica
+
+#### DragDropSystem.js
+```javascript
+// Tracking state (linee 32-35)
+requiredSnapObjects: new Set(),    // Oggetti che devono fare snap
+completedSnapObjects: new Set(),   // Oggetti che hanno già fatto snap
+autoAdvanceEnabled: false,         // Flag auto-avanzamento
+
+// Metodi configurazione (linee 2226-2263)
+setRequiredSnapObjects(objectNames)  // Configura oggetti richiesti
+enableAutoAdvance()                  // Abilita auto-avanzamento
+disableAutoAdvance()                 // Disabilita auto-avanzamento
+resetSnapTracking()                  // Reset tracking (cambio step)
+
+// Logic tracking (handleSnapComplete, linee 1247-1268)
+if (this.autoAdvanceEnabled && this.requiredSnapObjects.size > 0) {
+    this.completedSnapObjects.add(objectName);
+    const allSnapped = Array.from(this.requiredSnapObjects).every(req =>
+        this.completedSnapObjects.has(req)
+    );
+    if (allSnapped) {
+        setTimeout(() => this.tryAdvanceTutorialStep('all_snaps_completed'), 500);
+    }
+}
+```
+
+#### ui.js (Integrazione executeStep, linee 2999-3011)
+```javascript
+const isPureDragDropStep = !step.properties.Elemento && !step.properties.AssemblyMode;
+if (isPureDragDropStep && draggableObjects.length > 0) {
+    window.DragDropSystem.resetSnapTracking();
+    window.DragDropSystem.setRequiredSnapObjects(draggableObjects);
+    window.DragDropSystem.enableAutoAdvance();
+} else {
+    window.DragDropSystem.resetSnapTracking();
+}
+```
+
+### Caratteristiche
+
+- ✅ **Auto-Rilevamento**: Sistema rileva automaticamente step DragDrop puri
+- ✅ **Zero Configurazione**: Nessun parametro aggiuntivo necessario in tutorial.txt
+- ✅ **Progress Tracking**: Log console mostra N/M oggetti snappati
+- ✅ **Delay Animazione**: 500ms delay per completare animazione snap prima avanzamento
+- ✅ **Compatibilità**: Step con Elemento/AssemblyMode mantengono comportamento tradizionale
+- ✅ **Reset Automatico**: Tracking resettato ad ogni cambio step
+
+### Log Debug Console
+
+```javascript
+[DragDropSystem] 🎯 Oggetti richiesti per completamento: [vite_culatta_1, vite_culatta_2]
+[DragDropSystem] ⏭️ Auto-avanzamento step abilitato
+[DragDropSystem] ✅ Oggetto "vite_culatta_1" snappato con successo
+[DragDropSystem] 📊 Progress: 1/2 oggetti snappati
+[DragDropSystem] ✅ Oggetto "vite_culatta_2" snappato con successo
+[DragDropSystem] 📊 Progress: 2/2 oggetti snappati
+[DragDropSystem] 🎉 TUTTI GLI OGGETTI RICHIESTI SONO STATI SNAPPATI!
+[DragDropSystem] ⏭️ Auto-avanzamento allo step successivo...
+```
+
+### File Modificati
+
+- `js/core/DragDropSystem.js:32-35` - Stato tracking (requiredSnapObjects, completedSnapObjects, autoAdvanceEnabled)
+- `js/core/DragDropSystem.js:1247-1268` - Logic tracking in handleSnapComplete
+- `js/core/DragDropSystem.js:2226-2263` - Metodi configurazione tracking
+- `js/ui.js:2999-3011` - Integrazione auto-configurazione in executeStep
+
+### Test Case Risolto
+
+**Scenario**: Step 14 tutorial Pompa Becker - inserimento viti estrattore
+- **PRIMA**: Utente doveva cliccare manualmente freccia → dopo aver posizionato entrambe le viti
+- **DOPO**: Sistema avanza automaticamente allo Step 15 quando entrambe le viti (vite_culatta_1 e vite_culatta_2) hanno fatto snap
+
+---
+
+**Ultimo aggiornamento**: 16 Gennaio 2026 - Sistema Auto-Avanzamento Snap Completati implementato e testato
