@@ -439,7 +439,11 @@ Azione3=appoggia(0.2)
   DragDrop=true
   DragDropObjects=vite_culatta_1,vite_culatta_2  # Entrambi draggabili
   DragDropDistance=0.1                     # Distanza di snap in unità 3D
+<<<<<<< HEAD
   SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original # Posizioni di snap per ogni vite
+=======
+  SnapTarget=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original # Posizioni di snap per ogni vite
+>>>>>>> 00e8c5c (Messaggio commit)
   Utensile=Mani
 
 
@@ -452,13 +456,21 @@ CameraPos=(0, 0.37, 0.44)                                   // Posizione assolut
  Descrizione=Stringi la vite culatta 1 con la chiave a brugola 
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_1.glb
+<<<<<<< HEAD
  Azione1=avvita(0.05)
+=======
+ Azione1=avvita(0.02)
+>>>>>>> 00e8c5c (Messaggio commit)
 
 [Step 16 - stringi viti estrattore]
  Descrizione=Stringi la vite culatta 2 con la chiave a brugola 
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_2.glb
+<<<<<<< HEAD
  Azione1=avvita(0.05)
+=======
+ Azione1=avvita(0.02)
+>>>>>>> 00e8c5c (Messaggio commit)
 
 [Step 17 - Rimuovi flangia]
 Elemento=models/flangia.glb

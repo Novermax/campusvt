@@ -2127,10 +2127,17 @@ const Scene3D = {
         
         if (currentStep.avvita) {
             // Comando semplificato avvita: rotazione inversa + traslazione inversa
+            // Imposta il centro di rotazione al centro del bounding box del modello
+            rotationCenter = this.calculateBoundingBoxCenter(model);
+
+            console.log(`🔩 AVVITA DEBUG per ${model.name}:`);
+            console.log(`   Rotazione gradi:`, currentStep.avvita.rotazione);
+            console.log(`   Rotazione radianti: x=${THREE.MathUtils.degToRad(currentStep.avvita.rotazione.x)}, y=${THREE.MathUtils.degToRad(currentStep.avvita.rotazione.y)}, z=${THREE.MathUtils.degToRad(currentStep.avvita.rotazione.z)}`);
+
             targetRotation.x += THREE.MathUtils.degToRad(currentStep.avvita.rotazione.x);
             targetRotation.y += THREE.MathUtils.degToRad(currentStep.avvita.rotazione.y);
             targetRotation.z += THREE.MathUtils.degToRad(currentStep.avvita.rotazione.z);
-            
+
             targetPosition.add(new THREE.Vector3(
                 currentStep.avvita.traslazione.x,
                 currentStep.avvita.traslazione.y,

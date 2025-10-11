@@ -206,6 +206,14 @@ DragDropSystem.undoAssembly()               // Undo operazione
 // Particelle (Tool Aria)
 ParticleSystem.testAirJet()              // Test getto aria
 ParticleSystem.clearAllEffects()         // Rimuovi effetti
+
+// Navigazione Tutorial
+jumpToStep(5)                            // Salta al 5° step del tutorial
+listSteps()                              // Lista tutti gli step disponibili
+findStep("vite")                         // Cerca step per nome/titolo
+UI.jumpToStep(10)                        // Metodo completo (alternativo)
+UI.listTutorialSteps()                   // Metodo completo (alternativo)
+UI.jumpToStepByName("rimuovi filtro")    // Metodo completo (alternativo)
 ```
 
 ## 🚀 Funzionalità Avanzate
@@ -1211,4 +1219,294 @@ if (isPureDragDropStep && draggableObjects.length > 0) {
 
 ---
 
+<<<<<<< HEAD
 **Ultimo aggiornamento**: 16 Gennaio 2026 - Sistema Auto-Avanzamento Snap Completati implementato e testato
+=======
+**Ultimo aggiornamento**: 16 Gennaio 2026 - Sistema Auto-Avanzamento Snap Completati implementato e testato
+
+## 🎯 Sistema Navigazione Rapida Tutorial (Gennaio 2026)
+
+**Implementazione**: Metodi per saltare direttamente a step specifici del tutorial per testing e debugging
+
+### Problema Risolto
+Durante sviluppo e testing era necessario:
+- Ripercorrere manualmente tutti gli step per testare uno step specifico
+- Nessun modo rapido per testare step avanzati senza completare l'intero tutorial
+- Difficoltà nel verificare comportamenti specifici di step intermedi
+
+### Soluzione Implementata
+Sistema completo di navigazione tutorial con tre metodi principali:
+1. **Salto diretto per numero step** - `jumpToStep(N)`
+2. **Lista tutti gli step** - `listSteps()`
+3. **Ricerca per nome** - `findStep("keyword")`
+
+### API Console
+
+#### Salto Diretto a Step Specifico
+```javascript
+// Metodo semplificato (usa numerazione umana 1-based)
+jumpToStep(5)         // Salta al 5° step CON fast-forward (applica step 1-4)
+jumpToStep(10)        // Salta al 10° step CON fast-forward (applica step 1-9)
+
+// Salta SENZA applicare step precedenti (solo per debug)
+jumpToStep(5, false)  // Salta direttamente senza fast-forward
+
+// Metodo completo (alternativo)
+UI.jumpToStep(5)      // Equivalente
+UI.jumpToStep(5, true)  // Con fast-forward esplicito
+```
+
+**Fast-Forward Automatico**:
+- Quando salti a uno step, il sistema applica automaticamente le trasformazioni (Posizione, Rotazione) di tutti gli step precedenti
+- Questo assicura che i modelli siano nella posizione corretta per lo step target
+- Esempio: saltando allo step 14, vengono applicate le trasformazioni degli step 1-13
+
+#### Lista Tutti gli Step
+```javascript
+// Mostra lista completa step con numerazione e dettagli
+listSteps()          // Output formattato in console
+
+// Metodo completo (alternativo)
+UI.listTutorialSteps()  // Equivalente, ritorna anche array di oggetti
+```
+
+**Output esempio**:
+```
+📋 Tutorial caricato: 15 step disponibili
+═══════════════════════════════════════════════════════════
+   Step 1: Preparazione area di lavoro
+     └─ Assicurati di avere tutti i dispositivi di sicurezza
+     └─ Utensile: Mani
+👉 Step 2: Rimuovi coperchio pompa  <-- Step corrente
+     └─ Svita le 4 viti del coperchio
+     └─ Elemento: models/coperchio.glb | Utensile: ChiaveBrugola
+   Step 3: Estrai filtro
+     └─ Elemento: models/filtro.glb | Utensile: Mani | DragDrop attivo
+...
+═══════════════════════════════════════════════════════════
+
+💡 Usa UI.jumpToStep(N) per saltare a uno step specifico
+💡 Step corrente: 2
+```
+
+#### Ricerca per Nome/Titolo
+```javascript
+// Cerca step che contengono la parola chiave (case-insensitive)
+findStep("vite")           // Trova tutti gli step con "vite" nel nome
+findStep("filtro")         // Trova step relativi al filtro
+findStep("rimuovi")        // Trova step di rimozione
+
+// Metodo completo (alternativo)
+UI.jumpToStepByName("rimuovi filtro")  // Equivalente
+```
+
+**Esempi output**:
+```javascript
+// Caso singola corrispondenza - salta automaticamente
+findStep("filtro")
+// ✅ Trovato: Step 8 - Estrai filtro dalla sede
+// ⏭️ Saltando allo step 8/15: "Estrai filtro dalla sede"
+
+// Caso multiple corrispondenze - mostra lista
+findStep("vite")
+// 🔍 Trovati 4 step che contengono "vite":
+//    3. Svita vite coperchio
+//       └─ Rimuovi le 4 viti dal coperchio
+//    7. Rimuovi viti culatta
+//    11. Rimonta viti culatta
+//    14. Stringi viti coperchio
+//
+// 💡 Usa UI.jumpToStep(N) per saltare a uno specifico step
+```
+
+### Implementazione Tecnica
+
+#### Metodi UI.js (linee 3494-3618)
+```javascript
+jumpToStep: function(stepNumber) {
+    // Converte da 1-based (umano) a 0-based (array)
+    const stepIndex = stepNumber - 1;
+
+    // Validazione range
+    if (stepIndex < 0 || stepIndex >= this.tutorialSteps.length) {
+        console.error(`❌ Step ${stepNumber} non valido`);
+        return false;
+    }
+
+    // Esegue salto
+    this.goToStep(stepIndex);
+    return true;
+},
+
+listTutorialSteps: function() {
+    // Mostra lista formattata in console
+    this.tutorialSteps.forEach((step, index) => {
+        const marker = (index === this.currentStepIndex) ? '👉' : '  ';
+        console.log(`${marker} Step ${index + 1}: ${step.title}`);
+        // ... proprietà step
+    });
+
+    // Ritorna anche array strutturato
+    return this.tutorialSteps.map((step, index) => ({
+        number: index + 1,
+        title: step.title,
+        isCurrent: (index === this.currentStepIndex)
+    }));
+},
+
+jumpToStepByName: function(searchTerm) {
+    // Ricerca case-insensitive in titolo e descrizione
+    const matches = this.tutorialSteps.filter(step => {
+        const title = (step.title || '').toLowerCase();
+        const desc = (step.properties.Descrizione || '').toLowerCase();
+        return title.includes(searchTerm) || desc.includes(searchTerm);
+    });
+
+    // Se match singolo, salta automaticamente
+    if (matches.length === 1) {
+        this.goToStep(matches[0].index);
+        return true;
+    }
+
+    // Se multiple match, mostra lista
+    return matches;
+}
+```
+
+#### Funzioni Globali (linee 3656-3687)
+Wrapper globali per accesso rapido:
+```javascript
+window.jumpToStep = function(stepNumber) {
+    return window.UI.jumpToStep(stepNumber);
+};
+
+window.listSteps = function() {
+    return window.UI.listTutorialSteps();
+};
+
+window.findStep = function(searchTerm) {
+    return window.UI.jumpToStepByName(searchTerm);
+};
+```
+
+### Caratteristiche
+
+- ✅ **Numerazione Umana**: Usa numeri 1-based (1 = primo step) invece di 0-based
+- ✅ **Validazione Completa**: Controlla tutorial caricato e range step valido
+- ✅ **Feedback Ricco**: Log console descrittivi con emoji e formattazione
+- ✅ **Zero Setup**: Funziona automaticamente dopo caricamento tutorial
+- ✅ **Ricerca Flessibile**: Match parziale case-insensitive in titolo e descrizione
+- ✅ **Auto-Jump**: Se ricerca trova 1 match, salta direttamente
+- ✅ **Lista Interattiva**: Mostra indicatore 👉 su step corrente
+
+### Casi d'Uso
+
+1. **Testing Step Specifico**: `jumpToStep(14)` → testa comportamento step 14 senza ripetere tutorial
+2. **Debug Rapido**: `listSteps()` → visualizza struttura completa tutorial
+3. **Verifica Step**: `findStep("vite")` → trova tutti gli step relativi a viti
+4. **Sviluppo Tutorial**: Naviga rapidamente tra step per verificare transizioni
+5. **QA/Testing**: Salta a step problematici per riprodurre bug
+6. **Demo**: Salta a step specifici durante presentazioni
+
+### Vantaggi Sviluppo
+
+- **Risparmio Tempo**: Da 5+ minuti per raggiungere step 15 → 1 secondo
+- **Testing Iterativo**: Testa modifiche su step specifici senza restart completo
+- **Debug Facilitato**: Isola rapidamente problemi a step specifici
+- **Workflow Ottimizzato**: Sviluppo tutorial più efficiente
+
+### File Modificati
+
+- `js/ui.js:3494-3618` - Metodi `jumpToStep()`, `listTutorialSteps()`, `jumpToStepByName()`
+- `js/ui.js:3656-3687` - Funzioni globali `jumpToStep()`, `listSteps()`, `findStep()`
+- `CLAUDE.md:210-216` - Documentazione comandi console
+
+### Compatibilità
+
+- ✅ **Zero Breaking Changes**: Non modifica comportamento tutorial esistente
+- ✅ **Optional Usage**: Sistema normale funziona senza usare questi comandi
+- ✅ **Production Safe**: Può rimanere attivo anche in produzione per supporto utente
+
+### Funzionamento Fast-Forward
+
+Il sistema di fast-forward applica **automaticamente sia trasformazioni statiche che animazioni** degli step precedenti:
+
+✅ **Trasformazioni Statiche** (applicate istantaneamente):
+- `Posizione=modello:(x,y,z)` - Posizioni finali modelli
+- `Rotazione=modello:(rx,ry,rz)` - Rotazioni finali modelli
+
+✅ **Animazioni** (eseguite istantaneamente):
+- `Azione1=svita` / `Azione1=svita(distanza)` - Rotazione + traslazione
+- `Azione1=avvita` / `Azione1=avvita(distanza)` - Rotazione + traslazione inversa
+- `Azione1=estrai` / `Azione1=estrai(distanza)` - Traslazione lungo direction
+- `Azione1=inserisci` / `Azione1=inserisci(distanza)` - Traslazione inversa
+- `Azione1=traslazione:(x,y,z,durata)` - Traslazione normale o relativa a _original
+- `Azione1=rotazione:(rx,ry,rz,durata)` - Rotazione attorno assi
+- `Azione1=appoggia(durata)` - Posizionamento al pavimento (Y=0)
+
+⚠️ **Limitazioni Note**:
+- `centro:(x,y,z);rotazione:...` - Cambio pivot non ancora supportato (warning + skip)
+- Stati DragDrop - Posizioni da operazioni drag & drop precedenti non replicate
+- Visibilità - Modelli nascosti/mostrati durante animazioni rimangono nello stato iniziale
+
+### Best Practices per Tutorial
+
+Il sistema fast-forward ora **calcola automaticamente** le posizioni finali dalle animazioni, quindi non serve più aggiungere dichiarazioni `Posizione=` e `Rotazione=` esplicite dopo ogni azione.
+
+**✅ Funziona Automaticamente**:
+```ini
+[Step 5 - Svita vite coperchio]
+Elemento=models/vite_coperchio.glb
+Utensile=ChiaveBrugola
+Azione1=svita(0.5)
+Azione2=appoggia(0.2)
+
+# Il fast-forward applica automaticamente:
+# - svita(0.5) → rotazione + traslazione lungo direction
+# - appoggia(0.2) → posizionamento a Y=0
+# Nessuna dichiarazione Posizione necessaria!
+```
+
+**✅ Supporta Azioni Multiple**:
+```ini
+[Step 7 - Rimuovi filtro]
+Elemento=models/filtro.glb
+Utensile=Mani
+Azione1=estrai(0.4)
+Azione2=traslazione:(0.5,0,0,1)
+Azione3=appoggia(1.5)
+
+# Tutte e 3 le azioni vengono eseguite istantaneamente
+# durante fast-forward, nella sequenza corretta
+```
+
+**⚠️ Caso Speciale: Azione "centro"**
+
+Se usi `centro:(x,y,z);rotazione:...` per cambiare il pivot, il fast-forward mostrerà un warning e skipperà l'azione:
+```ini
+Azione2=centro:(0,0.1,0);rotazione:(0,0,-90,0.8)  # ⚠️ Cambio pivot non supportato
+
+# Workaround: usa jumpToStep(N, false) per saltare senza fast-forward
+jumpToStep(10, false)  # Solo per debug
+```
+
+### Note Sviluppatori
+
+- **Numerazione**: Sempre usa numeri 1-based per coerenza con UI utente
+- **Stato**: `goToStep()` esegue completamente lo step (camera, modelli, utensili, ecc.)
+- **Tutorial Attivo**: Comandi funzionano solo dopo aver caricato uno scenario con tutorial
+- **Console Access**: Funzioni disponibili globalmente, no import richiesto
+- **Fast-Forward**: Default ON - applica automaticamente trasformazioni statiche + animazioni istantanee
+- **Zero Configurazione**: Tutorial esistenti funzionano senza modifiche - animazioni calcolate automaticamente
+
+### Miglioramenti Futuri Suggeriti
+
+- **Sistema Snapshot**: Salvare stato completo scena dopo ogni step (posizioni, rotazioni, visibilità)
+- **Replay Animazioni**: Eseguire animazioni in modalità "instant" senza durata
+- **Serializzazione Stato**: Export/import stati completi per testing rapido
+- **Checkpoint Automatici**: Salvataggio automatico stati ogni N step
+
+---
+
+**Ultimo aggiornamento**: 17 Gennaio 2026 - Sistema Navigazione Rapida Tutorial con Fast-Forward Avanzato (esecuzione istantanea animazioni) implementato e documentato
+>>>>>>> 00e8c5c (Messaggio commit)

@@ -34,6 +34,14 @@ window.DragDropSystem = {
     completedSnapObjects: new Set(), // Oggetti che hanno già fatto snap con successo
     autoAdvanceEnabled: false, // Se true, avanza automaticamente quando tutti gli snap sono completati
 
+<<<<<<< HEAD
+=======
+    // Sistema esclusione posizioni snap occupate
+    occupiedSnapPositions: new Map(), // chiave posizione -> nome oggetto che la occupa
+    objectSnapPosition: new Map(), // uuid oggetto -> chiave posizione occupata
+    snapPositionKeys: new WeakMap(), // Vector3 -> chiave posizione snap (evita interferenze con Vector3)
+
+>>>>>>> 00e8c5c (Messaggio commit)
     // Sistema snap personalizzati con riferimenti _original
     customSnapTargets: new Map(), // objectUuid -> { targetName: string, isOriginalRef: bool, offset: Vector3 }
     snapIndicators: new Map(), // Indicatori visivi snap (sfere verdi)
@@ -317,7 +325,10 @@ window.DragDropSystem = {
         this.enabled = false;
         this.draggableObjects = [];
         this.whitelistedObjects.clear();
-        
+
+        // Reset posizioni snap occupate
+        this.resetOccupiedPositions();
+
         console.log('[DragDropSystem] ✅ Sistema disabilitato');
     },
     
@@ -1190,6 +1201,12 @@ window.DragDropSystem = {
     handleSnapComplete: function(object, targetPosition, snapContext) {
         console.log(`[DragDropSystem] 🎯 Handling snap completion per ${object.name}`);
 
+        // Occupa la posizione di snap per impedire ad altri oggetti di usarla
+        const snapKey = this.snapPositionKeys.get(targetPosition);
+        if (snapKey) {
+            this.occupySnapPosition(snapKey, object);
+        }
+
         // Usa AssemblySystemSimplified se disponibile, altrimenti fallback a AssemblySystem
         const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
         const shouldResetDragState = snapContext !== null;
@@ -1348,6 +1365,7 @@ window.DragDropSystem = {
                 customTarget.targets.forEach((target, index) => {
                     let targetPosition = null;
 
+<<<<<<< HEAD
                     // Riferimenti _original
                     if (target.isOriginalRef && window.Scene3D) {
                         const originalRef = window.Scene3D.findModelByName(target.targetName);
@@ -1356,6 +1374,39 @@ window.DragDropSystem = {
                             const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
                             targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
                             console.log(`[DragDropSystem] 📦 Target ${target.targetName}: pivot=(${originalRef.position.x.toFixed(3)},${originalRef.position.y.toFixed(3)},${originalRef.position.z.toFixed(3)}), centro BB=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+=======
+                    // Verifica se la posizione è già occupata da un altro oggetto
+                    const positionKey = this.createSnapPositionKey(target.targetName, null);
+                    if (this.isSnapPositionOccupied(positionKey, object)) {
+                        console.log(`[DragDropSystem] 🚫 Target ${index + 1}/${customTarget.targets.length}: "${target.targetName}" - OCCUPATO, skippo`);
+                        return; // Skip questo target
+                    }
+
+                    // Riferimenti _original
+                    if (target.isOriginalRef && window.Scene3D) {
+                        // Rimuovi suffisso "_original" per trovare il modello reale
+                        const actualModelName = target.targetName.replace(/_original$/, '');
+                        const originalRef = window.Scene3D.findModelByName(actualModelName);
+                        if (originalRef) {
+                            // DEBUG: Mostra stato completo del modello referenziato
+                            const currentBB = new THREE.Box3().setFromObject(originalRef);
+                            const currentBBCenter = currentBB.getCenter(new THREE.Vector3());
+                            console.log(`[DragDropSystem] 🔍 DEBUG ${target.targetName}:`);
+                            console.log(`  📍 Pivot corrente: (${originalRef.position.x.toFixed(3)}, ${originalRef.position.y.toFixed(3)}, ${originalRef.position.z.toFixed(3)})`);
+                            console.log(`  📦 Centro BB corrente: (${currentBBCenter.x.toFixed(3)}, ${currentBBCenter.y.toFixed(3)}, ${currentBBCenter.z.toFixed(3)})`);
+
+                            // Per _original, usa la posizione originale SALVATA, non il bounding box corrente
+                            const savedOriginalPos = this.originalPositions.get(originalRef.uuid);
+                            if (savedOriginalPos) {
+                                targetPosition = savedOriginalPos.clone();
+                                console.log(`  ✅ Posizione originale salvata: (${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                                console.log(`  📏 Delta Y (salvata vs corrente): ${(targetPosition.y - currentBBCenter.y).toFixed(3)}`);
+                            } else {
+                                console.warn(`[DragDropSystem] ⚠️ Posizione originale non trovata per ${target.targetName}, uso centro BB come fallback`);
+                                const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                                targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                            }
+>>>>>>> 00e8c5c (Messaggio commit)
                         }
                     }
                     // Target standard (cerca l'oggetto nella scena)
@@ -1384,6 +1435,12 @@ window.DragDropSystem = {
 
                 if (closestTarget) {
                     console.log(`[DragDropSystem] 🧲 Snap intercambiabile disponibile per ${object.name} -> "${closestTargetName}" (distanza: ${closestDistance.toFixed(2)})`);
+<<<<<<< HEAD
+=======
+                    // Associa chiave posizione al Vector3 usando WeakMap (zero interferenze)
+                    const snapKey = this.createSnapPositionKey(closestTargetName, null);
+                    this.snapPositionKeys.set(closestTarget, snapKey);
+>>>>>>> 00e8c5c (Messaggio commit)
                     return closestTarget;
                 }
 
@@ -1392,24 +1449,54 @@ window.DragDropSystem = {
             // Single target (esistente)
             else {
                 let targetPosition = null;
+<<<<<<< HEAD
+=======
+                let positionKey = null;
+>>>>>>> 00e8c5c (Messaggio commit)
 
                 // NUOVO: Coordinate dirette (x,y,z)
                 if (customTarget.isDirectPosition && customTarget.directPosition) {
                     targetPosition = customTarget.directPosition.clone();
+<<<<<<< HEAD
+=======
+                    positionKey = this.createSnapPositionKey(null, targetPosition);
+>>>>>>> 00e8c5c (Messaggio commit)
                     console.log(`[DragDropSystem] 🎯 Custom snap target (coordinate dirette): (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
                 }
                 // Riferimenti _original
                 else if (customTarget.isOriginalRef && window.Scene3D) {
+<<<<<<< HEAD
                     const originalRef = window.Scene3D.findModelByName(customTarget.targetName);
                     if (originalRef) {
                         // Usa il CENTRO del bounding box invece del pivot
                         const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
                         targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
                         console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" - centro BB: (${targetPosition.x.toFixed(2)}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(2)})`);
+=======
+                    positionKey = this.createSnapPositionKey(customTarget.targetName, null);
+                    // Rimuovi suffisso "_original" per trovare il modello reale
+                    const actualModelName = customTarget.targetName.replace(/_original$/, '');
+                    const originalRef = window.Scene3D.findModelByName(actualModelName);
+                    if (originalRef) {
+                        // Per _original, usa la posizione originale SALVATA, non il bounding box corrente
+                        const savedOriginalPos = this.originalPositions.get(originalRef.uuid);
+                        if (savedOriginalPos) {
+                            targetPosition = savedOriginalPos.clone();
+                            console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" - posizione originale salvata=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                        } else {
+                            console.warn(`[DragDropSystem] ⚠️ Posizione originale non trovata per ${customTarget.targetName}, uso centro BB come fallback`);
+                            const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                        }
+>>>>>>> 00e8c5c (Messaggio commit)
                     }
                 }
                 // Target standard (cerca l'oggetto nella scena)
                 else if (customTarget.targetName) {
+<<<<<<< HEAD
+=======
+                    positionKey = this.createSnapPositionKey(customTarget.targetName, null);
+>>>>>>> 00e8c5c (Messaggio commit)
                     const targetModel = window.Scene3D ? window.Scene3D.findModelByName(customTarget.targetName) : null;
                     if (targetModel) {
                         // Usa il CENTRO del bounding box invece del pivot
@@ -1419,7 +1506,15 @@ window.DragDropSystem = {
                     }
                 }
 
+<<<<<<< HEAD
                 if (targetPosition) {
+=======
+                // Verifica se la posizione è già occupata da un altro oggetto
+                if (positionKey && this.isSnapPositionOccupied(positionKey, object)) {
+                    console.log(`[DragDropSystem] 🚫 Single target - posizione già occupata, skippo`);
+                    // Non return null, lascia che provi il fallback alla posizione originale
+                } else if (targetPosition) {
+>>>>>>> 00e8c5c (Messaggio commit)
                     // Applica offset se specificato (solo per target con nome, non coordinate dirette)
                     if (customTarget.offset && !customTarget.isDirectPosition) {
                         targetPosition.add(customTarget.offset);
@@ -1428,6 +1523,11 @@ window.DragDropSystem = {
                     const distance = currentCenter.distanceTo(targetPosition);
                     if (distance <= this.snapDistance) {
                         console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
+<<<<<<< HEAD
+=======
+                        // Associa chiave posizione al Vector3 usando WeakMap (zero interferenze)
+                        this.snapPositionKeys.set(targetPosition, positionKey);
+>>>>>>> 00e8c5c (Messaggio commit)
                         return targetPosition;
                     }
                 }
@@ -2201,6 +2301,95 @@ window.DragDropSystem = {
         // Evidenzia brevemente l'utensile Mano nell'interfaccia
         if (window.ToolsManager && typeof window.ToolsManager.highlightRequiredTool === 'function') {
             window.ToolsManager.highlightRequiredTool('mano');
+        }
+    },
+
+    /**
+     * Crea una chiave univoca per una posizione di snap
+     * @param {string} targetName - Nome del target (es. "estrattoresx_original")
+     * @param {THREE.Vector3} position - Coordinate posizione (per SnapPoint)
+     * @returns {string} Chiave univoca
+     */
+    createSnapPositionKey: function(targetName, position) {
+        if (targetName) {
+            // Per SnapTargets: usa il nome del target
+            return `target_${targetName}`;
+        } else if (position) {
+            // Per SnapPoints: usa coordinate arrotondate
+            const x = position.x.toFixed(3);
+            const y = position.y.toFixed(3);
+            const z = position.z.toFixed(3);
+            return `coord_${x}_${y}_${z}`;
+        }
+        return null;
+    },
+
+    /**
+     * Occupa una posizione di snap per un oggetto
+     * @param {string} positionKey - Chiave univoca posizione
+     * @param {THREE.Object3D} object - Oggetto che occupa la posizione
+     */
+    occupySnapPosition: function(positionKey, object) {
+        if (!positionKey) return;
+
+        // Libera posizione precedente se l'oggetto ne occupava già una
+        const previousKey = this.objectSnapPosition.get(object.uuid);
+        if (previousKey) {
+            this.occupiedSnapPositions.delete(previousKey);
+            console.log(`[DragDropSystem] 🔓 Posizione "${previousKey}" liberata da "${object.name}"`);
+        }
+
+        // Occupa nuova posizione
+        this.occupiedSnapPositions.set(positionKey, object.name);
+        this.objectSnapPosition.set(object.uuid, positionKey);
+        console.log(`[DragDropSystem] 🔒 Posizione "${positionKey}" occupata da "${object.name}"`);
+    },
+
+    /**
+     * Libera la posizione di snap occupata da un oggetto
+     * @param {THREE.Object3D} object - Oggetto che libera la posizione
+     */
+    releaseSnapPosition: function(object) {
+        const positionKey = this.objectSnapPosition.get(object.uuid);
+        if (positionKey) {
+            this.occupiedSnapPositions.delete(positionKey);
+            this.objectSnapPosition.delete(object.uuid);
+            console.log(`[DragDropSystem] 🔓 Posizione "${positionKey}" liberata da "${object.name}"`);
+        }
+    },
+
+    /**
+     * Verifica se una posizione di snap è già occupata
+     * @param {string} positionKey - Chiave univoca posizione
+     * @param {THREE.Object3D} currentObject - Oggetto che sta verificando (escluso dal check)
+     * @returns {boolean} True se occupata da un altro oggetto
+     */
+    isSnapPositionOccupied: function(positionKey, currentObject) {
+        if (!positionKey) return false;
+
+        const occupyingObjectName = this.occupiedSnapPositions.get(positionKey);
+        if (!occupyingObjectName) {
+            return false; // Posizione libera
+        }
+
+        // Se occupata dallo stesso oggetto che sta controllando, considerala libera
+        if (occupyingObjectName === currentObject.name) {
+            return false;
+        }
+
+        console.log(`[DragDropSystem] 🚫 Posizione "${positionKey}" già occupata da "${occupyingObjectName}"`);
+        return true;
+    },
+
+    /**
+     * Resetta tutte le posizioni occupate (chiamato quando si cambia step)
+     */
+    resetOccupiedPositions: function() {
+        const count = this.occupiedSnapPositions.size;
+        this.occupiedSnapPositions.clear();
+        this.objectSnapPosition.clear();
+        if (count > 0) {
+            console.log(`[DragDropSystem] 🔄 Reset: ${count} posizioni snap liberate`);
         }
     },
 

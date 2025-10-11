@@ -2945,9 +2945,17 @@ window.UI = {
 
             // NUOVO: Configura snap targets multipli intercambiabili
             if (step.properties.SnapTargets) {
+<<<<<<< HEAD
                 console.log(`[UI] 🎯 Parsing SnapTargets: "${step.properties.SnapTargets}"`);
                 // Formato: oggetto1:target1,target2;oggetto2:target3,target4
                 const snapDeclarations = step.properties.SnapTargets.split(';').map(s => s.trim()).filter(s => s.length > 0);
+=======
+                // Rimuovi commenti (tutto dopo #) prima del parsing
+                const snapTargetsClean = step.properties.SnapTargets.split('#')[0].trim();
+                console.log(`[UI] 🎯 Parsing SnapTargets: "${snapTargetsClean}"`);
+                // Formato: oggetto1:target1,target2;oggetto2:target3,target4
+                const snapDeclarations = snapTargetsClean.split(';').map(s => s.trim()).filter(s => s.length > 0);
+>>>>>>> 00e8c5c (Messaggio commit)
                 console.log(`[UI] 🎯 Trovate ${snapDeclarations.length} dichiarazioni SnapTargets`);
 
                 snapDeclarations.forEach((declaration, idx) => {
@@ -3482,6 +3490,340 @@ window.UI = {
         } catch (error) {
             console.error(`[UI] ❌ Errore sincronizzazione AssemblySystem-Tutorial:`, error);
         }
+    },
+
+    /* ===== METODI HELPER PER NAVIGAZIONE RAPIDA TUTORIAL ===== */
+
+    /**
+     * Salta direttamente a uno step specifico del tutorial (numerazione umana 1-based)
+     * IMPORTANTE: Applica automaticamente le trasformazioni di tutti gli step precedenti
+     * @param {number} stepNumber - Numero step (1 = primo step, 2 = secondo step, etc.)
+     * @param {boolean} applyPreviousSteps - Se true, applica trasformazioni step precedenti (default: true)
+     * @example UI.jumpToStep(5) // Salta al 5° step applicando trasformazioni step 1-4
+     */
+    jumpToStep: function(stepNumber, applyPreviousSteps = true) {
+        if (!this.tutorialSteps || this.tutorialSteps.length === 0) {
+            console.error('❌ Nessun tutorial caricato. Carica prima uno scenario con tutorial.');
+            return false;
+        }
+
+        // Converti da 1-based (umano) a 0-based (array)
+        const stepIndex = stepNumber - 1;
+
+        if (stepIndex < 0 || stepIndex >= this.tutorialSteps.length) {
+            console.error(`❌ Step ${stepNumber} non valido. Step disponibili: 1-${this.tutorialSteps.length}`);
+            console.log('💡 Usa UI.listTutorialSteps() per vedere tutti gli step disponibili');
+            return false;
+        }
+
+        const step = this.tutorialSteps[stepIndex];
+        console.log(`⏭️ Saltando allo step ${stepNumber}/${this.tutorialSteps.length}: "${step.title}"`);
+
+        // Se richiesto, applica le trasformazioni degli step precedenti per avere lo stato corretto
+        if (applyPreviousSteps && stepIndex > 0) {
+            console.log(`⚡ Fast-forward: Applicazione trasformazioni step 1-${stepNumber - 1}...`);
+            this.applyPreviousStepsTransformations(stepIndex);
+        }
+
+        // Chiama il metodo goToStep esistente (che usa 0-based)
+        this.goToStep(stepIndex);
+        return true;
+    },
+
+    /**
+     * Applica tutte le trasformazioni degli step precedenti al target step
+     * Questo permette di saltare a uno step con lo stato corretto della scena
+     * Esegue istantaneamente sia trasformazioni statiche che animazioni
+     * @param {number} targetStepIndex - Indice target step (0-based)
+     */
+    applyPreviousStepsTransformations: function(targetStepIndex) {
+        if (!window.Scene3D) {
+            console.warn('⚠️ Scene3D non disponibile per applicare trasformazioni');
+            return;
+        }
+
+        let transformationsApplied = 0;
+        let animationsApplied = 0;
+
+        console.log(`⚡ Fast-forward: Applicazione stato step 1-${targetStepIndex}...`);
+
+        // Itera tutti gli step precedenti al target
+        for (let i = 0; i < targetStepIndex; i++) {
+            const step = this.tutorialSteps[i];
+
+            // 1. Applica prima le trasformazioni statiche (Posizione/Rotazione)
+            if (window.Scene3D.applyModelSettings && step.properties) {
+                window.Scene3D.applyModelSettings(step);
+
+                const hasTransformations = Object.keys(step.properties).some(key =>
+                    key.startsWith('Posizione') || key.startsWith('Rotazione')
+                );
+
+                if (hasTransformations) {
+                    transformationsApplied++;
+                }
+            }
+
+            // 2. Esegui istantaneamente le animazioni (Azione1, Azione2, ...)
+            const actionsApplied = this.applyStepActionsInstantly(step, i);
+            if (actionsApplied > 0) {
+                animationsApplied += actionsApplied;
+                console.log(`  ✓ Step ${i + 1}: "${step.title}" - ${actionsApplied} azioni eseguite`);
+            }
+        }
+
+        const totalChanges = transformationsApplied + animationsApplied;
+        if (totalChanges > 0) {
+            console.log(`✅ Fast-forward completato: ${transformationsApplied} trasformazioni + ${animationsApplied} animazioni applicate`);
+        } else {
+            console.log(`ℹ️ Nessuna trasformazione da applicare negli step 1-${targetStepIndex}`);
+        }
+    },
+
+    /**
+     * Applica istantaneamente tutte le azioni di uno step (Azione1, Azione2, ...)
+     * Calcola ed esegue le trasformazioni finali senza animazione
+     * @param {Object} step - Step del tutorial
+     * @param {number} stepIndex - Indice dello step (per log)
+     * @returns {number} Numero di azioni applicate
+     */
+    applyStepActionsInstantly: function(step, stepIndex) {
+        // Verifica se lo step ha un elemento da animare
+        const elementoPath = step.properties.Elemento;
+        if (!elementoPath) {
+            return 0; // Nessuna azione da applicare se non c'è elemento
+        }
+
+        // Trova il modello nella scena
+        const modelFilename = elementoPath.split('/').pop();
+        const model = window.Scene3D.findModelByName(modelFilename);
+        if (!model) {
+            console.warn(`⚠️ Modello "${modelFilename}" non trovato per step ${stepIndex + 1}`);
+            return 0;
+        }
+
+        let actionsCount = 0;
+
+        // Cerca tutte le azioni (Azione1, Azione2, ..., Azione50)
+        for (let actionNum = 1; actionNum <= 50; actionNum++) {
+            const actionKey = `Azione${actionNum}`;
+            const actionValue = step.properties[actionKey];
+
+            if (!actionValue) {
+                break; // Nessuna azione successiva, stop
+            }
+
+            // Applica l'azione istantaneamente
+            try {
+                this.applyActionInstantly(model, actionValue, modelFilename);
+                actionsCount++;
+            } catch (error) {
+                console.error(`❌ Errore applicazione ${actionKey} step ${stepIndex + 1}:`, error);
+            }
+        }
+
+        return actionsCount;
+    },
+
+    /**
+     * Applica istantaneamente una singola azione a un modello
+     * Supporta: traslazione, rotazione, svita, avvita, estrai, inserisci, appoggia
+     * @param {THREE.Object3D} model - Modello Three.js
+     * @param {string} actionString - Stringa azione (es. "traslazione:(0,0.1,0,1)")
+     * @param {string} modelFilename - Nome file modello (per direzioni)
+     */
+    applyActionInstantly: function(model, actionString, modelFilename) {
+        // Determina il tipo di azione
+        const actionType = actionString.split(/[(:]/)[0];
+
+        if (actionType === 'traslazione') {
+            // Parse: traslazione:(x,y,z,durata) o traslazione:target_original,(x,y,z,durata)
+            const parsed = window.Scene3D.parseMovementOperation(actionString, 'traslazione', modelFilename);
+
+            if (parsed.targetName && parsed.targetName.endsWith('_original')) {
+                // Traslazione relativa a target originale
+                const targetModelName = parsed.targetName.replace('_original', '');
+                const targetModel = window.Scene3D.findModelByName(targetModelName);
+                if (targetModel) {
+                    const targetBB = new THREE.Box3().setFromObject(targetModel);
+                    const targetCenter = targetBB.getCenter(new THREE.Vector3());
+                    model.position.set(
+                        targetCenter.x + parsed.x,
+                        targetCenter.y + parsed.y,
+                        targetCenter.z + parsed.z
+                    );
+                }
+            } else {
+                // Traslazione normale
+                model.position.x += parsed.x;
+                model.position.y += parsed.y;
+                model.position.z += parsed.z;
+            }
+
+        } else if (actionType === 'rotazione') {
+            // Parse: rotazione:(rx,ry,rz,durata)
+            const parsed = window.Scene3D.parseMovementOperation(actionString, 'rotazione', modelFilename);
+            model.rotation.x += parsed.x * Math.PI / 180; // Converti gradi → radianti
+            model.rotation.y += parsed.y * Math.PI / 180;
+            model.rotation.z += parsed.z * Math.PI / 180;
+
+        } else if (actionType === 'svita') {
+            // Parse: svita o svita(distanza)
+            const parsed = window.Scene3D.parseMovementOperation(actionString, 'svita', modelFilename);
+            // Applica traslazione
+            model.position.x += parsed.traslazione.x;
+            model.position.y += parsed.traslazione.y;
+            model.position.z += parsed.traslazione.z;
+            // Applica rotazione
+            model.rotation.x += parsed.rotazione.x * Math.PI / 180;
+            model.rotation.y += parsed.rotazione.y * Math.PI / 180;
+            model.rotation.z += parsed.rotazione.z * Math.PI / 180;
+
+        } else if (actionType === 'avvita') {
+            // Parse: avvita o avvita(distanza)
+            const parsed = window.Scene3D.parseMovementOperation(actionString, 'avvita', modelFilename);
+            // Applica traslazione
+            model.position.x += parsed.traslazione.x;
+            model.position.y += parsed.traslazione.y;
+            model.position.z += parsed.traslazione.z;
+            // Applica rotazione
+            model.rotation.x += parsed.rotazione.x * Math.PI / 180;
+            model.rotation.y += parsed.rotazione.y * Math.PI / 180;
+            model.rotation.z += parsed.rotazione.z * Math.PI / 180;
+
+        } else if (actionType === 'estrai') {
+            // Parse: estrai o estrai(distanza)
+            const parsed = window.Scene3D.parseMovementOperation(actionString, 'estrai', modelFilename);
+            model.position.x += parsed.traslazione.x;
+            model.position.y += parsed.traslazione.y;
+            model.position.z += parsed.traslazione.z;
+
+        } else if (actionType === 'inserisci') {
+            // Parse: inserisci o inserisci(distanza)
+            const parsed = window.Scene3D.parseMovementOperation(actionString, 'inserisci', modelFilename);
+            model.position.x += parsed.traslazione.x;
+            model.position.y += parsed.traslazione.y;
+            model.position.z += parsed.traslazione.z;
+
+        } else if (actionType === 'appoggia') {
+            // Calcola bounding box e metti punto più basso a Y=0
+            const boundingBox = new THREE.Box3().setFromObject(model);
+            const minY = boundingBox.min.y;
+            const offsetY = model.position.y - minY;
+            model.position.y = offsetY;
+
+        } else if (actionType === 'centro') {
+            // Gestisce centro:(x,y,z);rotazione:(rx,ry,rz,durata)
+            // Per semplicità ora ignoriamo centro (richiede cambio pivot)
+            // TODO: Implementare se necessario
+            console.warn(`⚠️ Azione "centro" non ancora supportata in fast-forward`);
+
+        } else {
+            console.warn(`⚠️ Tipo azione "${actionType}" non supportato in fast-forward`);
+        }
+    },
+
+    /**
+     * Lista tutti gli step del tutorial corrente
+     * @returns {Array} Array degli step con informazioni dettagliate
+     */
+    listTutorialSteps: function() {
+        if (!this.tutorialSteps || this.tutorialSteps.length === 0) {
+            console.warn('⚠️ Nessun tutorial caricato');
+            return [];
+        }
+
+        console.log(`\n📋 Tutorial caricato: ${this.tutorialSteps.length} step disponibili\n`);
+        console.log('═'.repeat(80));
+
+        this.tutorialSteps.forEach((step, index) => {
+            const stepNumber = index + 1;
+            const isCurrent = (index === this.currentStepIndex);
+            const marker = isCurrent ? '👉' : '  ';
+            const title = step.title || 'Senza titolo';
+            const description = step.properties.Descrizione || '';
+
+            console.log(`${marker} Step ${stepNumber}: ${title}`);
+            if (description) {
+                console.log(`     └─ ${description}`);
+            }
+
+            // Mostra proprietà chiave dello step
+            const keyProps = [];
+            if (step.properties.Elemento) keyProps.push(`Elemento: ${step.properties.Elemento}`);
+            if (step.properties.Utensile) keyProps.push(`Utensile: ${step.properties.Utensile}`);
+            if (step.properties.DragDrop) keyProps.push('DragDrop attivo');
+            if (step.properties.AssemblyMode) keyProps.push('Assembly attivo');
+
+            if (keyProps.length > 0) {
+                console.log(`     └─ ${keyProps.join(' | ')}`);
+            }
+        });
+
+        console.log('═'.repeat(80));
+        console.log(`\n💡 Usa UI.jumpToStep(N) per saltare a uno step specifico`);
+        console.log(`💡 Step corrente: ${this.currentStepIndex + 1}\n`);
+
+        return this.tutorialSteps.map((step, index) => ({
+            number: index + 1,
+            title: step.title,
+            description: step.properties.Descrizione,
+            isCurrent: (index === this.currentStepIndex)
+        }));
+    },
+
+    /**
+     * Cerca e salta a uno step per nome/titolo (ricerca parziale case-insensitive)
+     * @param {string} searchTerm - Termine di ricerca nel titolo dello step
+     * @example UI.jumpToStepByName("rimuovi vite") // Cerca step con "rimuovi vite" nel titolo
+     */
+    jumpToStepByName: function(searchTerm) {
+        if (!this.tutorialSteps || this.tutorialSteps.length === 0) {
+            console.error('❌ Nessun tutorial caricato. Carica prima uno scenario con tutorial.');
+            return false;
+        }
+
+        const search = searchTerm.toLowerCase();
+        const matches = [];
+
+        this.tutorialSteps.forEach((step, index) => {
+            const title = (step.title || '').toLowerCase();
+            const description = (step.properties.Descrizione || '').toLowerCase();
+
+            if (title.includes(search) || description.includes(search)) {
+                matches.push({
+                    number: index + 1,
+                    index: index,
+                    title: step.title,
+                    description: step.properties.Descrizione
+                });
+            }
+        });
+
+        if (matches.length === 0) {
+            console.error(`❌ Nessuno step trovato con "${searchTerm}"`);
+            console.log('💡 Usa UI.listTutorialSteps() per vedere tutti gli step disponibili');
+            return false;
+        }
+
+        if (matches.length === 1) {
+            const match = matches[0];
+            console.log(`✅ Trovato: Step ${match.number} - ${match.title}`);
+            this.goToStep(match.index);
+            return true;
+        }
+
+        // Multiple matches - mostra lista
+        console.log(`🔍 Trovati ${matches.length} step che contengono "${searchTerm}":\n`);
+        matches.forEach(match => {
+            console.log(`   ${match.number}. ${match.title}`);
+            if (match.description) {
+                console.log(`      └─ ${match.description}`);
+            }
+        });
+        console.log(`\n💡 Usa UI.jumpToStep(N) per saltare a uno specifico step`);
+
+        return matches;
     }
 };
 
@@ -3510,6 +3852,47 @@ window.startAnimation = function() {
 
 window.hideError = function() {
     if (window.UI) window.UI.hideError();
+};
+
+/* ===== FUNZIONI GLOBALI PER NAVIGAZIONE TUTORIAL ===== */
+// Shortcuts per accesso rapido dalla console durante sviluppo/testing
+
+/**
+ * Salta a uno step specifico del tutorial
+ * @param {number} stepNumber - Numero step (1-based)
+ * @example jumpToStep(5) // Salta al 5° step
+ */
+window.jumpToStep = function(stepNumber) {
+    if (window.UI && typeof window.UI.jumpToStep === 'function') {
+        return window.UI.jumpToStep(stepNumber);
+    }
+    console.error('❌ UI.jumpToStep non disponibile');
+    return false;
+};
+
+/**
+ * Lista tutti gli step del tutorial corrente
+ * @example listSteps() // Mostra tutti gli step disponibili
+ */
+window.listSteps = function() {
+    if (window.UI && typeof window.UI.listTutorialSteps === 'function') {
+        return window.UI.listTutorialSteps();
+    }
+    console.error('❌ UI.listTutorialSteps non disponibile');
+    return [];
+};
+
+/**
+ * Cerca e salta a uno step per nome
+ * @param {string} searchTerm - Termine di ricerca
+ * @example findStep("vite") // Cerca step con "vite" nel nome
+ */
+window.findStep = function(searchTerm) {
+    if (window.UI && typeof window.UI.jumpToStepByName === 'function') {
+        return window.UI.jumpToStepByName(searchTerm);
+    }
+    console.error('❌ UI.jumpToStepByName non disponibile');
+    return false;
 };
 
 } // Fine if statement del sistema legacy

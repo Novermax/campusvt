@@ -159,11 +159,17 @@ window.ModelLoader = {
     },
     
     /**
+<<<<<<< HEAD
      * Processa i gruppi di file in batch paralleli (OPZIONE 3: HYBRID)
+=======
+     * Processa i gruppi di file in parallelo con controllo concurrency
+     * OTTIMIZZATO: Caricamento parallelo + zero delay artificiali + batch rendering
+>>>>>>> 00e8c5c (Messaggio commit)
      */
     processFileGroups: function(groups, onProgress, onComplete, onError) {
         const totalSteps = groups.models.length;
         const loadedModels = [];
+<<<<<<< HEAD
         const BATCH_SIZE = 3; // Carica 3 modelli contemporaneamente
         const BATCH_DELAY = 50; // 50ms tra batch
 
@@ -279,6 +285,123 @@ window.ModelLoader = {
 
         // Avvia il processamento
         processNextBatch();
+=======
+        const CONCURRENT_LOADS = 6; // Carica fino a 6 modelli contemporaneamente
+
+        // Aggiorna progress iniziale (0/total)
+        if (onProgress) {
+            onProgress(0, {
+                current: 0,
+                total: totalSteps,
+                fileName: '',
+                message: `Preparazione caricamento ${totalSteps} modelli...`
+            });
+        }
+
+        console.log(`🚀 Avvio caricamento parallelo: ${totalSteps} modelli, concurrency=${CONCURRENT_LOADS}`);
+
+        // Crea array di promise per caricamento parallelo
+        const loadPromises = groups.models.map((modelFile, index) => {
+            const baseName = this.getBaseName(modelFile.name);
+
+            // Trova file associati con nome simile
+            const associatedMaterial = groups.materials.find(f =>
+                this.getBaseName(f.name) === baseName);
+            const associatedTextures = groups.textures.filter(f =>
+                this.getBaseName(f.name) === baseName);
+
+            // Restituisce una Promise per questo modello
+            return new Promise((resolve, reject) => {
+                this.loadSingleModel(
+                    modelFile,
+                    associatedMaterial,
+                    associatedTextures,
+                    (model) => {
+                        loadedModels.push(model);
+                        console.log(`✅ Modello ${loadedModels.length}/${totalSteps} caricato: ${modelFile.name}`);
+
+                        // Aggiorna progresso in tempo reale
+                        if (onProgress) {
+                            onProgress(loadedModels.length / totalSteps, {
+                                current: loadedModels.length,
+                                total: totalSteps,
+                                fileName: modelFile.name,
+                                message: `✓ Caricato ${loadedModels.length}/${totalSteps}: ${modelFile.name}`
+                            });
+                        }
+
+                        resolve(model);
+                    },
+                    (error) => {
+                        console.error(`❌ Errore caricamento ${modelFile.name}:`, error);
+                        reject(error);
+                    }
+                );
+            });
+        });
+
+        // Carica in batch paralleli con controllo concurrency
+        this.loadInBatches(loadPromises, CONCURRENT_LOADS)
+            .then(() => {
+                console.log('✅ Tutti i modelli caricati, rendering finale...');
+                this.isLoading = false;
+
+                // Rendering finale UNICO invece di uno per ogni modello (OTTIMIZZAZIONE #3)
+                if (window.Scene3D && typeof window.Scene3D.render === 'function') {
+                    requestAnimationFrame(() => {
+                        window.Scene3D.render();
+                        console.log('🎨 Batch rendering completato');
+
+                        // Callback immediato (OTTIMIZZAZIONE #2: zero delay)
+                        if (onComplete) onComplete(loadedModels);
+                    });
+                } else {
+                    // Nessun rendering necessario, callback immediato
+                    if (onComplete) onComplete(loadedModels);
+                }
+            })
+            .catch((error) => {
+                this.isLoading = false;
+                if (onError) onError(error);
+            });
+    },
+
+    /**
+     * Carica promise in batch paralleli con limite di concurrency
+     * OTTIMIZZAZIONE #1: Caricamento parallelo controllato
+     */
+    loadInBatches: function(promises, batchSize) {
+        return new Promise((resolve, reject) => {
+            let currentIndex = 0;
+            let completedCount = 0;
+            const results = [];
+
+            const loadNext = () => {
+                if (completedCount >= promises.length) {
+                    resolve(results);
+                    return;
+                }
+
+                // Avvia batch di caricamenti paralleli
+                const batch = [];
+                while (batch.length < batchSize && currentIndex < promises.length) {
+                    const index = currentIndex++;
+                    batch.push(
+                        promises[index]
+                            .then(result => {
+                                results[index] = result;
+                                completedCount++;
+                                loadNext(); // Avvia prossimo quando questo completa
+                            })
+                            .catch(reject)
+                    );
+                }
+            };
+
+            // Avvia primo batch
+            loadNext();
+        });
+>>>>>>> 00e8c5c (Messaggio commit)
     },
     
     /* ===== CARICAMENTO SINGOLO MODELLO ===== */
