@@ -439,7 +439,7 @@ Azione3=appoggia(0.2)
   DragDrop=true
   DragDropObjects=vite_culatta_1,vite_culatta_2  # Entrambi draggabili
   DragDropDistance=0.1                     # Distanza di snap in unità 3D
-  SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original # Posizioni di snap per ogni vite
+  SnapTargets=estrattoresx_original,estrattoredx_original # SINTASSI SEMPLIFICATA: tutti gli oggetti possono usare tutti i target
   Utensile=Mani
 
 

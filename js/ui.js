@@ -2936,27 +2936,88 @@ window.UI = {
 
             // NUOVO: Configura punti di snap a coordinate arbitrarie
             if (step.properties.SnapPoint) {
-                const snapDeclarations = step.properties.SnapPoint.split(';').map(s => s.trim()).filter(s => s.length > 0);
+                const snapPointClean = step.properties.SnapPoint.split('#')[0].trim();
+                console.log(`[UI] 📍 Parsing SnapPoint: "${snapPointClean}"`);
 
-                snapDeclarations.forEach(declaration => {
-                    // Parsing formato: oggetto:(x,y,z)
-                    const match = declaration.match(/^([^:]+):\(([^,]+),([^,]+),([^)]+)\)$/);
-                    if (match) {
-                        const objectName = match[1].trim();
-                        const x = parseFloat(match[2].trim());
-                        const y = parseFloat(match[3].trim());
-                        const z = parseFloat(match[4].trim());
+                // RILEVA FORMATO: se contiene ":" → formato vecchio (per-oggetto), altrimenti formato nuovo (globale)
+                const isGlobalFormat = !snapPointClean.includes(':');
+
+                if (isGlobalFormat) {
+                    // FORMATO NUOVO (GLOBALE): (x,y,z),(x2,y2,z2),(x3,y3,z3)
+                    // Applica questi punti a TUTTI gli oggetti in DragDropObjects
+                    const globalPoints = [];
+
+                    // Parsing coordinate multiple separate da virgola
+                    const coordMatches = snapPointClean.matchAll(/\(([^,]+),([^,]+),([^)]+)\)/g);
+                    for (const match of coordMatches) {
+                        const x = parseFloat(match[1].trim());
+                        const y = parseFloat(match[2].trim());
+                        const z = parseFloat(match[3].trim());
 
                         if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
-                            window.DragDropSystem.setCustomSnapPosition(objectName, x, y, z);
-                            AppConfig.log(3, `🎯 DRAG & DROP: Snap point per "${objectName}" a (${x}, ${y}, ${z})`);
-                        } else {
-                            AppConfig.log(1, `⚠️ DRAG & DROP: Coordinate non valide in SnapPoint: ${declaration}`);
+                            globalPoints.push({ x, y, z });
                         }
-                    } else {
-                        AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapPoint non valido: ${declaration} (usare formato oggetto:(x,y,z))`);
                     }
-                });
+
+                    if (globalPoints.length > 0 && draggableObjects.length > 0) {
+                        console.log(`[UI] 📍 FORMATO GLOBALE: ${globalPoints.length} punti per ${draggableObjects.length} oggetti`);
+
+                        // Crea nomi fittizi per i punti globali (snap_point_0, snap_point_1, etc)
+                        const globalTargetNames = globalPoints.map((point, idx) => `snap_point_${idx}_original`);
+
+                        // Applica gli stessi punti snap a tutti gli oggetti draggabili
+                        draggableObjects.forEach(objectName => {
+                            // Configura snap multipli usando target names fittizi
+                            window.DragDropSystem.setMultipleSnapTargets(objectName, globalTargetNames);
+
+                            // Crea riferimenti virtuali per ogni punto
+                            globalPoints.forEach((point, idx) => {
+                                const targetName = globalTargetNames[idx];
+                                // Crea oggetto virtuale con posizione fissa
+                                const virtualTarget = {
+                                    isOriginalReference: true,
+                                    originalModelName: targetName,
+                                    position: new THREE.Vector3(point.x, point.y, point.z)
+                                };
+
+                                // Registra nel sistema come riferimento _original virtuale
+                                if (!window.Scene3D.virtualSnapTargets) {
+                                    window.Scene3D.virtualSnapTargets = new Map();
+                                }
+                                window.Scene3D.virtualSnapTargets.set(targetName, virtualTarget);
+                            });
+
+                            AppConfig.log(3, `🎯 DRAG & DROP: Snap points globali per "${objectName}" -> ${globalPoints.length} coordinate`);
+                        });
+
+                        console.log(`[UI] ✅ Punti snap globali applicati: ${globalPoints.map(p => `(${p.x},${p.y},${p.z})`).join(', ')}`);
+                    } else {
+                        AppConfig.log(1, `⚠️ DRAG & DROP: SnapPoint globali specificati ma nessun oggetto draggabile o coordinate valide`);
+                    }
+                } else {
+                    // FORMATO VECCHIO (PER-OGGETTO): oggetto1:(x,y,z);oggetto2:(x2,y2,z2)
+                    const snapDeclarations = snapPointClean.split(';').map(s => s.trim()).filter(s => s.length > 0);
+                    console.log(`[UI] 📍 FORMATO PER-OGGETTO: ${snapDeclarations.length} dichiarazioni`);
+
+                    snapDeclarations.forEach(declaration => {
+                        const match = declaration.match(/^([^:]+):\(([^,]+),([^,]+),([^)]+)\)$/);
+                        if (match) {
+                            const objectName = match[1].trim();
+                            const x = parseFloat(match[2].trim());
+                            const y = parseFloat(match[3].trim());
+                            const z = parseFloat(match[4].trim());
+
+                            if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+                                window.DragDropSystem.setCustomSnapPosition(objectName, x, y, z);
+                                AppConfig.log(3, `🎯 DRAG & DROP: Snap point per "${objectName}" a (${x}, ${y}, ${z})`);
+                            } else {
+                                AppConfig.log(1, `⚠️ DRAG & DROP: Coordinate non valide in SnapPoint: ${declaration}`);
+                            }
+                        } else {
+                            AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapPoint non valido: ${declaration}`);
+                        }
+                    });
+                }
             }
 
             // NUOVO: Configura snap targets multipli intercambiabili
@@ -2964,31 +3025,54 @@ window.UI = {
                 // Rimuovi commenti (tutto dopo #) prima del parsing
                 const snapTargetsClean = step.properties.SnapTargets.split('#')[0].trim();
                 console.log(`[UI] 🎯 Parsing SnapTargets: "${snapTargetsClean}"`);
-                // Formato: oggetto1:target1,target2;oggetto2:target3,target4
-                const snapDeclarations = snapTargetsClean.split(';').map(s => s.trim()).filter(s => s.length > 0);
-                console.log(`[UI] 🎯 Trovate ${snapDeclarations.length} dichiarazioni SnapTargets`);
 
-                snapDeclarations.forEach((declaration, idx) => {
-                    console.log(`[UI] 🎯 Parsing dichiarazione ${idx + 1}: "${declaration}"`);
-                    // Parsing formato: oggetto:target1,target2,target3
-                    const colonIndex = declaration.indexOf(':');
-                    if (colonIndex > 0) {
-                        const objectName = declaration.substring(0, colonIndex).trim();
-                        const targetsString = declaration.substring(colonIndex + 1).trim();
-                        const targetNames = targetsString.split(',').map(t => t.trim()).filter(t => t.length > 0);
+                // RILEVA FORMATO: se contiene ":" → formato vecchio (per-oggetto), altrimenti formato nuovo (globale)
+                const isGlobalFormat = !snapTargetsClean.includes(':');
 
-                        console.log(`[UI] 🎯 Oggetto: "${objectName}", Targets: [${targetNames.join(', ')}]`);
+                if (isGlobalFormat) {
+                    // FORMATO NUOVO (GLOBALE): target1,target2,target3
+                    // Applica questi target a TUTTI gli oggetti in DragDropObjects
+                    const globalTargets = snapTargetsClean.split(',').map(t => t.trim()).filter(t => t.length > 0);
 
-                        if (targetNames.length > 0) {
-                            window.DragDropSystem.setMultipleSnapTargets(objectName, targetNames);
-                            AppConfig.log(3, `🎯 DRAG & DROP: Snap targets per "${objectName}" -> [${targetNames.join(', ')}]`);
-                        } else {
-                            AppConfig.log(1, `⚠️ DRAG & DROP: Nessun target specificato in SnapTargets: ${declaration}`);
-                        }
+                    if (globalTargets.length > 0 && draggableObjects.length > 0) {
+                        console.log(`[UI] 🎯 FORMATO GLOBALE: ${globalTargets.length} target per ${draggableObjects.length} oggetti`);
+
+                        // Applica gli stessi target a tutti gli oggetti draggabili
+                        draggableObjects.forEach(objectName => {
+                            window.DragDropSystem.setMultipleSnapTargets(objectName, globalTargets);
+                            AppConfig.log(3, `🎯 DRAG & DROP: Snap targets globali per "${objectName}" -> [${globalTargets.join(', ')}]`);
+                        });
+
+                        console.log(`[UI] ✅ Target globali applicati a tutti gli oggetti: [${globalTargets.join(', ')}]`);
                     } else {
-                        AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapTargets non valido: ${declaration} (usare formato oggetto:target1,target2,...)`);
+                        AppConfig.log(1, `⚠️ DRAG & DROP: SnapTargets globali specificati ma nessun oggetto draggabile o target valido`);
                     }
-                });
+                } else {
+                    // FORMATO VECCHIO (PER-OGGETTO): oggetto1:target1,target2;oggetto2:target3,target4
+                    const snapDeclarations = snapTargetsClean.split(';').map(s => s.trim()).filter(s => s.length > 0);
+                    console.log(`[UI] 🎯 FORMATO PER-OGGETTO: ${snapDeclarations.length} dichiarazioni`);
+
+                    snapDeclarations.forEach((declaration, idx) => {
+                        console.log(`[UI] 🎯 Parsing dichiarazione ${idx + 1}: "${declaration}"`);
+                        const colonIndex = declaration.indexOf(':');
+                        if (colonIndex > 0) {
+                            const objectName = declaration.substring(0, colonIndex).trim();
+                            const targetsString = declaration.substring(colonIndex + 1).trim();
+                            const targetNames = targetsString.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
+                            console.log(`[UI] 🎯 Oggetto: "${objectName}", Targets: [${targetNames.join(', ')}]`);
+
+                            if (targetNames.length > 0) {
+                                window.DragDropSystem.setMultipleSnapTargets(objectName, targetNames);
+                                AppConfig.log(3, `🎯 DRAG & DROP: Snap targets per "${objectName}" -> [${targetNames.join(', ')}]`);
+                            } else {
+                                AppConfig.log(1, `⚠️ DRAG & DROP: Nessun target specificato in SnapTargets: ${declaration}`);
+                            }
+                        } else {
+                            AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapTargets non valido: ${declaration}`);
+                        }
+                    });
+                }
             }
 
             // Configura visibilità indicatori snap (sfere verdi)

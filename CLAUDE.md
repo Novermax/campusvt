@@ -170,10 +170,10 @@ Azione1=inserisci(0.6)               # Inserisci con distanza personalizzata
 DragDrop=true                        # Abilita drag & drop
 DragDropObjects=filtro,vite          # Oggetti draggabili
 DragDropDistance=0.3                 # Distanza snap
-SnapPoint=filtro:(x,y,z)             # Snap a coordinate arbitrarie
-SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)  # Multi-oggetto
-SnapTargets=vite_A:foro_1_original,foro_2_original  # Snap multipli intercambiabili
-SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original,foro_2_original  # Multi-oggetto
+SnapPoint=(0.5,0.2,0.3),(-0.1,0,0.5) # Snap globale a coordinate (tutti oggetti possono usare tutti i punti)
+SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)  # Formato vecchio: snap per-oggetto (con :)
+SnapTargets=estrattoresx_original,estrattoredx_original  # Snap globale a target (tutti oggetti possono usare tutti i target)
+SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original  # Formato vecchio: snap per-oggetto (con :)
 AssemblyMode=true                    # Modalità assemblaggio
 ```
 
@@ -279,6 +279,84 @@ UI.jumpToStepByName("rimuovi filtro")    // Metodo completo (alternativo)
   DragDropSystem.setMultipleSnapTargets('vite_A', ['foro_1_original', 'foro_2_original'])
   DragDropSystem.debugSnapSystem()  // Debug completo stato snap
   ```
+
+### 🆕 Sintassi Semplificata SnapTargets/SnapPoint Globale (Gennaio 2026)
+- **Funzionalità**: Definizione snap targets/points globali applicati automaticamente a TUTTI gli oggetti in `DragDropObjects`
+- **Vantaggi**: Elimina ridondanza quando tutti gli oggetti possono usare tutti i target
+- **Auto-Rilevamento**: Sistema rileva automaticamente formato vecchio (con `:`) vs nuovo (senza `:`)
+- **Occupazione**: Mantiene logica "prima arrivato, primo servito" - un target può essere occupato da un solo oggetto
+
+#### Sintassi SnapTargets Globale
+**PRIMA (Formato Vecchio - Per-Oggetto)**:
+```ini
+DragDropObjects=vite_culatta_1,vite_culatta_2
+SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original
+```
+
+**DOPO (Formato Nuovo - Globale)**:
+```ini
+DragDropObjects=vite_culatta_1,vite_culatta_2
+SnapTargets=estrattoresx_original,estrattoredx_original
+# Entrambe le viti possono usare entrambi i target automaticamente
+```
+
+#### Sintassi SnapPoint Globale
+**PRIMA (Formato Vecchio - Per-Oggetto)**:
+```ini
+DragDropObjects=filtro,vite_1,vite_2
+SnapPoint=filtro:(0.5,0.2,0.3);vite_1:(-0.1,0,0.5);vite_2:(-0.1,0,0.5)
+```
+
+**DOPO (Formato Nuovo - Globale)**:
+```ini
+DragDropObjects=filtro,vite_1,vite_2
+SnapPoint=(0.5,0.2,0.3),(-0.1,0,0.5)
+# Tutti e 3 gli oggetti possono usare entrambe le coordinate
+```
+
+#### Caratteristiche
+- ✅ **Backward Compatible**: Sintassi vecchia continua a funzionare
+- ✅ **Auto-Detection**: Sistema rileva formato automaticamente (presenza/assenza di `:`)
+- ✅ **Zero Configurazione**: Basta elencare target/coordinate, sistema applica a tutti
+- ✅ **Occupazione Garantita**: Un target occupato non può essere rioccupato
+- ✅ **Target Virtuali**: SnapPoint globale crea riferimenti `snap_point_N_original` automaticamente
+
+#### Implementazione
+- **Parsing**: `js/ui.js:2938-3021` (SnapPoint), `js/ui.js:2962-3015` (SnapTargets)
+- **Risoluzione**: `js/scene3d-modular.js:2285-2290` (target virtuali via `virtualSnapTargets` Map)
+- **Log Debug**: Console mostra `🎯 FORMATO GLOBALE` vs `🎯 FORMATO PER-OGGETTO`
+
+#### Esempi Pratici
+
+**Caso 1: Viti intercambiabili su estrattori**
+```ini
+[Step 14 - Inserimento viti estrattore]
+DragDrop=true
+DragDropObjects=vite_culatta_1,vite_culatta_2
+SnapTargets=estrattoresx_original,estrattoredx_original
+DragDropDistance=0.1
+# Prima vite → snappa su estrattore più vicino (es. sx)
+# Seconda vite → snappa sul rimanente (es. dx)
+```
+
+**Caso 2: Assemblaggio pezzi su coordinate fisse**
+```ini
+[Step 5 - Posiziona componenti]
+DragDrop=true
+DragDropObjects=componente_A,componente_B,componente_C
+SnapPoint=(0,0.5,0),(0.3,0.5,0.3),(-0.3,0.5,0.3)
+DragDropDistance=0.2
+# 3 componenti possono andare su 3 posizioni qualsiasi
+```
+
+**Caso 3: Misto target e coordinate (usa formato vecchio)**
+```ini
+# Se serve mappatura specifica → usa formato vecchio
+SnapTargets=vite_speciale:foro_speciale_original
+SnapPoint=componente_custom:(1.5,0,0)
+```
+
+---
 
 ### Sistema Distanza Configurabile per Comandi Movimento (Gennaio 2026)
 - **Funzionalità**: Parametro distanza opzionale per comandi `svita`, `avvita`, `estrai`, `inserisci`

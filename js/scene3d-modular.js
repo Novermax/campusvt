@@ -1232,6 +1232,10 @@ const Scene3D = {
             return model.position.clone();
         }
 
+        // IMPORTANTE: Forza aggiornamento matrixWorld prima di calcolare bounding box
+        // Necessario dopo operazioni drag & drop per garantire posizione corrente
+        model.updateMatrixWorld(true);
+
         const boundingBox = new THREE.Box3().setFromObject(model);
         const center = boundingBox.getCenter(new THREE.Vector3());
 
@@ -2208,28 +2212,38 @@ const Scene3D = {
         // Risolvi slave objects da nomi a riferimenti modelli reali
         const slaveModels = [];
         if (multiStepData.slaveObjects && multiStepData.slaveObjects.length > 0) {
+            console.log(`🔗 SLAVE OBJECTS: Elaborazione ${multiStepData.slaveObjects.length} oggetti slave...`);
+
             multiStepData.slaveObjects.forEach(slaveName => {
-                // Rimuovi estensione file se presente (es: tubograsso.glb -> tubograsso)
-                const cleanSlaveName = slaveName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+                try {
+                    // Rimuovi estensione file se presente (es: tubograsso.glb -> tubograsso)
+                    const cleanSlaveName = slaveName.replace(/\.(glb|gltf|obj|stl)$/i, '');
 
-                // Prova prima con il nome pulito, poi con il nome originale come fallback
-                let slaveModel = this.findModelByName(cleanSlaveName);
-                if (!slaveModel && cleanSlaveName !== slaveName) {
-                    slaveModel = this.findModelByName(slaveName);
-                }
+                    // Prova prima con il nome pulito, poi con il nome originale come fallback
+                    let slaveModel = this.findModelByName(cleanSlaveName);
+                    if (!slaveModel && cleanSlaveName !== slaveName) {
+                        slaveModel = this.findModelByName(slaveName);
+                    }
 
-                if (slaveModel) {
-                    slaveModels.push({
-                        model: slaveModel,
-                        name: cleanSlaveName,
-                        initialPosition: slaveModel.position.clone(),
-                        initialRotation: new THREE.Euler().copy(slaveModel.rotation)
-                    });
-                    console.log(`🔗 SLAVE: "${cleanSlaveName}" collegato a master "${multiStepData.modelName}"`);
-                } else {
-                    console.warn(`⚠️ SLAVE: Oggetto "${slaveName}" (cercato anche come "${cleanSlaveName}") non trovato nella scena`);
+                    if (slaveModel) {
+                        slaveModels.push({
+                            model: slaveModel,
+                            name: cleanSlaveName,
+                            initialPosition: slaveModel.position.clone(),
+                            initialRotation: new THREE.Euler().copy(slaveModel.rotation)
+                        });
+                        console.log(`🔗 SLAVE: "${cleanSlaveName}" collegato a master "${multiStepData.modelName}"`);
+                    } else {
+                        console.warn(`⚠️ SLAVE: Oggetto "${slaveName}" (cercato anche come "${cleanSlaveName}") non trovato nella scena`);
+                        console.warn(`⚠️ SLAVE: Animazione continuerà SENZA questo slave object`);
+                    }
+                } catch (error) {
+                    console.error(`❌ SLAVE ERROR: Errore elaborazione slave "${slaveName}":`, error);
+                    console.warn(`⚠️ SLAVE: Animazione continuerà SENZA questo slave object`);
                 }
             });
+
+            console.log(`🔗 SLAVE OBJECTS: ${slaveModels.length}/${multiStepData.slaveObjects.length} slave objects collegati con successo`);
         }
 
         const animation = {
@@ -2268,13 +2282,20 @@ const Scene3D = {
             return null;
         }
 
-        // Gestione suffisso _original per posizioni iniziali
+        // PRIORITÀ 1: Controlla target virtuali da SnapPoint globale (es: snap_point_0_original)
+        if (this.virtualSnapTargets && this.virtualSnapTargets.has(targetName)) {
+            const virtualTarget = this.virtualSnapTargets.get(targetName);
+            console.log(`📍 SNAP VIRTUALE: Trovato target virtuale "${targetName}" a (${virtualTarget.position.x.toFixed(3)}, ${virtualTarget.position.y.toFixed(3)}, ${virtualTarget.position.z.toFixed(3)})`);
+            return virtualTarget;
+        }
+
+        // PRIORITÀ 2: Gestione suffisso _original per posizioni iniziali modelli reali
         const isOriginalReference = targetName.endsWith('_original');
         const cleanTargetName = targetName
             .replace('_original', '')
             .split('/').pop()
             .replace('.glb', '');
-        
+
         this.scene.traverse(function(child) {
             if (child.isMesh || child.isGroup || child.isObject3D) {
                 const modelName = (child.userData?.originalFilename || child.name || '').split('/').pop().replace('.glb', '');
@@ -2284,12 +2305,12 @@ const Scene3D = {
                 }
             }
         });
-        
+
         // Se richiesta posizione originale, crea oggetto virtuale
         if (foundModel && isOriginalReference) {
             return this.createOriginalPositionReference(foundModel, targetName);
         }
-        
+
         return foundModel;
     },
     
@@ -2396,10 +2417,16 @@ const Scene3D = {
 
                 // Applica stessa traslazione agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
-                    const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
-                    anim.slaveModels.forEach(slave => {
-                        slave.model.position.copy(slave.initialPosition).add(masterDelta);
-                    });
+                    try {
+                        const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                        anim.slaveModels.forEach(slave => {
+                            if (slave && slave.model && slave.initialPosition) {
+                                slave.model.position.copy(slave.initialPosition).add(masterDelta);
+                            }
+                        });
+                    } catch (error) {
+                        console.error(`❌ SLAVE ERROR durante traslazione:`, error);
+                    }
                 }
             } else if (anim.targetPosition && anim.targetRotation) {
                 // Movimento combinato (traslazione + rotazione semplice)
@@ -2411,24 +2438,30 @@ const Scene3D = {
 
                 // Applica stessa traslazione e rotazione agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
-                    const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
-                    const masterRotationDelta = new THREE.Euler(
-                        anim.model.rotation.x - anim.initialRotation.x,
-                        anim.model.rotation.y - anim.initialRotation.y,
-                        anim.model.rotation.z - anim.initialRotation.z
-                    );
-
-                    anim.slaveModels.forEach(slave => {
-                        // Applica traslazione
-                        slave.model.position.copy(slave.initialPosition).add(masterDelta);
-
-                        // Applica rotazione
-                        slave.model.rotation.set(
-                            slave.initialRotation.x + masterRotationDelta.x,
-                            slave.initialRotation.y + masterRotationDelta.y,
-                            slave.initialRotation.z + masterRotationDelta.z
+                    try {
+                        const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                        const masterRotationDelta = new THREE.Euler(
+                            anim.model.rotation.x - anim.initialRotation.x,
+                            anim.model.rotation.y - anim.initialRotation.y,
+                            anim.model.rotation.z - anim.initialRotation.z
                         );
-                    });
+
+                        anim.slaveModels.forEach(slave => {
+                            if (slave && slave.model && slave.initialPosition && slave.initialRotation) {
+                                // Applica traslazione
+                                slave.model.position.copy(slave.initialPosition).add(masterDelta);
+
+                                // Applica rotazione
+                                slave.model.rotation.set(
+                                    slave.initialRotation.x + masterRotationDelta.x,
+                                    slave.initialRotation.y + masterRotationDelta.y,
+                                    slave.initialRotation.z + masterRotationDelta.z
+                                );
+                            }
+                        });
+                    } catch (error) {
+                        console.error(`❌ SLAVE ERROR durante traslazione+rotazione:`, error);
+                    }
                 }
             }
             
@@ -2447,25 +2480,31 @@ const Scene3D = {
 
                 // Applica posizioni finali anche agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
-                    const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
-                    anim.slaveModels.forEach(slave => {
-                        slave.model.position.copy(slave.initialPosition).add(masterDelta);
+                    try {
+                        const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                        anim.slaveModels.forEach(slave => {
+                            if (slave && slave.model && slave.initialPosition) {
+                                slave.model.position.copy(slave.initialPosition).add(masterDelta);
 
-                        if (anim.targetRotation) {
-                            const masterRotationDelta = new THREE.Euler(
-                                anim.model.rotation.x - anim.initialRotation.x,
-                                anim.model.rotation.y - anim.initialRotation.y,
-                                anim.model.rotation.z - anim.initialRotation.z
-                            );
-                            slave.model.rotation.set(
-                                slave.initialRotation.x + masterRotationDelta.x,
-                                slave.initialRotation.y + masterRotationDelta.y,
-                                slave.initialRotation.z + masterRotationDelta.z
-                            );
-                        }
+                                if (anim.targetRotation && slave.initialRotation) {
+                                    const masterRotationDelta = new THREE.Euler(
+                                        anim.model.rotation.x - anim.initialRotation.x,
+                                        anim.model.rotation.y - anim.initialRotation.y,
+                                        anim.model.rotation.z - anim.initialRotation.z
+                                    );
+                                    slave.model.rotation.set(
+                                        slave.initialRotation.x + masterRotationDelta.x,
+                                        slave.initialRotation.y + masterRotationDelta.y,
+                                        slave.initialRotation.z + masterRotationDelta.z
+                                    );
+                                }
 
-                        console.log(`🔗 SLAVE COMPLETATO: "${slave.name}" seguì master a (${slave.model.position.x.toFixed(2)}, ${slave.model.position.y.toFixed(2)}, ${slave.model.position.z.toFixed(2)})`);
-                    });
+                                console.log(`🔗 SLAVE COMPLETATO: "${slave.name}" seguì master a (${slave.model.position.x.toFixed(2)}, ${slave.model.position.y.toFixed(2)}, ${slave.model.position.z.toFixed(2)})`);
+                            }
+                        });
+                    } catch (error) {
+                        console.error(`❌ SLAVE ERROR durante completamento:`, error);
+                    }
                 }
 
                 // DEBUG: Log posizione finale dopo animazione
