@@ -439,11 +439,7 @@ Azione3=appoggia(0.2)
   DragDrop=true
   DragDropObjects=vite_culatta_1,vite_culatta_2  # Entrambi draggabili
   DragDropDistance=0.1                     # Distanza di snap in unità 3D
-<<<<<<< HEAD
   SnapTargets=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original # Posizioni di snap per ogni vite
-=======
-  SnapTarget=vite_culatta_1:estrattoresx_original,estrattoredx_original;vite_culatta_2:estrattoresx_original,estrattoredx_original # Posizioni di snap per ogni vite
->>>>>>> 00e8c5c (Messaggio commit)
   Utensile=Mani
 
 
@@ -453,32 +449,79 @@ CameraPos=(0, 0.37, 0.44)                                   // Posizione assolut
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=1.0       
- Descrizione=Stringi la vite culatta 1 con la chiave a brugola 
+ Descrizione=Stringi la vite culatta 1 con la chiave a brugola
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_1.glb
-<<<<<<< HEAD
- Azione1=avvita(0.05)
-=======
  Azione1=avvita(0.02)
->>>>>>> 00e8c5c (Messaggio commit)
 
 [Step 16 - stringi viti estrattore]
- Descrizione=Stringi la vite culatta 2 con la chiave a brugola 
+ Descrizione=Stringi la vite culatta 2 con la chiave a brugola
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_2.glb
-<<<<<<< HEAD
- Azione1=avvita(0.05)
-=======
  Azione1=avvita(0.02)
->>>>>>> 00e8c5c (Messaggio commit)
 
-[Step 17 - Rimuovi flangia]
+[Step 17 - traslazione flangia]
 Elemento=models/flangia.glb
-Descrizione=Rimuovi la flangia con le Mani.
+Descrizione=Allontana la flangia con le Mani. Il tubo del grasso si muove insieme ad essa.
 Utensile=Mani
-Azione1=traslazione:( 0.5,0,0.5,0.5)
-Azione2=rotazione:(-90,0,0,0.8)
+SlaveObjects=tubograsso.glb  # Oggetto che segue la flangia durante il movimentonon 
+Azione1=traslazione:( 0,0,0.2,0.5)
+
+[Step 18 - staccare il tubo del grasso]
+Elemento=models/tubograsso.glb
+Descrizione=Stacca il tubo del grasso dalla flangia.
+Utensile=Mani
+Azione1=traslazione:( 0,0,-0.2,0.5)
+
+[Step 19 - estrarre la flangia]
+Elemento=models/flangia.glb
+Descrizione=Metti a terra la flangia con le Mani.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(90,0,0,0.5)
 Azione3=appoggia(0.2)
+
+[Step 20 - estrarre la paletta1]
+Elemento=models/paletta1.glb
+Descrizione=Metti a terra la paletta1 con le Mani.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,-32,0.5)
+Azione3=traslazione:(-0.5,0,0.2,0.5)
+Azione4=appoggia(0.2)
+[Step 21 - estrarre la paletta2]
+Elemento=models/paletta2.glb
+Descrizione=Metti a terra la paletta2 con le Mani.
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,-108,0.5)
+Azione3=traslazione:(-0.7,0,0.2,0.5)
+Azione4=appoggia(0.2)
+[Step 22 - estrarre la paletta3]
+Elemento=models/paletta3.glb
+Descrizione=Metti a terra la paletta3 con le Mani.
+Utensile=Mani
+Elemento=models/paletta3.glb
+Descrizione=Metti a terra la paletta2 con le Mani.
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,0,0.5)
+Azione3=traslazione:(-0.9,0,0.2,0.5)
+Azione4=appoggia(0.2)
+[Step 23 - estrarre la paletta4]
+Elemento=models/paletta4.glb
+Descrizione=Metti a terra la paletta4 con le Mani.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,-72,0.5)
+Azione3=traslazione:(-1.1,0,0.2,0.5)
+Azione4=appoggia(0.2)
+[Step 24 - estrarre la paletta5]
+Elemento=models/paletta5.glb
+Descrizione=Metti a terra la paletta5 con le Mani.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,32,0.5)
+Azione3=traslazione:(-1.3,0,0.2,0.5)
+Azione4=appoggia(0.2)
 
 [Sostituzione Palette Reverse]                           // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette

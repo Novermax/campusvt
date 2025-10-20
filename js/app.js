@@ -258,7 +258,7 @@ window.App = {
             await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
             console.log('✅ Moduli UI refactorizzati caricati');
 
-            await this.loadModule('./js/ui.js?nocache=1000027');
+            await this.loadModule('./js/ui.js?nocache=1000028');
 
             // Inizializza il sistema UI refactorizzato se disponibile
             if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager !== undefined) {

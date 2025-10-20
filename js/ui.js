@@ -2873,7 +2873,7 @@ window.UI = {
         if (window.Scene3D && window.Scene3D.applyModelSettings) {
             window.Scene3D.applyModelSettings(step);
         }
-        
+
         if (step.properties.Utensile) {
             // NON evidenziare automaticamente il tool - lascia che l'utente impari a scegliere
             const toolName = this.mapToolName(step.properties.Utensile);
@@ -2882,7 +2882,23 @@ window.UI = {
                 // this.highlightRequiredTool(toolName); // RIMOSSO: non dare troppi aiuti all'utente
             }
         }
-        
+
+        // NUOVO: Parsing slave objects (oggetti che seguono il master durante animazioni)
+        // IMPORTANTE: Questo deve essere FUORI dal blocco DragDrop per funzionare anche con step normali
+        if (step.properties.SlaveObjects) {
+            // Rimuovi commenti prima del parsing
+            const slaveObjectsClean = step.properties.SlaveObjects.split('#')[0].trim();
+            const slaveObjectNames = slaveObjectsClean.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+            if (slaveObjectNames.length > 0) {
+                // Salva nella proprietà dello step per accesso successivo
+                step.properties.SlaveObjectsList = slaveObjectNames;
+                AppConfig.log(3, `🔗 SLAVE OBJECTS: Configurati ${slaveObjectNames.length} oggetti slave: [${slaveObjectNames.join(', ')}]`);
+            } else {
+                AppConfig.log(1, `⚠️ SLAVE OBJECTS: Nessun oggetto specificato in SlaveObjects`);
+            }
+        }
+
         // NUOVO: Gestione sistema Drag & Drop se abilitato nello step
         if (step.properties.DragDrop === 'true' && window.DragDropSystem) {
             console.log(`[DEBUG] 🎯 DRAG & DROP: Processo abilitazione per step "${step.title}"`);
@@ -2945,17 +2961,11 @@ window.UI = {
 
             // NUOVO: Configura snap targets multipli intercambiabili
             if (step.properties.SnapTargets) {
-<<<<<<< HEAD
-                console.log(`[UI] 🎯 Parsing SnapTargets: "${step.properties.SnapTargets}"`);
-                // Formato: oggetto1:target1,target2;oggetto2:target3,target4
-                const snapDeclarations = step.properties.SnapTargets.split(';').map(s => s.trim()).filter(s => s.length > 0);
-=======
                 // Rimuovi commenti (tutto dopo #) prima del parsing
                 const snapTargetsClean = step.properties.SnapTargets.split('#')[0].trim();
                 console.log(`[UI] 🎯 Parsing SnapTargets: "${snapTargetsClean}"`);
                 // Formato: oggetto1:target1,target2;oggetto2:target3,target4
                 const snapDeclarations = snapTargetsClean.split(';').map(s => s.trim()).filter(s => s.length > 0);
->>>>>>> 00e8c5c (Messaggio commit)
                 console.log(`[UI] 🎯 Trovate ${snapDeclarations.length} dichiarazioni SnapTargets`);
 
                 snapDeclarations.forEach((declaration, idx) => {

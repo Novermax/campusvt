@@ -110,7 +110,8 @@ model=models/paletta4.glb                                    // Pump body 3D mod
 direction=0,0,1                                        // Movement direction: towards Z+
 model=models/paletta5.glb                                    // Pump body 3D model
 direction=0,0,1                                        // Movement direction: towards Z+
-
+model=models/tubograsso.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
 [Regolazione campi di lavoro]                             // Configuration of operative areas and origins
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(5, 8, 10)                                     // Top view to frame work fields

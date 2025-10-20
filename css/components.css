@@ -1186,106 +1186,106 @@ body.tool-mano-active [role="button"] {
 }
 
 /* ===== MODAL CONGRATULAZIONI TUTORIAL ===== */
+/* Modal NON invasivo - banner in alto senza overlay scuro */
 .congratulations-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 600px;
     z-index: 10000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    pointer-events: none; /* Permette interazioni con la scena sotto */
 }
 
 .congratulations-modal.show {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto; /* Abilita click sul modal */
 }
 
 .congratulations-content {
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px 35px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(40, 167, 69, 0.5);
     text-align: center;
-    transform: scale(0.7);
+    transform: translateY(-20px);
     transition: transform 0.3s ease;
     border: 2px solid #28a745;
 }
 
 .congratulations-modal.show .congratulations-content {
-    transform: scale(1);
+    transform: translateY(0);
 }
 
 .congratulations-header h2 {
     color: #28a745;
-    font-size: 2.5em;
-    margin: 0 0 20px 0;
+    font-size: 1.8em;
+    margin: 0 0 10px 0;
     font-weight: bold;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .congratulations-body {
-    margin: 30px 0;
+    margin: 15px 0;
 }
 
 .congratulations-text {
-    font-size: 1.3em;
+    font-size: 1em;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     line-height: 1.4;
 }
 
 .tutorial-name {
-    font-size: 1.5em;
+    font-size: 1.1em;
     font-weight: bold;
     color: #007bff;
-    margin: 20px 0;
-    padding: 15px;
+    margin: 10px 0;
+    padding: 8px 12px;
     background: linear-gradient(145deg, #e3f2fd, #bbdefb);
-    border-radius: 10px;
-    border-left: 5px solid #007bff;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
 }
 
 .congratulations-stats {
-    margin: 25px 0;
-    padding: 20px;
+    margin: 15px 0;
+    padding: 12px;
     background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-    border-radius: 15px;
+    border-radius: 10px;
     border: 1px solid #dee2e6;
 }
 
 .congratulations-stats p {
-    margin: 10px 0;
-    font-size: 1.1em;
+    margin: 5px 0;
+    font-size: 0.95em;
     color: #28a745;
     font-weight: 500;
 }
 
 .congratulations-footer {
-    margin-top: 30px;
+    margin-top: 15px;
 }
 
 .congratulations-close-btn {
     background: linear-gradient(145deg, #28a745, #20c997);
     color: white;
     border: none;
-    padding: 15px 40px;
-    font-size: 1.2em;
+    padding: 10px 30px;
+    font-size: 1em;
     font-weight: bold;
-    border-radius: 50px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .congratulations-close-btn:hover {
@@ -1299,32 +1299,7 @@ body.tool-mano-active [role="button"] {
     box-shadow: 0 3px 10px rgba(40, 167, 69, 0.4);
 }
 
-/* Animazione di celebrazione (opzionale) */
-.congratulations-modal::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 99, 132, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(54, 162, 235, 0.3) 0%, transparent 50%);
-    animation: celebration-sparkle 3s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes celebration-sparkle {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scale(1) rotate(0deg);
-    }
-    50% { 
-        opacity: 0.7;
-        transform: scale(1.1) rotate(180deg);
-    }
-}
+/* Animazione di celebrazione rimossa - modal ora è un banner compatto */
 
 /* ===== MODAL MESSAGGIO INFORMATIVO TUTORIAL ===== */
 .info-modal {

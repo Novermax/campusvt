@@ -782,9 +782,29 @@ const Scene3D = {
         
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.loadedModels, true);
-        
+
         if (intersects.length > 0) {
-            const clickedObject = intersects[0].object;
+            // PRIORITA' OGGETTO EVIDENZIATO: Se c'è un modello con silhouette gialla attiva,
+            // cerca tra TUTTI gli intersects se uno di essi appartiene a quel modello.
+            // Questo permette di cliccare sulla silhouette anche se l'oggetto è parzialmente nascosto.
+            let selectedIntersect = intersects[0]; // Default: primo oggetto colpito
+
+            if (this.highlightSystem.highlightedModel && this.highlightSystem.isHighlighting) {
+                const highlightedModel = this.highlightSystem.highlightedModel;
+                console.log(`[Scene3D] 🌟 Modello evidenziato attivo: ${highlightedModel.name}, cerco priorità...`);
+
+                // Cerca tra tutti gli intersects se uno appartiene al modello evidenziato
+                for (let i = 0; i < intersects.length; i++) {
+                    const rootModel = this.findRootModel(intersects[i].object);
+                    if (rootModel === highlightedModel) {
+                        selectedIntersect = intersects[i];
+                        console.log(`[Scene3D] ✨ PRIORITA' SILHOUETTE: Selezionato modello evidenziato "${highlightedModel.name}" (posizione ${i+1}/${intersects.length} nel raycast)`);
+                        break;
+                    }
+                }
+            }
+
+            const clickedObject = selectedIntersect.object;
             const targetModel = this.findRootModel(clickedObject);
             
             // Verifica se il tool Aria è attivo per creare effetto particellare
@@ -924,12 +944,27 @@ const Scene3D = {
         const rect = this.canvas.getBoundingClientRect();
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
+
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-        
+
         if (intersects.length > 0) {
-            const intersection = intersects[0];
+            // PRIORITA' OGGETTO EVIDENZIATO: Anche per il cambio pivot, dai priorità alla silhouette
+            let selectedIntersect = intersects[0];
+
+            if (this.highlightSystem.highlightedModel && this.highlightSystem.isHighlighting) {
+                const highlightedModel = this.highlightSystem.highlightedModel;
+                for (let i = 0; i < intersects.length; i++) {
+                    const rootModel = this.findRootModel(intersects[i].object);
+                    if (rootModel === highlightedModel) {
+                        selectedIntersect = intersects[i];
+                        console.log(`[Scene3D] ✨ PIVOT: Priorità a modello evidenziato "${highlightedModel.name}"`);
+                        break;
+                    }
+                }
+            }
+
+            const intersection = selectedIntersect;
             const targetModel = this.findRootModel(intersection.object);
             
             let newPivotPoint;
@@ -1068,11 +1103,13 @@ const Scene3D = {
 
     startModelAnimation: function(model, tutorialStep) {
         const modelFilename = model.userData?.originalFilename || model.name;
-        
+
         // SEMPRE usa sistema multi-step per Azione1, Azione2, etc.
         const movementSteps = this.parseMovementSteps(tutorialStep, modelFilename);
         if (movementSteps.length > 0) {
-            return this.startMultiStepMovement(model, movementSteps);
+            // Recupera slave objects dal tutorial step (se presenti)
+            const slaveObjects = tutorialStep.properties?.SlaveObjectsList || [];
+            return this.startMultiStepMovement(model, movementSteps, slaveObjects);
         }
         
         // Fallback legacy solo se non ci sono azioni multi-step
@@ -1932,22 +1969,27 @@ const Scene3D = {
         return { x: 0, y: 0, z: 1 };
     },
 
-    startMultiStepMovement: function(model, movementSteps) {
+    startMultiStepMovement: function(model, movementSteps, slaveObjects = []) {
         if (!movementSteps || movementSteps.length === 0) {
             return false;
         }
-        
+
         const modelUuid = model.uuid;
         const modelName = model.userData?.originalFilename || model.name;
-        
+
         this.animationSystem.multiStepAnimations.set(modelUuid, {
             model: model,
             steps: movementSteps,
             currentStepIndex: 0,
             isActive: true,
-            modelName: modelName
+            modelName: modelName,
+            slaveObjects: slaveObjects // Lista di oggetti slave che seguono il master
         });
-        
+
+        if (slaveObjects && slaveObjects.length > 0) {
+            console.log(`🔗 SLAVE OBJECTS: ${slaveObjects.length} oggetti seguiranno "${modelName}": [${slaveObjects.join(', ')}]`);
+        }
+
         this.executeCurrentMultiStep(modelUuid);
         return true;
     },
@@ -2163,6 +2205,33 @@ const Scene3D = {
             ));
         }
         
+        // Risolvi slave objects da nomi a riferimenti modelli reali
+        const slaveModels = [];
+        if (multiStepData.slaveObjects && multiStepData.slaveObjects.length > 0) {
+            multiStepData.slaveObjects.forEach(slaveName => {
+                // Rimuovi estensione file se presente (es: tubograsso.glb -> tubograsso)
+                const cleanSlaveName = slaveName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+
+                // Prova prima con il nome pulito, poi con il nome originale come fallback
+                let slaveModel = this.findModelByName(cleanSlaveName);
+                if (!slaveModel && cleanSlaveName !== slaveName) {
+                    slaveModel = this.findModelByName(slaveName);
+                }
+
+                if (slaveModel) {
+                    slaveModels.push({
+                        model: slaveModel,
+                        name: cleanSlaveName,
+                        initialPosition: slaveModel.position.clone(),
+                        initialRotation: new THREE.Euler().copy(slaveModel.rotation)
+                    });
+                    console.log(`🔗 SLAVE: "${cleanSlaveName}" collegato a master "${multiStepData.modelName}"`);
+                } else {
+                    console.warn(`⚠️ SLAVE: Oggetto "${slaveName}" (cercato anche come "${cleanSlaveName}") non trovato nella scena`);
+                }
+            });
+        }
+
         const animation = {
             model: model,
             modelUuid: modelUuid,
@@ -2183,9 +2252,10 @@ const Scene3D = {
             hasEstrai: !!currentStep.estrai,
             hasInserisci: !!currentStep.inserisci,
             action: `MultiStep-${multiStepData.currentStepIndex + 1}`,
-            modelCenter: rotationCenter
+            modelCenter: rotationCenter,
+            slaveModels: slaveModels // Oggetti slave da animare insieme al master
         };
-        
+
         this.animationSystem.activeAnimations.push(animation);
     },
 
@@ -2323,6 +2393,14 @@ const Scene3D = {
             } else if (anim.targetPosition && !anim.targetRotation) {
                 // Solo movimento lineare (traslazione pura)
                 anim.model.position.lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+
+                // Applica stessa traslazione agli slave
+                if (anim.slaveModels && anim.slaveModels.length > 0) {
+                    const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                    anim.slaveModels.forEach(slave => {
+                        slave.model.position.copy(slave.initialPosition).add(masterDelta);
+                    });
+                }
             } else if (anim.targetPosition && anim.targetRotation) {
                 // Movimento combinato (traslazione + rotazione semplice)
                 anim.model.position.lerpVectors(anim.initialPosition, anim.targetPosition, progress);
@@ -2330,6 +2408,28 @@ const Scene3D = {
                 const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
                 const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
                 anim.model.setRotationFromQuaternion(resultQuaternion);
+
+                // Applica stessa traslazione e rotazione agli slave
+                if (anim.slaveModels && anim.slaveModels.length > 0) {
+                    const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                    const masterRotationDelta = new THREE.Euler(
+                        anim.model.rotation.x - anim.initialRotation.x,
+                        anim.model.rotation.y - anim.initialRotation.y,
+                        anim.model.rotation.z - anim.initialRotation.z
+                    );
+
+                    anim.slaveModels.forEach(slave => {
+                        // Applica traslazione
+                        slave.model.position.copy(slave.initialPosition).add(masterDelta);
+
+                        // Applica rotazione
+                        slave.model.rotation.set(
+                            slave.initialRotation.x + masterRotationDelta.x,
+                            slave.initialRotation.y + masterRotationDelta.y,
+                            slave.initialRotation.z + masterRotationDelta.z
+                        );
+                    });
+                }
             }
             
             if (progress >= 1.0) {
@@ -2343,6 +2443,29 @@ const Scene3D = {
 
                 if (anim.targetRotation) {
                     anim.model.rotation.copy(anim.targetRotation);
+                }
+
+                // Applica posizioni finali anche agli slave
+                if (anim.slaveModels && anim.slaveModels.length > 0) {
+                    const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                    anim.slaveModels.forEach(slave => {
+                        slave.model.position.copy(slave.initialPosition).add(masterDelta);
+
+                        if (anim.targetRotation) {
+                            const masterRotationDelta = new THREE.Euler(
+                                anim.model.rotation.x - anim.initialRotation.x,
+                                anim.model.rotation.y - anim.initialRotation.y,
+                                anim.model.rotation.z - anim.initialRotation.z
+                            );
+                            slave.model.rotation.set(
+                                slave.initialRotation.x + masterRotationDelta.x,
+                                slave.initialRotation.y + masterRotationDelta.y,
+                                slave.initialRotation.z + masterRotationDelta.z
+                            );
+                        }
+
+                        console.log(`🔗 SLAVE COMPLETATO: "${slave.name}" seguì master a (${slave.model.position.x.toFixed(2)}, ${slave.model.position.y.toFixed(2)}, ${slave.model.position.z.toFixed(2)})`);
+                    });
                 }
 
                 // DEBUG: Log posizione finale dopo animazione
