@@ -447,34 +447,50 @@ Azione3=appoggia(0.2)
   DragDrop=false
 CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
+  CameraZoom=0.5                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=1.0       
  Descrizione=Stringi la vite culatta 1 con la chiave a brugola
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_1.glb
- Azione1=avvita(0.02)
- DrivenObject=flangia.glb,traslazione( 0,0,0.02,0.5)  # La flangia si muove in base all'avvitamento
+ Azione1=avvita(0.005)
+ DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Entrambi si muovono in base all'avvitamento
 [Step 16 - stringi viti estrattore]
  Descrizione=Stringi la vite culatta 2 con la chiave a brugola
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_2.glb
- Azione1=avvita(0.02)
- DrivenObject=flangia.glb,traslazione( 0,0,0.02,0.5)  # La flangia si muove in base all'avvitamento
+ Azione1=avvita(0.005)
+ DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Entrambi si muovono in base all'avvitamento
+[Step 17 - Rimuovi vite_culatta_2]
+Elemento=models/vite_culatta_2.glb
+Descrizione=Rimuovi la vite usata come estrattore con la chiave a brugola da 6mm
+Utensile=ChiaveBrugola
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+[Step 18 - Rimuovi vite_culatta_1]
+Elemento=models/vite_culatta_1.glb
+Descrizione=Rimuovi la vite usata come estrattore con la chiave a brugola da 6mm
+Utensile=ChiaveBrugola
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
 
-[Step 17 - traslazione flangia]
+[Step 19 - traslazione flangia]
+CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
+  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
+  CameraZoom=1                                               // Zoom leggero per visione d'insieme
+  CameraTransitionTime=1.0       
 Elemento=models/flangia.glb
 Descrizione=Allontana la flangia con le Mani. Il tubo del grasso si muove insieme ad essa.
 Utensile=Mani
-DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)  # Tubo segue con movimento indipendente (metà distanza)
+SlaveObjects=tubograsso.glb  # Tubo segue con movimento slave 
 Azione1=traslazione:(0,0,0.2,0.5)
 
-[Step 18 - staccare il tubo del grasso]
+[Step 20 - staccare il tubo del grasso]
 Elemento=models/tubograsso.glb
 Descrizione=Stacca il tubo del grasso dalla flangia.
 Utensile=Mani
 Azione1=traslazione:( 0,0,-0.2,0.5)
 
-[Step 19 - estrarre la flangia]
+[Step 21 - estrarre la flangia]
 Elemento=models/flangia.glb
 Descrizione=Metti a terra la flangia con le Mani.
 Utensile=Mani
@@ -482,7 +498,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(90,0,0,0.5)
 Azione3=appoggia(0.2)
 
-[Step 20 - estrarre la paletta1]
+[Step 22 - estrarre la paletta1]
 Elemento=models/paletta1.glb
 Descrizione=Metti a terra la paletta1 con le Mani.
 Utensile=Mani
@@ -490,14 +506,14 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-32,0.5)
 Azione3=traslazione:(-0.5,0,0.2,0.5)
 Azione4=appoggia(0.2)
-[Step 21 - estrarre la paletta2]
+[Step 23 - estrarre la paletta2]
 Elemento=models/paletta2.glb
 Descrizione=Metti a terra la paletta2 con le Mani.
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-108,0.5)
 Azione3=traslazione:(-0.7,0,0.2,0.5)
 Azione4=appoggia(0.2)
-[Step 22 - estrarre la paletta3]
+[Step 24 - estrarre la paletta3]
 Elemento=models/paletta3.glb
 Descrizione=Metti a terra la paletta3 con le Mani.
 Utensile=Mani
@@ -507,7 +523,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,0,0.5)
 Azione3=traslazione:(-0.9,0,0.2,0.5)
 Azione4=appoggia(0.2)
-[Step 23 - estrarre la paletta4]
+[Step 25 - estrarre la paletta4]
 Elemento=models/paletta4.glb
 Descrizione=Metti a terra la paletta4 con le Mani.
 Utensile=Mani
@@ -515,7 +531,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-72,0.5)
 Azione3=traslazione:(-1.1,0,0.2,0.5)
 Azione4=appoggia(0.2)
-[Step 24 - estrarre la paletta5]
+[Step 26 - estrarre la paletta5]
 Elemento=models/paletta5.glb
 Descrizione=Metti a terra la paletta5 con le Mani.
 Utensile=Mani

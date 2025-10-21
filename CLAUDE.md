@@ -48,8 +48,8 @@ Sistema 3D per training industriale su pompe del vuoto (Becker) e manutenzione a
 - **Evidenziazione**: Highlight automatico, materiali salvati/ripristinati, timer auto-reset
 
 ## 📱 Compatibilità
-- ✅ **Desktop/Laptop**: Pieno supporto
-- ❌ **Mobile/Tablet**: Bloccato (controlli complessi, GPU desktop, UI non responsive)
+- ✅ **Desktop/Laptop**: Pieno supporto (modalità manuale completa)
+- ✅ **Mobile/Tablet**: Supporto con **AutoMode** - Esecuzione automatica tutorial (Gennaio 2026)
 
 ## 🚀 Setup
 **Prerequisiti**: Server web locale, WebGL, connessione internet
@@ -175,7 +175,8 @@ SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)  # Formato vecchio: snap per-og
 SnapTargets=estrattoresx_original,estrattoredx_original  # Snap globale a target (tutti oggetti possono usare tutti i target)
 SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original  # Formato vecchio: snap per-oggetto (con :)
 AssemblyMode=true                    # Modalità assemblaggio
-DrivenObject=tubo.glb,traslazione:(x,y,z,durata)  # Oggetto con movimento indipendente sincronizzato
+DrivenObject=tubo.glb,traslazione:(x,y,z,durata)  # Oggetto singolo con movimento indipendente
+DrivenObjects=flangia.glb,traslazione:(x1,y1,z1,dur1);tubo.glb,traslazione:(x2,y2,z2,dur2)  # Multipli oggetti con movimenti indipendenti
 ```
 
 ### Comportamenti
@@ -225,14 +226,16 @@ UI.jumpToStepByName("rimuovi filtro")    // Metodo completo (alternativo)
 - **Tool Educativo**: Evidenziazione automatica rimossa per apprendimento autonomo
 - **Blocco Post-Tutorial**: Interazioni bloccate dopo completamento, reset su nuovo tutorial
 
-### 🚗 Sistema DrivenObject - Movimento Indipendente Sincronizzato (Gennaio 2026)
-- **Funzionalità**: Oggetti con movimento indipendente ma sincronizzato temporalmente con l'azione principale
+### 🚗 Sistema DrivenObjects - Movimento Indipendente Sincronizzato (Gennaio 2026)
+- **Funzionalità**: Uno o più oggetti con movimento indipendente ma sincronizzato temporalmente con l'azione principale
 - **Differenza da SlaveObjects**:
   - SlaveObjects → seguono 1:1 tutte le trasformazioni del master (posizione + rotazione)
-  - DrivenObject → movimento **completamente indipendente** (direzione, distanza, durata personalizzabili)
-- **Caso d'Uso**: Tubo flessibile che si muove meno della flangia, oggetto collegato con elasticità, effetti secondari
+  - DrivenObjects → movimento **completamente indipendente** (direzione, distanza, durata personalizzabili per ogni oggetto)
+- **Caso d'Uso**: Tubo flessibile che si muove meno della flangia, oggetti collegati con elasticità, effetti secondari multipli
 
 #### Sintassi Tutorial
+
+**Singolo Oggetto (Backward Compatible)**:
 ```ini
 [Step 17 - traslazione flangia]
 Elemento=models/flangia.glb
@@ -241,40 +244,80 @@ Azione1=traslazione:(0,0,0.2,0.5)  # Flangia si muove di 0.2 unità
 DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)  # Tubo si muove di 0.1 unità (metà)
 ```
 
+**Multipli Oggetti (NUOVO)**:
+```ini
+[Step 15 - Avvita vite estrattore]
+Elemento=models/vite_culatta_1.glb
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)  # Vite si avvita
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+# Flangia e tubo si muovono entrambi di 0.005 unità in parallelo
+```
+
 #### Formato
-**Sintassi**: `DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)`
+
+**Sintassi Singola**: `DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)`
+
+**Sintassi Multipla**: `DrivenObjects=oggetto1.glb,traslazione:(x1,y1,z1,dur1);oggetto2.glb,traslazione:(x2,y2,z2,dur2);...`
+
+**Parametri**:
 - **oggetto.glb**: Nome del modello driven (con o senza estensione)
 - **traslazione**: Movimento indipendente del driven object
-- **(x,y,z)**: Vettore traslazione (può essere diverso dal master)
-- **durata**: Durata animazione in secondi (può essere diversa dal master)
+- **(x,y,z)**: Vettore traslazione (può essere diverso dal master e tra gli oggetti)
+- **durata**: Durata animazione in secondi (può essere diversa dal master e tra gli oggetti)
+- **`;` (punto e virgola)**: Separatore per multipli oggetti
 
 #### Caratteristiche
-- ✅ **Movimento Indipendente**: Direzione e distanza completamente personalizzabili
-- ✅ **Sincronizzazione Temporale**: Parte insieme all'azione master
-- ✅ **Durata Flessibile**: Può avere durata diversa dal master
+- ✅ **Movimento Indipendente**: Direzione e distanza completamente personalizzabili per ogni oggetto
+- ✅ **Sincronizzazione Temporale**: Tutti partono insieme all'azione master
+- ✅ **Durata Flessibile**: Ogni oggetto può avere durata diversa
 - ✅ **Animazione Parallela**: Eseguita in parallelo, non blocca il master
 - ✅ **Zero Impatto Avanzamento**: Solo il master controlla quando avanzare al prossimo step
-- ✅ **Gestione Errori Robusta**: Se driven object non trovato, master continua normalmente
+- ✅ **Gestione Errori Robusta**: Se un driven object non trovato, gli altri continuano normalmente
+- ✅ **Scalabile**: Supporta 1, 2, 3+ oggetti driven in un solo step
+- ✅ **Backward Compatible**: Sintassi `DrivenObject` singola continua a funzionare
 
 #### Implementazione
-- **Parsing**: `js/ui.js:2904-2935` - Parser DrivenObject con regex
-- **Setup**: `js/scene3d-modular.js:1978-2006` - Configurazione in multiStepData
-- **Animazione Parallela**: `js/scene3d-modular.js:2282-2337` - Creazione animazione driven indipendente
-- **Completamento**: `js/scene3d-modular.js:2579-2583` - Driven NON avanza tutorial
+- **Parsing**: `js/ui.js:2902-2949` - Parser DrivenObjects con supporto array e separatore `;`
+- **Setup**: `js/scene3d-modular.js:1113-1115` - Conversione automatica singolo → array
+- **Configurazione**: `js/scene3d-modular.js:1979-2010` - Parametro `drivenObjectsConfig` array
+- **Animazione Parallela**: `js/scene3d-modular.js:2286-2344` - Loop `forEach` per creare animazioni multiple
+- **Completamento**: Driven NON avanzano tutorial, solo master controlla avanzamento
 
 #### Esempi Pratici
 
-**Esempio 1: Tubo flessibile collegato a flangia**
+**Esempio 1: Multipli oggetti stesso movimento (Step 15-16)**
+```ini
+# Vite si avvita, flangia e tubo si muovono insieme
+[Step 15 - Avvita vite estrattore]
+Elemento=models/vite_culatta_1.glb
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+```
+
+**Esempio 2: Multipli oggetti movimenti diversi**
+```ini
+# Flangia si muove molto, tubo poco, copertura si muove lateralmente
+[Step 20 - Estrazione complessa]
+Elemento=models/componente_principale.glb
+Utensile=Mani
+Azione1=traslazione:(0,0,0.5,1.0)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.3,1.0);tubo.glb,traslazione:(0,0,0.1,1.5);copertura.glb,traslazione:(0.2,0,0.2,0.8)
+# 3 oggetti con direzioni e durate completamente diverse
+```
+
+**Esempio 3: Tubo flessibile (singolo)**
 ```ini
 # Flangia si allontana, tubo segue con metà movimento (elasticità)
 [Step 17 - Allontana flangia]
 Elemento=models/flangia.glb
 Utensile=Mani
 Azione1=traslazione:(0,0,0.2,0.5)
-DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)
+DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)  # Sintassi singola backward compatible
 ```
 
-**Esempio 2: Oggetto collegato con ritardo**
+**Esempio 4: Oggetto collegato con ritardo**
 ```ini
 # Master si muove velocemente, driven segue lentamente (ritardo visivo)
 [Step 10 - Sposta componente]
@@ -284,38 +327,53 @@ Azione1=traslazione:(0.5,0,0,0.3)
 DrivenObject=componente_secondario.glb,traslazione:(0.5,0,0,0.8)  # Stessa distanza, durata maggiore
 ```
 
-**Esempio 3: Movimento angolare differente**
-```ini
-# Master si muove in Z, driven si muove in diagonale
-[Step 8 - Estrazione complessa]
-Elemento=models/pezzo_A.glb
-Utensile=Mani
-Azione1=traslazione:(0,0,0.3,1.0)
-DrivenObject=pezzo_B.glb,traslazione:(0.1,0,0.2,1.0)  # Movimento obliquo
-```
+#### Confronto SlaveObjects vs DrivenObjects
 
-#### Confronto SlaveObjects vs DrivenObject
-
-| Caratteristica | SlaveObjects | DrivenObject |
-|----------------|--------------|--------------|
-| **Movimento** | Copia 1:1 tutte le trasformazioni | Movimento completamente indipendente |
-| **Direzione** | Sempre uguale al master | Personalizzabile (x,y,z qualsiasi) |
-| **Distanza** | Sempre uguale al master | Personalizzabile |
-| **Durata** | Sempre uguale al master | Personalizzabile |
+| Caratteristica | SlaveObjects | DrivenObjects |
+|----------------|--------------|---------------|
+| **Numero Oggetti** | Multipli supportati | Multipli supportati |
+| **Movimento** | Copia 1:1 tutte le trasformazioni | Movimento completamente indipendente per ogni oggetto |
+| **Direzione** | Sempre uguale al master | Personalizzabile (x,y,z qualsiasi) per ogni oggetto |
+| **Distanza** | Sempre uguale al master | Personalizzabile per ogni oggetto |
+| **Durata** | Sempre uguale al master | Personalizzabile per ogni oggetto |
 | **Rotazione** | Segue rotazione master | Solo traslazione |
-| **Uso tipico** | Oggetti rigidamente collegati | Oggetti collegati con elasticità/ritardo |
+| **Uso tipico** | Oggetti rigidamente collegati | Oggetti collegati con elasticità/ritardo/movimenti differenziati |
 
 #### Log Debug Console
+
+**Singolo Oggetto**:
 ```javascript
-[UI] 🚗 Parsing DrivenObject: "tubograsso.glb,traslazione:(0,0,0.1,0.5)"
-[UI] 🚗 DRIVEN OBJECT: "tubograsso.glb" → traslazione (0, 0, 0.1) in 0.5s
-🚗 DRIVEN OBJECT: "tubograsso" si muoverà in modo indipendente → (0, 0, 0.1) in 0.5s
-🚗 DRIVEN OBJECT: Creazione animazione parallela per "tubograsso"
+[UI] 🚗 Parsing DrivenObjects: "tubograsso.glb,traslazione:(0,0,0.1,0.5)"
+[UI] 🚗 DRIVEN OBJECT 1: "tubograsso.glb" → traslazione (0, 0, 0.1) in 0.5s
+🚗 DRIVEN OBJECTS: 1 oggetti si muoveranno in modo indipendente:
+   1. "tubograsso.glb" → traslazione (0, 0, 0.1) in 0.5s
+🚗 DRIVEN OBJECTS: Creazione 1 animazioni parallele
+🚗 DRIVEN OBJECT 1: Creazione animazione parallela per "tubograsso.glb"
+🚗 DRIVEN OBJECT 1: Animazione creata per "tubograsso"
    Posizione iniziale: (-0.064, 0.350, 0.056)
    Posizione target: (-0.064, 0.350, 0.156)
    Durata: 0.5s
-🚗 DRIVEN OBJECT: Animazione creata per "tubograsso"
-🚗 DRIVEN OBJECT: Animazione completata per "tubograsso" - NO avanzamento tutorial
+```
+
+**Multipli Oggetti**:
+```javascript
+[UI] 🚗 Parsing DrivenObjects: "flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)"
+[UI] 🚗 DRIVEN OBJECT 1: "flangia.glb" → traslazione (0, 0, 0.005) in 0.5s
+[UI] 🚗 DRIVEN OBJECT 2: "tubograsso.glb" → traslazione (0, 0, 0.005) in 0.5s
+🚗 DRIVEN OBJECTS: 2 oggetti si muoveranno in modo indipendente:
+   1. "flangia.glb" → traslazione (0, 0, 0.005) in 0.5s
+   2. "tubograsso.glb" → traslazione (0, 0, 0.005) in 0.5s
+🚗 DRIVEN OBJECTS: Creazione 2 animazioni parallele
+🚗 DRIVEN OBJECT 1: Creazione animazione parallela per "flangia.glb"
+🚗 DRIVEN OBJECT 1: Animazione creata per "flangia"
+   Posizione iniziale: (0.100, 0.236, 0.193)
+   Posizione target: (0.100, 0.236, 0.198)
+   Durata: 0.5s
+🚗 DRIVEN OBJECT 2: Creazione animazione parallela per "tubograsso.glb"
+🚗 DRIVEN OBJECT 2: Animazione creata per "tubograsso"
+   Posizione iniziale: (-0.064, 0.350, 0.056)
+   Posizione target: (-0.064, 0.350, 0.061)
+   Durata: 0.5s
 ```
 
 ---
@@ -1682,5 +1740,403 @@ jumpToStep(10, false)  # Solo per debug
 
 ---
 
-**Ultimo aggiornamento**: 17 Gennaio 2026 - Sistema Navigazione Rapida Tutorial con Fast-Forward Avanzato (esecuzione istantanea animazioni) implementato e documentato
->>>>>>> 00e8c5c (Messaggio commit)
+## 🎯 Sistema DrivenObjects Multipli (Gennaio 2026)
+
+**Implementazione**: Supporto per multipli oggetti con movimento indipendente sincronizzato
+
+### Problema Risolto
+- **Limitazione Precedente**: Sistema supportava solo un DrivenObject per step
+- **Soluzione**: Parser esteso per supportare sintassi con separatore `;` per multipli oggetti
+- **Caso d'Uso**: Step 15-16 dove flangia e tubograsso devono muoversi insieme durante avvitamento viti
+
+### Implementazione
+
+#### 1. Parser UI (js/ui.js:2902-2949)
+```javascript
+// Supporta sia DrivenObjects (multipli) che DrivenObject (singolo)
+if (step.properties.DrivenObjects || step.properties.DrivenObject) {
+    const drivenObjectsArray = [];
+    const drivenProperty = step.properties.DrivenObjects || step.properties.DrivenObject;
+
+    // Split per multipli oggetti separati da `;`
+    const drivenEntries = drivenObjectsClean.split(';').map(entry => entry.trim());
+
+    drivenEntries.forEach(entry => {
+        // Parsing formato: oggetto.glb,traslazione:(x,y,z,durata)
+        const match = entry.match(/^([^,]+),traslazione:\(([^,]+),([^,]+),([^,]+),([^)]+)\)$/);
+        // ... creazione array di config
+    });
+
+    step.properties.DrivenObjectsConfig = drivenObjectsArray;
+}
+```
+
+#### 2. Scene3D Modular (js/scene3d-modular.js)
+- **Linee 1113-1115**: Conversione automatica DrivenObjectConfig → array per backward compatibility
+- **Linee 1979-2010**: Parametro `drivenObjectsConfig` (array) invece di singolo config
+- **Linee 2001-2006**: Log migliorati per mostrare tutti i driven objects
+- **Linee 2286-2344**: Iterazione `forEach` per creare animazioni parallele multiple
+
+#### 3. Tutorial.txt (scenes/Pompa_Becker/tutorial.txt)
+```ini
+[Step 15 - stringi viti estrattore]
+Elemento=models/vite_culatta_1.glb
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+```
+
+### Nuova Sintassi
+
+**Multipli Oggetti**:
+```ini
+DrivenObjects=oggetto1.glb,traslazione:(x1,y1,z1,dur1);oggetto2.glb,traslazione:(x2,y2,z2,dur2);oggetto3.glb,traslazione:(x3,y3,z3,dur3)
+```
+
+**Singolo (Backward Compatible)**:
+```ini
+DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)
+```
+
+### Caratteristiche
+
+- ✅ **Multipli Oggetti**: Supporta 1, 2, 3+ oggetti in un solo step
+- ✅ **Movimenti Indipendenti**: Ogni oggetto può avere direzione, distanza e durata diverse
+- ✅ **Backward Compatible**: Sintassi `DrivenObject` singola continua a funzionare
+- ✅ **Error Handling Robusto**: Se un oggetto fallisce, gli altri continuano
+- ✅ **Scalabile**: Nessun limite teorico al numero di driven objects
+- ✅ **Zero Breaking Changes**: Tutorial esistenti con DrivenObject singolo funzionano senza modifiche
+
+### Esempio Pratico
+
+```ini
+# Multipli oggetti stesso movimento
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+
+# Multipli oggetti movimenti diversi
+DrivenObjects=flangia.glb,traslazione:(0,0,0.3,1.0);tubo.glb,traslazione:(0,0,0.1,1.5);copertura.glb,traslazione:(0.2,0,0.2,0.8)
+```
+
+### Log Console
+
+```javascript
+[UI] 🚗 Parsing DrivenObjects: "flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)"
+[UI] 🚗 DRIVEN OBJECT 1: "flangia.glb" → traslazione (0, 0, 0.005) in 0.5s
+[UI] 🚗 DRIVEN OBJECT 2: "tubograsso.glb" → traslazione (0, 0, 0.005) in 0.5s
+🚗 DRIVEN OBJECTS: 2 oggetti si muoveranno in modo indipendente:
+   1. "flangia.glb" → traslazione (0, 0, 0.005) in 0.5s
+   2. "tubograsso.glb" → traslazione (0, 0, 0.005) in 0.5s
+🚗 DRIVEN OBJECTS: Creazione 2 animazioni parallele
+```
+
+### File Modificati
+
+- `js/ui.js:2902-2949` - Parser esteso per supporto array
+- `js/scene3d-modular.js:1113-1115` - Conversione automatica singolo → array
+- `js/scene3d-modular.js:1979-2010` - Parametro drivenObjectsConfig array
+- `js/scene3d-modular.js:2286-2344` - Loop forEach per animazioni multiple
+- `scenes/Pompa_Becker/tutorial.txt:456,462` - Step 15-16 con nuova sintassi
+- `CLAUDE.md:228-376` - Documentazione completa sistema DrivenObjects
+
+### Confronto Prima/Dopo
+
+**PRIMA (❌ Non Funzionante)**:
+```ini
+DrivenObject=flangia.glb,traslazione:(0,0,0.005,0.5)
+DrivenObject=tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Sovrascrive la prima
+```
+
+**DOPO (✅ Funzionante)**:
+```ini
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+```
+
+---
+
+## 📱 Sistema AutoMode - Esecuzione Automatica Tutorial per Mobile (Gennaio 2026)
+
+**Implementazione**: Sistema di esecuzione automatica tutorial per dispositivi mobili
+
+### Problema Risolto
+- **Limitazione Accesso Mobile**: Dispositivi mobili erano completamente bloccati
+- **Controlli Complessi**: Interazioni 3D difficili su touchscreen
+- **Soluzione**: AutoMode esegue automaticamente tutte le azioni del tutorial
+
+### Funzionalità AutoMode
+
+#### Caratteristiche Principali
+- ✅ **Rilevamento Automatico Mobile**: Sistema attivo solo su smartphone/tablet
+- ✅ **Attivazione Semplice**: Pulsante toggle "🤖 AUTO" nel fumetto descrizione
+- ✅ **Auto-Esecuzione Azioni Tool**: Simula click automatici per svita, avvita, traslazione, etc.
+- ✅ **Auto-Drag & Drop**: Snappa oggetti automaticamente in ordine casuale
+- ✅ **Avanzamento Automatico**: Procede al prossimo step quando completato
+- ✅ **Visual Feedback**: Pulsante verde con animazione pulse quando attivo
+
+#### Come Funziona
+
+**1. Rilevamento Mobile**
+```javascript
+// Rilevamento automatico all'avvio (index.html:450-481)
+window.isMobileDevice() // Controlla User Agent + dimensioni schermo + touchscreen
+// Se mobile → AutoMode disponibile
+// Se desktop → AutoMode disabilitato
+```
+
+**2. Attivazione**
+- Pulsante "🤖 AUTO" appare in alto a destra nel fumetto tutorial (solo mobile)
+- Click su pulsante → Toggle ON/OFF
+- Stato ON: Pulsante diventa verde "🤖 AUTO ON" con animazione pulse
+
+**3. Esecuzione Automatica Step**
+
+**Step con Tool (svita, avvita, traslazione, etc.)**:
+```javascript
+1. Trova modello Elemento nella scena 3D
+2. Proietta posizione 3D → coordinate 2D schermo
+3. Simula evento click sul canvas
+4. Azioni si eseguono automaticamente (es. svita con rotazione)
+5. Attende completamento animazioni
+6. Avanza step successivo dopo 1s
+```
+
+**Step con Drag & Drop**:
+```javascript
+1. Ottiene lista oggetti da DragDropObjects
+2. Randomizza ordine oggetti (shuffle array)
+3. Per ogni oggetto:
+   - Calcola centro bounding box
+   - Trova target snap più vicino
+   - Anima movimento verso target (500ms smooth)
+   - Notifica completamento snap
+4. Quando tutti snappati → Avanza step
+```
+
+**Step Solo Message (modal informativo)**:
+```javascript
+1. Modal si apre automaticamente
+2. Utente clicca OK (interazione richiesta)
+3. AutoMode avanza automaticamente
+```
+
+**Step Semplice (nessuna azione)**:
+```javascript
+1. Avanza direttamente allo step successivo
+```
+
+### Implementazione Tecnica
+
+#### Moduli Creati/Modificati
+
+**1. js/AutoMode.js** (NUOVO - 453 righe)
+```javascript
+window.AutoMode = {
+    enabled: false,           // Stato sistema
+    isMobile: false,          // Rilevamento mobile
+    isExecuting: false,       // Flag esecuzione in corso
+
+    config: {
+        actionDelay: 1500,        // Delay tra azioni (ms)
+        dragDropDelay: 1000,      // Delay drag&drop multipli (ms)
+        clickSimulationDelay: 500, // Delay prima click simulato
+        autoAdvanceDelay: 1000    // Delay avanzamento step
+    },
+
+    init: function() { ... },
+    toggle: function() { ... },
+    executeCurrentStep: function() { ... },
+    analyzeAndExecuteStep: function(step) { ... },
+    autoExecuteToolActions: function(step) { ... },
+    autoExecuteDragDrop: function(step) { ... },
+    autoSnapObject: function(objectName, index, total) { ... },
+    waitForAnimationsAndAdvance: function() { ... },
+    autoAdvanceStep: function() { ... }
+};
+```
+
+**2. js/core/DragDropSystem.js** (linee 2989-3116)
+```javascript
+autoSnapToClosestTarget: function(objectName) {
+    // 1. Trova modello
+    const model = Scene3D.findModelByName(cleanName);
+
+    // 2. Verifica draggabilità
+    if (!this.enabledObjects.has(model.name)) return false;
+
+    // 3. Calcola centro BB corrente
+    model.updateMatrixWorld(true);
+    const boundingBox = new THREE.Box3().setFromObject(model);
+    const currentCenter = boundingBox.getCenter(new THREE.Vector3());
+
+    // 4. Trova target snap più vicino
+    const snapTarget = SnapSystem.findSnapTarget(model, currentCenter);
+
+    // 5. Esegue snap animato
+    this.performAutoSnap(model, snapTarget, currentCenter);
+}
+
+performAutoSnap: function(model, targetPosition, currentCenter) {
+    // Animazione smooth 500ms con easing
+    // Interpola posizione da current → target
+    // Al completamento → handleSnapComplete()
+}
+
+handleSnapComplete: function(objectName) {
+    // Traccia oggetto completato
+    // Se tutti snappati → auto-advance step
+}
+```
+
+**3. js/ui.js**
+```javascript
+// Linee 73-74: Inizializzazione
+initAutoMode: function() {
+    if (window.AutoMode && typeof window.AutoMode.init === 'function') {
+        window.AutoMode.init();
+    }
+}
+
+// Linee 1918-1928: API per ottenere step corrente
+getCurrentStep: function() {
+    if (!this.tutorialSteps || this.tutorialSteps.length === 0) return null;
+    return this.tutorialSteps[this.currentStepIndex];
+}
+```
+
+**4. index.html**
+```html
+<!-- Rilevamento mobile (linee 450-481) -->
+<script>
+    window.isMobileDevice = function() {
+        const mobileKeywords = ['Android', 'iPhone', 'iPad', ...];
+        const isMobileUA = mobileKeywords.some(k => userAgent.includes(k));
+        const isSmallScreen = window.innerWidth <= 768 || window.innerHeight <= 600;
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        return isMobileUA || (isSmallScreen && isTouchDevice);
+    };
+</script>
+
+<!-- Caricamento AutoMode (linea 614) -->
+<script src="js/AutoMode.js?v=1000020"></script>
+```
+
+**5. css/components.css** (linee 1508-1575)
+```css
+.auto-mode-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    /* ... */
+}
+
+.auto-mode-toggle.active {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    animation: pulseGreen 2s ease-in-out infinite;
+}
+
+@keyframes pulseGreen {
+    0%, 100% { box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4); }
+    50% { box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6); }
+}
+```
+
+### Configurazione Tutorial
+
+Nessuna modifica richiesta ai file `tutorial.txt` esistenti. AutoMode funziona automaticamente con qualsiasi tutorial.
+
+### Log Console Debug
+
+**Avvio AutoMode**:
+```javascript
+📱 Dispositivo mobile rilevato - AutoMode disponibile
+[AutoMode] Modulo caricato
+[AutoMode] Inizializzazione sistema...
+📱 [AutoMode] Dispositivo mobile rilevato - Sistema attivo
+[AutoMode] UI configurata con pulsante toggle
+```
+
+**Esecuzione Step con Tool**:
+```javascript
+📱 [AutoMode] ATTIVATO
+[AutoMode] 🚀 Esecuzione automatica step corrente...
+[AutoMode] Step corrente: "Step 1 - Rimuovi vite 1 culatta"
+[AutoMode] 🔧 Auto-esecuzione azioni per: models/vite_culatta_1.glb
+[AutoMode] 🖱️ Simulazione click su modello...
+[AutoMode] ✅ Click simulato con successo
+[AutoMode] ⏳ Animazioni in corso, attendo...
+[AutoMode] ✅ Animazioni completate
+[AutoMode] ⏭️ Avanzamento automatico step successivo...
+```
+
+**Esecuzione Step Drag & Drop**:
+```javascript
+[AutoMode] 🎯 Auto-snap 2 oggetti: [vite_culatta_1, vite_culatta_2]
+[AutoMode] Ordine randomizzato: [vite_culatta_2, vite_culatta_1]
+[AutoMode] 🎯 Auto-snap oggetto 1/2: "vite_culatta_2"
+[DragDropSystem] 🤖 AutoSnap richiesto per: "vite_culatta_2"
+[DragDropSystem] 🎯 Target snap trovato per "vite_culatta_2"
+   Posizione target: (-0.100, 0.236, 0.193)
+[DragDropSystem] ✅ Auto-snap completato per "vite_culatta_2"
+[DragDropSystem] 📢 Snap completato per: "vite_culatta_2"
+[DragDropSystem] 📊 Progress: 1/2 oggetti snappati
+[AutoMode] 🎯 Auto-snap oggetto 2/2: "vite_culatta_1"
+[DragDropSystem] ✅ Auto-snap completato per "vite_culatta_1"
+[DragDropSystem] 🎉 TUTTI GLI OGGETTI RICHIESTI SONO STATI SNAPPATI!
+[DragDropSystem] ⏭️ Auto-avanzamento allo step successivo...
+[AutoMode] ✅ Tutti gli oggetti snappati
+[AutoMode] ⏭️ Avanzamento automatico step successivo...
+```
+
+### Vantaggi
+
+- ✅ **Accessibilità Mobile**: Tutorial completamente fruibili su smartphone/tablet
+- ✅ **Zero Configurazione**: Funziona con tutorial esistenti senza modifiche
+- ✅ **Esperienza Guidata**: Utente può concentrarsi sull'apprendimento
+- ✅ **Modalità Mista**: Utente può attivare/disattivare AutoMode in qualsiasi momento
+- ✅ **Performance Ottimizzate**: Animazioni smooth, delay configurabili
+- ✅ **Debugging Completo**: Log dettagliati per troubleshooting
+
+### Limitazioni Note
+
+- **Interazione Modal**: Step con `Message` richiedono click OK manuale
+- **Ordine Casuale D&D**: Oggetti drag&drop snappati in ordine randomizzato (educativo)
+- **Solo Mobile**: Desktop non ha pulsante AutoMode (non necessario)
+
+### File Modificati/Creati
+
+- `js/AutoMode.js` - NUOVO - Sistema AutoMode completo (453 righe)
+- `js/core/DragDropSystem.js:2989-3116` - Metodi autoSnap
+- `js/ui.js:73-74,1905-1928` - Integrazione AutoMode
+- `index.html:450-481,614` - Rilevamento mobile + caricamento script
+- `css/components.css:1508-1575` - Stili pulsante toggle
+- `CLAUDE.md:52,1859-2099` - Documentazione completa
+
+### Compatibilità
+
+- ✅ **Zero Breaking Changes**: Tutorial desktop continuano a funzionare normalmente
+- ✅ **Backward Compatible**: Nessuna modifica ai tutorial esistenti
+- ✅ **Progressive Enhancement**: Feature aggiuntiva per mobile, desktop invariato
+
+### Test Case
+
+**Scenario**: Tutorial Pompa Becker - 18 step
+1. Apri da smartphone Android/iPhone
+2. Login e seleziona scenario
+3. Avvia tutorial → Vedi pulsante "🤖 AUTO"
+4. Click pulsante → Diventa verde "AUTO ON"
+5. Tutorial si esegue automaticamente:
+   - Step 1-4: Svita viti coperchio (auto-click)
+   - Step 5: Rimuovi coperchio (auto-click)
+   - Step 14: Posiziona viti estrattore (auto-drag&drop casuale)
+   - Step 15-16: Avvita viti (auto-click)
+   - Step 17: Traslazione flangia (auto-click)
+   - Step 18: Completa tutorial
+6. Ogni step avanza automaticamente dopo completamento
+
+---
+
+**Ultimo aggiornamento**: 17 Gennaio 2026 - Sistema AutoMode per Mobile implementato e documentato

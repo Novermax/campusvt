@@ -1,0 +1,5 @@
+da fare:
+la flangia non si allontana con il DrivenObject
+Le due viti rimangono attaccate, devono prima svitarsi e appoggiarsi
+Cambiare il DrivenObject del tubo con SlaveObjects
+

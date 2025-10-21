@@ -69,7 +69,10 @@ window.UI = {
             
             // Inizializza ToolsManager
             this.initToolsManager();
-            
+
+            // Inizializza AutoMode (solo su mobile)
+            this.initAutoMode();
+
             AppConfig.log(2, 'UI inizializzata con successo');
             
         } catch (error) {
@@ -1897,6 +1900,34 @@ window.UI = {
     },
 
     /**
+     * Inizializza AutoMode per dispositivi mobili
+     */
+    initAutoMode: function() {
+        if (window.AutoMode && typeof window.AutoMode.init === 'function') {
+            window.AutoMode.init();
+            this.safeLog(2, 'AutoMode inizializzato');
+        } else {
+            this.safeLog(1, 'AutoMode non disponibile');
+        }
+    },
+
+    /**
+     * Ottiene lo step corrente del tutorial
+     * @returns {Object|null} Step corrente o null
+     */
+    getCurrentStep: function() {
+        if (!this.tutorialSteps || this.tutorialSteps.length === 0) {
+            return null;
+        }
+
+        if (this.currentStepIndex < 0 || this.currentStepIndex >= this.tutorialSteps.length) {
+            return null;
+        }
+
+        return this.tutorialSteps[this.currentStepIndex];
+    },
+
+    /**
      * Inizializza la legenda strumenti (FALLBACK)
      */
     initToolsLegend: function() {
@@ -2900,37 +2931,51 @@ window.UI = {
         }
 
         // NUOVO: Parsing driven objects (oggetti con movimento indipendente sincronizzato)
-        // Sintassi: DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)
-        if (step.properties.DrivenObject) {
-            // Rimuovi commenti prima del parsing
-            const drivenObjectClean = step.properties.DrivenObject.split('#')[0].trim();
-            console.log(`[UI] 🚗 Parsing DrivenObject: "${drivenObjectClean}"`);
+        // Sintassi: DrivenObjects=oggetto1.glb,traslazione:(x,y,z,durata);oggetto2.glb,traslazione:(x,y,z,durata)
+        // Backward compatible: DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)
+        if (step.properties.DrivenObjects || step.properties.DrivenObject) {
+            const drivenObjectsArray = [];
 
-            // Parsing formato: oggetto.glb,traslazione:(x,y,z,durata)
-            const match = drivenObjectClean.match(/^([^,]+),traslazione:\(([^,]+),([^,]+),([^,]+),([^)]+)\)$/);
+            // Supporta sia DrivenObjects (multipli) che DrivenObject (singolo) per backward compatibility
+            const drivenProperty = step.properties.DrivenObjects || step.properties.DrivenObject;
+            const drivenObjectsClean = drivenProperty.split('#')[0].trim();
 
-            if (match) {
-                const objectName = match[1].trim();
-                const x = parseFloat(match[2].trim());
-                const y = parseFloat(match[3].trim());
-                const z = parseFloat(match[4].trim());
-                const duration = parseFloat(match[5].trim());
+            console.log(`[UI] 🚗 Parsing DrivenObjects: "${drivenObjectsClean}"`);
 
-                if (!isNaN(x) && !isNaN(y) && !isNaN(z) && !isNaN(duration)) {
-                    // Salva configurazione driven object
-                    step.properties.DrivenObjectConfig = {
-                        objectName: objectName,
-                        translation: { x, y, z },
-                        duration: duration
-                    };
+            // Split per multipli oggetti separati da `;`
+            const drivenEntries = drivenObjectsClean.split(';').map(entry => entry.trim()).filter(entry => entry.length > 0);
 
-                    console.log(`[UI] 🚗 DRIVEN OBJECT: "${objectName}" → traslazione (${x}, ${y}, ${z}) in ${duration}s`);
-                    AppConfig.log(3, `🚗 DRIVEN OBJECT: Configurato "${objectName}" con movimento indipendente`);
+            drivenEntries.forEach(entry => {
+                // Parsing formato: oggetto.glb,traslazione:(x,y,z,durata)
+                const match = entry.match(/^([^,]+),traslazione:\(([^,]+),([^,]+),([^,]+),([^)]+)\)$/);
+
+                if (match) {
+                    const objectName = match[1].trim();
+                    const x = parseFloat(match[2].trim());
+                    const y = parseFloat(match[3].trim());
+                    const z = parseFloat(match[4].trim());
+                    const duration = parseFloat(match[5].trim());
+
+                    if (!isNaN(x) && !isNaN(y) && !isNaN(z) && !isNaN(duration)) {
+                        drivenObjectsArray.push({
+                            objectName: objectName,
+                            translation: { x, y, z },
+                            duration: duration
+                        });
+
+                        console.log(`[UI] 🚗 DRIVEN OBJECT ${drivenObjectsArray.length}: "${objectName}" → traslazione (${x}, ${y}, ${z}) in ${duration}s`);
+                    } else {
+                        AppConfig.log(1, `⚠️ DRIVEN OBJECT: Coordinate o durata non valide: ${entry}`);
+                    }
                 } else {
-                    AppConfig.log(1, `⚠️ DRIVEN OBJECT: Coordinate o durata non valide: ${drivenObjectClean}`);
+                    AppConfig.log(1, `⚠️ DRIVEN OBJECT: Formato non valido: ${entry} (usare formato: oggetto.glb,traslazione:(x,y,z,durata))`);
                 }
-            } else {
-                AppConfig.log(1, `⚠️ DRIVEN OBJECT: Formato non valido: ${drivenObjectClean} (usare formato: oggetto.glb,traslazione:(x,y,z,durata))`);
+            });
+
+            // Salva array di driven objects (anche se singolo per backward compatibility)
+            if (drivenObjectsArray.length > 0) {
+                step.properties.DrivenObjectsConfig = drivenObjectsArray;
+                AppConfig.log(3, `🚗 DRIVEN OBJECTS: Configurati ${drivenObjectsArray.length} oggetti con movimento indipendente`);
             }
         }
 

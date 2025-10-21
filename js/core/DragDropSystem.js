@@ -2984,6 +2984,134 @@ window.DragDropSystem = {
 
         console.log('\n==========================================');
         console.log('[DragDropSystem] 🔬 FINE DIAGNOSI\n');
+    },
+
+    /**
+     * AUTO-SNAP per AutoMode: Snappa automaticamente oggetto al target più vicino
+     * @param {string} objectName - Nome dell'oggetto da snappare
+     */
+    autoSnapToClosestTarget: function(objectName) {
+        console.log(`[DragDropSystem] 🤖 AutoSnap richiesto per: "${objectName}"`);
+
+        // Trova il modello
+        const cleanName = objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+        const model = window.Scene3D ? window.Scene3D.findModelByName(cleanName) : null;
+
+        if (!model) {
+            console.warn(`[DragDropSystem] ⚠️ Modello "${objectName}" non trovato per auto-snap`);
+            return false;
+        }
+
+        // Verifica che l'oggetto sia draggabile
+        if (!this.enabledObjects.has(model.name)) {
+            console.warn(`[DragDropSystem] ⚠️ Oggetto "${model.name}" non è abilitato per drag & drop`);
+            return false;
+        }
+
+        // Trova target snap più vicino
+        const snapSystem = window.SnapSystem || this;
+        if (!snapSystem || !snapSystem.findSnapTarget) {
+            console.error('[DragDropSystem] ⚠️ SnapSystem non disponibile');
+            return false;
+        }
+
+        // Calcola posizione corrente centro bounding box
+        model.updateMatrixWorld(true);
+        const boundingBox = new THREE.Box3().setFromObject(model);
+        const currentCenter = boundingBox.getCenter(new THREE.Vector3());
+
+        // Trova target snap
+        const snapTarget = snapSystem.findSnapTarget(model, currentCenter);
+
+        if (!snapTarget) {
+            console.warn(`[DragDropSystem] ⚠️ Nessun target snap trovato per "${model.name}"`);
+            return false;
+        }
+
+        console.log(`[DragDropSystem] 🎯 Target snap trovato per "${model.name}"`);
+        console.log(`   Posizione target: (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})`);
+
+        // Simula snap automatico
+        this.performAutoSnap(model, snapTarget, currentCenter);
+
+        return true;
+    },
+
+    /**
+     * Esegue lo snap automatico (senza interazione utente)
+     * @param {THREE.Object3D} model - Modello da snappare
+     * @param {THREE.Vector3} targetPosition - Posizione target
+     * @param {THREE.Vector3} currentCenter - Centro BB corrente
+     */
+    performAutoSnap: function(model, targetPosition, currentCenter) {
+        // Calcola offset tra pivot e centro BB
+        const pivotToCenterOffset = new THREE.Vector3().subVectors(currentCenter, model.position);
+
+        // Nuova posizione pivot = target - offset
+        const newPivotPosition = new THREE.Vector3().subVectors(targetPosition, pivotToCenterOffset);
+
+        // Anima movimento verso target
+        const startPosition = model.position.clone();
+        const startTime = performance.now();
+        const duration = 500; // 0.5 secondi
+
+        const animate = () => {
+            const elapsed = performance.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing smooth
+            const easeProgress = progress < 0.5
+                ? 2 * progress * progress
+                : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+            // Interpolazione posizione
+            model.position.lerpVectors(startPosition, newPivotPosition, easeProgress);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // Snap completato
+                model.position.copy(newPivotPosition);
+                console.log(`[DragDropSystem] ✅ Auto-snap completato per "${model.name}"`);
+
+                // Notifica completamento snap (trigger per auto-advance)
+                this.handleSnapComplete(model.name);
+            }
+        };
+
+        animate();
+    },
+
+    /**
+     * Gestisce completamento snap (chiamato dopo auto-snap)
+     * @param {string} objectName - Nome oggetto snappato
+     */
+    handleSnapComplete: function(objectName) {
+        console.log(`[DragDropSystem] 📢 Snap completato per: "${objectName}"`);
+
+        // Se in modalità auto-avanzamento, traccia oggetto completato
+        if (this.autoAdvanceEnabled && this.requiredSnapObjects.size > 0) {
+            this.completedSnapObjects.add(objectName);
+
+            const progress = `${this.completedSnapObjects.size}/${this.requiredSnapObjects.size}`;
+            console.log(`[DragDropSystem] 📊 Progress: ${progress} oggetti snappati`);
+
+            // Controlla se tutti richiesti sono snappati
+            const allSnapped = Array.from(this.requiredSnapObjects).every(req =>
+                this.completedSnapObjects.has(req)
+            );
+
+            if (allSnapped) {
+                console.log('[DragDropSystem] 🎉 TUTTI GLI OGGETTI RICHIESTI SONO STATI SNAPPATI!');
+                console.log('[DragDropSystem] ⏭️ Auto-avanzamento allo step successivo...');
+
+                // Trigger avanzamento step
+                setTimeout(() => this.tryAdvanceTutorialStep('all_snaps_completed'), 500);
+            }
+        }
+
+        // Pulisci dopo snap
+        this.cleanup();
     }
 };
 // Funzioni globali di debug

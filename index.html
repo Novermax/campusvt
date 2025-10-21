@@ -447,75 +447,37 @@
     
     <!-- Script per controllo dispositivi mobili (eseguito immediatamente) -->
     <script>
-        // Rilevamento dispositivi mobili - DEVE essere eseguito subito
+        // Rilevamento dispositivi mobili - Per AutoMode (BLOCCO RIMOSSO)
         (function() {
             function isMobileDevice() {
                 // Controlla User Agent per dispositivi mobili comuni
                 const mobileKeywords = [
-                    'Android', 'iPhone', 'iPad', 'iPod', 'BlackBerry', 
+                    'Android', 'iPhone', 'iPad', 'iPod', 'BlackBerry',
                     'Windows Phone', 'Opera Mini', 'IEMobile', 'Mobile'
                 ];
-                
+
                 const userAgent = navigator.userAgent;
                 const isMobileUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
-                
+
                 // Controlla anche le dimensioni dello schermo (con tolleranza per tablet)
                 const isSmallScreen = window.innerWidth <= 768 || window.innerHeight <= 600;
-                
+
                 // Controlla se è un touchscreen (non sempre affidabile ma utile)
                 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                
+
                 // Combina tutti i controlli per una rilevazione più accurata
                 return isMobileUA || (isSmallScreen && isTouchDevice);
             }
-            
-            function showMobileBlock() {
-                const mobileBlockPage = document.getElementById('mobileBlockPage');
-                const loginPage = document.getElementById('loginPage');
-                const container = document.getElementById('container');
-                const initLoader = document.getElementById('init-loader');
-                
-                if (mobileBlockPage) {
-                    // Mostra la schermata di blocco mobile
-                    mobileBlockPage.classList.remove('hidden');
-                    
-                    // Nasconde tutte le altre pagine
-                    if (loginPage) loginPage.classList.add('hidden');
-                    if (container) container.classList.add('hidden');
-                    if (initLoader) initLoader.classList.add('hidden');
-                    
-                    console.log('🚫 Accesso bloccato: dispositivo mobile rilevato');
-                }
-            }
-            
-            // Controlla immediatamente al caricamento del DOM
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    if (isMobileDevice()) {
-                        showMobileBlock();
-                    }
-                });
+
+            // Rendi disponibile globalmente per AutoMode
+            window.isMobileDevice = isMobileDevice;
+
+            // Log del dispositivo rilevato
+            if (isMobileDevice()) {
+                console.log('📱 Dispositivo mobile rilevato - AutoMode disponibile');
             } else {
-                // Il DOM è già caricato
-                if (isMobileDevice()) {
-                    showMobileBlock();
-                }
+                console.log('💻 Dispositivo desktop rilevato');
             }
-            
-            // Controlla anche quando cambia l'orientamento o le dimensioni
-            window.addEventListener('resize', function() {
-                if (isMobileDevice()) {
-                    showMobileBlock();
-                }
-            });
-            
-            window.addEventListener('orientationchange', function() {
-                setTimeout(function() {
-                    if (isMobileDevice()) {
-                        showMobileBlock();
-                    }
-                }, 500); // Ritardo per permettere al browser di aggiornare le dimensioni
-            });
         })();
     </script>
 
@@ -649,6 +611,7 @@
     
     <!-- Caricamento moduli in ordine di dipendenza -->
     <script src="js/ui/ToolsManager.js?nocache=1000024"></script>
+    <script src="js/AutoMode.js?v=1000020"></script>
     <script type="module" src="js/app.js?v=1000010"></script>
     
     <!-- ===== SCRIPT ANALYTICS (opzionale) ===== -->
