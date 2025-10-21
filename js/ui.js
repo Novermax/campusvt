@@ -2826,6 +2826,11 @@ window.UI = {
         console.log(`[DEBUG] ⏭️ Navigazione a step: "${step.title}"`);
         AppConfig.log(2, `Navigazione a step ${stepIndex + 1}: ${step.title}`);
 
+        // Mobile Optimizer: Lazy loading modelli per step corrente
+        if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
+            window.MobileOptimizer.loadModelsForStep(stepIndex, this.tutorialSteps);
+        }
+
         // Aggiorna fumetto PRIMA di eseguire lo step (così è visibile durante modal)
         this.updateStepSpeechBubble();
 

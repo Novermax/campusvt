@@ -277,6 +277,11 @@ window.App = {
                 console.log('📦 Sistema UI legacy attivo');
             }
 
+            // Inizializza MobileOptimizer se disponibile
+            if (window.MobileOptimizer && typeof window.MobileOptimizer.init === 'function') {
+                window.MobileOptimizer.init();
+            }
+
             console.log('✅ Tutti i moduli caricati (architettura modulare ottimizzata)');
         } catch (error) {
             throw new Error(`Errore caricamento moduli: ${error.message}`);

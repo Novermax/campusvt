@@ -165,7 +165,13 @@ window.ModelLoader = {
     processFileGroups: function(groups, onProgress, onComplete, onError) {
         const totalSteps = groups.models.length;
         const loadedModels = [];
-        const CONCURRENT_LOADS = 6; // Carica fino a 6 modelli contemporaneamente
+
+        // Determina concurrency dinamicamente in base al dispositivo
+        let CONCURRENT_LOADS = 6; // Default desktop
+        if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
+            CONCURRENT_LOADS = window.MobileOptimizer.deviceCapabilities.maxConcurrentModels;
+            console.log(`📱 MobileOptimizer attivo - Concurrency ridotta a ${CONCURRENT_LOADS}`);
+        }
 
         // Aggiorna progress iniziale (0/total)
         if (onProgress) {
@@ -241,7 +247,20 @@ window.ModelLoader = {
             })
             .catch((error) => {
                 this.isLoading = false;
-                if (onError) onError(error);
+                console.error('❌ Errore durante caricamento modelli:', error);
+
+                // Se mobile optimizer attivo, notifica l'errore
+                if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
+                    window.MobileOptimizer.handleLoadError('batch', error);
+                }
+
+                // Mostra messaggio più user-friendly su mobile
+                if (window.isMobileDevice && window.isMobileDevice()) {
+                    const friendlyError = `Impossibile caricare tutti i modelli 3D. Il tuo dispositivo potrebbe avere memoria limitata. Prova ad attivare la modalità AutoMode per un'esperienza ottimizzata.`;
+                    if (onError) onError(friendlyError);
+                } else {
+                    if (onError) onError(error);
+                }
             });
     },
 
@@ -253,10 +272,20 @@ window.ModelLoader = {
         return new Promise((resolve, reject) => {
             let currentIndex = 0;
             let completedCount = 0;
+            let failedCount = 0;
             const results = [];
 
             const loadNext = () => {
-                if (completedCount >= promises.length) {
+                if (completedCount + failedCount >= promises.length) {
+                    // Se troppi fallimenti su mobile, rigetta
+                    const failureRate = failedCount / promises.length;
+                    if (failureRate > 0.5 && window.MobileOptimizer && window.MobileOptimizer.enabled) {
+                        console.error(`❌ Troppi fallimenti: ${failedCount}/${promises.length} modelli non caricati`);
+                        reject(new Error(`Impossibile caricare ${failedCount}/${promises.length} modelli`));
+                        return;
+                    }
+
+                    console.log(`✅ Caricamento completato: ${completedCount} successi, ${failedCount} fallimenti`);
                     resolve(results);
                     return;
                 }
@@ -272,7 +301,11 @@ window.ModelLoader = {
                                 completedCount++;
                                 loadNext(); // Avvia prossimo quando questo completa
                             })
-                            .catch(reject)
+                            .catch(error => {
+                                console.warn(`⚠️ Errore caricamento modello ${index}:`, error);
+                                failedCount++;
+                                loadNext(); // Continua con prossimo anche se questo fallisce
+                            })
                     );
                 }
             };
