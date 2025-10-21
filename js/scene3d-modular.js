@@ -1109,7 +1109,9 @@ const Scene3D = {
         if (movementSteps.length > 0) {
             // Recupera slave objects dal tutorial step (se presenti)
             const slaveObjects = tutorialStep.properties?.SlaveObjectsList || [];
-            return this.startMultiStepMovement(model, movementSteps, slaveObjects);
+            // Recupera driven object config dal tutorial step (se presente)
+            const drivenObjectConfig = tutorialStep.properties?.DrivenObjectConfig || null;
+            return this.startMultiStepMovement(model, movementSteps, slaveObjects, drivenObjectConfig);
         }
         
         // Fallback legacy solo se non ci sono azioni multi-step
@@ -1973,7 +1975,7 @@ const Scene3D = {
         return { x: 0, y: 0, z: 1 };
     },
 
-    startMultiStepMovement: function(model, movementSteps, slaveObjects = []) {
+    startMultiStepMovement: function(model, movementSteps, slaveObjects = [], drivenObjectConfig = null) {
         if (!movementSteps || movementSteps.length === 0) {
             return false;
         }
@@ -1987,11 +1989,16 @@ const Scene3D = {
             currentStepIndex: 0,
             isActive: true,
             modelName: modelName,
-            slaveObjects: slaveObjects // Lista di oggetti slave che seguono il master
+            slaveObjects: slaveObjects, // Lista di oggetti slave che seguono il master
+            drivenObjectConfig: drivenObjectConfig // Configurazione oggetto driven (movimento indipendente)
         });
 
         if (slaveObjects && slaveObjects.length > 0) {
             console.log(`🔗 SLAVE OBJECTS: ${slaveObjects.length} oggetti seguiranno "${modelName}": [${slaveObjects.join(', ')}]`);
+        }
+
+        if (drivenObjectConfig) {
+            console.log(`🚗 DRIVEN OBJECT: "${drivenObjectConfig.objectName}" si muoverà in modo indipendente → (${drivenObjectConfig.translation.x}, ${drivenObjectConfig.translation.y}, ${drivenObjectConfig.translation.z}) in ${drivenObjectConfig.duration}s`);
         }
 
         this.executeCurrentMultiStep(modelUuid);
@@ -2271,6 +2278,63 @@ const Scene3D = {
         };
 
         this.animationSystem.activeAnimations.push(animation);
+
+        // NUOVO: Crea animazione parallela per driven object (se presente)
+        if (multiStepData.drivenObjectConfig) {
+            try {
+                const drivenConfig = multiStepData.drivenObjectConfig;
+                console.log(`🚗 DRIVEN OBJECT: Creazione animazione parallela per "${drivenConfig.objectName}"`);
+
+                // Trova il modello driven
+                const cleanDrivenName = drivenConfig.objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+                let drivenModel = this.findModelByName(cleanDrivenName);
+
+                if (!drivenModel && cleanDrivenName !== drivenConfig.objectName) {
+                    drivenModel = this.findModelByName(drivenConfig.objectName);
+                }
+
+                if (drivenModel) {
+                    // Posizione iniziale e target del driven object
+                    const drivenInitialPosition = drivenModel.position.clone();
+                    const drivenTargetPosition = drivenInitialPosition.clone().add(
+                        new THREE.Vector3(
+                            drivenConfig.translation.x,
+                            drivenConfig.translation.y,
+                            drivenConfig.translation.z
+                        )
+                    );
+
+                    // Crea animazione driven completamente indipendente
+                    const drivenAnimation = {
+                        model: drivenModel,
+                        modelUuid: drivenModel.uuid,
+                        initialPosition: drivenInitialPosition,
+                        targetPosition: drivenTargetPosition,
+                        initialRotation: new THREE.Euler().copy(drivenModel.rotation),
+                        targetRotation: null, // Driven object: solo traslazione, no rotazione
+                        startTime: performance.now(), // Parte in sincronia con master
+                        duration: drivenConfig.duration,
+                        finished: false,
+                        isDriven: true, // Flag per identificare animazioni driven
+                        masterModelUuid: modelUuid, // Riferimento al master per sincronizzazione completamento
+                        action: `Driven-${cleanDrivenName}`
+                    };
+
+                    this.animationSystem.activeAnimations.push(drivenAnimation);
+
+                    console.log(`🚗 DRIVEN OBJECT: Animazione creata per "${cleanDrivenName}"`);
+                    console.log(`   Posizione iniziale: (${drivenInitialPosition.x.toFixed(3)}, ${drivenInitialPosition.y.toFixed(3)}, ${drivenInitialPosition.z.toFixed(3)})`);
+                    console.log(`   Posizione target: (${drivenTargetPosition.x.toFixed(3)}, ${drivenTargetPosition.y.toFixed(3)}, ${drivenTargetPosition.z.toFixed(3)})`);
+                    console.log(`   Durata: ${drivenConfig.duration}s`);
+                } else {
+                    console.warn(`⚠️ DRIVEN OBJECT: Modello "${drivenConfig.objectName}" (cercato anche come "${cleanDrivenName}") non trovato nella scena`);
+                    console.warn(`⚠️ DRIVEN OBJECT: Animazione master continuerà SENZA driven object`);
+                }
+            } catch (error) {
+                console.error(`❌ DRIVEN ERROR: Errore creazione animazione driven:`, error);
+                console.warn(`⚠️ DRIVEN OBJECT: Animazione master continuerà SENZA driven object`);
+            }
+        }
     },
 
     findModelByName: function(targetName) {
@@ -2512,7 +2576,11 @@ const Scene3D = {
                     console.log(`✅ ANIMAZIONE COMPLETATA ${anim.model.name}: posizione finale (${anim.model.position.x.toFixed(2)}, ${anim.model.position.y.toFixed(2)}, ${anim.model.position.z.toFixed(2)})`);
                 }
 
-                if (anim.isMultiStep) {
+                // IMPORTANTE: Le animazioni driven NON devono far avanzare il tutorial
+                // Solo il master controlla l'avanzamento
+                if (anim.isDriven) {
+                    console.log(`🚗 DRIVEN OBJECT: Animazione completata per "${anim.model.name || anim.model.userData?.originalFilename}" - NO avanzamento tutorial`);
+                } else if (anim.isMultiStep) {
                     this.onMultiStepCompleted(anim.modelUuid);
                 } else {
                     if (window.UI && window.UI.currentStepIndex !== undefined && window.UI.currentStepIndex >= 0) {

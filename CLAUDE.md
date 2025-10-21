@@ -175,6 +175,7 @@ SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)  # Formato vecchio: snap per-og
 SnapTargets=estrattoresx_original,estrattoredx_original  # Snap globale a target (tutti oggetti possono usare tutti i target)
 SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original  # Formato vecchio: snap per-oggetto (con :)
 AssemblyMode=true                    # Modalità assemblaggio
+DrivenObject=tubo.glb,traslazione:(x,y,z,durata)  # Oggetto con movimento indipendente sincronizzato
 ```
 
 ### Comportamenti
@@ -223,6 +224,101 @@ UI.jumpToStepByName("rimuovi filtro")    // Metodo completo (alternativo)
 - **Transizioni Camera**: Target fluide invece di salti immediati
 - **Tool Educativo**: Evidenziazione automatica rimossa per apprendimento autonomo
 - **Blocco Post-Tutorial**: Interazioni bloccate dopo completamento, reset su nuovo tutorial
+
+### 🚗 Sistema DrivenObject - Movimento Indipendente Sincronizzato (Gennaio 2026)
+- **Funzionalità**: Oggetti con movimento indipendente ma sincronizzato temporalmente con l'azione principale
+- **Differenza da SlaveObjects**:
+  - SlaveObjects → seguono 1:1 tutte le trasformazioni del master (posizione + rotazione)
+  - DrivenObject → movimento **completamente indipendente** (direzione, distanza, durata personalizzabili)
+- **Caso d'Uso**: Tubo flessibile che si muove meno della flangia, oggetto collegato con elasticità, effetti secondari
+
+#### Sintassi Tutorial
+```ini
+[Step 17 - traslazione flangia]
+Elemento=models/flangia.glb
+Utensile=Mani
+Azione1=traslazione:(0,0,0.2,0.5)  # Flangia si muove di 0.2 unità
+DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)  # Tubo si muove di 0.1 unità (metà)
+```
+
+#### Formato
+**Sintassi**: `DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)`
+- **oggetto.glb**: Nome del modello driven (con o senza estensione)
+- **traslazione**: Movimento indipendente del driven object
+- **(x,y,z)**: Vettore traslazione (può essere diverso dal master)
+- **durata**: Durata animazione in secondi (può essere diversa dal master)
+
+#### Caratteristiche
+- ✅ **Movimento Indipendente**: Direzione e distanza completamente personalizzabili
+- ✅ **Sincronizzazione Temporale**: Parte insieme all'azione master
+- ✅ **Durata Flessibile**: Può avere durata diversa dal master
+- ✅ **Animazione Parallela**: Eseguita in parallelo, non blocca il master
+- ✅ **Zero Impatto Avanzamento**: Solo il master controlla quando avanzare al prossimo step
+- ✅ **Gestione Errori Robusta**: Se driven object non trovato, master continua normalmente
+
+#### Implementazione
+- **Parsing**: `js/ui.js:2904-2935` - Parser DrivenObject con regex
+- **Setup**: `js/scene3d-modular.js:1978-2006` - Configurazione in multiStepData
+- **Animazione Parallela**: `js/scene3d-modular.js:2282-2337` - Creazione animazione driven indipendente
+- **Completamento**: `js/scene3d-modular.js:2579-2583` - Driven NON avanza tutorial
+
+#### Esempi Pratici
+
+**Esempio 1: Tubo flessibile collegato a flangia**
+```ini
+# Flangia si allontana, tubo segue con metà movimento (elasticità)
+[Step 17 - Allontana flangia]
+Elemento=models/flangia.glb
+Utensile=Mani
+Azione1=traslazione:(0,0,0.2,0.5)
+DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)
+```
+
+**Esempio 2: Oggetto collegato con ritardo**
+```ini
+# Master si muove velocemente, driven segue lentamente (ritardo visivo)
+[Step 10 - Sposta componente]
+Elemento=models/componente_principale.glb
+Utensile=Mani
+Azione1=traslazione:(0.5,0,0,0.3)
+DrivenObject=componente_secondario.glb,traslazione:(0.5,0,0,0.8)  # Stessa distanza, durata maggiore
+```
+
+**Esempio 3: Movimento angolare differente**
+```ini
+# Master si muove in Z, driven si muove in diagonale
+[Step 8 - Estrazione complessa]
+Elemento=models/pezzo_A.glb
+Utensile=Mani
+Azione1=traslazione:(0,0,0.3,1.0)
+DrivenObject=pezzo_B.glb,traslazione:(0.1,0,0.2,1.0)  # Movimento obliquo
+```
+
+#### Confronto SlaveObjects vs DrivenObject
+
+| Caratteristica | SlaveObjects | DrivenObject |
+|----------------|--------------|--------------|
+| **Movimento** | Copia 1:1 tutte le trasformazioni | Movimento completamente indipendente |
+| **Direzione** | Sempre uguale al master | Personalizzabile (x,y,z qualsiasi) |
+| **Distanza** | Sempre uguale al master | Personalizzabile |
+| **Durata** | Sempre uguale al master | Personalizzabile |
+| **Rotazione** | Segue rotazione master | Solo traslazione |
+| **Uso tipico** | Oggetti rigidamente collegati | Oggetti collegati con elasticità/ritardo |
+
+#### Log Debug Console
+```javascript
+[UI] 🚗 Parsing DrivenObject: "tubograsso.glb,traslazione:(0,0,0.1,0.5)"
+[UI] 🚗 DRIVEN OBJECT: "tubograsso.glb" → traslazione (0, 0, 0.1) in 0.5s
+🚗 DRIVEN OBJECT: "tubograsso" si muoverà in modo indipendente → (0, 0, 0.1) in 0.5s
+🚗 DRIVEN OBJECT: Creazione animazione parallela per "tubograsso"
+   Posizione iniziale: (-0.064, 0.350, 0.056)
+   Posizione target: (-0.064, 0.350, 0.156)
+   Durata: 0.5s
+🚗 DRIVEN OBJECT: Animazione creata per "tubograsso"
+🚗 DRIVEN OBJECT: Animazione completata per "tubograsso" - NO avanzamento tutorial
+```
+
+---
 
 ### Sistema Export e Workflow (Novembre 2025)
 - **Export Posizioni**: `Scene3D.exportCurrentModelPositions()` → sintassi tutorial.txt

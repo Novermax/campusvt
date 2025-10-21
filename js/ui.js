@@ -2899,6 +2899,41 @@ window.UI = {
             }
         }
 
+        // NUOVO: Parsing driven objects (oggetti con movimento indipendente sincronizzato)
+        // Sintassi: DrivenObject=oggetto.glb,traslazione:(x,y,z,durata)
+        if (step.properties.DrivenObject) {
+            // Rimuovi commenti prima del parsing
+            const drivenObjectClean = step.properties.DrivenObject.split('#')[0].trim();
+            console.log(`[UI] 🚗 Parsing DrivenObject: "${drivenObjectClean}"`);
+
+            // Parsing formato: oggetto.glb,traslazione:(x,y,z,durata)
+            const match = drivenObjectClean.match(/^([^,]+),traslazione:\(([^,]+),([^,]+),([^,]+),([^)]+)\)$/);
+
+            if (match) {
+                const objectName = match[1].trim();
+                const x = parseFloat(match[2].trim());
+                const y = parseFloat(match[3].trim());
+                const z = parseFloat(match[4].trim());
+                const duration = parseFloat(match[5].trim());
+
+                if (!isNaN(x) && !isNaN(y) && !isNaN(z) && !isNaN(duration)) {
+                    // Salva configurazione driven object
+                    step.properties.DrivenObjectConfig = {
+                        objectName: objectName,
+                        translation: { x, y, z },
+                        duration: duration
+                    };
+
+                    console.log(`[UI] 🚗 DRIVEN OBJECT: "${objectName}" → traslazione (${x}, ${y}, ${z}) in ${duration}s`);
+                    AppConfig.log(3, `🚗 DRIVEN OBJECT: Configurato "${objectName}" con movimento indipendente`);
+                } else {
+                    AppConfig.log(1, `⚠️ DRIVEN OBJECT: Coordinate o durata non valide: ${drivenObjectClean}`);
+                }
+            } else {
+                AppConfig.log(1, `⚠️ DRIVEN OBJECT: Formato non valido: ${drivenObjectClean} (usare formato: oggetto.glb,traslazione:(x,y,z,durata))`);
+            }
+        }
+
         // NUOVO: Gestione sistema Drag & Drop se abilitato nello step
         if (step.properties.DragDrop === 'true' && window.DragDropSystem) {
             console.log(`[DEBUG] 🎯 DRAG & DROP: Processo abilitazione per step "${step.title}"`);

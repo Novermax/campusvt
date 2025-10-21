@@ -453,19 +453,20 @@ CameraPos=(0, 0.37, 0.44)                                   // Posizione assolut
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_1.glb
  Azione1=avvita(0.02)
-
+ DrivenObject=flangia.glb,traslazione( 0,0,0.02,0.5)  # La flangia si muove in base all'avvitamento
 [Step 16 - stringi viti estrattore]
  Descrizione=Stringi la vite culatta 2 con la chiave a brugola
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_2.glb
  Azione1=avvita(0.02)
+ DrivenObject=flangia.glb,traslazione( 0,0,0.02,0.5)  # La flangia si muove in base all'avvitamento
 
 [Step 17 - traslazione flangia]
 Elemento=models/flangia.glb
 Descrizione=Allontana la flangia con le Mani. Il tubo del grasso si muove insieme ad essa.
 Utensile=Mani
-SlaveObjects=tubograsso.glb  # Oggetto che segue la flangia durante il movimentonon 
-Azione1=traslazione:( 0,0,0.2,0.5)
+DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)  # Tubo segue con movimento indipendente (metà distanza)
+Azione1=traslazione:(0,0,0.2,0.5)
 
 [Step 18 - staccare il tubo del grasso]
 Elemento=models/tubograsso.glb
