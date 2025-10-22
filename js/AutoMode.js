@@ -41,6 +41,11 @@
             if (this.isMobile) {
                 console.log('📱 [AutoMode] Dispositivo mobile rilevato - Sistema attivo');
                 this.setupUI();
+
+                // ATTIVA AUTOMATICAMENTE AutoMode su mobile e mostra notifica
+                this.enabled = true;
+                this.showToast('🤖 Modalità AutoMode Attiva', 'Modalità interattiva disponibile solo su desktop. Per avanzare di step, clicca sul fumetto azzurro di descrizione.', 6000);
+                console.log('📱 [AutoMode] ATTIVATO AUTOMATICAMENTE su mobile');
             } else {
                 console.log('💻 [AutoMode] Dispositivo desktop - AutoMode disabilitato');
             }
@@ -60,20 +65,18 @@
             // Crea pulsante toggle AutoMode
             const toggleButton = document.createElement('button');
             toggleButton.id = 'autoModeToggle';
-            toggleButton.className = 'auto-mode-toggle';
-            toggleButton.innerHTML = '🤖 AUTO';
-            toggleButton.title = 'Attiva/Disattiva modalità automatica';
-
-            toggleButton.addEventListener('click', (e) => {
-                e.stopPropagation(); // Previeni propagazione al fumetto
-                this.toggle();
-            });
+            toggleButton.className = 'auto-mode-toggle active'; // Attivo di default su mobile
+            toggleButton.innerHTML = '🤖 AUTO ON';
+            toggleButton.title = 'Modalità automatica sempre attiva su mobile';
+            toggleButton.disabled = true; // Non cliccabile su mobile - sempre attivo
+            toggleButton.style.cursor = 'default';
+            toggleButton.style.opacity = '1';
 
             // Aggiungi al fumetto (in alto a destra)
             tutorialBubble.style.position = 'relative';
             tutorialBubble.appendChild(toggleButton);
 
-            console.log('[AutoMode] UI configurata con pulsante toggle');
+            console.log('[AutoMode] UI configurata - Pulsante sempre attivo su mobile');
         },
 
         /**
@@ -364,6 +367,70 @@
                 return window.UI.getCurrentStep();
             }
             return null;
+        },
+
+        /**
+         * Mostra notifica toast
+         * @param {string} title - Titolo notifica
+         * @param {string} message - Messaggio notifica (opzionale)
+         * @param {number} duration - Durata in ms (default: 3000)
+         * @param {string} type - Tipo: 'success', 'info', 'warning', 'error' (default: 'success')
+         */
+        showToast: function(title, message = '', duration = 3000, type = 'success') {
+            // Rimuovi toast esistenti
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Crea elemento toast
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+
+            // Contenuto
+            let content = `<span class="toast-emoji">${this.getEmojiForType(type)}</span>`;
+            content += `<div style="display: inline-block; vertical-align: middle;">`;
+            content += `<div style="font-weight: 700;">${title}</div>`;
+            if (message) {
+                content += `<div style="font-size: 0.9em; opacity: 0.9; margin-top: 4px;">${message}</div>`;
+            }
+            content += `</div>`;
+
+            toast.innerHTML = content;
+
+            // Aggiungi al body
+            document.body.appendChild(toast);
+
+            // Trigger animazione show
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Auto-hide dopo duration
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+
+                // Rimuovi dal DOM dopo animazione
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }, duration);
+
+            console.log(`[AutoMode] Toast mostrato: ${title}`);
+        },
+
+        /**
+         * Restituisce emoji in base al tipo di notifica
+         */
+        getEmojiForType: function(type) {
+            const emojis = {
+                'success': '✅',
+                'info': 'ℹ️',
+                'warning': '⚠️',
+                'error': '❌'
+            };
+            return emojis[type] || '✅';
         },
 
         /**

@@ -34,6 +34,18 @@
     z-index: 150;
     max-width: 350px;
     min-width: 280px;
+    cursor: pointer; /* Indica che è cliccabile */
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* Effetto hover sul fumetto - indicatore visivo che è cliccabile */
+.step-speech-bubble:hover {
+    transform: translateY(-50%) scale(1.02);
+    filter: brightness(1.1);
+}
+
+.step-speech-bubble:active {
+    transform: translateY(-50%) scale(0.98);
 }
 
 .speech-bubble-content {
@@ -44,6 +56,11 @@
     box-shadow: var(--shadow-strong);
     position: relative;
     animation: fadeInLeft 0.5s ease;
+    transition: box-shadow 0.2s ease;
+}
+
+.step-speech-bubble:hover .speech-bubble-content {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .speech-bubble-arrow {
@@ -160,39 +177,48 @@
         padding: 10px;
         position: fixed; /* Fixed invece di absolute per mobile */
     }
-    
+
     #navBar {
         flex-direction: column;
         gap: 10px;
         margin-bottom: 10px;
         text-align: center;
     }
-    
+
     #navBar #title {
         font-size: 18px;
         text-align: center;
     }
-    
+
     #controls {
         flex-direction: column;
         gap: 8px;
         width: 100%;
     }
-    
+
     /* I controlli occupano tutta la larghezza disponibile su mobile */
     #controls button,
     #controls .file-label {
         width: 100%;
         max-width: 300px;
     }
-    
+
     /* Status è stato rimosso dall'HTML */
-    
+
     /* Istruzioni rimosse */
-    
+
     /* Aggiungi padding top al canvas per compensare header fisso */
     #canvas3d {
         padding-top: 140px; /* Ajustare in base all'altezza dell'header */
+    }
+
+    /* NASCONDI CONTROLLI MOBILE NON UTILIZZATI CON AUTOMODE */
+    #mobileTouchControls {
+        display: none !important; /* Nasconde Sposta/Ruota/Zoom */
+    }
+
+    #toolsLegend {
+        display: none !important; /* Nasconde panel Strumenti */
     }
 }
 
@@ -541,13 +567,15 @@
 /* Responsive per la barra tutorial */
 @media (max-width: 768px) {
     #tutorialStepsBar {
+        position: fixed !important; /* Fixed invece di absolute per mobile */
         bottom: 10px;
         left: 10px;
         right: 10px;
         transform: none;
         padding: 10px;
+        z-index: 9999 !important; /* Z-index molto alto per assicurare visibilità */
     }
-    
+
     #tutorialStepsContainer {
         flex-wrap: wrap;
         justify-content: center;

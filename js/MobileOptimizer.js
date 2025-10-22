@@ -65,16 +65,21 @@
             // Rileva capacità dispositivo
             this.detectDeviceCapabilities();
 
+            // DISABILITATO: Il lazy loading causa schermo vuoto quando si avanza step
+            // perché rimuove i modelli dalla scena. Per ora disabilitiamo su mobile.
+            this.enabled = false;
+            console.log('⚠️ [MobileOptimizer] DISABILITATO - lazy loading causava schermo vuoto');
+
             // Se è mobile, abilita ottimizzazioni
-            if (this.deviceCapabilities.isMobile) {
-                this.enabled = true;
-                this.applyOptimizations();
-                console.log('📱 [MobileOptimizer] Ottimizzazioni mobile ATTIVE');
-                console.log('📊 Device tier:', this.deviceCapabilities.gpuTier);
-                console.log('📊 Max concurrent models:', this.deviceCapabilities.maxConcurrentModels);
-            } else {
-                console.log('💻 [MobileOptimizer] Desktop rilevato - ottimizzazioni disabilitate');
-            }
+            // if (this.deviceCapabilities.isMobile) {
+            //     this.enabled = true;
+            //     this.applyOptimizations();
+            //     console.log('📱 [MobileOptimizer] Ottimizzazioni mobile ATTIVE');
+            //     console.log('📊 Device tier:', this.deviceCapabilities.gpuTier);
+            //     console.log('📊 Max concurrent models:', this.deviceCapabilities.maxConcurrentModels);
+            // } else {
+            //     console.log('💻 [MobileOptimizer] Desktop rilevato - ottimizzazioni disabilitate');
+            // }
         },
 
         /**

@@ -140,7 +140,17 @@ window.UI = {
         // Event listener per rotazione schermo mobile
         window.addEventListener('orientationchange', this.onOrientationChange.bind(this));
         window.addEventListener('resize', this.onWindowResize.bind(this));
-        
+
+        // Event listener per click sul fumetto descrizione → avanza step
+        const stepSpeechBubble = document.getElementById('stepSpeechBubble');
+        if (stepSpeechBubble) {
+            stepSpeechBubble.addEventListener('click', () => {
+                this.onSpeechBubbleClick();
+            });
+            stepSpeechBubble.style.cursor = 'pointer'; // Mostra che è cliccabile
+            AppConfig.log(3, 'Event listener click fumetto configurato');
+        }
+
         AppConfig.log(3, 'Event listeners configurati');
     },
     
@@ -3309,9 +3319,9 @@ window.UI = {
     /**
      * Avanza allo step successivo del tutorial
      */
-    nextStep: function() {
+    nextStep: async function() {
         if (this.currentStepIndex < this.tutorialSteps.length - 1) {
-            this.goToStep(this.currentStepIndex + 1);
+            await this.goToStep(this.currentStepIndex + 1);
         } else {
             AppConfig.log(2, `[UI] Ultimo step del tutorial raggiunto`);
         }
@@ -3325,6 +3335,32 @@ window.UI = {
             this.goToStep(this.currentStepIndex - 1);
         } else {
             AppConfig.log(2, `[UI] Primo step del tutorial raggiunto`);
+        }
+    },
+
+    /**
+     * Gestisce il click sul fumetto descrizione → avanza allo step successivo
+     */
+    onSpeechBubbleClick: async function() {
+        // Verifica che ci sia un tutorial attivo
+        if (!this.tutorialSteps || this.tutorialSteps.length === 0 || this.currentStepIndex < 0) {
+            AppConfig.log(1, '[UI] Nessun tutorial attivo - click fumetto ignorato');
+            return;
+        }
+
+        AppConfig.log(2, `[UI] 👆 Click sul fumetto - Avanzamento allo step successivo`);
+
+        // Avanza allo step successivo
+        if (this.currentStepIndex < this.tutorialSteps.length - 1) {
+            await this.nextStep();
+        } else {
+            // Ultimo step raggiunto
+            AppConfig.log(2, `[UI] Ultimo step del tutorial - click fumetto ignorato`);
+
+            // Mostra toast se su mobile
+            if (window.AutoMode && window.AutoMode.isMobile && window.AutoMode.showToast) {
+                window.AutoMode.showToast('🎉 Tutorial Completato!', 'Hai completato tutti gli step', 3000, 'success');
+            }
         }
     },
 

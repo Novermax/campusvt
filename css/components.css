@@ -1573,3 +1573,85 @@ body.tool-brugola-active [role="button"] {
         border-radius: 16px;
     }
 }
+
+/* ===== TOAST NOTIFICATIONS ===== */
+.toast-notification {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+
+    z-index: 99999;
+    pointer-events: none;
+
+    /* Animazioni */
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-notification.hide {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100px);
+}
+
+/* Varianti colore toast */
+.toast-notification.info {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
+.toast-notification.warning {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.toast-notification.error {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+/* Emoji nel toast */
+.toast-notification .toast-emoji {
+    font-size: 24px;
+    margin-right: 8px;
+    display: inline-block;
+    animation: bounce 0.6s ease infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-4px); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .toast-notification {
+        top: 60px;
+        left: 10px;
+        right: 10px;
+        transform: translateX(0) translateY(-100px);
+        padding: 14px 18px;
+        font-size: 14px;
+    }
+
+    .toast-notification.show {
+        transform: translateX(0) translateY(0);
+    }
+
+    .toast-notification.hide {
+        transform: translateX(0) translateY(-100px);
+    }
+}
