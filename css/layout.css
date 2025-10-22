@@ -1,12 +1,31 @@
 /**
  * LAYOUT.CSS - Layout principale e posizionamento
- * 
+ *
  * Questo file contiene:
  * - Layout del canvas 3D
  * - Header e barra di controlli
  * - Sistema di navigazione
  * - Layout responsive per diversi dispositivi
  */
+
+/* ===== NASCONDI ELEMENTI NON USATI SU MOBILE (AUTOMODE) ===== */
+/* Questi elementi devono essere nascosti immediatamente su mobile,
+   PRIMA che vengano applicati altri stili che potrebbero mostrarli */
+@media (max-width: 768px) {
+    #mobileTouchControls,
+    #mobileTouchControls.mobile-only,
+    .mobile-only#mobileTouchControls {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+
+    #toolsLegend {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
 
 /* ===== CANVAS 3D ===== */
 /* Il canvas dove viene renderizzata la scena 3D */
@@ -213,12 +232,17 @@
     }
 
     /* NASCONDI CONTROLLI MOBILE NON UTILIZZATI CON AUTOMODE */
-    #mobileTouchControls {
-        display: none !important; /* Nasconde Sposta/Ruota/Zoom */
+    #mobileTouchControls,
+    #mobileTouchControls.mobile-only {
+        display: none !important; /* Nasconde Sposta/Ruota/Zoom - sovrascrive components.css */
+        visibility: hidden !important;
+        opacity: 0 !important;
     }
 
     #toolsLegend {
         display: none !important; /* Nasconde panel Strumenti */
+        visibility: hidden !important;
+        opacity: 0 !important;
     }
 }
 

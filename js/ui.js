@@ -2772,8 +2772,51 @@ window.UI = {
         
         // Aggiorna il fumetto se già creato
         this.updateStepSpeechBubble();
+
+        // Aggiusta posizionamento barra su mobile in base al numero di righe
+        this.adjustTutorialBarPositionMobile();
     },
-    
+
+    /**
+     * Aggiusta posizionamento barra tutorial su mobile
+     * Calcola dinamicamente la posizione in base al numero di righe
+     * La barra viene spostata più in alto se ha più righe
+     */
+    adjustTutorialBarPositionMobile: function() {
+        // Solo su mobile (max-width: 768px)
+        if (window.innerWidth > 768) return;
+
+        const bar = document.getElementById('tutorialStepsBar');
+        const container = document.getElementById('tutorialStepsContainer');
+
+        if (!bar || !container) return;
+
+        // Attendi che il layout sia completato
+        setTimeout(() => {
+            // Calcola l'altezza effettiva del container (che contiene i pulsanti su più righe)
+            const containerHeight = container.offsetHeight;
+            const barPadding = 10; // padding della barra (da CSS)
+
+            // Calcola quante righe ci sono approssimativamente
+            // Assumiamo altezza riga circa 40px (pulsante + gap)
+            const estimatedRowHeight = 40;
+            const numberOfRows = Math.ceil(containerHeight / estimatedRowHeight);
+
+            // Più righe = barra più in alto
+            // Riga singola: bottom = 10px
+            // 2 righe: bottom = 10 + 50 = 60px
+            // 3 righe: bottom = 10 + 100 = 110px
+            const baseBottom = 10;
+            const additionalBottomPerRow = 50; // Sposta 50px in alto per ogni riga extra oltre la prima
+            const bottomPosition = baseBottom + ((numberOfRows - 1) * additionalBottomPerRow);
+
+            // Applica il nuovo bottom
+            bar.style.bottom = `${bottomPosition}px`;
+
+            AppConfig.log(2, `[UI] 📱 Barra tutorial mobile: ${numberOfRows} righe, altezza=${containerHeight}px, bottom=${bottomPosition}px`);
+        }, 100); // Piccolo delay per assicurarsi che il render sia completo
+    },
+
     /**
      * Mostra la barra tutorial
      */
