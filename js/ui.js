@@ -437,12 +437,12 @@ window.UI = {
             const card = this.createScenarioCard(scenario, index);
             this.elements.scenariosList.appendChild(card);
         });
-        
-        // Aggiungi sempre la card "Modalità Manuale" alla fine
-        const manualCard = this.createManualModeCard();
-        this.elements.scenariosList.appendChild(manualCard);
-        
-        AppConfig.log(3, `Renderizzate ${this.scenariosConfig.length} card scenario + modalità manuale`);
+
+        // RIMOSSO: Card "Modalità Manuale" non più necessaria
+        // const manualCard = this.createManualModeCard();
+        // this.elements.scenariosList.appendChild(manualCard);
+
+        AppConfig.log(3, `Renderizzate ${this.scenariosConfig.length} card scenario`);
     },
     
     /**
@@ -491,45 +491,45 @@ window.UI = {
     },
     
     /**
-     * Crea la card "Modalità Manuale"
+     * DEPRECATO: Crea la card "Modalità Manuale" (non più utilizzata)
      */
-    createManualModeCard: function() {
-        const card = document.createElement('div');
-        card.className = 'scenario-card manual-mode';
-        card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-        card.dataset.manual = 'true';
-        
-        // Sezione immagine
-        const imageSection = document.createElement('div');
-        imageSection.className = 'scenario-image';
-        
-        const placeholderImage = document.createElement('div');
-        placeholderImage.className = 'placeholder-image';
-        placeholderImage.setAttribute('aria-hidden', 'true');
-        placeholderImage.textContent = '🔧';
-        
-        imageSection.appendChild(placeholderImage);
-        
-        // Sezione info
-        const infoSection = document.createElement('div');
-        infoSection.className = 'scenario-info';
-        
-        const title = document.createElement('h3');
-        title.textContent = 'Modalità Manuale';
-        
-        const description = document.createElement('p');
-        description.textContent = 'Carica direttamente i tuoi modelli 3D senza utilizzare scenari predefiniti. Supporta OBJ, STL, GLTF/GLB con materiali e texture.';
-        
-        infoSection.appendChild(title);
-        infoSection.appendChild(description);
-        
-        // Assembla card
-        card.appendChild(imageSection);
-        card.appendChild(infoSection);
-        
-        return card;
-    },
+    // createManualModeCard: function() {
+    //     const card = document.createElement('div');
+    //     card.className = 'scenario-card manual-mode';
+    //     card.setAttribute('role', 'button');
+    //     card.setAttribute('tabindex', '0');
+    //     card.dataset.manual = 'true';
+    //
+    //     // Sezione immagine
+    //     const imageSection = document.createElement('div');
+    //     imageSection.className = 'scenario-image';
+    //
+    //     const placeholderImage = document.createElement('div');
+    //     placeholderImage.className = 'placeholder-image';
+    //     placeholderImage.setAttribute('aria-hidden', 'true');
+    //     placeholderImage.textContent = '🔧';
+    //
+    //     imageSection.appendChild(placeholderImage);
+    //
+    //     // Sezione info
+    //     const infoSection = document.createElement('div');
+    //     infoSection.className = 'scenario-info';
+    //
+    //     const title = document.createElement('h3');
+    //     title.textContent = 'Modalità Manuale';
+    //
+    //     const description = document.createElement('p');
+    //     description.textContent = 'Carica direttamente i tuoi modelli 3D senza utilizzare scenari predefiniti. Supporta OBJ, STL, GLTF/GLB con materiali e texture.';
+    //
+    //     infoSection.appendChild(title);
+    //     infoSection.appendChild(description);
+    //
+    //     // Assembla card
+    //     card.appendChild(imageSection);
+    //     card.appendChild(infoSection);
+    //
+    //     return card;
+    // },
     
     /**
      * Gestisce il click su una card scenario
@@ -543,13 +543,14 @@ window.UI = {
             return;
         }
         
-        // Controlla se è la card "Modalità Manuale"
-        if (card.dataset.manual === 'true') {
-            AppConfig.log(2, 'Modalità manuale selezionata');
-            this.showPage('scenario');
-            return;
-        }
-        
+        // RIMOSSO: Gestione card "Modalità Manuale" non più necessaria
+        // if (card.dataset.manual === 'true') {
+        //     AppConfig.log(2, 'Modalità manuale selezionata');
+        //     this.showPage('scenario');
+        //     return;
+        // }
+
+
         // Controlla se esiste scenarioIndex nel dataset
         const scenarioIndexStr = card.dataset.scenarioIndex;
         if (!scenarioIndexStr) {
@@ -2244,20 +2245,47 @@ window.UI = {
             // Rileva inizio sezione [Nome]
             if (line.startsWith('[') && line.endsWith(']')) {
                 const sectionName = line.slice(1, -1);
-                
+
                 // Determina se è un tutorial principale o uno step
-                if (sectionName.toLowerCase().startsWith('step ')) {
+                const isStep = sectionName.toLowerCase().startsWith('step ') ||
+                               sectionName.toLowerCase().startsWith('next step');
+
+                if (isStep) {
                     // È uno step interno al tutorial corrente
                     if (currentStep && Object.keys(currentStep.properties).length > 0) {
                         if (currentTutorial) {
                             currentTutorial.steps.push(currentStep);
                         }
                     }
-                    
+
+                    // Calcola numero step automaticamente se è [Next Step] o [Next Step - Descrizione]
+                    let stepName = sectionName;
+                    let stepTitle = sectionName;
+
+                    if (sectionName.toLowerCase().startsWith('next step')) {
+                        // Calcola il numero dello step automaticamente
+                        const stepNumber = currentTutorial ? currentTutorial.steps.length + 1 : 1;
+
+                        // Controlla se c'è una descrizione dopo "Next Step"
+                        const dashIndex = sectionName.indexOf('-');
+                        if (dashIndex !== -1) {
+                            // Formato: [Next Step - Descrizione]
+                            const description = sectionName.substring(dashIndex).trim(); // Include il "-"
+                            stepName = `Step ${stepNumber} ${description}`;
+                            stepTitle = `Step ${stepNumber} ${description}`;
+                        } else {
+                            // Formato: [Next Step]
+                            stepName = `Step ${stepNumber}`;
+                            stepTitle = `Step ${stepNumber}`;
+                        }
+
+                        AppConfig.log(3, `📝 PARSER: [${sectionName}] → automaticamente rinumerato come [${stepTitle}]`);
+                    }
+
                     // Crea nuovo step
                     currentStep = {
-                        name: sectionName,
-                        title: sectionName,
+                        name: stepName,
+                        title: stepTitle,
                         properties: {}
                     };
                 } else {
@@ -3234,6 +3262,46 @@ window.UI = {
                 console.log(`[DEBUG] ✅ DRAG & DROP: Sistema abilitato - status:`, window.DragDropSystem.enabled);
                 AppConfig.log(2, `✅ DRAG & DROP: Sistema abilitato con ${draggableObjects.length} oggetti`);
 
+                // NUOVO: Evidenzia automaticamente tutti gli oggetti draggabili con silhouette gialla
+                // IMPORTANTE: Usa applicazione diretta materiale per supportare multipli oggetti simultanei
+                if (window.Scene3D && window.Scene3D.highlightSystem && window.DragDropSystem) {
+                    const highlightMaterial = window.Scene3D.highlightSystem.highlightMaterial;
+
+                    draggableObjects.forEach(objName => {
+                        const model = window.Scene3D.findModelByName(objName);
+                        if (model) {
+                            // Salva materiali originali per questo oggetto
+                            const originalMaterials = new Map();
+                            model.traverse((child) => {
+                                if (child.isMesh && child.material) {
+                                    if (Array.isArray(child.material)) {
+                                        originalMaterials.set(child.uuid, child.material.slice());
+                                    } else {
+                                        originalMaterials.set(child.uuid, child.material);
+                                    }
+                                }
+                            });
+                            window.DragDropSystem.originalMaterialsMap.set(model.uuid, originalMaterials);
+
+                            // Applica materiale highlight direttamente (bypass highlightModel per multipli oggetti)
+                            model.traverse((child) => {
+                                if (child.isMesh) {
+                                    if (Array.isArray(child.material)) {
+                                        child.material = child.material.map(() => highlightMaterial);
+                                    } else {
+                                        child.material = highlightMaterial;
+                                    }
+                                    child.renderOrder = 999;
+                                }
+                            });
+                            console.log(`[UI] 🟡 Highlight applicato a oggetto draggabile: "${objName}"`);
+                        } else {
+                            console.warn(`[UI] ⚠️ Modello non trovato per highlight: "${objName}"`);
+                        }
+                    });
+                    AppConfig.log(2, `🟡 Evidenziati ${draggableObjects.length} oggetti draggabili`);
+                }
+
                 // NUOVO: Configura auto-avanzamento per step DragDrop puri (senza Elemento/AssemblyMode)
                 const isPureDragDropStep = !step.properties.Elemento && !step.properties.AssemblyMode;
                 if (isPureDragDropStep && draggableObjects.length > 0) {
@@ -3383,15 +3451,25 @@ window.UI = {
 
     /**
      * Gestisce il click sul fumetto descrizione → avanza allo step successivo
+     * SOLO su mobile con AutoMode attivo
      */
     onSpeechBubbleClick: async function() {
+        // Verifica che siamo su mobile con AutoMode attivo
+        const isMobileAutoMode = window.AutoMode && window.AutoMode.isMobile && window.AutoMode.enabled;
+
+        if (!isMobileAutoMode) {
+            // Su desktop, il click sul fumetto non fa nulla
+            AppConfig.log(3, '[UI] Click fumetto ignorato - disponibile solo su mobile con AutoMode');
+            return;
+        }
+
         // Verifica che ci sia un tutorial attivo
         if (!this.tutorialSteps || this.tutorialSteps.length === 0 || this.currentStepIndex < 0) {
             AppConfig.log(1, '[UI] Nessun tutorial attivo - click fumetto ignorato');
             return;
         }
 
-        AppConfig.log(2, `[UI] 👆 Click sul fumetto - Avanzamento allo step successivo`);
+        AppConfig.log(2, `[UI] 📱 Click sul fumetto mobile - Avanzamento allo step successivo`);
 
         // Avanza allo step successivo
         if (this.currentStepIndex < this.tutorialSteps.length - 1) {
@@ -3400,8 +3478,8 @@ window.UI = {
             // Ultimo step raggiunto
             AppConfig.log(2, `[UI] Ultimo step del tutorial - click fumetto ignorato`);
 
-            // Mostra toast se su mobile
-            if (window.AutoMode && window.AutoMode.isMobile && window.AutoMode.showToast) {
+            // Mostra toast completamento
+            if (window.AutoMode && window.AutoMode.showToast) {
                 window.AutoMode.showToast('🎉 Tutorial Completato!', 'Hai completato tutti gli step', 3000, 'success');
             }
         }

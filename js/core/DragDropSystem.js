@@ -26,6 +26,7 @@ window.DragDropSystem = {
     draggableObjects: [],
     originalPositions: new Map(),
     originalRotations: new Map(),
+    originalMaterialsMap: new Map(), // UUID oggetto -> Map(UUID mesh -> materiale originale) per multipli highlight
     whitelistedObjects: new Set(),
     blacklistedObjects: new Set(['corpo', 'pavimento', 'planaxis']), // Oggetti mai draggabili
 
@@ -246,11 +247,15 @@ window.DragDropSystem = {
         }
         
         console.log('[DragDropSystem] ⚡ Abilitazione sistema drag & drop...');
-        
-        // Aggiunge event listeners
+
+        // Aggiunge event listeners al canvas
         this.canvas.addEventListener('mousedown', this.boundMouseDown, { passive: false });
         this.canvas.addEventListener('mousemove', this.boundMouseMove, { passive: false });
         this.canvas.addEventListener('mouseup', this.boundMouseUp, { passive: false });
+
+        // IMPORTANTE: Aggiunge listener mouseup anche su document per catturare rilasci fuori canvas
+        document.addEventListener('mouseup', this.boundMouseUp, { passive: false });
+        console.log('[DragDropSystem] ✅ Event listeners registrati (canvas + document)');
         
         // Imposta whitelist oggetti se specificata
         if (objectNames && Array.isArray(objectNames)) {
@@ -296,11 +301,15 @@ window.DragDropSystem = {
         }
         
         console.log('[DragDropSystem] 🔴 Disabilitazione sistema drag & drop...');
-        
-        // Rimuove event listeners
+
+        // Rimuove event listeners dal canvas
         this.canvas.removeEventListener('mousedown', this.boundMouseDown);
-        this.canvas.removeEventListener('mousemove', this.boundMouseMove);  
+        this.canvas.removeEventListener('mousemove', this.boundMouseMove);
         this.canvas.removeEventListener('mouseup', this.boundMouseUp);
+
+        // Rimuove listener mouseup da document
+        document.removeEventListener('mouseup', this.boundMouseUp);
+        console.log('[DragDropSystem] ✅ Event listeners rimossi (canvas + document)');
         
         // Termina qualsiasi drag in corso
         if (this.isDragging) {
@@ -774,13 +783,17 @@ window.DragDropSystem = {
         // Calcola offset tra centro oggetto e punto cliccato
         this.dragOffset.copy(intersectionPoint).sub(object.position);
 
-        // NUOVO: Rimuovi highlight durante drag per mostrare colore originale
+        // IMPORTANTE: Manteniamo l'highlight giallo durante il drag per coerenza visiva
+        // Gli oggetti draggabili rimangono evidenziati finché non fanno snap con successo
+        // (commentato per supportare multipli oggetti draggabili con highlight simultaneo)
+        /*
         if (window.Scene3D && typeof window.Scene3D.removeHighlight === 'function') {
             window.Scene3D.removeHighlight();
-            // Blocca future applicazioni automatiche di highlight per questo oggetto
             this.silhouetteBlocked.add(object.name);
-            console.log(`[DragDropSystem] 🎨 Rimosso highlight da ${object.name} durante drag - bloccata riapplicazione`);
+            console.log(`[DragDropSystem] 🎨 Rimosso highlight da ${object.name} durante drag`);
         }
+        */
+        console.log(`[DragDropSystem] 🎨 Mantengo highlight su ${object.name} durante drag`);
 
         // NUOVO: Crea piano di drag perpendicolare alla camera, passando per il punto cliccato
         this.updateDragPlaneToCamera(intersectionPoint);
@@ -1089,15 +1102,26 @@ window.DragDropSystem = {
                 }
             };
 
-            // Esegui snap animato - colore originale mantenuto
+            // Esegui snap animato e rimuovi highlight dopo snap riuscito
             if (this.snapSystem) {
                 // Aggiungi callback per integrazione AssemblySystem
                 snapContext.onComplete = this.handleSnapComplete.bind(this);
                 this.snapSystem.performSnap(this.draggedObject, snapTarget, snapContext);
             }
-            // Rimuovi dal blocco ma NON riapplicare silhouette (snap riuscito)
+
+            // IMPORTANTE: Rimuovi highlight dopo snap riuscito per indicare che l'oggetto è "sistemato"
+            // Ripristina materiale originale per questo oggetto specifico
+            if (this.originalMaterialsMap && this.originalMaterialsMap.has(this.draggedObject.uuid)) {
+                const originalMaterials = this.originalMaterialsMap.get(this.draggedObject.uuid);
+                this.draggedObject.traverse((child) => {
+                    if (child.isMesh && originalMaterials.has(child.uuid)) {
+                        child.material = originalMaterials.get(child.uuid);
+                        child.renderOrder = 0;
+                    }
+                });
+                console.log(`[DragDropSystem] ✅ Snap riuscito - rimosso highlight da ${this.draggedObject.name}`);
+            }
             this.silhouetteBlocked.delete(this.draggedObject.name);
-            console.log(`[DragDropSystem] ✅ Snap riuscito - mantengo colore originale per ${this.draggedObject.name}`);
 
             // Reset stato SEMPRE - performSnap gestirà la sua parte
         } else {

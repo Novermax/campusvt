@@ -53,18 +53,28 @@
     z-index: 150;
     max-width: 350px;
     min-width: 280px;
-    cursor: pointer; /* Indica che è cliccabile */
+    cursor: default; /* Default: non cliccabile su desktop */
     transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Effetto hover sul fumetto - indicatore visivo che è cliccabile */
-.step-speech-bubble:hover {
-    transform: translateY(-50%) scale(1.02);
-    filter: brightness(1.1);
-}
+/* Su mobile: fumetto cliccabile con effetti hover */
+@media (max-width: 768px) {
+    .step-speech-bubble {
+        cursor: pointer; /* Cliccabile solo su mobile */
+    }
 
-.step-speech-bubble:active {
-    transform: translateY(-50%) scale(0.98);
+    .step-speech-bubble:hover {
+        transform: translateY(-50%) scale(1.02);
+        filter: brightness(1.1);
+    }
+
+    .step-speech-bubble:active {
+        transform: translateY(-50%) scale(0.98);
+    }
+
+    .step-speech-bubble:hover .speech-bubble-content {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
 }
 
 .speech-bubble-content {
@@ -75,11 +85,6 @@
     box-shadow: var(--shadow-strong);
     position: relative;
     animation: fadeInLeft 0.5s ease;
-    transition: box-shadow 0.2s ease;
-}
-
-.step-speech-bubble:hover .speech-bubble-content {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .speech-bubble-arrow {
@@ -393,17 +398,9 @@
 /* Responsive per la legenda strumenti */
 @media (max-width: 768px) {
     #toolsLegend {
-        right: 10px;
-        min-width: 90px;
-        max-width: 110px;
-        padding: 10px;
+        display: none; /* Nasconde completamente i tools su mobile/tablet (portrait e landscape) */
     }
-    
-    #toolsLegend h3 {
-        font-size: 12px;
-        margin-bottom: 10px;
-    }
-    
+
     .tool-icon {
         width: 72px;
         height: 72px;
@@ -412,12 +409,9 @@
 
 @media (max-width: 480px) {
     #toolsLegend {
-        right: 5px;
-        min-width: 70px;
-        max-width: 90px;
-        padding: 8px;
+        display: none; /* Nasconde completamente i tools su mobile */
     }
-    
+
     .tool-icon {
         width: 64px;
         height: 64px;
