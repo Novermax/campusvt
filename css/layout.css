@@ -396,9 +396,23 @@
 }
 
 /* Responsive per la legenda strumenti */
+/* IMPORTANTE: Nasconde tools su TUTTI i dispositivi touchscreen (mobile/tablet, portrait e landscape) */
+@media (hover: none) and (pointer: coarse) {
+    #toolsLegend {
+        display: none !important; /* Nasconde su dispositivi touch (mobile/tablet) */
+    }
+}
+
+/* Fallback per browser che non supportano hover/pointer */
+@media (max-width: 1024px) and (max-height: 768px) {
+    #toolsLegend {
+        display: none !important; /* Nasconde su schermi tablet/mobile landscape */
+    }
+}
+
 @media (max-width: 768px) {
     #toolsLegend {
-        display: none; /* Nasconde completamente i tools su mobile/tablet (portrait e landscape) */
+        display: none !important; /* Nasconde su mobile/tablet portrait */
     }
 
     .tool-icon {
@@ -408,10 +422,6 @@
 }
 
 @media (max-width: 480px) {
-    #toolsLegend {
-        display: none; /* Nasconde completamente i tools su mobile */
-    }
-
     .tool-icon {
         width: 64px;
         height: 64px;
