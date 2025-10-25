@@ -2201,7 +2201,10 @@ window.UI = {
                 this.currentTutorial = null;
                 this.tutorialSteps = [];
                 this.currentStepIndex = -1; // -1 indica "nessun tutorial attivo"
-                
+
+                // Reset silhouette da tutorial precedente
+                this.resetAllHighlights();
+
                 this.createTutorialStepsBar();
                 this.showTutorialStepsBar();
                 // NON chiamare updateStepSpeechBubble() - il fumetto rimane nascosto
@@ -2469,7 +2472,10 @@ window.UI = {
             AppConfig.log(1, `Indice tutorial non valido: ${tutorialIndex}`);
             return;
         }
-        
+
+        // IMPORTANTE: Reset silhouette da tutorial precedente
+        this.resetAllHighlights();
+
         // RESET: Sblocca interazioni e ripristina posizioni quando si seleziona un nuovo tutorial
         if (window.Scene3D) {
             window.Scene3D.resetTutorialTracker();
@@ -2907,6 +2913,9 @@ window.UI = {
         console.log(`[DEBUG] ⏭️ Navigazione a step: "${step.title}"`);
         AppConfig.log(2, `Navigazione a step ${stepIndex + 1}: ${step.title}`);
 
+        // IMPORTANTE: Reset silhouette/highlight da step precedente
+        this.resetAllHighlights();
+
         // Mobile Optimizer: Lazy loading modelli per step corrente
         if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
             window.MobileOptimizer.loadModelsForStep(stepIndex, this.tutorialSteps);
@@ -2924,10 +2933,49 @@ window.UI = {
         // Aggiorna status
         this.updateStatus(`Step ${stepIndex + 1}/${this.tutorialSteps.length}: ${step.title}`);
     },
-    
+
+    /**
+     * Reset di tutte le silhouette/highlight applicati agli oggetti
+     * Chiamato quando si cambia step o tutorial
+     */
+    resetAllHighlights: function() {
+        if (!window.Scene3D || !window.Scene3D.scene) return;
+
+        console.log('[UI] 🧹 Reset silhouette/highlight da tutti gli oggetti');
+
+        // Itera tutti gli oggetti nella scena
+        window.Scene3D.scene.traverse((object) => {
+            if (object.isMesh) {
+                // Ripristina materiale originale se salvato in DragDropSystem
+                if (window.DragDropSystem && window.DragDropSystem.originalMaterialsMap) {
+                    // Trova il modello root (parent con userData.originalFilename)
+                    let rootModel = object;
+                    while (rootModel.parent && !rootModel.userData.originalFilename) {
+                        rootModel = rootModel.parent;
+                    }
+
+                    if (rootModel && window.DragDropSystem.originalMaterialsMap.has(rootModel.uuid)) {
+                        const originalMaterials = window.DragDropSystem.originalMaterialsMap.get(rootModel.uuid);
+                        if (originalMaterials.has(object.uuid)) {
+                            object.material = originalMaterials.get(object.uuid);
+                            object.renderOrder = 0;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Pulisci la mappa dei materiali originali per evitare leak di memoria
+        if (window.DragDropSystem && window.DragDropSystem.originalMaterialsMap) {
+            window.DragDropSystem.originalMaterialsMap.clear();
+        }
+
+        AppConfig.log(3, '🧹 Reset highlight completato');
+    },
+
     /* La funzione updateStepStates è stata rimossa perché ora i pulsanti
      * rappresentano tutorial (non step) e usano logica radio button */
-    
+
     /**
      * Esegue un step del tutorial
      */
