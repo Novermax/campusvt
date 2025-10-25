@@ -59,6 +59,9 @@ const Scene3D = {
         lastPosition: { x: 0, y: 0 },
         isPanning: false,
         pivotPoint: null, // Inizializzato in init()
+        // Touch pinch-to-zoom
+        lastPinchDistance: null,
+        lastTwoFingerCenter: null,
         sensitivity: {
             rotation: 0.015,
             pan: 0.020,
@@ -550,25 +553,84 @@ const Scene3D = {
             this.mouseControls.isMouseDown = true;
             this.mouseControls.lastPosition.x = event.touches[0].clientX;
             this.mouseControls.lastPosition.y = event.touches[0].clientY;
+        } else if (event.touches.length === 2) {
+            // Salva distanza iniziale per pinch-to-zoom
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            this.mouseControls.lastPinchDistance = Math.sqrt(
+                Math.pow(touch2.clientX - touch1.clientX, 2) +
+                Math.pow(touch2.clientY - touch1.clientY, 2)
+            );
+            this.mouseControls.lastTwoFingerCenter = {
+                x: (touch1.clientX + touch2.clientX) / 2,
+                y: (touch1.clientY + touch2.clientY) / 2
+            };
         }
         event.preventDefault();
     },
 
     onTouchMove: function(event) {
         if (event.touches.length === 1 && this.mouseControls.isMouseDown) {
+            // Un dito: rotazione camera
             const deltaX = event.touches[0].clientX - this.mouseControls.lastPosition.x;
             const deltaY = event.touches[0].clientY - this.mouseControls.lastPosition.y;
-            
+
             this.rotateCamera(deltaX, deltaY);
-            
+
             this.mouseControls.lastPosition.x = event.touches[0].clientX;
             this.mouseControls.lastPosition.y = event.touches[0].clientY;
+
+        } else if (event.touches.length === 2) {
+            // Due dita: pinch-to-zoom
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+
+            const pinchDistance = Math.sqrt(
+                Math.pow(touch2.clientX - touch1.clientX, 2) +
+                Math.pow(touch2.clientY - touch1.clientY, 2)
+            );
+
+            const currentCenter = {
+                x: (touch1.clientX + touch2.clientX) / 2,
+                y: (touch1.clientY + touch2.clientY) / 2
+            };
+
+            if (this.mouseControls.lastPinchDistance && this.mouseControls.lastTwoFingerCenter) {
+                // ZOOM: gestisce cambio distanza tra le dita
+                const distanceDelta = (pinchDistance - this.mouseControls.lastPinchDistance) * this.mouseControls.sensitivity.zoom;
+
+                if (Math.abs(distanceDelta) > 0.5) {
+                    this.zoomCamera(-distanceDelta); // Negativo per zoom naturale (dita lontane = zoom in)
+                }
+
+                // ROTAZIONE: gestisce movimento del centro delle due dita
+                const centerDeltaX = currentCenter.x - this.mouseControls.lastTwoFingerCenter.x;
+                const centerDeltaY = currentCenter.y - this.mouseControls.lastTwoFingerCenter.y;
+
+                const centerMovement = Math.sqrt(centerDeltaX * centerDeltaX + centerDeltaY * centerDeltaY);
+                const distanceChange = Math.abs(pinchDistance - this.mouseControls.lastPinchDistance);
+
+                // Rotazione solo se movimento del centro è maggiore del cambio di distanza
+                if (centerMovement > 5 && centerMovement > distanceChange * 0.5) {
+                    this.rotateCamera(centerDeltaX, centerDeltaY);
+                }
+            }
+
+            this.mouseControls.lastPinchDistance = pinchDistance;
+            this.mouseControls.lastTwoFingerCenter = currentCenter;
         }
         event.preventDefault();
     },
 
     onTouchEnd: function(event) {
         this.mouseControls.isMouseDown = false;
+
+        // Reset pinch-to-zoom quando si sollevano le dita
+        if (event.touches.length < 2) {
+            this.mouseControls.lastPinchDistance = null;
+            this.mouseControls.lastTwoFingerCenter = null;
+        }
+
         event.preventDefault();
     },
 
