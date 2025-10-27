@@ -216,7 +216,7 @@ window.App = {
 
             // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
             try {
-                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000025');
+                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000029');
                 console.log('✅ Sistema drag & drop caricato');
 
                 // Carica debug helpers per DragDropSystem
@@ -258,7 +258,7 @@ window.App = {
             await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
             console.log('✅ Moduli UI refactorizzati caricati');
 
-            await this.loadModule('./js/ui.js?nocache=1000028');
+            await this.loadModule('./js/ui.js?nocache=1000029');
 
             // Inizializza il sistema UI refactorizzato se disponibile
             if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager !== undefined) {

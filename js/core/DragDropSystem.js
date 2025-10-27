@@ -251,11 +251,12 @@ window.DragDropSystem = {
         // Aggiunge event listeners al canvas
         this.canvas.addEventListener('mousedown', this.boundMouseDown, { passive: false });
         this.canvas.addEventListener('mousemove', this.boundMouseMove, { passive: false });
-        this.canvas.addEventListener('mouseup', this.boundMouseUp, { passive: false });
+        this.canvas.addEventListener('mouseup', this.boundMouseUp, { passive: false, capture: true });
 
         // IMPORTANTE: Aggiunge listener mouseup anche su document per catturare rilasci fuori canvas
-        document.addEventListener('mouseup', this.boundMouseUp, { passive: false });
-        console.log('[DragDropSystem] ✅ Event listeners registrati (canvas + document)');
+        // Usa capture: true per ricevere l'evento PRIMA di Scene3D e altri sistemi
+        document.addEventListener('mouseup', this.boundMouseUp, { passive: false, capture: true });
+        console.log('[DragDropSystem] ✅ Event listeners registrati (canvas + document con capture priority)');
         
         // Imposta whitelist oggetti se specificata
         if (objectNames && Array.isArray(objectNames)) {
@@ -305,10 +306,10 @@ window.DragDropSystem = {
         // Rimuove event listeners dal canvas
         this.canvas.removeEventListener('mousedown', this.boundMouseDown);
         this.canvas.removeEventListener('mousemove', this.boundMouseMove);
-        this.canvas.removeEventListener('mouseup', this.boundMouseUp);
+        this.canvas.removeEventListener('mouseup', this.boundMouseUp, { capture: true });
 
         // Rimuove listener mouseup da document
-        document.removeEventListener('mouseup', this.boundMouseUp);
+        document.removeEventListener('mouseup', this.boundMouseUp, { capture: true });
         console.log('[DragDropSystem] ✅ Event listeners rimossi (canvas + document)');
         
         // Termina qualsiasi drag in corso
@@ -739,8 +740,13 @@ window.DragDropSystem = {
 
         if (this.isDragging) {
             console.log(`[DragDropSystem] 🛑 MOUSE UP durante drag di: ${this.draggedObject?.name || 'UNKNOWN'} - chiamando endDrag()`);
-            this.endDrag();
+
+            // IMPORTANTE: Ferma IMMEDIATAMENTE la propagazione dell'evento per evitare interferenze
             event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            this.endDrag();
             return; // Non eseguire click se stavamo draggando
         }
 
@@ -3108,14 +3114,22 @@ window.DragDropSystem = {
 
     /**
      * Gestisce completamento snap (chiamato dopo auto-snap)
-     * @param {string} objectName - Nome oggetto snappato
+     * @param {string|THREE.Object3D} objectNameOrModel - Nome oggetto o modello Three.js snappato
      */
-    handleSnapComplete: function(objectName) {
-        console.log(`[DragDropSystem] 📢 Snap completato per: "${objectName}"`);
+    handleSnapComplete: function(objectNameOrModel) {
+        // Estrai il nome: se è un oggetto Three.js usa .name, altrimenti usa la stringa
+        const objectName = typeof objectNameOrModel === 'string'
+            ? objectNameOrModel
+            : (objectNameOrModel?.name || 'unknown');
+
+        // Pulisci il nome per il tracking (rimuovi estensioni e suffissi)
+        const cleanName = this.getCleanModelName(objectName);
+
+        console.log(`[DragDropSystem] 📢 Snap completato per: "${cleanName}" (originale: "${objectName}")`);
 
         // Se in modalità auto-avanzamento, traccia oggetto completato
         if (this.autoAdvanceEnabled && this.requiredSnapObjects.size > 0) {
-            this.completedSnapObjects.add(objectName);
+            this.completedSnapObjects.add(cleanName);
 
             const progress = `${this.completedSnapObjects.size}/${this.requiredSnapObjects.size}`;
             console.log(`[DragDropSystem] 📊 Progress: ${progress} oggetti snappati`);
@@ -3134,8 +3148,7 @@ window.DragDropSystem = {
             }
         }
 
-        // Pulisci dopo snap
-        this.cleanup();
+        // NOTA: cleanup non necessario, endDrag() già gestisce tutto il cleanup
     }
 };
 // Funzioni globali di debug

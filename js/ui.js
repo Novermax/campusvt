@@ -3350,18 +3350,19 @@ window.UI = {
                     AppConfig.log(2, `🟡 Evidenziati ${draggableObjects.length} oggetti draggabili`);
                 }
 
-                // NUOVO: Configura auto-avanzamento per step DragDrop puri (senza Elemento/AssemblyMode)
-                const isPureDragDropStep = !step.properties.Elemento && !step.properties.AssemblyMode;
+                // NUOVO: Configura auto-avanzamento per step DragDrop puri (senza Elemento)
+                // AssemblyMode è OK per auto-avanzamento se non c'è Elemento
+                const isPureDragDropStep = !step.properties.Elemento;
                 if (isPureDragDropStep && draggableObjects.length > 0) {
-                    console.log(`[UI] 🎯 Step DragDrop puro rilevato - configurazione auto-avanzamento`);
+                    console.log(`[UI] 🎯 Step DragDrop puro rilevato (AssemblyMode: ${step.properties.AssemblyMode || 'false'}) - configurazione auto-avanzamento`);
                     window.DragDropSystem.resetSnapTracking();
                     window.DragDropSystem.setRequiredSnapObjects(draggableObjects);
                     window.DragDropSystem.enableAutoAdvance();
                     AppConfig.log(2, `⏭️ Auto-avanzamento abilitato - richiesti ${draggableObjects.length} snap`);
                 } else {
-                    // Step con Elemento o AssemblyMode - reset tracking ma NO auto-advance
+                    // Step con Elemento - reset tracking ma NO auto-advance
                     window.DragDropSystem.resetSnapTracking();
-                    console.log(`[UI] 🎯 Step DragDrop con azioni - auto-avanzamento disabilitato`);
+                    console.log(`[UI] 🎯 Step DragDrop con Elemento - auto-avanzamento disabilitato`);
                 }
             } catch (error) {
                 console.error(`❌ DRAG & DROP: Errore abilitazione sistema:`, error);
