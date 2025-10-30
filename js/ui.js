@@ -3319,17 +3319,28 @@ window.UI = {
                         const model = window.Scene3D.findModelByName(objName);
                         if (model) {
                             // Salva materiali originali per questo oggetto
+                            // IMPORTANTE: Non salvare highlightMaterial come "originale"
                             const originalMaterials = new Map();
                             model.traverse((child) => {
                                 if (child.isMesh && child.material) {
-                                    if (Array.isArray(child.material)) {
-                                        originalMaterials.set(child.uuid, child.material.slice());
-                                    } else {
-                                        originalMaterials.set(child.uuid, child.material);
+                                    // Skip se il materiale è già highlightMaterial (evita loop silhouette)
+                                    const isHighlightMaterial = Array.isArray(child.material)
+                                        ? child.material[0] === highlightMaterial
+                                        : child.material === highlightMaterial;
+
+                                    if (!isHighlightMaterial) {
+                                        if (Array.isArray(child.material)) {
+                                            originalMaterials.set(child.uuid, child.material.slice());
+                                        } else {
+                                            originalMaterials.set(child.uuid, child.material);
+                                        }
                                     }
                                 }
                             });
-                            window.DragDropSystem.originalMaterialsMap.set(model.uuid, originalMaterials);
+                            // Salva solo se ci sono materiali originali da salvare
+                            if (originalMaterials.size > 0) {
+                                window.DragDropSystem.originalMaterialsMap.set(model.uuid, originalMaterials);
+                            }
 
                             // Applica materiale highlight direttamente (bypass highlightModel per multipli oggetti)
                             model.traverse((child) => {
