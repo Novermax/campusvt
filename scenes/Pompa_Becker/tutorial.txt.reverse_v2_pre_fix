@@ -748,8 +748,6 @@ AssemblyMode=true
 AllowedComponents=vite_flangia_1,vite_flangia_2,vite_flangia_3,vite_flangia_4,vite_flangia_5,vite_flangia_6,vite_flangia_7,vite_flangia_8
 DragDropDistance=0.2
 ShowSnapIndicators=false
-# Posizioni arretrate di 0.1 unità in Z (saranno portate alla posizione finale dall'avvitamento)
-SnapPoint=vite_flangia_1:(-0.000,-0.267,0.200);vite_flangia_2:(-0.000,-0.321,0.200);vite_flangia_3:(-0.000,-0.321,0.200);vite_flangia_4:(-0.000,-0.267,0.200);vite_flangia_5:(-0.100,-0.191,0.200);vite_flangia_6:(-0.100,-0.137,0.200);vite_flangia_7:(-0.100,-0.137,0.200);vite_flangia_8:(-0.100,-0.191,0.200)
 
 
 [Next Step - Avvita vite flangia 1]
@@ -823,8 +821,6 @@ AssemblyMode=true
 AllowedComponents=vite_culatta_1,vite_culatta_2,vite_culatta_3,vite_culatta_4
 DragDropDistance=0.2
 ShowSnapIndicators=false
-# Posizioni arretrate di 0.1 unità in Z (saranno portate alla posizione finale dall'avvitamento)
-SnapPoint=vite_culatta_1:(0.000,-0.378,0.191);vite_culatta_2:(0.000,-0.378,0.191);vite_culatta_3:(-0.100,-0.116,0.400);vite_culatta_4:(-0.100,-0.116,0.400)
 
 
 [Next Step - Avvita vite culatta 1]

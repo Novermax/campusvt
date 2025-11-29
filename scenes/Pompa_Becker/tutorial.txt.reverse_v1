@@ -689,10 +689,9 @@ Rotazione=corpo:(0.0,0.0,0.0)
 
 # Tutorial Sostituzione Palette - Rimontaggio (Reverse)
 # Sequenza inversa rispetto allo smontaggio
-# Usa DragDrop + AssemblyMode per posizionamento
-# Avvitamento manuale vite per vite
+# Usa DragDrop + AssemblyMode come nel tutorial Riassemblaggio
 
-TutorialSteps=18
+TutorialSteps=6
 
 [Step 1 - Rimonta le 5 palette]
 Descrizione=Inserisci le 5 palette nel corpo pompa in qualsiasi ordine. Le palette devono essere montate nella loro sede originale.
@@ -734,75 +733,24 @@ DragDropDistance=0.3
 ShowSnapIndicators=false
 
 
-[Next Step - Posiziona Viti Flangia]
-Descrizione=Posiziona le 8 viti della flangia nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
+[Next Step - Gruppo Viti Flangia]
+Descrizione=Monta le 8 viti della flangia in qualsiasi ordine usando la chiave inglese. Richiede che la flangia e il tubo siano già montati.
 Utensile=Mani
 CameraPos=(0, 0.5, 1)
 CameraTarget=(0, 0, 0)
 CameraZoom=1.3
 CameraTransitionTime=1.5
 
-# Nodo intercambiabile - ordine libero per posizionamento 8 viti flangia
+# Nodo intercambiabile - ordine libero per le 8 viti flangia
 DragDrop=true
 AssemblyMode=true
 AllowedComponents=vite_flangia_1,vite_flangia_2,vite_flangia_3,vite_flangia_4,vite_flangia_5,vite_flangia_6,vite_flangia_7,vite_flangia_8
 DragDropDistance=0.2
 ShowSnapIndicators=false
-# Posizioni arretrate di 0.1 unità in Z (saranno portate alla posizione finale dall'avvitamento)
-SnapPoint=vite_flangia_1:(-0.000,-0.267,0.200);vite_flangia_2:(-0.000,-0.321,0.200);vite_flangia_3:(-0.000,-0.321,0.200);vite_flangia_4:(-0.000,-0.267,0.200);vite_flangia_5:(-0.100,-0.191,0.200);vite_flangia_6:(-0.100,-0.137,0.200);vite_flangia_7:(-0.100,-0.137,0.200);vite_flangia_8:(-0.100,-0.191,0.200)
-
-
-[Next Step - Avvita vite flangia 1]
-Elemento=models/vite_flangia_1.glb
-Descrizione=Stringi la prima vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 2]
-Elemento=models/vite_flangia_2.glb
-Descrizione=Stringi la seconda vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 3]
-Elemento=models/vite_flangia_3.glb
-Descrizione=Stringi la terza vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 4]
-Elemento=models/vite_flangia_4.glb
-Descrizione=Stringi la quarta vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 5]
-Elemento=models/vite_flangia_5.glb
-Descrizione=Stringi la quinta vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 6]
-Elemento=models/vite_flangia_6.glb
-Descrizione=Stringi la sesta vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 7]
-Elemento=models/vite_flangia_7.glb
-Descrizione=Stringi la settima vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite flangia 8]
-Elemento=models/vite_flangia_8.glb
-Descrizione=Stringi l'ottava vite della flangia con la chiave inglese da 10mm.
-Utensile=ChiaveInglese
-Azione1=avvita(0.1)
 
 
 [Next Step - Rimonta la culatta]
-Descrizione=Posiziona la culatta sul corpo pompa. Richiede che tutte le viti della flangia siano state avvitate.
+Descrizione=Posiziona la culatta sul corpo pompa. Richiede che tutte le viti della flangia siano state montate.
 Utensile=Mani
 
 # Continua assemblaggio sequenziale - culatta
@@ -813,41 +761,14 @@ DragDropDistance=0.3
 ShowSnapIndicators=false
 
 
-[Next Step - Posiziona Viti Culatta]
-Descrizione=Posiziona le 4 viti della culatta nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
+[Next Step - Gruppo Viti Culatta]
+Descrizione=Monta le 4 viti della culatta in qualsiasi ordine usando la chiave a brugola. Questo completa il rimontaggio della pompa.
 Utensile=Mani
 
-# Nodo intercambiabile - ordine libero per posizionamento 4 viti culatta
+# Nodo intercambiabile - ordine libero per le 4 viti culatta
 DragDrop=true
 AssemblyMode=true
 AllowedComponents=vite_culatta_1,vite_culatta_2,vite_culatta_3,vite_culatta_4
 DragDropDistance=0.2
 ShowSnapIndicators=false
-# Posizioni arretrate di 0.1 unità in Z (saranno portate alla posizione finale dall'avvitamento)
-SnapPoint=vite_culatta_1:(0.000,-0.378,0.191);vite_culatta_2:(0.000,-0.378,0.191);vite_culatta_3:(-0.100,-0.116,0.400);vite_culatta_4:(-0.100,-0.116,0.400)
-
-
-[Next Step - Avvita vite culatta 1]
-Elemento=models/vite_culatta_1.glb
-Descrizione=Stringi la prima vite della culatta con la chiave a brugola da 6mm.
-Utensile=ChiaveBrugola
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite culatta 2]
-Elemento=models/vite_culatta_2.glb
-Descrizione=Stringi la seconda vite della culatta con la chiave a brugola da 6mm.
-Utensile=ChiaveBrugola
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite culatta 3]
-Elemento=models/vite_culatta_3.glb
-Descrizione=Stringi la terza vite della culatta con la chiave a brugola da 6mm.
-Utensile=ChiaveBrugola
-Azione1=avvita(0.1)
-
-[Next Step - Avvita vite culatta 4]
-Elemento=models/vite_culatta_4.glb
-Descrizione=Stringi la quarta vite della culatta con la chiave a brugola da 6mm. Questo completa il rimontaggio della pompa.
-Utensile=ChiaveBrugola
-Azione1=avvita(0.1)
 ValidateAssembly=true
