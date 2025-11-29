@@ -3127,6 +3127,20 @@ window.DragDropSystem = {
 
         console.log(`[DragDropSystem] 📢 Snap completato per: "${cleanName}" (originale: "${objectName}")`);
 
+        // IMPORTANTE: Rimuovi highlight dopo snap (sia per drag manuale che AutoMode)
+        // Trova il modello per rimuovere l'highlight
+        const model = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
+        if (model && this.originalMaterialsMap && this.originalMaterialsMap.has(model.uuid)) {
+            const originalMaterials = this.originalMaterialsMap.get(model.uuid);
+            model.traverse((child) => {
+                if (child.isMesh && originalMaterials.has(child.uuid)) {
+                    child.material = originalMaterials.get(child.uuid);
+                    child.renderOrder = 0;
+                }
+            });
+            console.log(`[DragDropSystem] 🧹 Highlight rimosso da "${cleanName}" dopo snap`);
+        }
+
         // Se in modalità auto-avanzamento, traccia oggetto completato
         if (this.autoAdvanceEnabled && this.requiredSnapObjects.size > 0) {
             this.completedSnapObjects.add(cleanName);

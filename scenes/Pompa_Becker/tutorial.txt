@@ -438,7 +438,7 @@ Azione3=appoggia(0.2)
   Descrizione=Fase estrazione flangia con viti estrattore
   CameraPos=(0,0.45,0.89)
   CameraTarget=(0,0,0)
-  cameraZoom=1
+  CameraZoom=1
   DragDrop=true
   DragDropObjects=vite_culatta_1,vite_culatta_2  # Entrambi draggabili
   DragDropDistance=1.5                     # Distanza di snap in unità 3D (aumentata per coprire distanza pivot-target ~1.4)
@@ -546,8 +546,8 @@ Azione4=appoggia(0.2)
 [Sostituzione Palette Reverse]                           // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette
 CameraPos=(0, 0.64, 0.77)
-cameratarget=(0, 0, 0)
-cameraZoom=1
+CameraTarget=(0, 0, 0)
+CameraZoom=1
 CameraTransitionTime=2.5  
 
 # Posizioni e Rotazioni Modelli - Esportate automaticamente
@@ -686,3 +686,5 @@ Rotazione=coperchio:(0.0,0.0,0.0)
 # Modello 34: corpo
 Posizione=corpo:(0.000,0.000,0.000)
 Rotazione=corpo:(0.0,0.0,0.0)
+
+[step1 montaggio palette ]

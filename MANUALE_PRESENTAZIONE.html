@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuale Tutorial.txt - Campus Virtual Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .presentation {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .slide-content {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 4px solid #764ba2;
+            padding-bottom: 20px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin: 30px 0 20px 0;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 20px 0 10px 0;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        .feature-card h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .icon {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        ul, ol {
+            margin: 10px 0 10px 30px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">13</span>
+        </div>
+
+        <!-- SLIDE 1: Titolo -->
+        <div class="slide active">
+            <div class="slide-content">
+                <div class="icon">🎯</div>
+                <h1>Sistema Tutorial Campus Virtual Training</h1>
+                <div class="icon">🏭</div>
+                <h2 style="text-align: center; color: #764ba2;">Manuale Completo Tutorial.txt</h2>
+                <div style="text-align: center; margin-top: 40px; font-size: 1.2em; color: #555;">
+                    <p><strong>Versione Sistema:</strong> 1.0</p>
+                    <p><strong>Ultimo Aggiornamento:</strong> Gennaio 2026</p>
+                    <p><strong>Scenario:</strong> Pompa Becker - Manutenzione e Assemblaggio</p>
+                </div>
+                <div class="success" style="margin-top: 40px;">
+                    <strong>✅ Stato File:</strong> Tutorial.txt analizzato e razionalizzato<br>
+                    <strong>✅ Errori Critici:</strong> 3/3 corretti<br>
+                    <strong>✅ Funzionalità:</strong> 8 categorie documentate<br>
+                    <strong>✅ Tutorial:</strong> 4 scenari definiti
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Configurazione Camera -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>📷 Configurazione Camera</h1>
+                <div class="icon">🎥</div>
+
+                <h3>Comandi Disponibili</h3>
+                <table>
+                    <tr>
+                        <th>Comando</th>
+                        <th>Descrizione</th>
+                        <th>Esempio</th>
+                    </tr>
+                    <tr>
+                        <td><span class="highlight">CameraPos</span></td>
+                        <td>Posizione camera nello spazio 3D (x, y, z)</td>
+                        <td><code>CameraPos=(0, 0.5, 1.5)</code></td>
+                    </tr>
+                    <tr>
+                        <td><span class="highlight">CameraTarget</span></td>
+                        <td>Punto target camera (coordinate o oggetto)</td>
+                        <td><code>CameraTarget=(0, 0, 0)</code><br><code>CameraTarget=filtro</code></td>
+                    </tr>
+                    <tr>
+                        <td><span class="highlight">CameraZoom</span></td>
+                        <td>Livello zoom (default: 1.0)</td>
+                        <td><code>CameraZoom=1.5</code></td>
+                    </tr>
+                    <tr>
+                        <td><span class="highlight">CameraTransitionTime</span></td>
+                        <td>Durata transizione in secondi</td>
+                        <td><code>CameraTransitionTime=2.0</code></td>
+                    </tr>
+                </table>
+
+                <h3>Esempio Pratico - Step Tutorial</h3>
+                <div class="code-block">
+<code>[Step 1 - Visualizza coperchio]
+Descrizione=Osserva il coperchio della pompa
+CameraPos=(0, 0.5, 1.2)
+CameraTarget=coperchio
+CameraZoom=1.3
+CameraTransitionTime=1.5</code>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ ATTENZIONE:</strong> La sintassi è <strong>case-sensitive</strong>!<br>
+                    ❌ <code>cameraZoom</code> (minuscolo) = ERRORE<br>
+                    ✅ <code>CameraZoom</code> (maiuscolo) = CORRETTO
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Posizionamento Modelli -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>📐 Posizionamento Modelli</h1>
+                <div class="icon">🔧</div>
+
+                <h3>Comandi di Posizionamento</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📍 Posizione</h4>
+                        <p>Posiziona modello nelle coordinate (x, y, z)</p>
+                        <div class="code-block">
+<code>Posizione=filtro:(0.1,0.3,0)</code>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔄 Rotazione</h4>
+                        <p>Ruota modello in gradi (rx, ry, rz)</p>
+                        <div class="code-block">
+<code>Rotazione=filtro:(0,45,0)</code>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🌍 Configurazioni Globali vs Tutorial</h3>
+                <div class="code-block">
+<code># CONFIGURAZIONI GLOBALI (prima del primo [Tutorial])
+# Applicate al caricamento della scena
+Posizione=coperchio:(0,0.383,0)
+Rotazione=coperchio:(0,0,0)
+Posizione=filtro:(0,0.235,0)
+
+[Tutorial Pulizia]
+# Override globali quando questo tutorial è selezionato
+Posizione=filtro:(0.5,0.235,0)  # Filtro spostato lateralmente
+</code>
+                </div>
+
+                <h3>📊 Statistiche File Tutorial</h3>
+                <ul>
+                    <li><strong>34 modelli</strong> posizionati con configurazioni globali</li>
+                    <li><strong>3 tutorial</strong> con override posizioni specifiche</li>
+                    <li><strong>Export automatico</strong> da console: <code>Scene3D.exportCurrentModelPositions()</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Elementi e Utensili -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>🛠️ Elementi e Utensili</h1>
+
+                <h3>Definizione Step</h3>
+                <div class="code-block">
+<code>[Step 1 - Rimuovi vite coperchio]
+Elemento=models/vite_coperchio_1.glb
+Utensile=ChiaveBrugola
+Descrizione=Svita la prima vite del coperchio usando la chiave a brugola</code>
+                </div>
+
+                <h3>🔧 Utensili Disponibili</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>✋ Mani</h4>
+                        <p><strong>45+ occorrenze</strong></p>
+                        <p>Operazioni manuali di spostamento, estrazione, inserimento</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔩 ChiaveBrugola</h4>
+                        <p><strong>12 occorrenze</strong></p>
+                        <p>Svitare/avvitare viti a brugola (esagonali)</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔧 ChiaveInglese</h4>
+                        <p><strong>10 occorrenze</strong></p>
+                        <p>Svitare/avvitare bulloni e dadi</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>💨 Aria</h4>
+                        <p><strong>1 occorrenza</strong></p>
+                        <p>Pulizia con aria compressa (effetto particelle)</p>
+                    </div>
+                </div>
+
+                <h3>🎯 Parametri Elemento</h3>
+                <ul>
+                    <li><strong>Elemento:</strong> Modello 3D su cui operare (path relativo a root)</li>
+                    <li><strong>Utensile:</strong> Tool richiesto per completare l'operazione</li>
+                    <li><strong>Descrizione:</strong> Istruzione mostrata nel fumetto tutorial</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Sistema Azioni - Movimento Base -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>⚙️ Sistema Azioni - Movimento Base</h1>
+                <div class="icon">🔄</div>
+
+                <h3>Comandi con Distanza Configurabile</h3>
+                <table>
+                    <tr>
+                        <th>Azione</th>
+                        <th>Default</th>
+                        <th>Sintassi Parametrica</th>
+                        <th>Utilizzo</th>
+                    </tr>
+                    <tr>
+                        <td><strong>svita</strong></td>
+                        <td>0.5 unità</td>
+                        <td><code>svita(0.8)</code></td>
+                        <td>16 occorrenze</td>
+                    </tr>
+                    <tr>
+                        <td><strong>avvita</strong></td>
+                        <td>0.5 unità</td>
+                        <td><code>avvita(0.3)</code></td>
+                        <td>2 occorrenze</td>
+                    </tr>
+                    <tr>
+                        <td><strong>estrai</strong></td>
+                        <td>0.4 unità</td>
+                        <td><code>estrai(0.6)</code></td>
+                        <td>Base per estrazioni</td>
+                    </tr>
+                    <tr>
+                        <td><strong>inserisci</strong></td>
+                        <td>0.4 unità</td>
+                        <td><code>inserisci(0.6)</code></td>
+                        <td>Base per inserimenti</td>
+                    </tr>
+                </table>
+
+                <h3>Esempi Pratici</h3>
+                <div class="code-block">
+<code># Svitamento standard
+Azione1=svita
+
+# Svitamento con estrazione lunga
+Azione1=svita(0.8)
+
+# Svitamento con estrazione corta (viti piccole)
+Azione1=svita(0.1)
+
+# Avvitamento delicato (flangia)
+Azione1=avvita(0.005)</code>
+                </div>
+
+                <div class="success">
+                    <strong>✨ Caratteristica:</strong> La distanza moltiplica il vettore <code>direction</code> configurato in <code>home_config.txt</code><br>
+                    <strong>📊 Rotazione:</strong> Svita ruota di +1800° (5 giri), Avvita di -1800° (5 giri inversi)
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Traslazioni e Rotazioni -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>↔️ Traslazioni e Rotazioni</h1>
+
+                <h3>🚀 Traslazione</h3>
+                <div class="code-block">
+<code># Traslazione assoluta (coordinate fisse)
+Azione1=traslazione:(0.5,0,0,1.0)  # X+0.5 in 1 secondo
+
+# Traslazione relativa a posizione originale (usa _original)
+Azione1=traslazione:tappino_grasso_dx_original,(0,0.05,0,0.5)
+# Si muove di +0.05 in Y rispetto alla posizione originale del tappino</code>
+                </div>
+
+                <h3>🔄 Rotazione</h3>
+                <div class="code-block">
+<code># Rotazione normale (attorno al pivot del modello)
+Azione1=rotazione:(0,90,0,1.5)  # Ruota 90° su Y in 1.5 secondi
+
+# Rotazione con cambio pivot (attorno a un punto personalizzato)
+Azione2=centro:(0,0.1,0);rotazione:(0,0,-90,0.8)
+# Ruota -90° su Z attorno al punto (0, 0.1, 0)</code>
+                </div>
+
+                <h3>📊 Statistiche Utilizzo</h3>
+                <ul>
+                    <li><strong>Traslazione assoluta:</strong> 30+ occorrenze</li>
+                    <li><strong>Traslazione relativa _original:</strong> 65 occorrenze (pompaggio ingrassatore)</li>
+                    <li><strong>Rotazione normale:</strong> 8 occorrenze</li>
+                    <li><strong>Rotazione con pivot:</strong> 2 occorrenze (coperchio, ingrassatore)</li>
+                </ul>
+
+                <div class="warning">
+                    <strong>⚠️ Limitazione Fast-Forward:</strong> Il cambio pivot (<code>centro:...</code>) non è ancora supportato dal sistema fast-forward. Per testare step con questo comando, usa <code>jumpToStep(N, false)</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Azioni Speciali -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>✨ Azioni Speciali</h1>
+
+                <h3>🏗️ Appoggia (Posizionamento Pavimento)</h3>
+                <div class="code-block">
+<code>[Step 5 - Appoggia vite]
+Elemento=models/vite_coperchio_1.glb
+Utensile=Mani
+Azione1=svita(0.5)              # Svita ed estrai
+Azione2=traslazione:(0.3,0,0,0.5)  # Sposta lateralmente
+Azione3=appoggia(0.8)           # Appoggia al pavimento (Y=0) in 0.8s</code>
+                </div>
+
+                <div class="success">
+                    <strong>✅ Funzionamento:</strong><br>
+                    • Calcola automaticamente bounding box modello<br>
+                    • Anima Y → 0 (pavimento) in durata specificata<br>
+                    • Mantiene coordinate X e Z invariate
+                </div>
+
+                <h3>🔄 ResetCenteredOriginal</h3>
+                <div class="code-block">
+<code>Azione1=resetCenteredOriginal</code>
+                </div>
+                <p>Reset posizioni centrate (2 occorrenze nel tutorial)</p>
+
+                <h3>📊 Statistiche</h3>
+                <ul>
+                    <li><strong>appoggia:</strong> 28 occorrenze nel tutorial</li>
+                    <li><strong>resetCenteredOriginal:</strong> 2 occorrenze</li>
+                    <li><strong>Azioni totali:</strong> 150+ azioni definite in tutti gli step</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Sistema Drag & Drop -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>🖱️ Sistema Drag & Drop 3D</h1>
+                <div class="icon">🎯</div>
+
+                <h3>Configurazione Base</h3>
+                <div class="code-block">
+<code>[Step 10 - Riposiziona componenti]
+DragDrop=true
+DragDropObjects=filtro,vite_1,vite_2
+DragDropDistance=0.3
+ShowSnapIndicators=false  # Nascondi sfere verdi (raccomandato)</code>
+                </div>
+
+                <h3>🎯 Sistema Snap - Formato Globale (NUOVO)</h3>
+                <div class="code-block">
+<code># FORMATO NUOVO: tutti gli oggetti possono usare tutti i target
+DragDropObjects=vite_culatta_1,vite_culatta_2
+SnapTargets=estrattoresx_original,estrattoredx_original
+# Entrambe le viti possono andare su entrambi gli estrattori
+
+# FORMATO VECCHIO (ancora supportato): mapping per-oggetto
+SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original</code>
+                </div>
+
+                <h3>📍 Snap a Coordinate Arbitrarie</h3>
+                <div class="code-block">
+<code># Snap globale a coordinate fisse
+SnapPoint=(0.5,0.2,0.3),(-0.1,0,0.5)
+# Tutti gli oggetti possono usare tutte le coordinate
+
+# Snap per-oggetto (formato vecchio)
+SnapPoint=filtro:(0.5,0.2,0.3);vite_1:(-0.1,0,0.5)</code>
+                </div>
+
+                <h3>📊 Utilizzo Tutorial</h3>
+                <ul>
+                    <li><strong>DragDrop=true:</strong> 7 step configurati</li>
+                    <li><strong>DragDropDistance:</strong> Valori 0.2, 0.3, 1.5 (in unità 3D)</li>
+                    <li><strong>ShowSnapIndicators:</strong> Nascosto di default per UX migliore</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Assembly Mode -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>🔧 Sistema Assembly Mode</h1>
+                <div class="icon">🏗️</div>
+
+                <h3>Modalità Assemblaggio Sequenziale</h3>
+                <div class="code-block">
+<code>[Tutorial Riassemblaggio]
+AssemblyMode=true
+ValidateAssembly=true
+
+[Step 1 - Posiziona tappini]
+AllowedComponents=tappino_grasso_sx,tappino_grasso_dx
+DragDrop=true
+ShowSnapIndicators=false
+
+[Step 2 - Monta filtro]
+AllowedComponents=filtro
+DragDrop=true
+
+[Step 3 - Monta coperchio]
+AllowedComponents=coperchio
+DragDrop=true</code>
+                </div>
+
+                <h3>🎯 Caratteristiche</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📝 Sequenza Forzata</h4>
+                        <p>Componenti devono essere montati nell'ordine specificato</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔒 Prerequisiti</h4>
+                        <p>Step bloccati finché componenti precedenti non sono posizionati</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>✅ Validazione</h4>
+                        <p>Verifica assemblaggio completo a fine tutorial</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔄 Auto-Avanzamento</h4>
+                        <p>Passa allo step successivo quando tutti i componenti sono posizionati</p>
+                    </div>
+                </div>
+
+                <h3>📊 Utilizzo Tutorial Riassemblaggio</h3>
+                <ul>
+                    <li><strong>Step 1:</strong> Tappini grasso (2 componenti intercambiabili)</li>
+                    <li><strong>Step 2:</strong> Filtro</li>
+                    <li><strong>Step 3:</strong> Coperchio</li>
+                    <li><strong>Step 4:</strong> Viti coperchio (4 componenti intercambiabili)</li>
+                    <li><strong>Step 5:</strong> Ingrassatore</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Oggetti Collegati -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>🔗 Oggetti Collegati</h1>
+
+                <h3>👥 SlaveObjects - Movimento 1:1</h3>
+                <div class="code-block">
+<code>[Step 12 - Muovi flangia con tubo]
+Elemento=models/flangia.glb
+Utensile=Mani
+Azione1=traslazione:(0,0,0.2,1.0)
+SlaveObjects=tubograsso.glb
+# Il tubo segue la flangia 1:1 (stessa direzione e distanza)</code>
+                </div>
+
+                <h3>🚗 DrivenObjects - Movimento Indipendente</h3>
+                <div class="code-block">
+<code># SINGOLO driven object (backward compatible)
+DrivenObject=tubograsso.glb,traslazione:(0,0,0.1,0.5)
+# Tubo si muove di 0.1 unità (metà della flangia)
+
+# MULTIPLI driven objects (NUOVO)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+# Entrambi si muovono di 0.005, stessa durata ma movimenti indipendenti</code>
+                </div>
+
+                <h3>⚖️ Confronto</h3>
+                <table>
+                    <tr>
+                        <th>Caratteristica</th>
+                        <th>SlaveObjects</th>
+                        <th>DrivenObjects</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Numero</strong></td>
+                        <td>Multipli supportati</td>
+                        <td>Multipli supportati</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Movimento</strong></td>
+                        <td>Copia 1:1 master</td>
+                        <td>Completamente indipendente</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Direzione</strong></td>
+                        <td>Sempre uguale</td>
+                        <td>Personalizzabile (x,y,z qualsiasi)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Durata</strong></td>
+                        <td>Sempre uguale</td>
+                        <td>Personalizzabile per ogni oggetto</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Uso tipico</strong></td>
+                        <td>Oggetti rigidi collegati</td>
+                        <td>Oggetti con elasticità/ritardo</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Sistema Messaggi -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>💬 Sistema Messaggi Informativi</h1>
+                <div class="icon">📢</div>
+
+                <h3>Modal Informativo con Media</h3>
+                <div class="code-block">
+<code>[Step 14 - Istruzioni estrattore]
+Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
+MessageTitle=🎬 Procedura Estrattore Flangia
+MessageVideo=media/estrattore.mp4
+DragDrop=true
+Utensile=Mani</code>
+                </div>
+
+                <h3>🎯 Parametri Disponibili</h3>
+                <table>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Descrizione</th>
+                        <th>Esempio</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Message</strong></td>
+                        <td>Testo messaggio (supporta \n)</td>
+                        <td><code>Assicurati di...\n\nProcedi con cautela</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>MessageTitle</strong></td>
+                        <td>Titolo modal (opzionale)</td>
+                        <td><code>⚠️ Attenzione</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>MessageImage</strong></td>
+                        <td>Percorso immagine (JPG, PNG, GIF, WEBP)</td>
+                        <td><code>media/schema.jpg</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>MessageVideo</strong></td>
+                        <td>Percorso video (MP4, WEBM, OGG)</td>
+                        <td><code>media/demo.mp4</code></td>
+                    </tr>
+                </table>
+
+                <h3>✨ Comportamento Auto-Avanzamento</h3>
+                <ul>
+                    <li><strong>Step solo messaggio:</strong> Click OK → avanza automaticamente (500ms delay)</li>
+                    <li><strong>Step messaggio + azioni:</strong> Click OK → chiude modal, poi esegui azione</li>
+                    <li><strong>Video:</strong> Si ferma automaticamente alla chiusura modal</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Debug Console -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>🛠️ Comandi Debug Console</h1>
+
+                <h3>📷 Sistema Camera e Modelli</h3>
+                <div class="code-block">
+<code>// Informazioni camera corrente
+Scene3D.getCameraInfo()
+// Output: posizione + sintassi CameraPos/CameraTarget per tutorial.txt
+
+// Lista oggetti disponibili
+Scene3D.listAvailableObjects()
+
+// Trova modello specifico
+Scene3D.findModelByName('filtro')
+
+// Export posizioni tutti i modelli
+Scene3D.exportCurrentModelPositions()
+// Scarica file con sintassi Posizione/Rotazione pronta per tutorial.txt</code>
+                </div>
+
+                <h3>🎯 Sistema Drag & Drop</h3>
+                <div class="code-block">
+<code>// Stato sistema
+DragDropSystem.isEnabled()
+DragDropSystem.getAssemblyStatus()
+
+// Configurazione runtime
+DragDropSystem.enable(['filtro', 'vite_1'])
+DragDropSystem.setSnapDistance(1.5)
+DragDropSystem.setCustomSnapPosition('filtro', 0.5, 0.2, 0.3)
+DragDropSystem.setMultipleSnapTargets('vite_A', ['foro_1_original', 'foro_2_original'])
+
+// Debug completo
+DragDropSystem.debugSnapSystem()</code>
+                </div>
+
+                <h3>⏭️ Navigazione Tutorial</h3>
+                <div class="code-block">
+<code>// Salta a step specifico (con fast-forward)
+jumpToStep(5)  // Salta al 5° step, applica step 1-4
+
+// Salta senza fast-forward (solo debug)
+jumpToStep(10, false)
+
+// Lista tutti gli step
+listSteps()
+
+// Cerca step per nome
+findStep("vite")  // Trova tutti gli step con "vite"</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Esempi Pratici -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>📝 Esempi Pratici Completi</h1>
+
+                <h3>🔩 Esempio 1: Svitamento Vite Completo</h3>
+                <div class="code-block">
+<code>[Step 1 - Rimuovi vite coperchio]
+Descrizione=Svita la prima vite del coperchio e appoggiarla lateralmente
+Elemento=models/vite_coperchio_1.glb
+Utensile=ChiaveBrugola
+CameraPos=(0.2, 0.5, 0.8)
+CameraTarget=vite_coperchio_1
+CameraZoom=2.0
+CameraTransitionTime=1.0
+Azione1=svita(0.5)              # Svita 5 giri + estrai 0.5 unità
+Azione2=traslazione:(0.3,0,0,0.5)  # Sposta lateralmente
+Azione3=appoggia(0.8)           # Appoggia al pavimento</code>
+                </div>
+
+                <h3>🎯 Esempio 2: Assemblaggio con Snap Multipli</h3>
+                <div class="code-block">
+<code>[Step 14 - Inserimento viti estrattore]
+Message=Inserisci due viti da 8mm nelle sedi laterali
+MessageTitle=🎬 Procedura Estrattore
+MessageVideo=media/estrattore_flangia.mp4
+DragDrop=true
+DragDropObjects=vite_culatta_1,vite_culatta_2
+SnapTargets=estrattoresx_original,estrattoredx_original
+DragDropDistance=0.1
+ShowSnapIndicators=false
+Utensile=Mani
+# Auto-avanza quando entrambe le viti sono posizionate</code>
+                </div>
+
+                <h3>🚗 Esempio 3: Movimento Sincronizzato</h3>
+                <div class="code-block">
+<code>[Step 15 - Avvita viti estrattore]
+Elemento=models/vite_culatta_1.glb
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)
+# Mentre la vite si avvita, flangia e tubo si muovono insieme</code>
+                </div>
+
+                <div class="success">
+                    <h3>✅ Tutorial Completi Disponibili</h3>
+                    <ul>
+                        <li><strong>Pulizia Filtro e ingrassaggio:</strong> 11 step</li>
+                        <li><strong>Riassemblaggio:</strong> 5 step (Assembly Mode)</li>
+                        <li><strong>Sostituzione Palette Smontaggio:</strong> 28 step</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">◀ Precedente</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Successivo ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = (currentSlide === 0);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides - 1);
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

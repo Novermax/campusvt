@@ -216,7 +216,7 @@ window.App = {
 
             // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
             try {
-                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000029');
+                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000031');
                 console.log('✅ Sistema drag & drop caricato');
 
                 // Carica debug helpers per DragDropSystem
