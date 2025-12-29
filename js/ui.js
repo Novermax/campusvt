@@ -194,25 +194,150 @@ window.UI = {
     
     /**
      * Torna alla home page
+     * RESET COMPLETO: Ripristina tutti gli stati come se l'app fosse appena caricata
      */
     goHome: function() {
-        // Pulisci la scena 3D
-        if (window.Scene3D && window.Scene3D.clearAllModels) {
-            window.Scene3D.clearAllModels();
+        AppConfig.log(2, '[goHome] 🏠 Avvio reset completo per ritorno alla home...');
+
+        // === FASE 1: RESET CURSORI E TOOL ===
+        // Disattiva tutti i tool
+        this.deactivateAllTools();
+
+        // Ferma eventuali animazioni cursore in corso
+        if (window.Scene3D && window.Scene3D.stopCursorAnimation) {
+            window.Scene3D.stopCursorAnimation();
         }
-        
+
+        // Rimuovi TUTTE le classi cursori personalizzati dal body
+        document.body.classList.remove(
+            'tool-aria-active',
+            'tool-chiave_inglese-active',
+            'tool-brugola-active',
+            'tool-mano-active',
+            'cursor-frame-1',
+            'cursor-frame-2',
+            'mouse-pressed'
+        );
+
+        // Rimuovi anche classi cursore dal canvas
+        const canvas = document.querySelector('#canvas3d, canvas');
+        if (canvas) {
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            canvas.style.cursor = ''; // Reset inline style se presente
+        }
+
+        // Reset inline style cursor su body
+        document.body.style.cursor = '';
+
+        AppConfig.log(3, '[goHome] Tool e cursori resettati');
+
+        // === FASE 2: RESET DRAG & DROP ===
+        if (window.DragDropSystem) {
+            // Reset completo del sistema drag & drop
+            if (window.DragDropSystem.reset) {
+                window.DragDropSystem.reset();
+            } else if (window.DragDropSystem.disable) {
+                window.DragDropSystem.disable();
+            }
+            // Reset tracking snap
+            if (window.DragDropSystem.resetSnapTracking) {
+                window.DragDropSystem.resetSnapTracking();
+            }
+            // Reset posizioni occupate
+            if (window.DragDropSystem.resetOccupiedPositions) {
+                window.DragDropSystem.resetOccupiedPositions();
+            }
+            AppConfig.log(3, '[goHome] DragDropSystem resettato');
+        }
+
+        // === FASE 3: RESET ASSEMBLY SYSTEM ===
+        if (window.AssemblySystem && window.AssemblySystem.disableAssemblyMode) {
+            window.AssemblySystem.disableAssemblyMode();
+            AppConfig.log(3, '[goHome] AssemblySystem disabilitato');
+        }
+
+        // === FASE 4: RESET SCENE 3D ===
+        if (window.Scene3D) {
+            // Reset tutorial tracker
+            if (window.Scene3D.resetTutorialTracker) {
+                window.Scene3D.resetTutorialTracker();
+            }
+
+            // Ferma tutte le animazioni attive
+            if (window.Scene3D.animationSystem) {
+                window.Scene3D.animationSystem.activeAnimations = [];
+                window.Scene3D.animationSystem.clickEnabled = true;
+                if (window.Scene3D.animationSystem.multiStepAnimations) {
+                    window.Scene3D.animationSystem.multiStepAnimations.clear();
+                }
+            }
+
+            // Rimuovi highlight attivi
+            if (window.Scene3D.removeHighlight) {
+                window.Scene3D.removeHighlight();
+            }
+
+            // Reset posizioni iniziali salvate
+            if (window.Scene3D.initialModelPositions) {
+                window.Scene3D.initialModelPositions.clear();
+            }
+            if (window.Scene3D.scenarioOriginalPositions) {
+                window.Scene3D.scenarioOriginalPositions.clear();
+            }
+
+            // Pulisci la scena 3D (rimuove tutti i modelli)
+            if (window.Scene3D.clearAllModels) {
+                window.Scene3D.clearAllModels();
+            }
+
+            AppConfig.log(3, '[goHome] Scene3D resettata');
+        }
+
+        // === FASE 5: RESET PARTICLE SYSTEM ===
+        if (window.ParticleSystem && window.ParticleSystem.clearAllEffects) {
+            window.ParticleSystem.clearAllEffects();
+            AppConfig.log(3, '[goHome] ParticleSystem pulito');
+        }
+
+        // === FASE 6: RESET AUTOMODE ===
+        if (window.AutoMode && window.AutoMode.enabled) {
+            window.AutoMode.enabled = false;
+            window.AutoMode.isExecuting = false;
+            AppConfig.log(3, '[goHome] AutoMode disabilitato');
+        }
+
+        // === FASE 7: RESET STATO TUTORIAL ===
+        this.tutorialSteps = [];
+        this.availableTutorials = [];
+        this.currentTutorial = null;
+        this.currentStepIndex = 0;
+
         // Reset stato scenario
         this.currentScenario = null;
-        
+
         // Nasconde la barra tutorial e il fumetto
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
-        
-        // Aggiorna UI
+
+        // Nascondi modal congratulazioni se presente
+        const congratsModal = document.querySelector('.congratulations-modal');
+        if (congratsModal) {
+            congratsModal.classList.remove('show');
+        }
+
+        // Nascondi modal info se presente
+        const infoModal = document.getElementById('infoModal');
+        if (infoModal) {
+            infoModal.style.display = 'none';
+        }
+
+        AppConfig.log(3, '[goHome] Stato tutorial resettato');
+
+        // === FASE 8: MOSTRA HOME PAGE ===
         this.updateStatus('Home');
         this.showPage('home');
-        
-        AppConfig.log(2, 'Ritorno alla home');
+
+        AppConfig.log(2, '[goHome] ✅ Reset completo terminato - ritorno alla home');
     },
     
     /**
@@ -2086,7 +2211,7 @@ window.UI = {
         const activeTool = this.getActiveTool();
 
         // Rimuovi tutte le classi body tool prima di applicare la nuova
-        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active');
+        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active', 'tool-mano-active', 'cursor-frame-1', 'cursor-frame-2');
 
         // Gestione cursori personalizzati via body class per tool specifici
         if (activeTool === 'aria' || activeTool === 'Aria') {
@@ -3148,6 +3273,109 @@ window.UI = {
                 }
             }
 
+            // NUOVO: SnapOffset - calcola automaticamente posizione snap come "posizione originale + offset"
+            // Sintassi: SnapOffset=(x,y,z) - applica offset a TUTTI gli oggetti draggabili
+            if (step.properties.SnapOffset && draggableObjects.length > 0) {
+                const offsetClean = step.properties.SnapOffset.split('#')[0].trim();
+                const offsetMatch = offsetClean.match(/\(([^,]+),([^,]+),([^)]+)\)/);
+                
+                if (offsetMatch) {
+                    const offsetX = parseFloat(offsetMatch[1].trim());
+                    const offsetY = parseFloat(offsetMatch[2].trim());
+                    const offsetZ = parseFloat(offsetMatch[3].trim());
+                    
+                    if (!isNaN(offsetX) && !isNaN(offsetY) && !isNaN(offsetZ)) {
+                        console.log(`[UI] 📐 SnapOffset rilevato: (${offsetX}, ${offsetY}, ${offsetZ})`);
+                        
+                        // Per ogni oggetto draggabile, calcola snap point = posizione originale + offset
+                        draggableObjects.forEach(objectName => {
+                            const obj = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
+                            if (obj) {
+                                // Ottieni posizione originale (centro bounding box)
+                                let originalPos = null;
+                                
+                                // Prima controlla se già salvata in DragDropSystem
+                                if (window.DragDropSystem && window.DragDropSystem.originalPositions.has(obj.uuid)) {
+                                    originalPos = window.DragDropSystem.originalPositions.get(obj.uuid).clone();
+                                } else {
+                                    // Calcola dal bounding box corrente
+                                    const boundingBox = new THREE.Box3().setFromObject(obj);
+                                    originalPos = boundingBox.getCenter(new THREE.Vector3());
+                                }
+                                
+                                if (originalPos) {
+                                    // Calcola posizione snap = originale + offset
+                                    const snapX = originalPos.x + offsetX;
+                                    const snapY = originalPos.y + offsetY;
+                                    const snapZ = originalPos.z + offsetZ;
+                                    
+                                    // Imposta come custom snap position pivot per questo oggetto
+                                    window.DragDropSystem.setCustomSnapPositionPivot(objectName, snapX, snapY, snapZ);
+                                    
+                                    console.log(`[UI] 📐 SnapOffset per "${objectName}": originale (${originalPos.x.toFixed(3)}, ${originalPos.y.toFixed(3)}, ${originalPos.z.toFixed(3)}) + offset → snap (${snapX.toFixed(3)}, ${snapY.toFixed(3)}, ${snapZ.toFixed(3)})`);
+                                }
+                            } else {
+                                console.warn(`[UI] ⚠️ SnapOffset: Oggetto "${objectName}" non trovato nella scena`);
+                            }
+                        });
+                        
+                        AppConfig.log(2, `📐 DRAG & DROP: SnapOffset (${offsetX}, ${offsetY}, ${offsetZ}) applicato a ${draggableObjects.length} oggetti`);
+                    } else {
+                        AppConfig.log(1, `⚠️ DRAG & DROP: Coordinate SnapOffset non valide: ${offsetClean}`);
+                    }
+                } else {
+                    AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapOffset non valido: ${offsetClean} (usare formato: (x,y,z))`);
+                }
+            }
+
+            // NUOVO: Applica InitialOffset agli oggetti draggabili
+            // Questo sposta le viti/componenti in una posizione iniziale offset
+            // così l'utente deve trascinarle verso la posizione finale
+            if (step.properties.InitialOffset && draggableObjects.length > 0) {
+                const offsetClean = step.properties.InitialOffset.split('#')[0].trim();
+                const offsetMatch = offsetClean.match(/\(([^,]+),([^,]+),([^)]+)\)/);
+                
+                if (offsetMatch) {
+                    const offsetX = parseFloat(offsetMatch[1].trim());
+                    const offsetY = parseFloat(offsetMatch[2].trim());
+                    const offsetZ = parseFloat(offsetMatch[3].trim());
+                    
+                    if (!isNaN(offsetX) && !isNaN(offsetY) && !isNaN(offsetZ)) {
+                        console.log(`[UI] 📐 InitialOffset rilevato: (${offsetX}, ${offsetY}, ${offsetZ})`);
+                        
+                        // Applica offset a tutti gli oggetti draggabili
+                        draggableObjects.forEach(objectName => {
+                            const obj = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
+                            if (obj) {
+                                // Salva posizione originale PRIMA di applicare offset
+                                // (se non già salvata)
+                                if (window.DragDropSystem && !window.DragDropSystem.originalPositions.has(obj.uuid)) {
+                                    const boundingBox = new THREE.Box3().setFromObject(obj);
+                                    const originalCenter = boundingBox.getCenter(new THREE.Vector3());
+                                    window.DragDropSystem.originalPositions.set(obj.uuid, originalCenter.clone());
+                                    console.log(`[UI] 💾 Salvata posizione originale per "${objectName}": (${originalCenter.x.toFixed(3)}, ${originalCenter.y.toFixed(3)}, ${originalCenter.z.toFixed(3)})`);
+                                }
+                                
+                                // Applica offset alla posizione corrente
+                                obj.position.x += offsetX;
+                                obj.position.y += offsetY;
+                                obj.position.z += offsetZ;
+                                
+                                console.log(`[UI] 📐 Applicato InitialOffset a "${objectName}": nuova posizione (${obj.position.x.toFixed(3)}, ${obj.position.y.toFixed(3)}, ${obj.position.z.toFixed(3)})`);
+                            } else {
+                                console.warn(`[UI] ⚠️ InitialOffset: Oggetto "${objectName}" non trovato nella scena`);
+                            }
+                        });
+                        
+                        AppConfig.log(2, `📐 DRAG & DROP: InitialOffset (${offsetX}, ${offsetY}, ${offsetZ}) applicato a ${draggableObjects.length} oggetti`);
+                    } else {
+                        AppConfig.log(1, `⚠️ DRAG & DROP: Coordinate InitialOffset non valide: ${offsetClean}`);
+                    }
+                } else {
+                    AppConfig.log(1, `⚠️ DRAG & DROP: Formato InitialOffset non valido: ${offsetClean} (usare formato: (x,y,z))`);
+                }
+            }
+
             // NUOVO: Configura punti di snap a coordinate arbitrarie
             if (step.properties.SnapPoint) {
                 const snapPointClean = step.properties.SnapPoint.split('#')[0].trim();
@@ -3229,6 +3457,112 @@ window.UI = {
                             }
                         } else {
                             AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapPoint non valido: ${declaration}`);
+                        }
+                    });
+                }
+            }
+
+            // NUOVO: Configura punti di snap a coordinate arbitrarie usando PIVOT (invece del centro BB)
+            if (step.properties.SnapPointPivot) {
+                const snapPointPivotClean = step.properties.SnapPointPivot.split('#')[0].trim();
+                console.log(`[UI] 📍 Parsing SnapPointPivot: "${snapPointPivotClean}"`);
+
+                // RILEVA FORMATO: se contiene ":" → formato vecchio (per-oggetto), altrimenti formato nuovo (globale)
+                const isGlobalFormat = !snapPointPivotClean.includes(':');
+
+                if (isGlobalFormat) {
+                    // FORMATO NUOVO (GLOBALE): (x,y,z),(x2,y2,z2),(x3,y3,z3)
+                    // Applica questi punti a TUTTI gli oggetti in DragDropObjects
+                    const globalPoints = [];
+
+                    // Parsing coordinate multiple separate da virgola
+                    const coordMatches = snapPointPivotClean.matchAll(/\(([^,]+),([^,]+),([^)]+)\)/g);
+                    for (const match of coordMatches) {
+                        const x = parseFloat(match[1].trim());
+                        const y = parseFloat(match[2].trim());
+                        const z = parseFloat(match[3].trim());
+
+                        if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+                            globalPoints.push({ x, y, z });
+                        }
+                    }
+
+                    if (globalPoints.length > 0 && draggableObjects.length > 0) {
+                        console.log(`[UI] 📍 FORMATO GLOBALE PIVOT: ${globalPoints.length} punti per ${draggableObjects.length} oggetti`);
+
+                        // Per SnapPointPivot globale, usa coordinate dirette con flag usePivot
+                        // Applica il PRIMO punto come snap pivot per tutti gli oggetti
+                        draggableObjects.forEach(objectName => {
+                            // Se c'è un solo punto, usalo direttamente
+                            if (globalPoints.length === 1) {
+                                const point = globalPoints[0];
+                                window.DragDropSystem.setCustomSnapPositionPivot(objectName, point.x, point.y, point.z);
+                            } else {
+                                // Se ci sono più punti, crea target virtuali con flag pivot
+                                const globalTargetNames = globalPoints.map((point, idx) => `snap_pivot_${idx}_original`);
+                                
+                                // Crea riferimenti virtuali per ogni punto con flag pivot
+                                globalPoints.forEach((point, idx) => {
+                                    const targetName = globalTargetNames[idx];
+                                    const virtualTarget = {
+                                        isOriginalReference: true,
+                                        originalModelName: targetName,
+                                        position: new THREE.Vector3(point.x, point.y, point.z),
+                                        usePivot: true  // FLAG per modalità pivot
+                                    };
+
+                                    if (!window.Scene3D.virtualSnapTargets) {
+                                        window.Scene3D.virtualSnapTargets = new Map();
+                                    }
+                                    window.Scene3D.virtualSnapTargets.set(targetName, virtualTarget);
+                                });
+
+                                // Configura snap multipli
+                                window.DragDropSystem.setMultipleSnapTargets(objectName, globalTargetNames);
+                                
+                                // Imposta flag usePivot per l'oggetto
+                                const obj = window.Scene3D.findModelByName(objectName);
+                                if (obj) {
+                                    const existingConfig = window.DragDropSystem.customSnapTargets.get(obj.uuid);
+                                    if (existingConfig) {
+                                        existingConfig.usePivot = true;
+                                    }
+                                }
+                            }
+                            AppConfig.log(3, `📍 DRAG & DROP: Snap points PIVOT globali per "${objectName}" -> ${globalPoints.length} coordinate`);
+                        });
+
+                        console.log(`[UI] ✅ Punti snap PIVOT globali applicati: ${globalPoints.map(p => `(${p.x},${p.y},${p.z})`).join(', ')}`);
+                    } else {
+                        AppConfig.log(1, `⚠️ DRAG & DROP: SnapPointPivot globali specificati ma nessun oggetto draggabile o coordinate valide`);
+                    }
+                } else {
+                    // FORMATO VECCHIO (PER-OGGETTO): oggetto1:(x,y,z);oggetto2:(x2,y2,z2)
+                    const snapDeclarations = snapPointPivotClean.split(';').map(s => s.trim()).filter(s => s.length > 0);
+                    console.log(`[UI] 📍 FORMATO PER-OGGETTO PIVOT: ${snapDeclarations.length} dichiarazioni`);
+
+                    snapDeclarations.forEach((declaration, index) => {
+                        console.log(`[UI] 📍 Parsing dichiarazione ${index + 1}/${snapDeclarations.length}: "${declaration}"`);
+                        const match = declaration.match(/^([^:]+):\(([^,]+),([^,]+),([^)]+)\)$/);
+                        if (match) {
+                            const objectName = match[1].trim();
+                            const x = parseFloat(match[2].trim());
+                            const y = parseFloat(match[3].trim());
+                            const z = parseFloat(match[4].trim());
+
+                            console.log(`[UI] 📍 Match trovato: oggetto="${objectName}", x=${x}, y=${y}, z=${z}`);
+
+                            if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+                                console.log(`[UI] 📍✅ Chiamata setCustomSnapPositionPivot per "${objectName}"...`);
+                                window.DragDropSystem.setCustomSnapPositionPivot(objectName, x, y, z);
+                                AppConfig.log(3, `📍 DRAG & DROP: Snap point PIVOT per "${objectName}" a (${x}, ${y}, ${z})`);
+                            } else {
+                                console.error(`[UI] 📍❌ Coordinate non valide: x=${x}, y=${y}, z=${z}`);
+                                AppConfig.log(1, `⚠️ DRAG & DROP: Coordinate non valide in SnapPointPivot: ${declaration}`);
+                            }
+                        } else {
+                            console.error(`[UI] 📍❌ Regex match fallito per: "${declaration}"`);
+                            AppConfig.log(1, `⚠️ DRAG & DROP: Formato SnapPointPivot non valido: ${declaration}`);
                         }
                     });
                 }

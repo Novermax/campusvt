@@ -1,0 +1,460 @@
+(index):483 💻 Dispositivo desktop rilevato
+MobileOptimizer.js?v=1000021:430 [MobileOptimizer] Modulo caricato
+AutoMode.js?v=1000020:456 [AutoMode] Modulo caricato
+app.js?v=1000010:614 📄 App.js caricato, in attesa del DOM...
+(index):507 🔄 Sessione ripristinata per: mloffredo@scmgroup.com
+app.js?v=1000010:588 📄 DOM pronto, avvio applicazione...
+favicon.png:1   GET http://localhost:8000/favicon.png 404 (File not found)
+
+DragDropSystem.js?nocache=1000031:1015 [DragDropSystem] 🎯 Snap target trovato tramite AssemblySystemSimplified: (-0.038, 0.329, 0.204)
+DragDropSystem.js?nocache=1000031:1026 [DragDropSystem] 🎯 findSnapTarget finale: Posizione (-0.038, 0.329, 0.204)
+DragDropSystem.js?nocache=1000031:1029 [DragDropSystem] 🧹 CLEANUP BASE: hiding snap indicators e reset cursore...
+DragDropSystem.js?nocache=1000031:1033 [DragDropSystem] 🖱️ Cursore canvas: gestione delegata a ToolsManager
+DragDropSystem.js?nocache=1000031:1038 [DragDropSystem] 🎯 Click animation system riabilitato
+DragDropSystem.js?nocache=1000031:1044 [DragDropSystem] ✅ Controlli camera riabilitati: false
+DragDropSystem.js?nocache=1000031:1050 [DragDropSystem] 🔧 Richiedendo aggiornamento cursore a ToolsManager...
+DragDropSystem.js?nocache=1000031:1055 [DragDropSystem] 🔍 Tool attivo prima update: "mano"
+DragDropSystem.js?nocache=1000031:1059 [DragDropSystem] 🔍 Stato completo tools: {brugola: false, chiave_inglese: false, mano: true, aria: false}
+DragDropSystem.js?nocache=1000031:1064 [DragDropSystem] 🔧 ToolsManager updateCanvasCursor completato
+DragDropSystem.js?nocache=1000031:1069 [DragDropSystem] 🔍 Tool attivo dopo update: "mano"
+DragDropSystem.js?nocache=1000031:1096 [DragDropSystem] 🏗️ DEBUG ASSEMBLY INTEGRATION:
+DragDropSystem.js?nocache=1000031:1097   assemblySystem: AssemblySystemSimplified
+DragDropSystem.js?nocache=1000031:1098   assemblyMode: true
+DragDropSystem.js?nocache=1000031:1099   assemblyEnabled: true
+DragDropSystem.js?nocache=1000031:1100   componentName: "vite_flangia_6"
+SnapSystem.js?v=1000001:411 [SnapSystem] 🎯 Esecuzione snap per vite_flangia_6 [usePivot=false]
+SnapSystem.js?v=1000001:422 [SnapSystem] 🔄 Rotazione applicata prima del calcolo posizione
+SnapSystem.js?v=1000001:443 [SnapSystem] 📐 Centro bounding box (dopo rotazione): (-0.044, 0.321, 0.104)
+SnapSystem.js?v=1000001:444 [SnapSystem] 📐 Pivot oggetto attuale: (-0.006, 0.177, -0.079)
+SnapSystem.js?v=1000001:445 [SnapSystem] 📐 Traslazione necessaria: (0.006, 0.008, 0.099)
+SnapSystem.js?v=1000001:446 [SnapSystem] 🎯 Target posizione sfera: (-0.038, 0.329, 0.204)
+SnapSystem.js?v=1000001:447 [SnapSystem] 🎯 Target posizione pivot corretta: (-0.000, 0.185, 0.020)
+SnapSystem.js?v=1000001:452 [SnapSystem] ✅ Snap completato per vite_flangia_6
+SnapSystem.js?v=1000001:458 [SnapSystem] 🔍 Verifica finale - Distanza centro da target: 0.000
+DragDropSystem.js?nocache=1000031:3206 [DragDropSystem] 📢 Snap completato per: "vite_flangia_6" (originale: "vite_flangia_6")
+DragDropSystem.js?nocache=1000031:3219 [DragDropSystem] 🧹 Highlight rimosso da "vite_flangia_6" dopo snap
+DragDropSystem.js?nocache=1000031:3227 [DragDropSystem] 📊 Progress: 8/8 oggetti snappati
+DragDropSystem.js?nocache=1000031:3235 [DragDropSystem] 🎉 TUTTI GLI OGGETTI RICHIESTI SONO STATI SNAPPATI!
+DragDropSystem.js?nocache=1000031:3236 [DragDropSystem] ⏭️ Auto-avanzamento allo step successivo...
+DragDropSystem.js?nocache=1000031:1128 [DragDropSystem] ✅ Snap riuscito - rimosso highlight da vite_flangia_6
+DragDropSystem.js?nocache=1000031:1156 [DragDropSystem] 🔄 RESET COMPLETO: isDragging=false, draggedObject=null
+DragDropSystem.js?nocache=1000031:2119 [DragDropSystem] 🎯 Tentativo NaN/4 avanzamento step (all_snaps_completed)
+DragDropSystem.js?nocache=1000031:2156 [DragDropSystem] ➡️ Avanzamento step (all_snaps_completed)
+DragDropSystem.js?nocache=1000031:2157 [DragDropSystem] 🎯 Percorso accesso: window.UI.nextStep (legacy)
+DragDropSystem.js?nocache=1000031:2158 [DragDropSystem] 🔍 Step corrente prima avanzamento: 7
+DragDropSystem.js?nocache=1000031:2159 [DragDropSystem] 🔍 Tutorial attivo: Sostituzione Palette Reverse
+DragDropSystem.js?nocache=1000031:2186 [DragDropSystem] 📊 Step intermedio (8/24) - procedo con avanzamento normale
+ui.js?nocache=1000030:3029 [DEBUG] ⏭️ GOTO STEP chiamata con index: 8
+ui.js?nocache=1000030:3038 [DEBUG] ⏭️ Navigazione a step: "Step 9 - Avvita vite flangia 1"
+config.js?nocache=999999:242 [7:58:01 AM] INFO: Navigazione a step 9: Step 9 - Avvita vite flangia 1
+ui.js?nocache=1000030:3069 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ui.js?nocache=1000030:3108 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 9 - Avvita vite flangia 1"
+ui.js?nocache=1000030:3109 [DEBUG] 🚀 Step properties: {Elemento: 'models/vite_flangia_1.glb', Descrizione: 'Stringi la prima vite della flangia con la chiave inglese da 10mm.', Utensile: 'ChiaveInglese', Azione1: 'avvita(0.02)'}
+config.js?nocache=999999:242 [7:58:01 AM] INFO: Esecuzione step: Step 9 - Avvita vite flangia 1 {Elemento: 'models/vite_flangia_1.glb', Descrizione: 'Stringi la prima vite della flangia con la chiave inglese da 10mm.', Utensile: 'ChiaveInglese', Azione1: 'avvita(0.02)'}
+scene3d-modular.js?nocache=1000019:3695 📹 CAMERA: Nessun parametro camera nello step, camera rimane ferma
+DragDropSystem.js?nocache=1000031:304 [DragDropSystem] 🔴 Disabilitazione sistema drag & drop...
+DragDropSystem.js?nocache=1000031:313 [DragDropSystem] ✅ Event listeners rimossi (canvas + document)
+InterchangeableTracker.js?v=1000001:66 [InterchangeableTracker] 🔄 Reset completo tracking
+InterchangeableTracker.js?v=1000001:57 [InterchangeableTracker] ❌ Sistema tracking disabilitato
+SnapSystem.js?v=1000001:71 [SnapSystem] ❌ Sistema snap disabilitato
+DragDropSystem.js?nocache=1000031:339 [DragDropSystem] ✅ Sistema disabilitato
+config.js?nocache=999999:242 [7:58:01 AM] INFO: 🚫 DRAG & DROP: Sistema disabilitato per step "Step 9 - Avvita vite flangia 1" (DragDrop=undefined)
+DragDropSystem.js?nocache=1000031:2201 [DragDropSystem] ✅ Avanzamento step completato (all_snaps_completed) via window.UI.nextStep (legacy)
+DragDropSystem.js?nocache=1000031:2202 [DragDropSystem] 🔍 Step corrente dopo avanzamento: 8
+scene3d-modular.js?nocache=1000019:849 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+scene3d-modular.js?nocache=1000019:865 🔍 HIGHLIGHT: Tentativo di evidenziare modello: vite_flangia_1
+scene3d-modular.js?nocache=1000019:763 🔍 HIGHLIGHT: highlightModel() chiamata per: vite_flangia_1
+scene3d-modular.js?nocache=1000019:807 🔍 HIGHLIGHT: ✅ APPLICAZIONE per vite_flangia_1 (non bloccato)
+scene3d-modular.js?nocache=1000019:809 🔍 HIGHLIGHT: Modelli bloccati: []
+config.js?nocache=999999:242 [7:58:07 AM] INFO: [ToolsManager] Strumento attivato: chiave_inglese
+scene3d-modular.js?nocache=1000019:530 [Scene3D] 🎬 Animazione cursore avviata per: chiave_inglese
+scene3d-modular.js?nocache=1000019:894 [Scene3D] 🌟 Modello evidenziato attivo: vite_flangia_1, cerco priorità...
+scene3d-modular.js?nocache=1000019:913 [Scene3D] Click su modello - ToolsManager: chiave_inglese, Body class aria: false
+scene3d-modular.js?nocache=1000019:923 [Scene3D] 🎯 Click rilevato su modello: vite_flangia_6
+scene3d-modular.js?nocache=1000019:930 [Scene3D] 📺 Uso sistema tutorial legacy per: vite_flangia_6
+scene3d-modular.js?nocache=1000019:1150 [DEBUG] 🎬 handleModelAction chiamato per: vite_flangia_6
+scene3d-modular.js?nocache=1000019:1153 [DEBUG] 📋 Current step: Step 9 - Avvita vite flangia 1
+scene3d-modular.js?nocache=1000019:1157 [DEBUG] 🔧 Tool required: "chiave_inglese", active: "chiave_inglese"
+scene3d-modular.js?nocache=1000019:1178 [DEBUG] 🎯 Model filename: "vite_flangia_6", Step element: "models/vite_flangia_1.glb"
+scene3d-modular.js?nocache=1000019:1188 [DEBUG] 🎯 Clean model: "vite_flangia_6", Clean step: "vite_flangia_1"
+scene3d-modular.js?nocache=1000019:1191 [DEBUG] ❌ Model/element mismatch - USCITA EARLY
+scene3d-modular.js?nocache=1000019:548 [Scene3D] ⏹️ Animazione cursore fermata
+scene3d-modular.js?nocache=1000019:530 [Scene3D] 🎬 Animazione cursore avviata per: chiave_inglese
+scene3d-modular.js?nocache=1000019:894 [Scene3D] 🌟 Modello evidenziato attivo: vite_flangia_1, cerco priorità...
+scene3d-modular.js?nocache=1000019:901 [Scene3D] ✨ PRIORITA' SILHOUETTE: Selezionato modello evidenziato "vite_flangia_1" (posizione 1/7 nel raycast)
+scene3d-modular.js?nocache=1000019:913 [Scene3D] Click su modello - ToolsManager: chiave_inglese, Body class aria: false
+scene3d-modular.js?nocache=1000019:923 [Scene3D] 🎯 Click rilevato su modello: vite_flangia_1
+scene3d-modular.js?nocache=1000019:930 [Scene3D] 📺 Uso sistema tutorial legacy per: vite_flangia_1
+scene3d-modular.js?nocache=1000019:1150 [DEBUG] 🎬 handleModelAction chiamato per: vite_flangia_1
+scene3d-modular.js?nocache=1000019:1153 [DEBUG] 📋 Current step: Step 9 - Avvita vite flangia 1
+scene3d-modular.js?nocache=1000019:1157 [DEBUG] 🔧 Tool required: "chiave_inglese", active: "chiave_inglese"
+scene3d-modular.js?nocache=1000019:1178 [DEBUG] 🎯 Model filename: "vite_flangia_1", Step element: "models/vite_flangia_1.glb"
+scene3d-modular.js?nocache=1000019:1188 [DEBUG] 🎯 Clean model: "vite_flangia_1", Clean step: "vite_flangia_1"
+scene3d-modular.js?nocache=1000019:1200 [DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation
+scene3d-modular.js?nocache=1000019:2065 🧭 Using direction for vite_flangia_1: {x: 0, y: 0, z: 1}
+scene3d-modular.js?nocache=1000019:1947 🔄 AVVITA per vite_flangia_1: direction= {x: 0, y: 0, z: 1} distanza=0.02
+scene3d-modular.js?nocache=1000019:1345 📐 Bounding box per undefined:
+scene3d-modular.js?nocache=1000019:1346    Min: (0.086, 0.191, 0.188)
+scene3d-modular.js?nocache=1000019:1347    Max: (0.099, 0.206, 0.219)
+scene3d-modular.js?nocache=1000019:1348    Center: (0.092, 0.198, 0.204)
+scene3d-modular.js?nocache=1000019:1349    Size: (0.013, 0.015, 0.030)
+scene3d-modular.js?nocache=1000019:2290 🔩 AVVITA DEBUG per vite_flangia_1:
+scene3d-modular.js?nocache=1000019:2291    Rotazione gradi: {x: -0, y: -0, z: -1800, durata: 1}
+scene3d-modular.js?nocache=1000019:2292    Rotazione radianti: x=0, y=0, z=-31.41592653589793
+scene3d-modular.js?nocache=1000019:548 [Scene3D] ⏹️ Animazione cursore fermata
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.000, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.000033915629041666395, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.000): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999997840863995}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.204 | Pos -0.000,-0.077,0.020 | Offset -0.092,-0.275,-0.184 | Rot -0.0°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.000, -0.077, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.000, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.0005647982840957354, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.000): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.019999640438244936}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.204 | Pos -0.000,-0.076,0.020 | Offset -0.093,-0.275,-0.184 | Rot -0.0°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.000, -0.076, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.000, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.009176259195834653, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.000): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.019994158211959552}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.204 | Pos -0.003,-0.076,0.020 | Offset -0.095,-0.274,-0.184 | Rot -0.5°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.003, -0.076, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.002, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.06672912322337314, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.002): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.019957518920763237}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.204 | Pos -0.018,-0.070,0.020 | Offset -0.110,-0.268,-0.184 | Rot -3.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.018, -0.070, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.004, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.12752711335538508, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.004): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01991881371812499}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.203 | Pos -0.034,-0.063,0.020 | Offset -0.127,-0.261,-0.184 | Rot -7.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.034, -0.063, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.008, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.2502098641449961, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.008): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01984071145324388}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.203 | Pos -0.065,-0.045,0.020 | Offset -0.158,-0.243,-0.184 | Rot -14.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.065, -0.045, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.020, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.635772333363174, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.020): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01959525476185672}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.203 | Pos -0.145,0.032,0.020 | Offset -0.237,-0.166,-0.184 | Rot -36.4°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.145, 0.032, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.025, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.7805862487617978, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.025): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01950306335999999}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.203 | Pos -0.167,0.068,0.020 | Offset -0.259,-0.130,-0.184 | Rot -44.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.167, 0.068, 0.020)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.027, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -0.8418580114655138, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.027): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01946405654437499}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.203 | Pos -0.174,0.084,0.019 | Offset -0.266,-0.114,-0.184 | Rot -48.2°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.174, 0.084, 0.019)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.035, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -1.0958453504706134, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.035): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.019302363182433314}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.203 | Pos -0.194,0.155,0.019 | Offset -0.287,-0.043,-0.184 | Rot -62.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.194, 0.155, 0.019)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.055, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -1.7412301416950517, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.055): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.018891498463554514}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.202 | Pos -0.163,0.336,0.019 | Offset -0.255,0.138,-0.184 | Rot -99.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.163, 0.336, 0.019)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.059, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -1.8559645132023437, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.059): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.018818456294082804}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.202 | Pos -0.145,0.364,0.019 | Offset -0.238,0.166,-0.184 | Rot -106.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.145, 0.364, 0.019)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.077, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -2.427049052548155, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.077): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01845489258464183}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.202 | Pos -0.018,0.466,0.018 | Offset -0.110,0.268,-0.184 | Rot -139.1°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.018, 0.466, 0.018)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.085, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -2.656661622300395, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.085): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.018308716682753422}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.202 | Pos 0.046,0.484,0.018 | Offset -0.046,0.286,-0.184 | Rot -152.2°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.046, 0.484, 0.018)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.105, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -3.314138882609488, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.105): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.017890153658958588}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.201 | Pos 0.231,0.453,0.018 | Offset 0.138,0.255,-0.184 | Rot -189.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.231, 0.453, 0.018)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.122, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -3.8441591688216667, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.122): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01755273226499999}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.201 | Pos 0.340,0.348,0.018 | Offset 0.248,0.150,-0.184 | Rot -220.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.340, 0.348, 0.018)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.130, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -4.093467474284071, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.130): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.017394017668327166}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.201 | Pos 0.370,0.282,0.017 | Offset 0.277,0.084,-0.184 | Rot -234.5°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.370, 0.282, 0.017)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.159, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -4.979612348844213, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.159): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01682988031999999}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.200 | Pos 0.333,0.037,0.017 | Offset 0.241,-0.162,-0.184 | Rot -285.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.333, 0.037, 0.017)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.171, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -5.377849268423082, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.171): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.016576354822909322}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.200 | Pos 0.251,-0.044,0.017 | Offset 0.159,-0.242,-0.184 | Rot -308.1°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.251, -0.044, 0.017)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.188, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -5.916889197820233, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.188): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01623319134575947}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.200 | Pos 0.105,-0.091,0.016 | Offset 0.012,-0.290,-0.184 | Rot -339.0°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.105, -0.091, 0.016)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.208, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -6.539927671648008, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.208): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.015836552734374988}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.199 | Pos -0.067,-0.044,0.016 | Offset -0.159,-0.242,-0.184 | Rot -374.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.067, -0.044, 0.016)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.229, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -7.181356323645299, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.229): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.015428206571950428}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.199 | Pos -0.180,0.099,0.015 | Offset -0.272,-0.099,-0.184 | Rot -411.5°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.180, 0.099, 0.015)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.239, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -7.506113749308098, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.239): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.015221459573550295}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.199 | Pos -0.197,0.191,0.015 | Offset -0.290,-0.007,-0.184 | Rot -430.1°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.197, 0.191, 0.015)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.250, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -7.855978195038083, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.250): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.014998728949750163}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.199 | Pos -0.182,0.291,0.015 | Offset -0.275,0.093,-0.184 | Rot -450.1°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.182, 0.291, 0.015)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.273, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -8.571786052396142, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.273): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01454303151453995}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.198 | Pos -0.054,0.448,0.015 | Offset -0.146,0.250,-0.184 | Rot -491.1°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.054, 0.448, 0.015)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.307, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -9.629929150347555, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.307): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.013869396696389792}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.197 | Pos 0.239,0.448,0.014 | Offset 0.146,0.250,-0.184 | Rot -551.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.239, 0.448, 0.014)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.330, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -10.37758116761141, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.330): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.013393426639349115}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.197 | Pos 0.370,0.282,0.013 | Offset 0.277,0.084,-0.184 | Rot -594.6°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.370, 0.282, 0.013)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.343, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -10.78316429557419, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.343): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.013135224400749317}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.197 | Pos 0.380,0.166,0.013 | Offset 0.288,-0.032,-0.184 | Rot -617.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.380, 0.166, 0.013)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.366, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -11.505778427066994, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.366): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.012675193956848772}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.196 | Pos 0.287,-0.017,0.013 | Offset 0.195,-0.215,-0.184 | Rot -659.2°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.287, -0.017, 0.013)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.390, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -12.264695300325451, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.390): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.012192052469749056}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.196 | Pos 0.086,-0.092,0.012 | Offset -0.007,-0.290,-0.184 | Rot -702.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.086, -0.092, 0.012)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.415, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -13.052143870663992, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.415): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.011690747140148956}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.195 | Pos -0.118,-0.002,0.012 | Offset -0.210,-0.200,-0.184 | Rot -747.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.118, -0.002, 0.012)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.427, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -13.420286995392624, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.427): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.011456379947885524}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.195 | Pos -0.175,0.087,0.011 | Offset -0.268,-0.111,-0.184 | Rot -768.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.175, 0.087, 0.011)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.441, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -13.84107628034325, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.441): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.011188497169085541}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.195 | Pos -0.197,0.206,0.011 | Offset -0.290,0.008,-0.184 | Rot -793.0°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.197, 0.206, 0.011)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.479, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -15.057818715298415, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.479): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.010413894877114407}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.194 | Pos -0.000,0.473,0.010 | Offset -0.093,0.275,-0.184 | Rot -862.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.000, 0.473, 0.010)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.504, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -15.82812814510148, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.504): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.009923500663260577}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.193 | Pos 0.217,0.460,0.010 | Offset 0.125,0.262,-0.184 | Rot -906.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.217, 0.460, 0.010)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.527, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -16.56994538715586, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.527): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.00945124513948557}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.193 | Pos 0.361,0.307,0.009 | Offset 0.269,0.109,-0.184 | Rot -949.4°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.361, 0.307, 0.009)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.553, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -17.363983827544214, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.553): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.008945744568314427}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.192 | Pos 0.358,0.083,0.009 | Offset 0.266,-0.115,-0.184 | Rot -994.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.358, 0.083, 0.009)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.565, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -17.738649704968875, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.565): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.008707224862714441}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.192 | Pos 0.298,-0.007,0.009 | Offset 0.205,-0.205,-0.184 | Rot -1016.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.298, -0.007, 0.009)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.578, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -18.149570876552286, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.578): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.00844562431999999}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.192 | Pos 0.199,-0.071,0.008 | Offset 0.106,-0.270,-0.184 | Rot -1039.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.199, -0.071, 0.008)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.622, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -19.542064248662722, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.622): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.007559135506423679}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.191 | Pos -0.154,0.046,0.008 | Offset -0.247,-0.152,-0.184 | Rot -1119.7°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.154, 0.046, 0.008)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.651, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -20.443405892420348, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.651): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.006985323594349276}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.191 | Pos -0.180,0.297,0.007 | Offset -0.273,0.099,-0.184 | Rot -1171.3°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.180, 0.297, 0.007)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.674, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -21.160897369477556, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.674): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.006528554333549435}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.190 | Pos -0.048,0.452,0.007 | Offset -0.140,0.254,-0.184 | Rot -1212.4°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.048, 0.452, 0.007)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.682, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -21.431528884594822, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.682): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.00635626495999999}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.190 | Pos 0.025,0.480,0.006 | Offset -0.068,0.282,-0.184 | Rot -1227.9°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.025, 0.480, 0.006)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.698, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -21.932569818752587, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.698): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.006037292394549632}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.190 | Pos 0.169,0.478,0.006 | Offset 0.076,0.280,-0.184 | Rot -1256.6°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.169, 0.478, 0.006)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.735, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -23.100197234345067, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.735): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.005293957695025001}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.189 | Pos 0.379,0.238,0.005 | Offset 0.287,0.040,-0.184 | Rot -1323.5°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.379, 0.238, 0.005)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.754, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -23.686043934429097, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.754): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.004920996102175206}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.188 | Pos 0.354,0.072,0.005 | Offset 0.261,-0.126,-0.184 | Rot -1357.1°
+ 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.354, 0.072, 0.005)
+ 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.775, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -24.361195606912883, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+ 🔍 LINEAR MOVEMENT (progress=0.775): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.004491181198124987}
+ 🔩 SVITA: BBCenter 0.092,0.198,0.188 | Pos 0.218,-0.063,0.004 | Offset 0.125,-0.261,-0.184 | Rot -1395.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.218, -0.063, 0.004)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.796, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -25.01238905352583, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.796): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.004076618574374993}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.188 | Pos 0.034,-0.086,0.004 | Offset -0.059,-0.284,-0.184 | Rot -1433.1°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.034, -0.086, 0.004)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.806, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -25.331926858971215, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.806): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.003873194489409513}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.187 | Pos -0.053,-0.053,0.004 | Offset -0.145,-0.251,-0.184 | Rot -1451.4°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.053, -0.053, 0.004)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.817, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -25.651420712662087, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.817): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0036697983849999886}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.187 | Pos -0.124,0.005,0.004 | Offset -0.216,-0.193,-0.184 | Rot -1469.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.124, 0.005, 0.004)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.845, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -26.554814915230864, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.845): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.003094679773402463}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.187 | Pos -0.193,0.249,0.003 | Offset -0.285,0.051,-0.184 | Rot -1521.5°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.193, 0.249, 0.003)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.863, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -27.122687007241044, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.863): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.002733161171453037}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.186 | Pos -0.121,0.394,0.003 | Offset -0.213,0.196,-0.184 | Rot -1554.0°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.121, 0.394, 0.003)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.881, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -27.67422060669402, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.881): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0023820439769162115}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.186 | Pos 0.013,0.477,0.002 | Offset -0.079,0.279,-0.184 | Rot -1585.6°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.013, 0.477, 0.002)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.892, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -28.010280628799855, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.892): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.002168101522141353}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.186 | Pos 0.110,0.487,0.002 | Offset 0.017,0.289,-0.184 | Rot -1604.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.110, 0.487, 0.002)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.905, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -28.42711866981979, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.905): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0019027341833530928}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.185 | Pos 0.226,0.456,0.002 | Offset 0.133,0.257,-0.184 | Rot -1628.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.226, 0.456, 0.002)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.920, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -28.907010768076365, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.920): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.001597225384999991}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.185 | Pos 0.329,0.365,0.002 | Offset 0.237,0.167,-0.184 | Rot -1656.2°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.329, 0.365, 0.002)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.934, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -29.33596556472746, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.934): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0013241442799999878}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.185 | Pos 0.377,0.251,0.001 | Offset 0.285,0.053,-0.184 | Rot -1680.8°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.377, 0.251, 0.001)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.940, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -29.54331012223169, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.940): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0011921446349999892}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.185 | Pos 0.382,0.192,0.001 | Offset 0.290,-0.007,-0.184 | Rot -1692.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.382, 0.192, 0.001)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.947, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -29.735402703915423, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.947): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.001069854699374987}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.185 | Pos 0.376,0.136,0.001 | Offset 0.283,-0.062,-0.184 | Rot -1703.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.376, 0.136, 0.001)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.963, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -30.267935032409916, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.963): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0007308340896304451}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.305,0.001,0.001 | Offset 0.213,-0.197,-0.184 | Rot -1734.2°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.305, 0.001, 0.001)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.973, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -30.56573739966971, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.973): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0005412472143749882}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.238,-0.053,0.001 | Offset 0.145,-0.251,-0.184 | Rot -1751.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.238, -0.053, 0.001)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.981, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -30.821097603592904, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.981): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0003786798594816697}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.170,-0.081,0.000 | Offset 0.077,-0.279,-0.184 | Rot -1765.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.170, -0.081, 0.000)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.988, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -31.03784369340333, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.988): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.00024069501312498978}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.108,-0.091,0.000 | Offset 0.016,-0.289,-0.184 | Rot -1778.3°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.108, -0.091, 0.000)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.993, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -31.198783061693767, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.993): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.00013823782911894997}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.061,-0.090,0.000 | Offset -0.031,-0.288,-0.184 | Rot -1787.6°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.061, -0.090, 0.000)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.997, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -31.322349524439318, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.997): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.000059572975733612754}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.026,-0.084,0.000 | Offset -0.066,-0.282,-0.184 | Rot -1794.6°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.026, -0.084, 0.000)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=0.999, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -31.375331775948023, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=0.999): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.000025843426838617622}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.011,-0.080,0.000 | Offset -0.081,-0.278,-0.184 | Rot -1797.7°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.011, -0.080, 0.000)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=1.000, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -31.41422900870524, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=1.000): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.0000010806793749873478}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos 0.000,-0.077,0.000 | Offset -0.092,-0.275,-0.184 | Rot -1799.9°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (0.000, -0.077, 0.000)
+scene3d-modular.js?nocache=1000019:2709 🔄 ROTATE AROUND CENTER vite_flangia_1: progress=1.000, currentRotation= Euler {isEuler: true, _x: 0, _y: 0, _z: -31.41592653589793, _order: 'XYZ'} modelCenter= Vector3 {x: 0.09238675236701965, y: 0.19817600399255753, z: 0.20354496359825133}
+scene3d-modular.js?nocache=1000019:2710 🔍 DEBUG POSITIONS: initialPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: 0.01999999999999999} targetPos= Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2713 🔍 LINEAR MOVEMENT (progress=1.000): Vector3 {x: -1.4901161193847656e-8, y: -0.07653569430112839, z: -1.0408340855860843e-17}
+scene3d-modular.js?nocache=1000019:2755 🔩 SVITA: BBCenter 0.092,0.198,0.184 | Pos -0.000,-0.077,0.000 | Offset -0.092,-0.275,-0.184 | Rot -1800.0°
+scene3d-modular.js?nocache=1000019:2782 🔄 MultiStep rotazione attorno a pivot (0.092, 0.198, 0.204): nuova pos (-0.000, -0.077, 0.000)
+ui.js?nocache=1000030:3029 [DEBUG] ⏭️ GOTO STEP chiamata con index: 9
+ui.js?nocache=1000030:3038 [DEBUG] ⏭️ Navigazione a step: "Step 10 - Avvita vite flangia 2"
+config.js?nocache=999999:242 [7:58:16 AM] INFO: Navigazione a step 10: Step 10 - Avvita vite flangia 2
+ui.js?nocache=1000030:3069 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ui.js?nocache=1000030:3108 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 10 - Avvita vite flangia 2"
+ui.js?nocache=1000030:3109 [DEBUG] 🚀 Step properties: {Elemento: 'models/vite_flangia_2.glb', Descrizione: 'Stringi la seconda vite della flangia con la chiave inglese da 10mm.', Utensile: 'ChiaveInglese', Azione1: 'avvita(0.02)'}
+config.js?nocache=999999:242 [7:58:16 AM] INFO: Esecuzione step: Step 10 - Avvita vite flangia 2 {Elemento: 'models/vite_flangia_2.glb', Descrizione: 'Stringi la seconda vite della flangia con la chiave inglese da 10mm.', Utensile: 'ChiaveInglese', Azione1: 'avvita(0.02)'}
+scene3d-modular.js?nocache=1000019:3695 📹 CAMERA: Nessun parametro camera nello step, camera rimane ferma
+scene3d-modular.js?nocache=1000019:849 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+scene3d-modular.js?nocache=1000019:865 🔍 HIGHLIGHT: Tentativo di evidenziare modello: vite_flangia_2
+scene3d-modular.js?nocache=1000019:763 🔍 HIGHLIGHT: highlightModel() chiamata per: vite_flangia_2
+scene3d-modular.js?nocache=1000019:807 🔍 HIGHLIGHT: ✅ APPLICAZIONE per vite_flangia_2 (non bloccato)
+scene3d-modular.js?nocache=1000019:809 🔍 HIGHLIGHT: Modelli bloccati: []
+ui-coordinator.js?nocache=1000026:204 🏠 UI-COORDINATOR: Fallback goHome() - torna alla home page
+ui-coordinator.js?nocache=1000026:176 🏠 UI-COORDINATOR: Fallback showPage('home')
+ui-coordinator.js?nocache=1000026:218 ℹ️ UI-COORDINATOR: Fallback updateStatus('Torna alla pagina principale')

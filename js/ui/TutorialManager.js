@@ -498,6 +498,7 @@ class TutorialManager {
 
     /**
      * Completa il tutorial corrente
+     * RESET PARZIALE: Ripristina tool e cursori ma mantiene modelli in scena
      */
     completeTutorial() {
         if (!this.currentTutorial) return;
@@ -514,9 +515,65 @@ class TutorialManager {
         this.tutorialSteps = [];
         this.currentStepIndex = -1;
 
+        // === RESET CURSORI E TOOL ===
+        // Disattiva tutti i tool
+        if (window.UI && window.UI.toolsManager) {
+            window.UI.toolsManager.deactivateAllTools();
+            this.safeLog(2, `[TutorialManager] Tool disattivati`);
+        }
+
+        // Ferma animazioni cursore
+        if (window.Scene3D && window.Scene3D.stopCursorAnimation) {
+            window.Scene3D.stopCursorAnimation();
+        }
+
+        // Rimuovi TUTTE le classi cursori personalizzati
+        document.body.classList.remove(
+            'tool-aria-active',
+            'tool-chiave_inglese-active',
+            'tool-brugola-active',
+            'tool-mano-active',
+            'cursor-frame-1',
+            'cursor-frame-2',
+            'mouse-pressed'
+        );
+        document.body.style.cursor = '';
+
+        // Reset classi cursore dal canvas
+        const canvas = document.querySelector('#canvas3d, canvas');
+        if (canvas) {
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            canvas.style.cursor = '';
+        }
+
+        this.safeLog(2, `[TutorialManager] Cursori ripristinati al default`);
+
+        // === RESET DRAG & DROP ===
+        if (window.DragDropSystem) {
+            if (window.DragDropSystem.disable) {
+                window.DragDropSystem.disable();
+            }
+            if (window.DragDropSystem.resetSnapTracking) {
+                window.DragDropSystem.resetSnapTracking();
+            }
+        }
+
+        // === RESET ASSEMBLY SYSTEM ===
+        if (window.AssemblySystem && window.AssemblySystem.disableAssemblyMode) {
+            window.AssemblySystem.disableAssemblyMode();
+        }
+
+        // === RESET AUTOMODE ===
+        if (window.AutoMode && window.AutoMode.enabled) {
+            window.AutoMode.enabled = false;
+            window.AutoMode.isExecuting = false;
+        }
+
         // Aggiorna UI
         this.updateTutorialStepsBar();
         this.hideStepSpeechBubble();
+
+        this.safeLog(2, `[TutorialManager] Reset post-completamento terminato`);
     }
 
     /**

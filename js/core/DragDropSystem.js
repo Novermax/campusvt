@@ -12,7 +12,7 @@
  * Data: Dicembre 2025 - Risoluzione problemi snap
  */
 
-console.log('🔥🔥🔥 [DragDropSystem] Versione 1.3.7 STRICT-ASSEMBLY-WHITELIST caricata - 2025-12-19 🔥🔥🔥');
+console.log('🔥🔥🔥 [DragDropSystem] Versione 1.3.8 SNAPPOINTPIVOT-FIX caricata - 2025-12-04 🔥🔥🔥');
 
 window.DragDropSystem = {
     // Stato sistema
@@ -1351,12 +1351,22 @@ window.DragDropSystem = {
             }
 
             if (targetPosition) {
-                const distance = currentCenter.distanceTo(targetPosition);
+                // ✅ NUOVO: Determina posizione in base a usePivot
+                let currentPosition;
+                if (customTarget.usePivot) {
+                    currentPosition = object.position.clone(); // Usa PIVOT
+                    console.log(`[DragDropSystem] 📍 isNearAnySnapZone: Usando PIVOT per "${object.name}": (${currentPosition.x.toFixed(3)}, ${currentPosition.y.toFixed(3)}, ${currentPosition.z.toFixed(3)})`);
+                } else {
+                    currentPosition = currentCenter; // Usa CENTRO BB (default)
+                }
+
+                const distance = currentPosition.distanceTo(targetPosition);
                 return distance <= this.snapDistance * 1.5; // Un po' più tollerante per rilevamento modalità
             }
         }
 
         // 2. Controlla posizione originale salvata
+        // Nota: per originalPos usa sempre centro BB (non ha flag usePivot)
         const originalPos = this.originalPositions.get(object.uuid);
         if (originalPos) {
             const distance = currentCenter.distanceTo(originalPos);
@@ -1405,23 +1415,32 @@ window.DragDropSystem = {
                         const actualModelName = target.targetName.replace(/_original$/, '');
                         const originalRef = window.Scene3D.findModelByName(actualModelName);
                         if (originalRef) {
-                            // DEBUG: Mostra stato completo del modello referenziato
-                            const currentBB = new THREE.Box3().setFromObject(originalRef);
-                            const currentBBCenter = currentBB.getCenter(new THREE.Vector3());
-                            console.log(`[DragDropSystem] 🔍 DEBUG ${target.targetName}:`);
-                            console.log(`  📍 Pivot corrente: (${originalRef.position.x.toFixed(3)}, ${originalRef.position.y.toFixed(3)}, ${originalRef.position.z.toFixed(3)})`);
-                            console.log(`  📦 Centro BB corrente: (${currentBBCenter.x.toFixed(3)}, ${currentBBCenter.y.toFixed(3)}, ${currentBBCenter.z.toFixed(3)})`);
+                            // PRIORITÀ 1: Controlla se è un virtualTarget (ha position ma non geometry)
+                            if (originalRef.isOriginalReference && originalRef.position && !originalRef.geometry) {
+                                // È un target virtuale da SnapPoint globale → usa direttamente la posizione
+                                targetPosition = originalRef.position.clone();
+                                console.log(`[DragDropSystem] 📍 Target ${target.targetName} (VIRTUALE SnapPoint): posizione=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                            }
+                            // PRIORITÀ 2: Per _original di modelli reali
+                            else {
+                                // DEBUG: Mostra stato completo del modello referenziato
+                                const currentBB = new THREE.Box3().setFromObject(originalRef);
+                                const currentBBCenter = currentBB.getCenter(new THREE.Vector3());
+                                console.log(`[DragDropSystem] 🔍 DEBUG ${target.targetName}:`);
+                                console.log(`  📍 Pivot corrente: (${originalRef.position.x.toFixed(3)}, ${originalRef.position.y.toFixed(3)}, ${originalRef.position.z.toFixed(3)})`);
+                                console.log(`  📦 Centro BB corrente: (${currentBBCenter.x.toFixed(3)}, ${currentBBCenter.y.toFixed(3)}, ${currentBBCenter.z.toFixed(3)})`);
 
-                            // Per _original, usa la posizione originale SALVATA, non il bounding box corrente
-                            const savedOriginalPos = this.originalPositions.get(originalRef.uuid);
-                            if (savedOriginalPos) {
-                                targetPosition = savedOriginalPos.clone();
-                                console.log(`  ✅ Posizione originale salvata: (${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
-                                console.log(`  📏 Delta Y (salvata vs corrente): ${(targetPosition.y - currentBBCenter.y).toFixed(3)}`);
-                            } else {
-                                console.warn(`[DragDropSystem] ⚠️ Posizione originale non trovata per ${target.targetName}, uso centro BB come fallback`);
-                                const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
-                                targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                                // Per _original, usa la posizione originale SALVATA, non il bounding box corrente
+                                const savedOriginalPos = this.originalPositions.get(originalRef.uuid);
+                                if (savedOriginalPos) {
+                                    targetPosition = savedOriginalPos.clone();
+                                    console.log(`  ✅ Posizione originale salvata: (${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                                    console.log(`  📏 Delta Y (salvata vs corrente): ${(targetPosition.y - currentBBCenter.y).toFixed(3)}`);
+                                } else {
+                                    console.warn(`[DragDropSystem] ⚠️ Posizione originale non trovata per ${target.targetName}, uso centro BB come fallback`);
+                                    const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                                    targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                                }
                             }
                         }
                     }
@@ -1437,7 +1456,16 @@ window.DragDropSystem = {
                     }
 
                     if (targetPosition) {
-                        const distance = currentCenter.distanceTo(targetPosition);
+                        // ✅ NUOVO: Determina posizione in base a usePivot
+                        let currentPosition;
+                        if (customTarget.usePivot) {
+                            currentPosition = object.position.clone(); // Usa PIVOT
+                            console.log(`[DragDropSystem] 📍 findSnapTarget (multi): Usando PIVOT per "${object.name}": (${currentPosition.x.toFixed(3)}, ${currentPosition.y.toFixed(3)}, ${currentPosition.z.toFixed(3)})`);
+                        } else {
+                            currentPosition = currentCenter; // Usa CENTRO BB (default)
+                        }
+
+                        const distance = currentPosition.distanceTo(targetPosition);
                         console.log(`[DragDropSystem] 📏 Target ${index + 1}/${customTarget.targets.length}: "${target.targetName}" - Distanza: ${distance.toFixed(3)}`);
 
                         if (distance <= this.snapDistance && distance < closestDistance) {
@@ -1477,15 +1505,23 @@ window.DragDropSystem = {
                     const actualModelName = customTarget.targetName.replace(/_original$/, '');
                     const originalRef = window.Scene3D.findModelByName(actualModelName);
                     if (originalRef) {
-                        // Per _original, usa la posizione originale SALVATA, non il bounding box corrente
-                        const savedOriginalPos = this.originalPositions.get(originalRef.uuid);
-                        if (savedOriginalPos) {
-                            targetPosition = savedOriginalPos.clone();
-                            console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" - posizione originale salvata=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
-                        } else {
-                            console.warn(`[DragDropSystem] ⚠️ Posizione originale non trovata per ${customTarget.targetName}, uso centro BB come fallback`);
-                            const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
-                            targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                        // PRIORITÀ 1: Controlla se è un virtualTarget (ha position ma non geometry)
+                        if (originalRef.isOriginalReference && originalRef.position && !originalRef.geometry) {
+                            // È un target virtuale da SnapPoint globale → usa direttamente la posizione
+                            targetPosition = originalRef.position.clone();
+                            console.log(`[DragDropSystem] 📍 Custom snap target (VIRTUALE SnapPoint): "${customTarget.targetName}" - posizione=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                        }
+                        // PRIORITÀ 2: Per _original di modelli reali, usa la posizione originale SALVATA
+                        else {
+                            const savedOriginalPos = this.originalPositions.get(originalRef.uuid);
+                            if (savedOriginalPos) {
+                                targetPosition = savedOriginalPos.clone();
+                                console.log(`[DragDropSystem] 🎯 Custom snap target (original): "${customTarget.targetName}" - posizione originale salvata=(${targetPosition.x.toFixed(3)},${targetPosition.y.toFixed(3)},${targetPosition.z.toFixed(3)})`);
+                            } else {
+                                console.warn(`[DragDropSystem] ⚠️ Posizione originale non trovata per ${customTarget.targetName}, uso centro BB come fallback`);
+                                const targetBoundingBox = new THREE.Box3().setFromObject(originalRef);
+                                targetPosition = targetBoundingBox.getCenter(new THREE.Vector3());
+                            }
                         }
                     }
                 }
@@ -1511,9 +1547,18 @@ window.DragDropSystem = {
                         targetPosition.add(customTarget.offset);
                     }
 
-                    const distance = currentCenter.distanceTo(targetPosition);
+                    // ✅ NUOVO: Determina posizione in base a usePivot
+                    let currentPosition;
+                    if (customTarget.usePivot) {
+                        currentPosition = object.position.clone(); // Usa PIVOT
+                        console.log(`[DragDropSystem] 📍 findSnapTarget (single): Usando PIVOT per "${object.name}": (${currentPosition.x.toFixed(3)}, ${currentPosition.y.toFixed(3)}, ${currentPosition.z.toFixed(3)})`);
+                    } else {
+                        currentPosition = currentCenter; // Usa CENTRO BB (default)
+                    }
+
+                    const distance = currentPosition.distanceTo(targetPosition);
                     if (distance <= this.snapDistance) {
-                        console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza centro BB: ${distance.toFixed(2)})`);
+                        console.log(`[DragDropSystem] 🧲 Custom snap disponibile per ${object.name} (distanza ${customTarget.usePivot ? 'PIVOT' : 'centro BB'}: ${distance.toFixed(2)})`);
                         // Associa chiave posizione al Vector3 usando WeakMap (zero interferenze)
                         this.snapPositionKeys.set(targetPosition, positionKey);
                         return targetPosition;
@@ -2500,6 +2545,39 @@ window.DragDropSystem = {
         });
 
         console.log(`[DragDropSystem] 🎯 Snap a coordinate dirette per "${objectName}" -> (${x}, ${y}, ${z})`);
+    },
+
+    /**
+     * Imposta snap a coordinate arbitrarie (x,y,z) usando il PIVOT dell'oggetto
+     * invece del centro del bounding box. Utile per oggetti con pivot non centrato.
+     * @param {string} objectName - Nome dell'oggetto
+     * @param {number} x - Coordinata X
+     * @param {number} y - Coordinata Y
+     * @param {number} z - Coordinata Z
+     */
+    setCustomSnapPositionPivot: function(objectName, x, y, z) {
+        if (!window.Scene3D) {
+            console.warn('[DragDropSystem] Scene3D non disponibile per configurare snap personalizzati');
+            return;
+        }
+
+        const object = window.Scene3D.findModelByName(objectName);
+        if (!object) {
+            console.warn(`[DragDropSystem] 🔴🔴🔴 Oggetto "${objectName}" NON TROVATO per snap personalizzato (pivot)`);
+            return;
+        }
+
+        const config = {
+            directPosition: new THREE.Vector3(x, y, z),
+            isDirectPosition: true,
+            usePivot: true  // FLAG: usa pivot invece del centro BB
+        };
+
+        this.customSnapTargets.set(object.uuid, config);
+
+        console.log(`[DragDropSystem] 📍✅✅✅ Snap PIVOT configurato per "${objectName}" (UUID: ${object.uuid.substr(0,8)}...) -> (${x}, ${y}, ${z})`);
+        console.log(`[DragDropSystem] 📍 Config salvato:`, config);
+        console.log(`[DragDropSystem] 📍 Totale customSnapTargets: ${this.customSnapTargets.size}`);
     },
 
     /**

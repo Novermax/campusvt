@@ -194,27 +194,108 @@ class UICore {
 
     /**
      * Torna alla home page
+     * RESET COMPLETO: Ripristina tutti gli stati come se l'app fosse appena caricata
      */
     goHome() {
-        // Pulisci la scena 3D
-        if (window.Scene3D && window.Scene3D.clearAllModels) {
-            window.Scene3D.clearAllModels();
+        this.safeLog(2, '[UICore] goHome - Avvio reset completo...');
+
+        // === FASE 1: RESET CURSORI E TOOL ===
+        // Disattiva tutti i tool tramite ToolsManager
+        if (window.UI && window.UI.toolsManager) {
+            window.UI.toolsManager.deactivateAllTools();
         }
 
-        // Reset stato scenario nel scenario manager
+        // Ferma eventuali animazioni cursore
+        if (window.Scene3D && window.Scene3D.stopCursorAnimation) {
+            window.Scene3D.stopCursorAnimation();
+        }
+
+        // Rimuovi TUTTE le classi cursori personalizzati
+        document.body.classList.remove(
+            'tool-aria-active',
+            'tool-chiave_inglese-active',
+            'tool-brugola-active',
+            'tool-mano-active',
+            'cursor-frame-1',
+            'cursor-frame-2',
+            'mouse-pressed'
+        );
+
+        // Reset inline style cursor
+        document.body.style.cursor = '';
+
+        // Reset classi cursore dal canvas
+        const canvas = document.querySelector('#canvas3d, canvas');
+        if (canvas) {
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            canvas.style.cursor = '';
+        }
+
+        // === FASE 2: RESET DRAG & DROP ===
+        if (window.DragDropSystem) {
+            if (window.DragDropSystem.reset) {
+                window.DragDropSystem.reset();
+            } else if (window.DragDropSystem.disable) {
+                window.DragDropSystem.disable();
+            }
+            if (window.DragDropSystem.resetSnapTracking) {
+                window.DragDropSystem.resetSnapTracking();
+            }
+            if (window.DragDropSystem.resetOccupiedPositions) {
+                window.DragDropSystem.resetOccupiedPositions();
+            }
+        }
+
+        // === FASE 3: RESET ASSEMBLY SYSTEM ===
+        if (window.AssemblySystem && window.AssemblySystem.disableAssemblyMode) {
+            window.AssemblySystem.disableAssemblyMode();
+        }
+
+        // === FASE 4: RESET SCENE 3D ===
+        if (window.Scene3D) {
+            if (window.Scene3D.resetTutorialTracker) {
+                window.Scene3D.resetTutorialTracker();
+            }
+            if (window.Scene3D.removeHighlight) {
+                window.Scene3D.removeHighlight();
+            }
+            if (window.Scene3D.clearAllModels) {
+                window.Scene3D.clearAllModels();
+            }
+        }
+
+        // === FASE 5: RESET PARTICLE SYSTEM ===
+        if (window.ParticleSystem && window.ParticleSystem.clearAllEffects) {
+            window.ParticleSystem.clearAllEffects();
+        }
+
+        // === FASE 6: RESET AUTOMODE ===
+        if (window.AutoMode && window.AutoMode.enabled) {
+            window.AutoMode.enabled = false;
+            window.AutoMode.isExecuting = false;
+        }
+
+        // === FASE 7: RESET STATO SCENARIO ===
         if (window.UI && window.UI.scenarioManager) {
             window.UI.scenarioManager.resetCurrentScenario();
         }
+
+        // Nascondi modali
+        const congratsModal = document.querySelector('.congratulations-modal');
+        if (congratsModal) congratsModal.classList.remove('show');
+
+        const infoModal = document.getElementById('infoModal');
+        if (infoModal) infoModal.style.display = 'none';
 
         // Nasconde la barra tutorial e il fumetto
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
 
-        // Aggiorna UI
+        // === FASE 8: MOSTRA HOME PAGE ===
         this.updateStatus('Home');
         this.showPage('home');
 
-        this.safeLog(2, '[UICore] Ritorno alla home');
+        this.safeLog(2, '[UICore] goHome - Reset completo terminato');
     }
 
     /**

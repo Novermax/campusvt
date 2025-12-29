@@ -147,13 +147,37 @@ class ToolsManager {
     }
 
     /**
-     * Disattiva tutti gli strumenti
+     * Disattiva tutti gli strumenti e ripristina cursori al default
      */
     deactivateAllTools() {
+        // Disattiva ogni tool individualmente
         Object.keys(this.toolsState).forEach(toolName => {
             this.deactivateTool(toolName);
         });
-        this.safeLog(2, '[ToolsManager] Tutti gli strumenti disattivati');
+
+        // IMPORTANTE: Rimuovi esplicitamente TUTTE le classi cursori dal body
+        // Questo garantisce pulizia completa anche in caso di stato inconsistente
+        document.body.classList.remove(
+            'tool-aria-active',
+            'tool-chiave_inglese-active',
+            'tool-brugola-active',
+            'tool-mano-active',
+            'cursor-frame-1',
+            'cursor-frame-2',
+            'mouse-pressed'
+        );
+
+        // Reset inline style cursor su body
+        document.body.style.cursor = '';
+
+        // Reset classi cursore dal canvas
+        const canvas = document.querySelector('#canvas3d, canvas');
+        if (canvas) {
+            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+            canvas.style.cursor = '';
+        }
+
+        this.safeLog(2, '[ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati');
     }
 
     /**
@@ -335,6 +359,9 @@ class ToolsManager {
         // Per tool rimanenti o default, usa il sistema canvas
         canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
         canvas.classList.add('cursor-default');
+
+        // IMPORTANTE: Rimuovi anche tutte le classi body per evitare cursori persistenti
+        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active', 'tool-mano-active');
 
         this.safeLog(3, `[ToolsManager] Cursore default applicato: ${activeTool || 'nessuno'}`);
     }

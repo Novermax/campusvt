@@ -711,12 +711,50 @@ const Scene3D = {
     },
 
     clearAllModels: function() {
+        console.log('[Scene3D] clearAllModels - Pulizia completa scena...');
+
+        // Rimuovi tutti i modelli dalla scena
         this.loadedModels.forEach(model => {
             this.scene.remove(model);
         });
         this.loadedModels = [];
         this.currentModel = null;
+
+        // Reset sistema animazioni
         this.animationSystem.modelDirections = {};
+        this.animationSystem.activeAnimations = [];
+        this.animationSystem.clickEnabled = true;
+        if (this.animationSystem.multiStepAnimations) {
+            this.animationSystem.multiStepAnimations.clear();
+        }
+
+        // Reset mappe posizioni iniziali
+        if (this.initialModelPositions) {
+            this.initialModelPositions.clear();
+        }
+        if (this.scenarioOriginalPositions) {
+            this.scenarioOriginalPositions.clear();
+        }
+
+        // Reset sistema highlight
+        if (this.highlightSystem) {
+            if (this.highlightSystem.highlightTimer) {
+                clearTimeout(this.highlightSystem.highlightTimer);
+                this.highlightSystem.highlightTimer = null;
+            }
+            this.highlightSystem.highlightedModel = null;
+            this.highlightSystem.originalMaterials.clear();
+            this.highlightSystem.isHighlighting = false;
+        }
+
+        // Reset tutorial tracker
+        if (this.tutorialTracker) {
+            this.tutorialTracker.completedSteps.clear();
+            this.tutorialTracker.lastStepCompleted = false;
+            this.tutorialTracker.interactionsBlocked = false;
+        }
+
+        console.log('[Scene3D] clearAllModels - Pulizia completata');
     },
 
     highlightModel: function(model, duration = null) {

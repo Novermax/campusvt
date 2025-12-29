@@ -200,8 +200,69 @@ const UI = {
         if (this.core && this.core.goHome) {
             return this.core.goHome();
         } else {
-            // FALLBACK: Usa il metodo del sistema UI originale
-            console.log('🏠 UI-COORDINATOR: Fallback goHome() - torna alla home page');
+            // FALLBACK: RESET COMPLETO prima di tornare alla home
+            console.log('🏠 UI-COORDINATOR: Fallback goHome() - reset completo');
+
+            // === RESET CURSORI E TOOL ===
+            if (window.UI && window.UI.toolsManager) {
+                window.UI.toolsManager.deactivateAllTools();
+            }
+
+            // Ferma animazioni cursore
+            if (window.Scene3D && window.Scene3D.stopCursorAnimation) {
+                window.Scene3D.stopCursorAnimation();
+            }
+
+            // Rimuovi TUTTE le classi cursori
+            document.body.classList.remove(
+                'tool-aria-active',
+                'tool-chiave_inglese-active',
+                'tool-brugola-active',
+                'tool-mano-active',
+                'cursor-frame-1',
+                'cursor-frame-2',
+                'mouse-pressed'
+            );
+            document.body.style.cursor = '';
+
+            const canvas = document.querySelector('#canvas3d, canvas');
+            if (canvas) {
+                canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+                canvas.style.cursor = '';
+            }
+
+            // === RESET SISTEMI ===
+            if (window.DragDropSystem) {
+                if (window.DragDropSystem.disable) window.DragDropSystem.disable();
+                if (window.DragDropSystem.resetSnapTracking) window.DragDropSystem.resetSnapTracking();
+            }
+
+            if (window.AssemblySystem && window.AssemblySystem.disableAssemblyMode) {
+                window.AssemblySystem.disableAssemblyMode();
+            }
+
+            if (window.Scene3D && window.Scene3D.clearAllModels) {
+                window.Scene3D.clearAllModels();
+            }
+
+            if (window.ParticleSystem && window.ParticleSystem.clearAllEffects) {
+                window.ParticleSystem.clearAllEffects();
+            }
+
+            if (window.AutoMode && window.AutoMode.enabled) {
+                window.AutoMode.enabled = false;
+                window.AutoMode.isExecuting = false;
+            }
+
+            // Nascondi modali
+            const congratsModal = document.querySelector('.congratulations-modal');
+            if (congratsModal) congratsModal.classList.remove('show');
+
+            const infoModal = document.getElementById('infoModal');
+            if (infoModal) infoModal.style.display = 'none';
+
+            console.log('🏠 UI-COORDINATOR: Reset completo terminato');
+
             this.showPage('home');
             this.updateStatus('Torna alla pagina principale');
         }

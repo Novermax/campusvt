@@ -168,7 +168,14 @@ window.ModelLoader = {
 
         // Determina concurrency dinamicamente in base al dispositivo
         let CONCURRENT_LOADS = 6; // Default desktop
-        if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
+
+        // NUOVO: Rileva dispositivi mobili/VR direttamente (anche se MobileOptimizer è disabilitato)
+        const isMobileOrVR = window.isMobileDevice && window.isMobileDevice();
+        if (isMobileOrVR) {
+            // Quest 2 e dispositivi mobili: limita a 3 caricamenti paralleli
+            CONCURRENT_LOADS = 3;
+            console.log(`📱 Dispositivo mobile/VR rilevato - Concurrency ridotta a ${CONCURRENT_LOADS}`);
+        } else if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
             CONCURRENT_LOADS = window.MobileOptimizer.deviceCapabilities.maxConcurrentModels;
             console.log(`📱 MobileOptimizer attivo - Concurrency ridotta a ${CONCURRENT_LOADS}`);
         }
@@ -254,9 +261,17 @@ window.ModelLoader = {
                     window.MobileOptimizer.handleLoadError('batch', error);
                 }
 
-                // Mostra messaggio più user-friendly su mobile
+                // Mostra messaggio più user-friendly su mobile/VR
                 if (window.isMobileDevice && window.isMobileDevice()) {
-                    const friendlyError = `Impossibile caricare tutti i modelli 3D. Il tuo dispositivo potrebbe avere memoria limitata. Prova ad attivare la modalità AutoMode per un'esperienza ottimizzata.`;
+                    const userAgent = navigator.userAgent;
+                    const isVR = ['Quest', 'Oculus', 'OculusBrowser', 'VR', 'MetaQuest'].some(k => userAgent.includes(k));
+
+                    let friendlyError;
+                    if (isVR) {
+                        friendlyError = `Impossibile caricare tutti i modelli 3D sul visore VR. Memoria limitata. Alcuni modelli potrebbero non essere visibili. Riprova riavviando il browser.`;
+                    } else {
+                        friendlyError = `Impossibile caricare tutti i modelli 3D. Il tuo dispositivo potrebbe avere memoria limitata. Prova ad attivare la modalità AutoMode per un'esperienza ottimizzata.`;
+                    }
                     if (onError) onError(friendlyError);
                 } else {
                     if (onError) onError(error);

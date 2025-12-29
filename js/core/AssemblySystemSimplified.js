@@ -249,18 +249,20 @@ window.AssemblySystemSimplified = {
     },
 
     /**
-     * Controlla completamento step e notifica TutorialManager
+     * Controlla completamento step e notifica sistema tutorial
      */
     checkStepCompletion: function() {
         if (this.isCurrentStepComplete()) {
             console.log(`[AssemblySystemSimplified] 🎉 Step "${this.currentStepName}" COMPLETATO!`);
 
-            // Notifica il TutorialManager per avanzare al prossimo step
-            if (window.TutorialManager && typeof window.TutorialManager.advanceToNextStep === 'function') {
+            // Notifica il DragDropSystem per avanzare al prossimo step (compatibile con multipli sistemi)
+            if (window.DragDropSystem && typeof window.DragDropSystem.tryAdvanceTutorialStep === 'function') {
                 setTimeout(() => {
-                    console.log('[AssemblySystemSimplified] 📢 Notifica TutorialManager per avanzare...');
-                    window.TutorialManager.advanceToNextStep();
-                }, 500); // Breve delay per stabilità
+                    console.log('[AssemblySystemSimplified] 📢 Chiamata DragDropSystem.tryAdvanceTutorialStep per avanzare...');
+                    window.DragDropSystem.tryAdvanceTutorialStep('assembly_step_completed', 0);
+                }, 500); // Breve delay per stabilità animazione snap
+            } else {
+                console.warn('[AssemblySystemSimplified] ⚠️ DragDropSystem.tryAdvanceTutorialStep non disponibile');
             }
         }
     },
@@ -280,21 +282,71 @@ window.AssemblySystemSimplified = {
 
         console.log(`[AssemblySystemSimplified] 🎯 Ricerca snap targets per componente "${componentName}" nel gruppo corrente`);
 
+        // PRIORITÀ 0: Controlla se ci sono virtualSnapTargets globali (SnapPointPivot con formato globale)
+        // Questi hanno priorità assoluta perché sono stati configurati esplicitamente nel tutorial.txt
+        if (window.Scene3D && window.Scene3D.virtualSnapTargets && window.Scene3D.virtualSnapTargets.size > 0) {
+            console.log(`[AssemblySystemSimplified] 🌐 Trovati ${window.Scene3D.virtualSnapTargets.size} virtualSnapTargets globali`);
+            
+            window.Scene3D.virtualSnapTargets.forEach((virtualTarget, targetName) => {
+                if (virtualTarget.position) {
+                    snapTargets.push({
+                        targetName: targetName,
+                        position: virtualTarget.position.clone(),
+                        isGroupMember: true,
+                        isVirtualTarget: true,
+                        isPrimary: false
+                    });
+                    console.log(`[AssemblySystemSimplified] 🌐 VirtualSnapTarget: "${targetName}" → (${virtualTarget.position.x.toFixed(3)}, ${virtualTarget.position.y.toFixed(3)}, ${virtualTarget.position.z.toFixed(3)})`);
+                }
+            });
+            
+            // Se abbiamo trovato virtualSnapTargets, usiamo SOLO quelli (non fallback a posizioni originali)
+            if (snapTargets.length > 0) {
+                console.log(`[AssemblySystemSimplified] 📊 Usando ${snapTargets.length} virtualSnapTargets globali per "${componentName}"`);
+                return snapTargets;
+            }
+        }
+
         // Ottieni tutti i componenti del gruppo corrente (AllowedComponents)
         const groupComponents = Array.from(this.allowedComponents);
 
         groupComponents.forEach(groupComponent => {
-            // Ottieni la posizione originale di ogni componente del gruppo
-            const originalPosition = this.getOriginalPositionSnapTarget(groupComponent);
-            if (originalPosition) {
+            let snapPosition = null;
+
+            // PRIORITÀ 1: Controlla se esiste un custom snap target (es. SnapPointPivot per-oggetto)
+            if (window.DragDropSystem && window.DragDropSystem.customSnapTargets) {
+                const object = window.Scene3D ? window.Scene3D.findModelByName(groupComponent) : null;
+                if (object) {
+                    const customTarget = window.DragDropSystem.customSnapTargets.get(object.uuid);
+                    
+                    // Caso A: isDirectPosition (SnapPointPivot singolo per oggetto)
+                    if (customTarget && customTarget.isDirectPosition && customTarget.directPosition) {
+                        snapPosition = customTarget.directPosition.clone();
+                        console.log(`[AssemblySystemSimplified] 📍 Custom snap PIVOT per "${groupComponent}" → (${snapPosition.x.toFixed(3)}, ${snapPosition.y.toFixed(3)}, ${snapPosition.z.toFixed(3)})`);
+                    }
+                    // Caso B: isMultiTarget (SnapPointPivot globale con più punti)
+                    // In questo caso i targets sono già stati aggiunti sopra tramite virtualSnapTargets
+                    else if (customTarget && customTarget.isMultiTarget && customTarget.targets) {
+                        console.log(`[AssemblySystemSimplified] 📍 MultiTarget rilevato per "${groupComponent}" - ${customTarget.targets.length} targets (gestiti via virtualSnapTargets)`);
+                        // Non fare nulla qui, i virtualSnapTargets sono già stati processati sopra
+                    }
+                }
+            }
+
+            // PRIORITÀ 2: Fallback a posizione originale SOLO se nessun custom snap trovato
+            if (!snapPosition) {
+                snapPosition = this.getOriginalPositionSnapTarget(groupComponent);
+            }
+
+            if (snapPosition) {
                 snapTargets.push({
                     targetName: groupComponent,
-                    position: originalPosition,
+                    position: snapPosition,
                     isGroupMember: true,
                     isPrimary: (groupComponent === componentName) // Propria posizione = target primario
                 });
 
-                console.log(`[AssemblySystemSimplified] ➕ Snap target: "${groupComponent}" → (${originalPosition.x.toFixed(2)}, ${originalPosition.y.toFixed(2)}, ${originalPosition.z.toFixed(2)})`);
+                console.log(`[AssemblySystemSimplified] ➕ Snap target: "${groupComponent}" → (${snapPosition.x.toFixed(3)}, ${snapPosition.y.toFixed(3)}, ${snapPosition.z.toFixed(3)})`);
             }
         });
 

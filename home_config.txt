@@ -5,7 +5,7 @@
 title=Campus Virtual Training Morbidelli X400              // Main title shown in home page
 subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione  // Explanatory subtitle
 
-[TEST]                                                     // Scenario name (shown as card title)
+[Manutenzione Elettromandrino]                              // Scenario name (shown as card title)
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(-1.5, 0.5,-0.2)                               // Camera positioned farther for complete framing
 CameraTarget=(0, 0, 0)                                    // Camera points to scene center
@@ -14,22 +14,78 @@ DirectionalLight=0xffffff,2.5,(-8, 15, 10)               // Main directional lig
 BackLight=0xffffff,1.0,(-8, 15, 10)                      // Back light to eliminate harsh shadows
 
 // === SCENARIO INFORMATION ===
-description_key=scenario_test_description                  // i18n key for description
+description=Controllo e manutenzione elettromandrino con coni HSK: pulizia pinza, lubrificazione, sblocco/blocco manuale della pinza.
+description_key=scenario_spindle_maintenance_description   // i18n key for description
 image=menuimages/1.png                                    // Scenario preview image
-tutorial=scenes/Test/tutorial.txt  
-model=models/tappino_grasso_dx.glb                        // Fourth cover screw
+tutorial=scenes/Test/tutorial.txt
+// === 3D MODELS AND MOVEMENT DIRECTIONS ===
+model=models/culatta.glb                                  // Breech 3D model
+direction=0,0,1                                           // Movement direction: towards Z+ (vertical extraction)
+model=models/corpo.glb                                    // Pump body 3D model
+direction=0,0,1                                           // Movement direction: towards Z+
+model=models/coperchio.glb                                // Cover 3D model
+direction=-1,0,1                                          // Movement direction: towards X- and Z+ (diagonal)
+model=models/filtro.glb                                   // Filter 3D model to replace
+direction=-1,0,0                                          // Movement direction: towards X- (lateral extraction)
+model=models/pavimento.glb                                // Base/floor 3D model (static)
+direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
+model=models/planaxis.glb                                     // Axes
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_1.glb                         // First cover screw
+direction=-1,0,0                                          // Movement direction: towards X- (unscrewing and extraction)
+model=models/vite_coperchio_2.glb                         // Second cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_3.glb                         // Third cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/vite_coperchio_4.glb                         // Fourth cover screw
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/tappino_grasso_sx.glb                        // Left grease cap
+direction=-1,0,0                                          // Movement direction: towards X-
+model=models/tappino_grasso_dx.glb                        // Right grease cap
 direction=-1,0,0                                          // Movement direction: towards X-
 model=models/ingrassatore.glb                             // Greaser
 direction=-1,0,0                                          // Movement direction: towards X-
-model=models/tappino_grasso_sx.glb                        // Greaser left cap
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/assi.glb                                     // Axes
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/vite_coperchio_1.glb                                     // Axes
-direction=-1,0,0  
-model=models/corpo.glb                                    // Pump body 3D model
+model=models/vite_culatta_1.glb                         // First breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/vite_culatta_2.glb                         // Second breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/vite_culatta_3.glb                         // Third breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/vite_culatta_4.glb                         // Fourth breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/estrattoredx.glb                         // Fourth breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/estrattoresx.glb                         // Fourth breech screw
+direction=0,0,1                                          // Movement direction: towards X-
+model=models/flangia.glb                                    // Pump body 3D model
+direction=0,0,1
+model=models/vite_flangia_1.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_2.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_3.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_4.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_5.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_6.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_7.glb                         // First cover screw
+direction=0,0,1
+model=models/vite_flangia_8.glb                         // First cover screw
+direction=0,0,1                                      // Movement direction: towards Z+
+model=models/paletta1.glb                                    // Pump body 3D model
 direction=0,0,1                                        // Movement direction: towards Z+
-model=models/filtro.glb                                    // Pump body 3D model
+model=models/paletta2.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta3.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta4.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/paletta5.glb                                    // Pump body 3D model
+direction=0,0,1                                        // Movement direction: towards Z+
+model=models/tubograsso.glb                                    // Pump body 3D model
 direction=0,0,1                                        // Movement direction: towards Z+
 
 [Manutenzione pompa del vuoto]                            // Main scenario with complete tutorial
@@ -40,6 +96,7 @@ AmbientLight=0x404040,1.5                                 // Ambient light for g
 DirectionalLight=0xffffff,2.5,(-8, 15, 10)               // Main directional light from upper right
 BackLight=0xffffff,1.0,(-8, 15, 10)                      // Back light to eliminate harsh shadows
 // === SCENARIO INFORMATION ===
+description=Smontaggio e manutenzione completa della pompa del vuoto Becker con sostituzione filtro aria e componenti interni.
 description_key=scenario_pump_maintenance_description      // i18n key for technical operation description
 image=menuimages/pompavuoto.png                           // Vacuum pump specific image
 tutorial=scenes/Pompa_Becker/tutorial.txt                // Tutorial file with guided steps
@@ -120,8 +177,9 @@ AmbientLight=0x404040,1.5                                // Uniform lighting for
 DirectionalLight=0xffffff,2.5,(6, 15, 8)                // Main light to highlight areas
 BackLight=0xffffff,1.0,(-6, 15, 8)                       // Fill light
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_work_fields_description          // i18n key for work coordinate setup
-image=menuimages/3.png                                   // Representative image of fields
+image=menuimages/placeholder.png                                                               // Representative image of fields
 
 [Ridefinizione zone di vuoto]                            // Vacuum zone configuration for work plane
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -131,8 +189,9 @@ AmbientLight=0x404040,1.5                                // Light to identify zo
 DirectionalLight=0xffffff,2.5,(7, 12, 6)                // Main plane illumination
 BackLight=0xffffff,1.0,(-7, 12, 6)                       // Light to eliminate shadows on plane
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_vacuum_zones_description         // i18n key for suction management system
-image=menuimages/4.png                                   // Vacuum zones diagram
+image=menuimages/placeholder.png                                                                 // Vacuum zones diagram
 
 [RTCP Automatico]                                         // RTCP System (Rotation Tool Center Point)
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -142,9 +201,9 @@ AmbientLight=0x404040,1.5                                // Lighting for mechani
 DirectionalLight=0xffffff,2.5,(5, 12, 6)                // Light to highlight kinematics
 BackLight=0xffffff,1.0,(-5, 12, 6)                       // Support light for visibility
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_automatic_rtcp_description       // i18n key for automatic tool rotation calibration
-image=menuimages/5.png                                   // RTCP kinematics schema
-
+image=menuimages/placeholder.png                                  
 [Regolazione ortogonalità]                               // Cartesian machine axes calibration
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(7, 5, 9)                                      // Isometric view to see all axes
@@ -153,8 +212,9 @@ AmbientLight=0x404040,1.5                                // Uniform light for pr
 DirectionalLight=0xffffff,2.5,(8, 12, 7)                // Illumination to highlight axes
 BackLight=0xffffff,1.0,(-8, 12, 7)                       // Light to reduce excessive contrasts
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_orthogonality_description        // i18n key for machine geometric calibration
-image=menuimages/6.png                                   // Cartesian axes schema
+image=menuimages/placeholder.png                                                                 // Cartesian axes schema
 
 [Sostituzione elettromandrino]                           // Complete main spindle replacement
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -164,8 +224,9 @@ AmbientLight=0x404040,1.5                                // Lighting for technic
 DirectionalLight=0xffffff,2.5,(10, 15, 8)               // Intense light for precision operations
 BackLight=0xffffff,1.0,(-10, 15, 8)                      // Fill light for operational safety
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_spindle_replacement_description  // i18n key for complete replacement procedure
-image=menuimages/7.png                                   // Electrospindle image
+image=menuimages/placeholder.png                                                              // Electrospindle image
 
 [Regolazione offset elettromandrino - foratrice]         // Spindle-drill relative calibration
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -175,8 +236,9 @@ AmbientLight=0x404040,1.5                                // Uniform light for me
 DirectionalLight=0xffffff,2.5,(9, 15, 8)                // Main illumination for offset
 BackLight=0xffffff,1.0,(-9, 15, 8)                       // Auxiliary light for precision
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_spindle_offset_description       // i18n key for X-Y-Z offset calibration
-image=menuimages/8.png                                   // Spindle-drill offset schema
+image=menuimages/placeholder.png                                                                 // Spindle-drill offset schema
 
 [Sostituzione fuso foratrice]                            // Drilling spindle replacement
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -186,8 +248,9 @@ AmbientLight=0x404040,1.5                                // Lighting for mechani
 DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Directional light for operations
 BackLight=0xffffff,1.0,(-7, 15, 7)                       // Back light for visibility
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_drill_spindle_replacement_description // i18n key for spindle change and recalibration
-image=menuimages/9.png                                   // Drill spindle image
+image=menuimages/placeholder.png                                                                // Drill spindle image
 
 [Sostituzione Punte foratrice]                           // Multiple drilling bits change
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -197,8 +260,9 @@ AmbientLight=0x404040,1.5                                // Light for small comp
 DirectionalLight=0xffffff,2.5,(8, 15, 6)                // Intense illumination for precision
 BackLight=0xffffff,1.0,(-8, 15, 6)                       // Support light
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_drill_bits_replacement_description // i18n key for drill bit replacement and programming
-image=menuimages/10.png                                  // Drill bit group
+image=menuimages/placeholder.png                                                                // Drill bit group
 
 [Squadro cassa foratrice]                                // Drill group orthogonality verification
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -208,8 +272,9 @@ AmbientLight=0x404040,1.5                                // Uniform light for me
 DirectionalLight=0xffffff,2.5,(6, 15, 10)               // Illumination to highlight angles
 BackLight=0xffffff,1.0,(-6, 15, 10)                      // Light to eliminate shadows
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_drill_case_square_description    // i18n key for case perpendicularity verification
-image=menuimages/11.png                                  // Case square schema
+image=menuimages/placeholder.png                                  // Case square schema
 
 [Squadro fusi foratrice]                                 // Individual drilling spindles alignment
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -219,8 +284,9 @@ AmbientLight=0x404040,1.5                                // Light for precision 
 DirectionalLight=0xffffff,2.5,(9, 12, 8)                // Illumination to highlight alignments
 BackLight=0xffffff,1.0,(-9, 12, 8)                       // Auxiliary light for controls
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_drill_spindles_square_description // i18n key for spindle geometric calibration
-image=menuimages/12.png                                  // Spindle alignment schema
+image=menuimages/placeholder.png                                                                // Spindle alignment schema
 
 [Regolazione sensore conteggio piano di carico]          // Load plane sensor calibration
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -230,8 +296,9 @@ AmbientLight=0x404040,1.5                                // Light for electronic
 DirectionalLight=0xffffff,2.5,(5, 15, 5)                // Illumination for sensor setup
 BackLight=0xffffff,1.0,(-5, 15, 5)                       // Light to reduce shadows on wiring
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_load_plane_sensor_description    // i18n key for position sensor configuration
-image=menuimages/13.png                                  // Inductive sensor schema
+image=menuimages/placeholder.png                                                                 // Inductive sensor schema
 
 [Sostituzione e regolazione tastatore]                   // Tool probe replacement and calibration
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -241,5 +308,6 @@ AmbientLight=0x404040,1.5                                // Light for precision 
 DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Illumination for delicate operations
 BackLight=0xffffff,1.0,(-7, 15, 7)                       // Light for detail visibility
 // === SCENARIO INFORMATION ===
+description=Non Attivato
 description_key=scenario_probe_replacement_description    // i18n key for replacement and measurement system recalibration
-image=menuimages/14.png                                  // Tool probe
+image=menuimages/placeholder.png                                                                 // Tool probe

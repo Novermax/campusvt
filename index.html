@@ -444,8 +444,14 @@
                     'Windows Phone', 'Opera Mini', 'IEMobile', 'Mobile'
                 ];
 
+                // NUOVO: Keywords per visori VR/AR (risorse limitate come mobile)
+                const vrKeywords = [
+                    'Quest', 'Oculus', 'OculusBrowser', 'VR', 'MetaQuest'
+                ];
+
                 const userAgent = navigator.userAgent;
                 const isMobileUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
+                const isVRDevice = vrKeywords.some(keyword => userAgent.includes(keyword));
 
                 // Controlla anche le dimensioni dello schermo (con tolleranza per tablet)
                 const isSmallScreen = window.innerWidth <= 768 || window.innerHeight <= 600;
@@ -454,7 +460,9 @@
                 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
                 // Combina tutti i controlli per una rilevazione più accurata
-                return isMobileUA || (isSmallScreen && isTouchDevice);
+                // VR devices sono trattati come mobile per ottimizzazioni memoria
+                // NOTA: Non uso 'xr' in navigator perché Chrome desktop lo supporta anche senza visore
+                return isMobileUA || isVRDevice || (isSmallScreen && isTouchDevice);
             }
 
             // Rendi disponibile globalmente per AutoMode
@@ -462,7 +470,15 @@
 
             // Log del dispositivo rilevato
             if (isMobileDevice()) {
-                console.log('📱 Dispositivo mobile rilevato - AutoMode disponibile');
+                const userAgent = navigator.userAgent;
+                const isVR = ['Quest', 'Oculus', 'OculusBrowser', 'VR', 'MetaQuest'].some(k => userAgent.includes(k));
+
+                if (isVR) {
+                    console.log('🥽 Visore VR/AR rilevato - Ottimizzazioni memoria attive');
+                    console.log(`   User Agent: ${userAgent}`);
+                } else {
+                    console.log('📱 Dispositivo mobile rilevato - AutoMode disponibile');
+                }
             } else {
                 console.log('💻 Dispositivo desktop rilevato');
             }
