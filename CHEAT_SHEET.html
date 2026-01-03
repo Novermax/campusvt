@@ -217,15 +217,30 @@
 <tr><th>Parametro</th><th>Esempio</th></tr>
 <tr><td>CameraPos</td><td>(x,y,z) o obj:(x,y,z)</td></tr>
 <tr><td>CameraTarget</td><td>(x,y,z) o nome_oggetto</td></tr>
+<tr><td>CameraPivot</td><td>(x,y,z)</td></tr>
+<tr><td>CameraRotation</td><td>(rx,ry,rz) radianti</td></tr>
+<tr><td>CameraDistance</td><td>0.69</td></tr>
+<tr><td>CameraFOV</td><td>75</td></tr>
 <tr><td>CameraZoom</td><td>1.5</td></tr>
 <tr><td>CameraTransitionTime</td><td>2.0</td></tr>
+</table>
+
+<h2>⌨️ Controlli Tastiera</h2>
+<table>
+<tr><th>Tasto</th><th>Funzione</th></tr>
+<tr><td>← Freccia Sinistra</td><td>Pan camera a sinistra</td></tr>
+<tr><td>→ Freccia Destra</td><td>Pan camera a destra</td></tr>
+<tr><td>↑ Freccia Su</td><td>Pan camera verso l'alto</td></tr>
+<tr><td>↓ Freccia Giu</td><td>Pan camera verso il basso</td></tr>
 </table>
 
 <h2>🐛 Debug Console</h2>
 <div class="box debug-section">
 <strong>Camera:</strong><br>
 <code>Scene3D.getCameraInfo()</code><br>
-<code>Scene3D.listAvailableObjects()</code><br><br>
+<code>Scene3D.listAvailableObjects()</code><br>
+<code>Scene3D.setCameraFromInfo({position,rotation,pivot,distance,fov})</code><br>
+<code>Scene3D.panCamera(dx, dy)</code><br><br>
 <strong>Modelli:</strong><br>
 <code>Scene3D.findModelByName('nome')</code><br>
 <code>Scene3D.exportCurrentModelPositions()</code><br><br>
@@ -257,6 +272,157 @@
 
 <h2>🔧 Posizionamento Modelli</h2>
 <code>Posizione=modello:(x,y,z)</code> &nbsp;&nbsp; <code>Rotazione=modello:(rx,ry,rz)</code>
+
+<div class="grid">
+
+<div>
+<h2>📺 ScreenSystem v2.0 - Schermi Interattivi</h2>
+<div class="box syntax-section">
+<code><span class="param-important">[Screen:pannello]</span><br>
+<span class="param-important">Container</span>=models/pannello_corpo.glb<br>
+DefaultView=home<br>
+CameraDistance=0.6<br><br>
+<span class="param-important">[ScreenView:pannello.home]</span><br>
+<span class="param-important">Model</span>=models/pannello_screen_home.glb<br>
+Hotspots=btn_1,btn_2<br><br>
+<span class="param-important">[Hotspot:btn_1]</span><br>
+Position=(-0.08,0.04,0.002)<br>
+Size=(0.06,0.03)<br>
+NextView=pannello.menu<br><br>
+<span class="param-important">[ScreenAction:azione1]</span><br>
+Target=models/pompa.glb<br>
+Animation=rotazione:(0,360,0,1)</code>
+</div>
+<p style="font-size:9px;margin:2px 0;">📌 Container=contenitore fisico, Model=modello GLB per ogni vista</p>
+
+<h3>Proprietà Step Screen</h3>
+<table>
+<tr><th>Parametro</th><th>Valore</th></tr>
+<tr><td>ScreenMode</td><td>true</td></tr>
+<tr><td>ScreenView</td><td>view_id</td></tr>
+<tr><td>RequiredHotspot</td><td>hotspot_id</td></tr>
+<tr><td>RequiredSequence</td><td>id1,id2,id3</td></tr>
+</table>
+
+<h3>Console ScreenSystem</h3>
+<ul>
+<li><code>ScreenSystem.listScreens()</code></li>
+<li><code>ScreenSystem.setView('screen','view')</code></li>
+<li><code>ScreenSystem.executeAction('action')</code></li>
+<li><code>ScreenSystem.debugInfo()</code></li>
+</ul>
+</div>
+
+<div>
+<h2>🖐️ HoldableSystem - Oggetti Impugnabili</h2>
+<div class="box syntax-section">
+<code><span class="param-important">[Screen:telecomando]</span><br>
+<span class="param-important">Container</span>=models/telecomando.glb<br>
+<span class="param-important">Holdable=true</span><br>
+<span class="param-important">HoldPosition</span>=(-0.25,-0.15,0.4)<br>
+<span class="param-important">HoldRotation</span>=(15,-30,5)<br>
+DefaultView=main<br><br>
+<span class="param-important">[ScreenView:telecomando.main]</span><br>
+Model=models/telecom_screen.glb<br>
+Hotspots=btn_start</code>
+</div>
+
+<h3>Proprietà Step Holdable</h3>
+<table>
+<tr><th>Parametro</th><th>Valore</th></tr>
+<tr><td>HoldAction</td><td>pick / release</td></tr>
+<tr><td>HoldState</td><td>held</td></tr>
+</table>
+
+<h3>Workflow Tipico</h3>
+<div class="box">
+<code>[Step 1] HoldAction=pick → Prendi<br>
+[Step 2] ScreenMode=true + HoldState=held → Usa<br>
+[Step 3] HoldAction=release → Posa</code>
+</div>
+
+<h3>Console HoldableSystem</h3>
+<ul>
+<li><code>HoldableSystem.listHoldables()</code></li>
+<li><code>HoldableSystem.pickObject('nome')</code></li>
+<li><code>HoldableSystem.releaseObject('nome')</code></li>
+<li><code>HoldableSystem.isHeld('nome')</code></li>
+<li><code>HoldableSystem.debugInfo()</code></li>
+</ul>
+
+<h3>HoldPosition Default</h3>
+<ul>
+<li><strong>X:</strong> -0.25 (sinistra)</li>
+<li><strong>Y:</strong> -0.15 (basso)</li>
+<li><strong>Z:</strong> 0.4 (davanti)</li>
+</ul>
+</div>
+
+</div>
+
+<h2>🔗 Integrazione Screen + Holdable</h2>
+<div class="box">
+<code># Telecomando con schermo impugnabile<br>
+[Screen:remote] Holdable=true → ScreenSystem registra in HoldableSystem<br>
+HoldState=held + ScreenMode=true → Schermo interattivo mentre in mano<br>
+Hotspot OnClick=Action:x → Animazione su macchinari nella scena</code>
+</div>
+
+<div class="grid">
+
+<div>
+<h2>🎮 StepController - Trigger Multipli</h2>
+<div class="box syntax-section">
+<code><span class="param-important"># Sorgenti Trigger</span><br>
+• <strong>screen</strong>: Hotspot UI schermo<br>
+• <strong>physical</strong>: Pulsante fisico 3D<br>
+• <strong>holdable</strong>: Azione oggetto in mano<br>
+• <strong>tutorial</strong>: Avanzamento manuale<br>
+• <strong>auto</strong>: AutoMode mobile<br><br>
+<span class="param-important"># Proprietà Step</span><br>
+AcceptTrigger_Screen=hotspot_id<br>
+AcceptTrigger_Physical=button_id<br>
+OnScreenTrigger=changeView:menu<br>
+OnPhysicalTrigger=changeView:menu;animate:pump</code>
+</div>
+
+<h3>Console StepController</h3>
+<ul>
+<li><code>StepController.debugInfo()</code></li>
+<li><code>StepController.listAcceptedTriggers()</code></li>
+<li><code>StepController.simulateTrigger('screen','id')</code></li>
+<li><code>StepController.registerPhysicalButton('name',cfg)</code></li>
+</ul>
+</div>
+
+<div>
+<h2>📱 AutoMode (Mobile)</h2>
+<div class="box syntax-section">
+<code><span class="param-important"># Pulsante Toggle</span><br>
+🤖 AUTO (fumetto tutorial)<br><br>
+<span class="param-important"># Esecuzione Automatica</span><br>
+• Tool Actions: Simula click<br>
+• Drag & Drop: Auto-snap casuale<br>
+• Avanzamento: Dopo animazioni</code>
+</div>
+
+<h3>Configurazione AutoMode</h3>
+<table>
+<tr><th>Parametro</th><th>Valore Default</th></tr>
+<tr><td>actionDelay</td><td>1500ms</td></tr>
+<tr><td>dragDropDelay</td><td>1000ms</td></tr>
+<tr><td>autoAdvanceDelay</td><td>1000ms</td></tr>
+</table>
+
+<h3>Console AutoMode</h3>
+<ul>
+<li><code>AutoMode.toggle()</code></li>
+<li><code>AutoMode.enabled</code></li>
+<li><code>AutoMode.executeCurrentStep()</code></li>
+</ul>
+</div>
+
+</div>
 
 </body>
 </html>

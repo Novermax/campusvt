@@ -1,0 +1,9 @@
+1 mi servirebbe una funzione per la definizione della telecamera in grado di riprodurre le seguenti informazioni date da getcamerainfo():
+
+  Position: (0.89, 0.99, 4.3)
+  Rotation: (-0.2, -0.13, -0.03)
+  Pivot Point: (0.98, 0.85, 3.62)
+  Distance to Pivot: 0.69
+  FOV: 75
+2 vorrei che con i tasti freccia della tastiera fosse implementato un movimento di "pan" della telecamera.
+3 Aggiorna MANUALE_COMPLETO_CAMPUS_VIRTUAL_TRAINING.html e CHEAT_SHEET.html con le nuove funzioni per la telecamera.

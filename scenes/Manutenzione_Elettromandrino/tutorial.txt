@@ -1,0 +1,162 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# MANUTENZIONE ELETTROMANDRINO - Tutorial con StateGroups
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CONFIGURAZIONE GLOBALE
+# ═══════════════════════════════════════════════════════════════════════════
+
+CameraPos=(1.01, 1.22, 3.87)
+CameraTarget=(0,0,0)
+CameraRotation=(-0.26, -0.01, 0)
+CameraPivot=(1.02, 1.1, 3.4)
+CameraDistance=0.48
+CameraFOV=75.0
+CameraTransitionTime=2.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# STATE GROUPS - Varianti mutuamente esclusive
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Chiave accensione: due stati (off/on)
+[StateGroup:chiave]
+Variants=chiave0,chiave1
+Default=chiave0
+
+# NOTA: Pulsante Start non presente nel modello pulpito.glb
+# [StateGroup:start]
+# Variants=Start_off,Start_on
+# Default=Start_off
+
+# Emergenza: due stati (off/on)
+[StateGroup:emergenza]
+Variants=emergenza_off,emergenza_on
+Default=emergenza_off
+
+# Schermi: tre varianti (home/mdi/tool)
+[StateGroup:schermo]
+Variants=schermo001,schermo002
+Default=schermo001
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DEFINIZIONE OGGETTO INTERATTIVO: PULPITO
+# ═══════════════════════════════════════════════════════════════════════════
+
+[InteractiveObject:pulpito]
+Model=models/pulpito.glb
+
+# Chiave rotante - click cambia variante StateGroup "chiave"
+InteractiveChild=chiave0,button,onClick:cycleVariant:chiave
+InteractiveChild=chiave1,button,onClick:cycleVariant:chiave
+
+# Pulsanti navigazione schermi - cambiano variante StateGroup "schermo"
+InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo002
+InteractiveChild=Pulsante_tool,button,onClick:setVariant:schermo=schermo002
+
+# NOTA: Pulsante Start non presente nel modello
+# InteractiveChild=Start_off,button,onClick:cycleVariant:start
+# InteractiveChild=Start_on,button,onClick:cycleVariant:start
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TUTORIAL
+# ═══════════════════════════════════════════════════════════════════════════
+
+[Manutenzione Elettromandrino]
+CameraPos=(0.94, 1.29, 4.07)
+CameraTarget=(0.97, 1.15, 3.52)
+CameraRotation=(-0.25, -0.04, -0.01)
+CameraPivot=(0.97, 1.15, 3.52)
+CameraDistance=0.56
+CameraFOV=75.0
+CameraTransitionTime=2.0
+
+# ───────────────────────────────────────────────────────────────────────────
+# FASE 1: ACCENSIONE MACCHINA
+# ───────────────────────────────────────────────────────────────────────────
+
+#[Step 1 - Accendi la macchina]
+#Descrizione=Ruota la chiave sul pulpito per accendere la macchina. Clicca sulla chiave per ruotarla in posizione ON.
+#CameraTarget=(0.97, 1.15, 3.52)
+#CameraPivot=(0.97, 1.15, 3.52)
+#CameraDistance=0.48
+#CameraFOV=75.0
+#CameraTransitionTime=2.0
+#Utensile=Mani
+# Trigger: click sulla chiave fisica
+#AcceptTrigger_Physical=pulpito.chiave0
+# Azioni: cambia variante chiave a "chiave1"
+#OnPhysicalTrigger=setVariant:chiave=chiave1
+
+[Step 1 - Vai alla schermata MDI]
+Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
+CameraPos=(0.94, 1.29, 4.07)
+CameraTarget=(0.97, 1.15, 3.52)
+CameraRotation=(-0.25, -0.04, -0.01)
+CameraPivot=(0.97, 1.15, 3.52)
+CameraDistance=0.48
+CameraFOV=55.0
+CameraTransitionTime=2.0
+Utensile=Mani
+# Trigger: click sul pulsante MDI
+AcceptTrigger_Physical=pulpito.Pulsante_mdi
+OnPhysicalTrigger=setVariant:schermo=schermo002
+
+[Next Step- Avvia il ciclo]
+Descrizione=Premi il pulsante START per avviare il ciclo di manutenzione automatica.
+CameraPos=(0.5, 1.2, 1.5)
+CameraTarget=(0, 0.8, 0)
+CameraZoom=0.8
+Utensile=Mani
+# NOTA: Pulsante Start non presente nel modello - step solo informativo
+# AcceptTrigger_Physical=pulpito.Start_off
+# OnPhysicalTrigger=setVariant:start=Start_on
+
+# ───────────────────────────────────────────────────────────────────────────
+# FASE 2: OPERAZIONI MANUTENZIONE
+# ───────────────────────────────────────────────────────────────────────────
+
+[Next Step - Controllo elettromandrino]
+Descrizione=Osserva l'elettromandrino A500. Il sistema sta eseguendo il controllo automatico.
+Message=Il controllo automatico dell'elettromandrino è in corso.\n\nVerranno eseguiti:\n- Test rotazione mandrino\n- Verifica pinza HSK\n- Controllo lubrificazione
+MessageTitle=Controllo in corso
+CameraPos=(1.0, 0.8, 2.0)
+CameraTarget=(0, 0.5, 0)
+CameraZoom=1.2
+Utensile=Mani
+
+[Next Step - Vai alla schermata Tool]
+Descrizione=Premi il pulsante TOOL per visualizzare i dati dell'utensile corrente.
+CameraPos=(0.5, 1.2, 1.5)
+CameraTarget=(0, 0.8, 0)
+CameraZoom=0.8
+Utensile=Mani
+AcceptTrigger_Physical=pulpito.Pulsante_tool
+OnPhysicalTrigger=setVariant:schermo=schermo002
+
+[Next Step - Arresta il ciclo]
+Descrizione=Premi nuovamente START per arrestare il ciclo di manutenzione.
+CameraPos=(0.5, 1.2, 1.5)
+CameraTarget=(0, 0.8, 0)
+CameraZoom=0.8
+Utensile=Mani
+# NOTA: Pulsante Start non presente nel modello - step solo informativo
+# AcceptTrigger_Physical=pulpito.Start_on
+# OnPhysicalTrigger=setVariant:start=Start_off
+
+# ───────────────────────────────────────────────────────────────────────────
+# FASE 3: SPEGNIMENTO
+# ───────────────────────────────────────────────────────────────────────────
+
+[Next Step - Spegni la macchina]
+Descrizione=Ruota la chiave in posizione OFF per spegnere la macchina in sicurezza.
+CameraPos=(0.5, 1.2, 1.5)
+CameraTarget=(0, 0.8, 0)
+CameraZoom=0.8
+Utensile=Mani
+AcceptTrigger_Physical=pulpito.chiave1
+OnPhysicalTrigger=setVariant:chiave=chiave0;setVariant:schermo=schermo000
+
+[Next Step - Manutenzione completata]
+Message=Congratulazioni! La procedura di manutenzione dell'elettromandrino è stata completata con successo.\n\nMacchina accesa e spenta correttamente\nSchermate navigate\nCiclo avviato e arrestato
+MessageTitle=Procedura Completata
+Descrizione=La manutenzione è stata completata con successo.

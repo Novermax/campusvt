@@ -606,10 +606,10 @@
 
     <!-- INFORMAZIONI VERSIONE -->
     <div class="version-info">
-        <strong>Versione:</strong> 1.3 &nbsp;|&nbsp;
-        <strong>Data:</strong> 17 Settembre 2025 &nbsp;|&nbsp;
+        <strong>Versione:</strong> 1.4 &nbsp;|&nbsp;
+        <strong>Data:</strong> Gennaio 2026 &nbsp;|&nbsp;
         <strong>Target:</strong> Tecnici industriali &nbsp;|&nbsp;
-        <strong>Aggiornamento:</strong> Sistema Posizioni Scenario Originali, Reset Intelligente Tutorial, Assemblaggio Sequenziale Avanzato, Effetti Particellari Tool Aria
+        <strong>Aggiornamento:</strong> Sistema Schermi Interattivi (ScreenSystem), Sistema Oggetti Impugnabili (HoldableSystem), Touchscreen 3D, Hotspot Cliccabili
     </div>
 
     <!-- INDICE -->
@@ -701,6 +701,24 @@
                         <li><a href="#distanza-configurabile">• Distanza Configurabile (svita, avvita, estrai, inserisci)</a></li>
                     </ul>
                 </div>
+
+                <div style="margin-bottom: 25px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3; border: 2px solid #2196f3;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">📺 PARTE 9: Sistema Schermi Interattivi 🆕</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><a href="#screen-system">• ScreenSystem - Touchscreen 3D</a></li>
+                        <li><a href="#hotspot-system">• Hotspot Cliccabili e Navigazione Viste</a></li>
+                        <li><a href="#screen-actions">• Azioni da Schermo su Macchinari</a></li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px; padding: 15px; background: #fce4ec; border-radius: 8px; border-left: 4px solid #e91e63; border: 2px solid #e91e63;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">🖐️ PARTE 10: Sistema Oggetti Impugnabili 🆕</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><a href="#holdable-system">• HoldableSystem - Pick & Hold</a></li>
+                        <li><a href="#holdable-screen">• Schermi su Oggetti in Mano</a></li>
+                        <li><a href="#holdable-workflow">• Workflow Telecomandi e Tablet</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -736,6 +754,12 @@
                     <h4>🖱️ Click Pulsante Centrale</h4>
                     <p><strong>Funzione:</strong> Pivot Dinamico</p>
                     <p>Imposta nuovo punto pivot sull'oggetto cliccato con animazione fluida verso il nuovo centro di rotazione.</p>
+                </div>
+
+                <div class="control-item new-feature">
+                    <h4>⌨️ Tasti Freccia</h4>
+                    <p><strong>Funzione:</strong> Pan Camera</p>
+                    <p>Sposta la camera lateralmente (sx/dx) o verticalmente (su/giu) mantenendo l'orientamento corrente.</p>
                 </div>
             </div>
         </div>
@@ -1008,10 +1032,27 @@ CameraZoom=1.2
             <div class="code-block" data-lang="Tutorial">
 CameraPos=(-1.5, 0.8, -0.5)              # Posizione assoluta camera
 CameraPos=ingrassatore:(-1, 0, 0)        # Posizione relativa a oggetto
-CameraTarget=(0, 0, 0)                   # Punto target coordinate
+CameraTarget=(0, 0, 0)                   # Punto target/pivot coordinate
 CameraTarget=filtro                      # Target su oggetto (centro bounding box)
+CameraPivot=(0.98, 0.85, 3.62)           # Punto pivot per rotazione camera
+CameraRotation=(-0.2, -0.13, -0.03)      # Rotazione camera (radianti)
+CameraDistance=0.69                      # Distanza dal pivot point
+CameraFOV=75                             # Campo visivo (gradi)
 CameraZoom=2.2                           # Fattore zoom (1.0 = default)
 CameraTransitionTime=1.5                 # Durata movimento camera (secondi)
+            </div>
+
+            <div class="info">
+                <h4>💡 Ottenere i Parametri Camera</h4>
+                <p>Usa <code>Scene3D.getCameraInfo()</code> nella console per ottenere tutti i parametri camera correnti.</p>
+                <p>Output tipico:</p>
+                <div class="code-block" data-lang="Console Output">
+Position: (0.89, 0.99, 4.3)
+Rotation: (-0.2, -0.13, -0.03)
+Pivot Point: (0.98, 0.85, 3.62)
+Distance to Pivot: 0.69
+FOV: 75
+                </div>
             </div>
             
             <h4>Utensili Disponibili:</h4>
@@ -1890,10 +1931,26 @@ Scene3D.findModelByName('nome_modello')     # Verifica presenza modello per pivo
 Scene3D.scene.children                      # Lista completa oggetti scena
 Scene3D.mouseControls                       # Stato completo controlli mouse
 
-// === COMANDI ORIENTAMENTO CAMERA ===  
+// === COMANDI ORIENTAMENTO CAMERA ===
 Scene3D.getCameraInfo()                   // Posizione camera e orientamento (con sintassi tutorial)
 Scene3D.listAvailableObjects()            // Lista oggetti per CameraTarget
 Scene3D.applyCameraSettings(stepObject)   // Applica impostazioni camera tutorial
+Scene3D.setCameraFromInfo({               // Imposta camera con tutti i parametri
+    position: {x: 0.89, y: 0.99, z: 4.3},
+    rotation: {x: -0.2, y: -0.13, z: -0.03},
+    pivot: {x: 0.98, y: 0.85, z: 3.62},
+    distance: 0.69,
+    fov: 75,
+    animate: true,                        // Opzionale: transizione animata
+    duration: 1.0                         // Opzionale: durata animazione (sec)
+})
+Scene3D.panCamera(deltaX, deltaY)         // Pan manuale camera (dx,dy)
+
+// === CONTROLLI TASTIERA CAMERA ===
+// Freccia Sinistra  → Pan a sinistra
+// Freccia Destra    → Pan a destra
+// Freccia Su        → Pan verso l'alto
+// Freccia Giu       → Pan verso il basso
 
 // === VERIFICA COORDINATE ===
 Scene3D.exportCurrentModelPositions()     // Esporta posizioni TUTTI i modelli (formato tutorial)
@@ -2298,6 +2355,544 @@ Azione1=svita(0.8)
 model=models/vite_culatta_1.glb
 direction=0,0,1    # Direzione asse Z positivo
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PARTE 9: SISTEMA SCHERMI INTERATTIVI ===== -->
+    <div class="section page-break" id="screen-system">
+        <h2>📺 PARTE 9: Sistema Schermi Interattivi (ScreenSystem)</h2>
+
+        <div class="info">
+            <h4>🎯 Panoramica</h4>
+            <p>Il <strong>ScreenSystem</strong> permette di creare pannelli HMI, touchscreen e dispositivi interattivi 3D con hotspot cliccabili, navigazione tra viste e azioni su macchinari.</p>
+            <ul>
+                <li><strong>Schermi 3D:</strong> Oggetti GLB che funzionano come touchscreen interattivi</li>
+                <li><strong>Hotspot:</strong> Zone cliccabili con highlight, feedback visivo e azioni</li>
+                <li><strong>Viste Multiple:</strong> Navigazione tra schermate (menu → submenu → azioni)</li>
+                <li><strong>Azioni:</strong> Pressione hotspot → animazioni su parti del macchinario</li>
+            </ul>
+        </div>
+
+        <div class="section" id="hotspot-system">
+            <h3>🎯 Definizione Schermi e Hotspot</h3>
+
+            <p>Gli schermi si definiscono nella sezione <strong>globale</strong> del tutorial.txt (prima di <code>[Tutorial]</code>):</p>
+
+            <div class="example">
+                <h5>📺 Definizione Schermo</h5>
+                <div class="code-block" data-lang="Tutorial">
+# Definizione schermo (sezione globale)
+[Screen:pannello_hmi]
+Model=models/pannello_hmi.glb
+DefaultView=home
+CameraDistance=0.6
+CameraAngle=perpendicular
+                </div>
+            </div>
+
+            <h4>Parametri [Screen:]</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Descrizione</th>
+                        <th>Esempio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Model=</code></td>
+                        <td>Percorso modello GLB dello schermo</td>
+                        <td><code>models/pannello_hmi.glb</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>DefaultView=</code></td>
+                        <td>Vista iniziale da mostrare</td>
+                        <td><code>home</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>CameraDistance=</code></td>
+                        <td>Distanza camera quando focalizzato</td>
+                        <td><code>0.6</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>CameraAngle=</code></td>
+                        <td>Angolo camera (perpendicular = perpendicolare allo schermo)</td>
+                        <td><code>perpendicular</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example">
+                <h5>🖱️ Definizione Viste e Hotspot</h5>
+                <div class="code-block" data-lang="Tutorial">
+# Vista "home" con 3 hotspot
+[ScreenView:pannello_hmi.home]
+Hotspots=btn_manual,btn_auto,btn_settings
+
+# Vista "manual_mode" con altri hotspot
+[ScreenView:pannello_hmi.manual_mode]
+Hotspots=btn_pump_on,btn_pump_off,btn_back
+
+# Definizione singolo hotspot
+[Hotspot:btn_manual]
+Position=(-0.08,0.04,0.002)
+Size=(0.06,0.03)
+Label=MANUALE
+HighlightColor=rgba(255,200,0,0.4)
+NextView=pannello_hmi.manual_mode
+
+[Hotspot:btn_pump_on]
+Position=(-0.06,0.02,0.002)
+Size=(0.05,0.025)
+Label=POMPA ON
+HighlightColor=rgba(0,255,0,0.4)
+OnClick=Action:attiva_pompa
+                </div>
+            </div>
+
+            <h4>Parametri [Hotspot:]</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Descrizione</th>
+                        <th>Esempio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Position=</code></td>
+                        <td>Coordinate (x,y,z) relative allo schermo</td>
+                        <td><code>(-0.08,0.04,0.002)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Size=</code></td>
+                        <td>Dimensioni (larghezza, altezza)</td>
+                        <td><code>(0.06,0.03)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Label=</code></td>
+                        <td>Etichetta visualizzata</td>
+                        <td><code>MANUALE</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>HighlightColor=</code></td>
+                        <td>Colore evidenziazione hover</td>
+                        <td><code>rgba(255,200,0,0.4)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>NextView=</code></td>
+                        <td>Vista a cui navigare al click</td>
+                        <td><code>pannello_hmi.manual_mode</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>OnClick=</code></td>
+                        <td>Azione da eseguire al click</td>
+                        <td><code>Action:attiva_pompa</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section" id="screen-actions">
+            <h3>⚡ Azioni da Schermo su Macchinari</h3>
+
+            <p>Definisci azioni che vengono eseguite quando l'utente preme un hotspot:</p>
+
+            <div class="example">
+                <h5>🔧 Definizione Azione</h5>
+                <div class="code-block" data-lang="Tutorial">
+[ScreenAction:attiva_pompa]
+Target=models/pompa.glb
+Animation=rotazione:(0,0,360,1)
+Sound=sounds/pump_on.mp3
+
+[ScreenAction:apri_valvola]
+Target=models/valvola.glb
+Animation=traslazione:(0,0.1,0,0.5)
+                </div>
+            </div>
+
+            <h4>Parametri [ScreenAction:]</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Descrizione</th>
+                        <th>Esempio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Target=</code></td>
+                        <td>Modello su cui eseguire l'animazione</td>
+                        <td><code>models/pompa.glb</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Animation=</code></td>
+                        <td>Tipo animazione con parametri</td>
+                        <td><code>rotazione:(0,0,360,1)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Sound=</code></td>
+                        <td>File audio da riprodurre (opzionale)</td>
+                        <td><code>sounds/pump_on.mp3</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip">
+                <h4>💡 Utilizzo negli Step Tutorial</h4>
+                <div class="code-block" data-lang="Tutorial">
+[Step 3 - Vai in modalità manuale]
+Elemento=models/pannello_hmi.glb
+Utensile=Mani
+ScreenMode=true
+ScreenView=home
+RequiredHotspot=btn_manual
+Descrizione=Premi il pulsante MANUALE per accedere ai controlli
+
+[Step 5 - Inserisci codice]
+Elemento=models/tastierino.glb
+ScreenMode=true
+RequiredSequence=key_1,key_9,key_7,key_3,key_ok
+Descrizione=Digita il codice 1973 e premi OK
+                </div>
+            </div>
+
+            <h4>Proprietà Step per ScreenMode</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proprietà</th>
+                        <th>Valori</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>ScreenMode=</code></td>
+                        <td><code>true</code></td>
+                        <td>Attiva modalità schermo interattivo</td>
+                    </tr>
+                    <tr>
+                        <td><code>ScreenView=</code></td>
+                        <td><code>view_id</code></td>
+                        <td>Vista iniziale da mostrare</td>
+                    </tr>
+                    <tr>
+                        <td><code>RequiredHotspot=</code></td>
+                        <td><code>hotspot_id</code></td>
+                        <td>Hotspot da premere per completare step</td>
+                    </tr>
+                    <tr>
+                        <td><code>RequiredSequence=</code></td>
+                        <td><code>id1,id2,id3</code></td>
+                        <td>Sequenza hotspot obbligatoria (per codici)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning">
+                <h4>⚠️ State Machine Schermo</h4>
+                <p>Gli schermi hanno tre stati:</p>
+                <ul>
+                    <li><strong>IDLE:</strong> Schermo visibile nella scena, non interattivo</li>
+                    <li><strong>FOCUSED:</strong> Camera allineata, hotspot visibili e cliccabili</li>
+                    <li><strong>INTERACTING:</strong> Utente sta interagendo con un hotspot</li>
+                </ul>
+                <p><strong>Transizioni:</strong> Click su schermo → FOCUSED | ESC o click esterno → IDLE</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔧 Comandi Debug Console - ScreenSystem</h3>
+            <div class="code-block" data-lang="JavaScript">
+// Lista tutti gli schermi registrati
+ScreenSystem.listScreens()
+
+// Stato corrente di uno schermo
+ScreenSystem.getScreenState('pannello_hmi')
+
+// Cambia vista forzato
+ScreenSystem.setView('pannello_hmi', 'manual_mode')
+
+// Lista hotspot della vista corrente
+ScreenSystem.listHotspots('pannello_hmi')
+
+// Esegui azione forzata
+ScreenSystem.executeAction('attiva_pompa')
+
+// Focus/unfocus manuale
+ScreenSystem.focusScreen('pannello_hmi')
+ScreenSystem.unfocusScreen()
+
+// Debug completo sistema
+ScreenSystem.debugInfo()
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PARTE 10: SISTEMA OGGETTI IMPUGNABILI ===== -->
+    <div class="section page-break" id="holdable-system">
+        <h2>🖐️ PARTE 10: Sistema Oggetti Impugnabili (HoldableSystem)</h2>
+
+        <div class="info">
+            <h4>🎯 Panoramica</h4>
+            <p>Il <strong>HoldableSystem</strong> permette di gestire oggetti che possono essere presi in mano (telecomandi, tablet, strumenti) e mantenuti davanti alla camera durante le interazioni.</p>
+            <ul>
+                <li><strong>Pick & Hold:</strong> Oggetti afferrabili che seguono la camera</li>
+                <li><strong>Posizione Mano:</strong> Posizionamento camera-relative (mano sinistra)</li>
+                <li><strong>Integrazione ScreenSystem:</strong> Schermi su oggetti held rimangono interattivi</li>
+                <li><strong>Salvataggio Stato:</strong> Posizioni originali salvate per rilascio</li>
+            </ul>
+        </div>
+
+        <div class="section" id="holdable-screen">
+            <h3>📱 Definizione Oggetti Impugnabili</h3>
+
+            <p>Gli oggetti holdable si definiscono nella sezione <code>[Screen:]</code> con il parametro <code>Holdable=true</code>:</p>
+
+            <div class="example">
+                <h5>🎮 Definizione Telecomando Impugnabile</h5>
+                <div class="code-block" data-lang="Tutorial">
+# Telecomando con schermo + impugnabile
+[Screen:telecomando]
+Model=models/telecomando.glb
+Holdable=true
+HoldPosition=(-0.25,-0.15,0.4)
+HoldRotation=(15,-30,5)
+DefaultView=main
+CameraDistance=0.3
+
+# Vista principale del telecomando
+[ScreenView:telecomando.main]
+Hotspots=btn_start,btn_stop,btn_menu
+
+# Hotspot pulsante START
+[Hotspot:btn_start]
+Position=(0,0.02,0.005)
+Size=(0.03,0.015)
+Label=START
+HighlightColor=rgba(0,255,0,0.5)
+OnClick=Action:avvia_macchina
+                </div>
+            </div>
+
+            <h4>Parametri Holdable</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Formato</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Holdable=</code></td>
+                        <td><code>true</code></td>
+                        <td>Abilita oggetto come impugnabile</td>
+                    </tr>
+                    <tr>
+                        <td><code>HoldPosition=</code></td>
+                        <td><code>(x,y,z)</code></td>
+                        <td>Posizione relativa alla camera (default: -0.25,-0.15,0.4)</td>
+                    </tr>
+                    <tr>
+                        <td><code>HoldRotation=</code></td>
+                        <td><code>(rx,ry,rz)</code></td>
+                        <td>Rotazione in gradi (default: 15,-30,5)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip">
+                <h4>💡 Posizionamento Consigliato</h4>
+                <ul>
+                    <li><strong>X negativo:</strong> Sinistra della visuale (mano sinistra)</li>
+                    <li><strong>Y negativo:</strong> Verso il basso (altezza mano)</li>
+                    <li><strong>Z positivo:</strong> Davanti alla camera (distanza braccio)</li>
+                </ul>
+                <p><strong>Default:</strong> <code>(-0.25,-0.15,0.4)</code> simula un telecomando tenuto in mano sinistra</p>
+            </div>
+        </div>
+
+        <div class="section" id="holdable-workflow">
+            <h3>🔄 Workflow Pick & Release</h3>
+
+            <div class="example">
+                <h5>📋 Esempio Completo Tutorial con Holdable</h5>
+                <div class="code-block" data-lang="Tutorial">
+# Step 1: Prendi il telecomando dal tavolo
+[Step 2 - Prendi telecomando]
+Elemento=models/telecomando.glb
+Utensile=Mani
+HoldAction=pick
+Descrizione=Prendi il telecomando per controllare la macchina
+
+# Step 2: Usa il pulsante START (oggetto in mano)
+[Step 5 - Avvia macchina]
+Elemento=models/telecomando.glb
+ScreenMode=true
+ScreenView=main
+RequiredHotspot=btn_start
+HoldState=held
+Descrizione=Premi il pulsante START sul telecomando
+
+# Step 3: Usa altri controlli
+[Step 6 - Imposta parametri]
+Elemento=models/telecomando.glb
+ScreenMode=true
+ScreenView=settings
+RequiredSequence=btn_up,btn_up,btn_ok
+HoldState=held
+Descrizione=Imposta temperatura a 200°C
+
+# Step 4: Posa il telecomando
+[Step 10 - Posa telecomando]
+Elemento=models/telecomando.glb
+HoldAction=release
+Descrizione=Posa il telecomando sul tavolo
+                </div>
+            </div>
+
+            <h4>Proprietà Step per HoldableSystem</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proprietà</th>
+                        <th>Valori</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>HoldAction=</code></td>
+                        <td><code>pick</code></td>
+                        <td>Prendi oggetto in mano</td>
+                    </tr>
+                    <tr>
+                        <td><code>HoldAction=</code></td>
+                        <td><code>release</code></td>
+                        <td>Rilascia oggetto (torna a posizione originale)</td>
+                    </tr>
+                    <tr>
+                        <td><code>HoldState=</code></td>
+                        <td><code>held</code></td>
+                        <td>Richiede che l'oggetto sia già in mano</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning">
+                <h4>⚠️ Workflow Tipico</h4>
+                <pre style="background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; font-family: monospace;">
+1. SCENA NORMALE
+   └── Telecomando poggiato su tavolo
+   └── Click su telecomando → HoldAction=pick
+
+2. OGGETTO IN MANO
+   └── Telecomando segue camera (mano sinistra)
+   └── Schermo telecomando interattivo (ScreenMode)
+   └── Hotspot cliccabili → azioni su macchinari
+
+3. RILASCIO
+   └── HoldAction=release → oggetto torna posizione originale
+                </pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔧 Comandi Debug Console - HoldableSystem</h3>
+            <div class="code-block" data-lang="JavaScript">
+// Lista oggetti impugnabili registrati
+HoldableSystem.listHoldables()
+
+// Verifica se oggetto è in mano
+HoldableSystem.isHeld('telecomando')
+
+// Prendi oggetto manualmente
+HoldableSystem.pickObject('telecomando')
+
+// Rilascia oggetto specifico
+HoldableSystem.releaseObject('telecomando')
+
+// Rilascia tutti gli oggetti in mano
+HoldableSystem.releaseAll()
+
+// Lista oggetti attualmente in mano
+HoldableSystem.getCurrentlyHeld()
+
+// Configurazione di un holdable
+HoldableSystem.getHoldableConfig('telecomando')
+
+// Debug completo sistema
+HoldableSystem.debugInfo()
+
+// Override posizione/rotazione runtime
+HoldableSystem.setHoldPosition('telecomando', -0.3, -0.2, 0.5)
+HoldableSystem.setHoldRotation('telecomando', 10, -25, 0)
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔗 Integrazione ScreenSystem + HoldableSystem</h3>
+
+            <div class="info">
+                <h4>📋 Come Funzionano Insieme</h4>
+                <p>Quando un oggetto è definito con <code>Holdable=true</code> in una sezione <code>[Screen:]</code>:</p>
+                <ol>
+                    <li><strong>Registrazione Automatica:</strong> ScreenSystem registra l'oggetto in HoldableSystem</li>
+                    <li><strong>Schermo Attivo in Mano:</strong> Durante <code>HoldState=held</code>, lo schermo rimane interattivo</li>
+                    <li><strong>Hotspot Funzionanti:</strong> I pulsanti funzionano normalmente anche con oggetto in mano</li>
+                    <li><strong>Azioni su Macchinari:</strong> Pressione hotspot → animazioni su parti della scena</li>
+                </ol>
+            </div>
+
+            <div class="example">
+                <h5>🏭 Esempio: Controllo Pompa con Telecomando</h5>
+                <div class="code-block" data-lang="Tutorial">
+# Definizioni globali
+[Screen:telecomando_pompa]
+Model=models/telecomando.glb
+Holdable=true
+HoldPosition=(-0.25,-0.15,0.4)
+DefaultView=main
+
+[ScreenView:telecomando_pompa.main]
+Hotspots=btn_pompa_on,btn_pompa_off,btn_valvola
+
+[Hotspot:btn_pompa_on]
+Position=(-0.02,0.02,0.005)
+Size=(0.025,0.015)
+Label=ON
+HighlightColor=rgba(0,255,0,0.5)
+OnClick=Action:accendi_pompa
+
+[ScreenAction:accendi_pompa]
+Target=models/pompa_vuoto.glb
+Animation=rotazione:(0,360,0,2)
+
+# Tutorial
+[Tutorial Controllo Pompa]
+
+[Step 1 - Prendi telecomando]
+Elemento=models/telecomando.glb
+HoldAction=pick
+Descrizione=Prendi il telecomando di controllo
+
+[Step 2 - Accendi pompa]
+Elemento=models/telecomando.glb
+ScreenMode=true
+RequiredHotspot=btn_pompa_on
+HoldState=held
+Descrizione=Premi ON per avviare la pompa
+CameraTarget=pompa_vuoto
+                </div>
+                <p><strong>Risultato:</strong> L'utente prende il telecomando, preme ON, e la pompa nella scena inizia a ruotare.</p>
             </div>
         </div>
     </div>

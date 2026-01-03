@@ -7,86 +7,27 @@ subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione  //
 
 [Manutenzione Elettromandrino]                              // Scenario name (shown as card title)
 // === CAMERA AND LIGHTS CONFIGURATION ===
-CameraPos=(-1.5, 0.5,-0.2)                               // Camera positioned farther for complete framing
+CameraPos=(-1.11, 1.44, 3.97)                               // Camera positioned farther for complete framing
 CameraTarget=(0, 0, 0)                                    // Camera points to scene center
-AmbientLight=0x404040,1.5                                 // Ambient light for general illumination
-DirectionalLight=0xffffff,2.5,(-8, 15, 10)               // Main directional light from upper right
+AmbientLight=0x404040,1.05                                 // Ambient light for general illumination
+DirectionalLight=0xffffff,2.05,(-8, 15, 10)               // Main directional light from upper right
 BackLight=0xffffff,1.0,(-8, 15, 10)                      // Back light to eliminate harsh shadows
 
 // === SCENARIO INFORMATION ===
 description=Controllo e manutenzione elettromandrino con coni HSK: pulizia pinza, lubrificazione, sblocco/blocco manuale della pinza.
 description_key=scenario_spindle_maintenance_description   // i18n key for description
 image=menuimages/1.png                                    // Scenario preview image
-tutorial=scenes/Test/tutorial.txt
+tutorial=scenes/Manutenzione_Elettromandrino/tutorial.txt
 // === 3D MODELS AND MOVEMENT DIRECTIONS ===
-model=models/culatta.glb                                  // Breech 3D model
-direction=0,0,1                                           // Movement direction: towards Z+ (vertical extraction)
-model=models/corpo.glb                                    // Pump body 3D model
-direction=0,0,1                                           // Movement direction: towards Z+
-model=models/coperchio.glb                                // Cover 3D model
-direction=-1,0,1                                          // Movement direction: towards X- and Z+ (diagonal)
-model=models/filtro.glb                                   // Filter 3D model to replace
-direction=-1,0,0                                          // Movement direction: towards X- (lateral extraction)
+model=models/pulpito.glb                                  // Breech 3D model
+direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
+// === 3D MODELS AND MOVEMENT DIRECTIONS ===
+model=models/remote.glb                                  // Remote control 3D model
+direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
+model=models/a500.glb                                  // Breech 3D model
+direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
 model=models/pavimento.glb                                // Base/floor 3D model (static)
 direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
-model=models/planaxis.glb                                     // Axes
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/vite_coperchio_1.glb                         // First cover screw
-direction=-1,0,0                                          // Movement direction: towards X- (unscrewing and extraction)
-model=models/vite_coperchio_2.glb                         // Second cover screw
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/vite_coperchio_3.glb                         // Third cover screw
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/vite_coperchio_4.glb                         // Fourth cover screw
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/tappino_grasso_sx.glb                        // Left grease cap
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/tappino_grasso_dx.glb                        // Right grease cap
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/ingrassatore.glb                             // Greaser
-direction=-1,0,0                                          // Movement direction: towards X-
-model=models/vite_culatta_1.glb                         // First breech screw
-direction=0,0,1                                          // Movement direction: towards X-
-model=models/vite_culatta_2.glb                         // Second breech screw
-direction=0,0,1                                          // Movement direction: towards X-
-model=models/vite_culatta_3.glb                         // Third breech screw
-direction=0,0,1                                          // Movement direction: towards X-
-model=models/vite_culatta_4.glb                         // Fourth breech screw
-direction=0,0,1                                          // Movement direction: towards X-
-model=models/estrattoredx.glb                         // Fourth breech screw
-direction=0,0,1                                          // Movement direction: towards X-
-model=models/estrattoresx.glb                         // Fourth breech screw
-direction=0,0,1                                          // Movement direction: towards X-
-model=models/flangia.glb                                    // Pump body 3D model
-direction=0,0,1
-model=models/vite_flangia_1.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_2.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_3.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_4.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_5.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_6.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_7.glb                         // First cover screw
-direction=0,0,1
-model=models/vite_flangia_8.glb                         // First cover screw
-direction=0,0,1                                      // Movement direction: towards Z+
-model=models/paletta1.glb                                    // Pump body 3D model
-direction=0,0,1                                        // Movement direction: towards Z+
-model=models/paletta2.glb                                    // Pump body 3D model
-direction=0,0,1                                        // Movement direction: towards Z+
-model=models/paletta3.glb                                    // Pump body 3D model
-direction=0,0,1                                        // Movement direction: towards Z+
-model=models/paletta4.glb                                    // Pump body 3D model
-direction=0,0,1                                        // Movement direction: towards Z+
-model=models/paletta5.glb                                    // Pump body 3D model
-direction=0,0,1                                        // Movement direction: towards Z+
-model=models/tubograsso.glb                                    // Pump body 3D model
-direction=0,0,1                                        // Movement direction: towards Z+
 
 [Manutenzione pompa del vuoto]                            // Main scenario with complete tutorial
 // === CAMERA AND LIGHTS CONFIGURATION ===
@@ -310,4 +251,4 @@ BackLight=0xffffff,1.0,(-7, 15, 7)                       // Light for detail vis
 // === SCENARIO INFORMATION ===
 description=Non Attivato
 description_key=scenario_probe_replacement_description    // i18n key for replacement and measurement system recalibration
-image=menuimages/placeholder.png                                                                 // Tool probe
+image=menuimages/placeholder.png                                                                 // Tool probec

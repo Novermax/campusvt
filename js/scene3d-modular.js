@@ -65,7 +65,8 @@ const Scene3D = {
         sensitivity: {
             rotation: 0.015,
             pan: 0.020,
-            zoom: 0.025
+            zoom: 0.025,
+            keyboardPan: 0.05 // Sensibilità pan con tasti freccia
         },
         interpolation: {
             enabled: true,
@@ -276,7 +277,176 @@ const Scene3D = {
         
         return cameraInfo;
     },
-    
+
+    /**
+     * Imposta la camera usando i parametri completi da getCameraInfo()
+     * @param {Object} config - Configurazione camera
+     * @param {Object} config.position - {x, y, z} Posizione camera
+     * @param {Object} config.rotation - {x, y, z} Rotazione camera (radianti)
+     * @param {Object} config.pivot - {x, y, z} Punto pivot
+     * @param {number} config.distance - Distanza dal pivot
+     * @param {number} config.fov - Field of view
+     * @param {boolean} config.animate - Se true, anima la transizione (default: false)
+     * @param {number} config.duration - Durata animazione in secondi (default: 1.0)
+     */
+    setCameraFromInfo: function(config) {
+        if (!this.camera) {
+            console.warn('[Scene3D] 📹 Camera non inizializzata');
+            return false;
+        }
+
+        console.log('[Scene3D] 📹 setCameraFromInfo:', config);
+
+        const animate = config.animate || false;
+        const duration = config.duration || 1.0;
+
+        // Target position e rotation
+        const targetPosition = config.position ?
+            new THREE.Vector3(config.position.x, config.position.y, config.position.z) :
+            this.camera.position.clone();
+
+        const targetRotation = config.rotation ?
+            new THREE.Euler(config.rotation.x, config.rotation.y, config.rotation.z) :
+            this.camera.rotation.clone();
+
+        // Pivot point
+        if (config.pivot && this.mouseControls) {
+            this.mouseControls.pivotPoint = new THREE.Vector3(
+                config.pivot.x,
+                config.pivot.y,
+                config.pivot.z
+            );
+            console.log('[Scene3D] 📍 Pivot impostato:', this.mouseControls.pivotPoint);
+        }
+
+        // FOV
+        if (config.fov && config.fov !== this.camera.fov) {
+            this.camera.fov = config.fov;
+            this.camera.updateProjectionMatrix();
+            console.log('[Scene3D] 🔭 FOV impostato:', config.fov);
+        }
+
+        // Se specificata la distanza, calcola la posizione dalla distanza e pivot
+        if (config.distance && config.pivot) {
+            // Calcola direzione dalla posizione corrente al pivot
+            const direction = new THREE.Vector3();
+            if (config.position) {
+                direction.subVectors(targetPosition, new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z));
+            } else {
+                direction.subVectors(this.camera.position, new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z));
+            }
+            direction.normalize();
+
+            // Posiziona camera alla distanza specificata dal pivot
+            targetPosition.copy(new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z));
+            targetPosition.add(direction.multiplyScalar(config.distance));
+        }
+
+        if (animate && window.TWEEN) {
+            // Animazione fluida
+            const startPosition = this.camera.position.clone();
+            const startRotation = {
+                x: this.camera.rotation.x,
+                y: this.camera.rotation.y,
+                z: this.camera.rotation.z
+            };
+
+            new TWEEN.Tween(startPosition)
+                .to(targetPosition, duration * 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(() => {
+                    this.camera.position.copy(startPosition);
+                })
+                .start();
+
+            new TWEEN.Tween(startRotation)
+                .to({ x: targetRotation.x, y: targetRotation.y, z: targetRotation.z }, duration * 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(() => {
+                    this.camera.rotation.set(startRotation.x, startRotation.y, startRotation.z);
+                })
+                .start();
+
+            console.log('[Scene3D] 🎬 Animazione camera avviata');
+        } else {
+            // Applicazione immediata
+            this.camera.position.copy(targetPosition);
+            this.camera.rotation.copy(targetRotation);
+            console.log('[Scene3D] 📹 Camera impostata immediatamente');
+        }
+
+        return true;
+    },
+
+    /**
+     * Imposta camera da stringa tutorial (sintassi estesa)
+     * Supporta: CameraPos, CameraRotation, CameraPivot, CameraDistance, CameraFOV
+     * @param {Object} properties - Proprietà dal tutorial
+     */
+    setCameraFromTutorialProperties: function(properties) {
+        const config = {};
+
+        // CameraPos=(x,y,z)
+        if (properties.CameraPos) {
+            const match = properties.CameraPos.match(/\(?\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,\)]+)\s*\)?/);
+            if (match) {
+                config.position = {
+                    x: parseFloat(match[1]),
+                    y: parseFloat(match[2]),
+                    z: parseFloat(match[3])
+                };
+            }
+        }
+
+        // CameraRotation=(x,y,z) - in radianti
+        if (properties.CameraRotation) {
+            const match = properties.CameraRotation.match(/\(?\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,\)]+)\s*\)?/);
+            if (match) {
+                config.rotation = {
+                    x: parseFloat(match[1]),
+                    y: parseFloat(match[2]),
+                    z: parseFloat(match[3])
+                };
+            }
+        }
+
+        // CameraPivot=(x,y,z) o CameraTarget=(x,y,z)
+        const pivotProp = properties.CameraPivot || properties.CameraTarget;
+        if (pivotProp && pivotProp.includes(',')) {
+            const match = pivotProp.match(/\(?\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,\)]+)\s*\)?/);
+            if (match) {
+                config.pivot = {
+                    x: parseFloat(match[1]),
+                    y: parseFloat(match[2]),
+                    z: parseFloat(match[3])
+                };
+            }
+        }
+
+        // CameraDistance=value
+        if (properties.CameraDistance) {
+            config.distance = parseFloat(properties.CameraDistance);
+        }
+
+        // CameraFOV=value
+        if (properties.CameraFOV) {
+            config.fov = parseFloat(properties.CameraFOV);
+        }
+
+        // CameraTransitionTime=value (per animazione)
+        if (properties.CameraTransitionTime) {
+            config.animate = true;
+            config.duration = parseFloat(properties.CameraTransitionTime);
+        }
+
+        if (Object.keys(config).length > 0) {
+            console.log('[Scene3D] 📹 Configurazione camera da tutorial:', config);
+            return this.setCameraFromInfo(config);
+        }
+
+        return false;
+    },
+
     listAvailableObjects: function() {
         if (!this.loadedModels || this.loadedModels.length === 0) {
             console.warn('[Scene3D] 📦 Nessun oggetto caricato nella scena');
@@ -349,19 +519,23 @@ const Scene3D = {
 
     initControls: function() {
         const canvas = this.canvas;
-        
+
         canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
         canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
         canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
         canvas.addEventListener('wheel', this.onMouseWheel.bind(this));
-        
+
         canvas.addEventListener('touchstart', this.onTouchStart.bind(this));
         canvas.addEventListener('touchmove', this.onTouchMove.bind(this));
         canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
-        
+
         canvas.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
+
+        // Keyboard controls per pan camera (tasti freccia)
+        document.addEventListener('keydown', this.onKeyDown.bind(this));
+        console.log('[Scene3D] ⌨️ Controlli tastiera attivati (frecce = pan camera)');
     },
 
     initSubsystems: function() {
@@ -419,6 +593,44 @@ const Scene3D = {
             console.warn('[Scene3D] ⚠️ AssemblySystem non disponibile');
         }
 
+        // Inizializza sistema schermi interattivi se disponibile
+        this.screenSystem = null;
+        if (window.ScreenSystem && window.ScreenSystem.init) {
+            try {
+                console.log('[Scene3D] 📺 Inizializzazione ScreenSystem...');
+                const success = window.ScreenSystem.init(this);
+                if (success) {
+                    this.screenSystem = window.ScreenSystem;
+                    console.log('[Scene3D] ✅ ScreenSystem inizializzato con successo!');
+                } else {
+                    console.warn('[Scene3D] ⚠️ ScreenSystem inizializzazione fallita');
+                }
+            } catch (error) {
+                console.error('[Scene3D] ❌ Errore inizializzazione ScreenSystem:', error);
+            }
+        } else {
+            console.log('[Scene3D] ℹ️ ScreenSystem non disponibile (opzionale)');
+        }
+
+        // Inizializza sistema oggetti prendibili se disponibile
+        this.holdableSystem = null;
+        if (window.HoldableSystem && window.HoldableSystem.init) {
+            try {
+                console.log('[Scene3D] 🤚 Inizializzazione HoldableSystem...');
+                const success = window.HoldableSystem.init(this);
+                if (success) {
+                    this.holdableSystem = window.HoldableSystem;
+                    console.log('[Scene3D] ✅ HoldableSystem inizializzato con successo!');
+                } else {
+                    console.warn('[Scene3D] ⚠️ HoldableSystem inizializzazione fallita');
+                }
+            } catch (error) {
+                console.error('[Scene3D] ❌ Errore inizializzazione HoldableSystem:', error);
+            }
+        } else {
+            console.log('[Scene3D] ℹ️ HoldableSystem non disponibile (opzionale)');
+        }
+
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
             color: 0xcccc00,
             transparent: true,
@@ -449,17 +661,47 @@ const Scene3D = {
     },
 
     onMouseMove: function(event) {
+        // Hover detection per InteractiveObject3D (sempre attivo)
+        if (window.InteractiveObject3D && this.loadedModels.length > 0) {
+            this.handleInteractiveHover(event);
+        }
+
         if (!this.mouseControls.isMouseDown) return;
-        
+
         const deltaX = event.clientX - this.mouseControls.lastPosition.x;
         const deltaY = event.clientY - this.mouseControls.lastPosition.y;
-        
+
         if (this.mouseControls.mouseButton === 2) {
             this.rotateCamera(deltaX, deltaY);
         }
-        
+
         this.mouseControls.lastPosition.x = event.clientX;
         this.mouseControls.lastPosition.y = event.clientY;
+    },
+
+    /**
+     * Gestisce hover su figli interattivi per feedback visivo
+     */
+    handleInteractiveHover: function(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        this.raycaster.setFromCamera({ x: mouseX, y: mouseY }, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.loadedModels, true);
+
+        let hoveredMesh = null;
+
+        // Trova il primo figlio interattivo colpito
+        for (const intersect of intersects) {
+            if (intersect.object.userData.interactive) {
+                hoveredMesh = intersect.object;
+                break;
+            }
+        }
+
+        // Notifica InteractiveObject3D per feedback visivo
+        window.InteractiveObject3D.handleHover(hoveredMesh);
     },
 
     onMouseUp: function(event) {
@@ -660,22 +902,99 @@ const Scene3D = {
     zoomCamera: function(delta) {
         const limits = this.mouseControls.limits;
         const pivotPoint = this.mouseControls.pivotPoint;
-        
+
         const relativePosition = new THREE.Vector3().subVectors(this.camera.position, pivotPoint);
         const spherical = new THREE.Spherical();
         spherical.setFromVector3(relativePosition);
-        
+
         const zoomStep = delta > 0 ? 1.2 : 1/1.2;
         spherical.radius *= zoomStep;
-        
+
         spherical.radius = Math.max(limits.minZoom, Math.min(limits.maxZoom, spherical.radius));
-        
+
         relativePosition.setFromSpherical(spherical);
         this.camera.position.copy(pivotPoint).add(relativePosition);
-        
+
         // Non interferire con animazione camera se in corso
         if (!this.cameraAnimation || !this.cameraAnimation.isAnimating || !this.cameraAnimation.targetTarget) {
             this.camera.lookAt(pivotPoint);
+        }
+    },
+
+    /**
+     * Pan della camera (movimento laterale/verticale mantenendo la direzione di visione)
+     * @param {number} deltaX - Movimento orizzontale (positivo = destra)
+     * @param {number} deltaY - Movimento verticale (positivo = su)
+     */
+    panCamera: function(deltaX, deltaY) {
+        const sensitivity = this.mouseControls.sensitivity.keyboardPan;
+        const pivotPoint = this.mouseControls.pivotPoint;
+
+        // Calcola i vettori right e up della camera in world space
+        const cameraRight = new THREE.Vector3();
+        const cameraUp = new THREE.Vector3();
+
+        // Ottieni la direzione in cui guarda la camera
+        const lookDirection = new THREE.Vector3();
+        this.camera.getWorldDirection(lookDirection);
+
+        // Vettore "up" del mondo
+        const worldUp = new THREE.Vector3(0, 1, 0);
+
+        // Right = lookDirection × worldUp (prodotto vettoriale)
+        cameraRight.crossVectors(lookDirection, worldUp).normalize();
+
+        // Up = cameraRight × lookDirection (perpendicolare al piano camera-look)
+        cameraUp.crossVectors(cameraRight, lookDirection).normalize();
+
+        // Calcola lo spostamento
+        const panOffset = new THREE.Vector3();
+        panOffset.addScaledVector(cameraRight, -deltaX * sensitivity);
+        panOffset.addScaledVector(cameraUp, deltaY * sensitivity);
+
+        // Applica lo spostamento sia alla camera che al pivot point
+        this.camera.position.add(panOffset);
+        pivotPoint.add(panOffset);
+
+        // Applica anche il limite Y minimo al pivot
+        const limits = this.mouseControls.limits;
+        if (pivotPoint.y < limits.minY) {
+            const correction = limits.minY - pivotPoint.y;
+            pivotPoint.y = limits.minY;
+            this.camera.position.y += correction;
+        }
+
+        console.log(`[Scene3D] 🎥 Pan camera: dx=${deltaX.toFixed(2)}, dy=${deltaY.toFixed(2)}`);
+    },
+
+    /**
+     * Gestisce i tasti freccia per il pan della camera
+     */
+    onKeyDown: function(event) {
+        // Ignora se l'utente sta scrivendo in un input/textarea
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            return;
+        }
+
+        const panStep = 1.0; // Step base per il pan (moltiplicato per sensitivity)
+
+        switch (event.key) {
+            case 'ArrowLeft':
+                this.panCamera(panStep, 0);
+                event.preventDefault();
+                break;
+            case 'ArrowRight':
+                this.panCamera(-panStep, 0);
+                event.preventDefault();
+                break;
+            case 'ArrowUp':
+                this.panCamera(0, panStep);
+                event.preventDefault();
+                break;
+            case 'ArrowDown':
+                this.panCamera(0, -panStep);
+                event.preventDefault();
+                break;
         }
     },
 
@@ -683,7 +1002,7 @@ const Scene3D = {
         if (!model) {
             return;
         }
-        
+
         this.scene.add(model);
         this.loadedModels.push(model);
         this.currentModel = model;
@@ -695,6 +1014,16 @@ const Scene3D = {
         this.saveScenarioOriginalPosition(model);
 
         const modelFilename = model.userData?.originalFilename || model.name;
+
+        // Collega modello a InteractiveObject3D se registrato
+        // Questo abilita pulsanti, chiavi rotanti, LED nei modelli gerarchici
+        if (window.InteractiveObject3D) {
+            const modelName = modelFilename.replace('.glb', '').replace('.gltf', '');
+            window.InteractiveObject3D.attachModel(modelName, model);
+
+            // Collega anche mesh agli StateGroups per varianti mutuamente esclusive
+            window.InteractiveObject3D.attachStateGroupMeshes(model);
+        }
 
         // Nascondi immediatamente il modello planaxis (stato iniziale: spento)
         if (modelFilename && modelFilename.toLowerCase().includes('planaxis')) {
@@ -875,15 +1204,30 @@ const Scene3D = {
             console.log('🔒 Click ignorato: Interazioni bloccate. Seleziona un nuovo tutorial per continuare.');
             return;
         }
-        
+
         const rect = this.canvas.getBoundingClientRect();
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
+
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.loadedModels, true);
 
         if (intersects.length > 0) {
+            // PRIORITA' 1: Verifica se è un figlio interattivo (InteractiveObject3D)
+            // Questo gestisce pulsanti, chiavi rotanti, LED cliccabili nei modelli gerarchici
+            if (window.InteractiveObject3D) {
+                for (const intersect of intersects) {
+                    const clickedMesh = intersect.object;
+                    if (clickedMesh.userData.interactive) {
+                        console.log(`[Scene3D] 🎮 Click su figlio interattivo: ${clickedMesh.name}`);
+                        const handled = window.InteractiveObject3D.handleClick(clickedMesh);
+                        if (handled) {
+                            console.log(`[Scene3D] ✅ Click gestito da InteractiveObject3D`);
+                            return; // Non proseguire con altri handler
+                        }
+                    }
+                }
+            }
             // PRIORITA' OGGETTO EVIDENZIATO: Se c'è un modello con silhouette gialla attiva,
             // cerca tra TUTTI gli intersects se uno di essi appartiene a quel modello.
             // Questo permette di cliccare sulla silhouette anche se l'oggetto è parzialmente nascosto.
@@ -3673,12 +4017,17 @@ const Scene3D = {
             this.updateAnimations();
             this.updateCameraAnimation();
             this.updatePivotAnimation();
-            
+
             // Aggiorna sistema particellare se attivo
             if (this.particleSystem && this.particleSystem.isActive) {
                 this.particleSystem.update(0.016); // ~60 FPS delta time
             }
-            
+
+            // Aggiorna sistema oggetti prendibili se attivo
+            if (this.holdableSystem && this.holdableSystem.enabled) {
+                this.holdableSystem.update();
+            }
+
             this.renderer.render(this.scene, this.camera);
         }
     },

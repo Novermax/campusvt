@@ -315,8 +315,163 @@ direction=-1,0,0
         </div>
     </div>
 
+    <!-- SCREENSYSTEM -->
+    <div class="section">
+        <h2>📺 Sistema Schermi Interattivi (ScreenSystem)</h2>
+
+        <h3>Definizione Schermo (sezione globale)</h3>
+        <div class="command">
+[Screen:pannello_hmi]
+Model=models/pannello_hmi.glb
+DefaultView=home
+CameraDistance=0.6
+CameraAngle=perpendicular
+        </div>
+
+        <h3>Definizione Viste</h3>
+        <div class="command">
+[ScreenView:pannello_hmi.home]
+Hotspots=btn_manual,btn_auto,btn_settings
+
+[ScreenView:pannello_hmi.manual_mode]
+Hotspots=btn_pump_on,btn_pump_off,btn_back
+        </div>
+
+        <h3>Definizione Hotspot</h3>
+        <div class="command">
+[Hotspot:btn_manual]
+Position=(-0.08,0.04,0.002)
+Size=(0.06,0.03)
+Label=MANUALE
+HighlightColor=rgba(255,200,0,0.4)
+NextView=pannello_hmi.manual_mode
+
+[Hotspot:btn_pump_on]
+Position=(-0.06,0.02,0.002)
+Size=(0.05,0.025)
+Label=POMPA ON
+OnClick=Action:attiva_pompa
+        </div>
+
+        <h3>Definizione Azioni</h3>
+        <div class="command">
+[ScreenAction:attiva_pompa]
+Target=models/pompa.glb
+Animation=rotazione:(0,0,360,1)
+Sound=sounds/pump_on.mp3
+        </div>
+
+        <h3>Parametri Step Tutorial</h3>
+        <table>
+            <tr><th>Parametro</th><th>Valore</th><th>Descrizione</th></tr>
+            <tr><td>ScreenMode</td><td>true</td><td>Attiva modalità schermo interattivo</td></tr>
+            <tr><td>ScreenView</td><td>view_id</td><td>Vista iniziale da mostrare</td></tr>
+            <tr><td>RequiredHotspot</td><td>hotspot_id</td><td>Hotspot da premere per completare step</td></tr>
+            <tr><td>RequiredSequence</td><td>id1,id2,id3</td><td>Sequenza hotspot obbligatoria (codici)</td></tr>
+        </table>
+
+        <h3>Esempio Step</h3>
+        <div class="command">
+[Step 3 - Vai in modalità manuale]
+Elemento=models/pannello_hmi.glb
+Utensile=Mani
+ScreenMode=true
+ScreenView=home
+RequiredHotspot=btn_manual
+Descrizione=Premi il pulsante MANUALE
+        </div>
+
+        <h3>Comandi Console ScreenSystem</h3>
+        <div class="command">
+ScreenSystem.listScreens()                    // Lista schermi registrati
+ScreenSystem.getScreenState('pannello_hmi')   // Stato schermo
+ScreenSystem.setView('pannello_hmi', 'menu')  // Cambia vista
+ScreenSystem.listHotspots('pannello_hmi')     // Lista hotspot
+ScreenSystem.executeAction('attiva_pompa')    // Esegui azione
+ScreenSystem.focusScreen('pannello_hmi')      // Focus su schermo
+ScreenSystem.unfocusScreen()                  // Esci da focus
+ScreenSystem.debugInfo()                      // Debug completo
+        </div>
+    </div>
+
+    <!-- HOLDABLESYSTEM -->
+    <div class="section">
+        <h2>🖐️ Sistema Oggetti Impugnabili (HoldableSystem)</h2>
+
+        <h3>Definizione Oggetto Impugnabile</h3>
+        <div class="command">
+[Screen:telecomando]
+Model=models/telecomando.glb
+Holdable=true
+HoldPosition=(-0.25,-0.15,0.4)
+HoldRotation=(15,-30,5)
+DefaultView=main
+        </div>
+
+        <h3>Parametri Holdable</h3>
+        <table>
+            <tr><th>Parametro</th><th>Formato</th><th>Descrizione</th></tr>
+            <tr><td>Holdable</td><td>true</td><td>Abilita oggetto come impugnabile</td></tr>
+            <tr><td>HoldPosition</td><td>(x,y,z)</td><td>Posizione relativa camera (default: -0.25,-0.15,0.4)</td></tr>
+            <tr><td>HoldRotation</td><td>(rx,ry,rz)</td><td>Rotazione in gradi (default: 15,-30,5)</td></tr>
+        </table>
+
+        <h3>Parametri Step Tutorial</h3>
+        <table>
+            <tr><th>Parametro</th><th>Valore</th><th>Descrizione</th></tr>
+            <tr><td>HoldAction</td><td>pick</td><td>Prendi oggetto in mano</td></tr>
+            <tr><td>HoldAction</td><td>release</td><td>Rilascia oggetto (torna a posizione originale)</td></tr>
+            <tr><td>HoldState</td><td>held</td><td>Richiede che l'oggetto sia già in mano</td></tr>
+        </table>
+
+        <h3>Workflow Completo</h3>
+        <div class="command">
+# Step 1: Prendi oggetto
+[Step 2 - Prendi telecomando]
+Elemento=models/telecomando.glb
+Utensile=Mani
+HoldAction=pick
+Descrizione=Prendi il telecomando
+
+# Step 2: Usa schermo mentre in mano
+[Step 5 - Premi pulsante]
+Elemento=models/telecomando.glb
+ScreenMode=true
+RequiredHotspot=btn_start
+HoldState=held
+Descrizione=Premi START sul telecomando
+
+# Step 3: Rilascia oggetto
+[Step 10 - Posa telecomando]
+Elemento=models/telecomando.glb
+HoldAction=release
+Descrizione=Posa il telecomando
+        </div>
+
+        <h3>Comandi Console HoldableSystem</h3>
+        <div class="command">
+HoldableSystem.listHoldables()              // Lista oggetti impugnabili
+HoldableSystem.isHeld('telecomando')        // Verifica se in mano
+HoldableSystem.pickObject('telecomando')    // Prendi oggetto
+HoldableSystem.releaseObject('telecomando') // Rilascia oggetto
+HoldableSystem.releaseAll()                 // Rilascia tutti
+HoldableSystem.getCurrentlyHeld()           // Lista oggetti in mano
+HoldableSystem.debugInfo()                  // Debug completo
+        </div>
+
+        <h3>Note HoldPosition</h3>
+        <div class="coordinate-ref">
+            <ul>
+                <li><strong>X negativo:</strong> Sinistra della visuale (mano sinistra)</li>
+                <li><strong>Y negativo:</strong> Verso il basso (altezza mano)</li>
+                <li><strong>Z positivo:</strong> Davanti alla camera (distanza braccio)</li>
+            </ul>
+        </div>
+    </div>
+
     <div style="text-align: center; margin: 30px 0; padding: 20px; background: #e3f2fd; border-radius: 10px;">
         <p><strong>Manuale Rapido Campus Virtual Training - Versione Comandi</strong></p>
+        <p>Versione 1.4 - Gennaio 2026</p>
         <p>Per il manuale completo consultare: MANUALE_COMPLETO_CAMPUS_VIRTUAL_TRAINING.html</p>
     </div>
 

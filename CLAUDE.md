@@ -138,11 +138,622 @@ js/
 - **API**: `enableAssemblyMode()`, `isComponentMountable()`, `undoAssembly()`
 - **Test**: test_assembly_system.html, assembly_configs/ directory
 
-### Camera Sistema Avanzato (Settembre 2025)
+### Camera Sistema Avanzato (Settembre 2025 - Gennaio 2026)
 - **Pivot Fluido**: Click centrale mouse → animazione 0.8s verso nuovo pivot
 - **Interpolazione Smooth**: Transizioni fluide con easing, mantiene distanza relativa
-- **Controlli**: Sx (rotazione), Dx (pan), Scroll (zoom), Centrale (pivot dinamico)
+- **Controlli Mouse**: Sx (rotazione), Dx (pan), Scroll (zoom), Centrale (pivot dinamico)
+- **Controlli Tastiera**: Frecce direzionali per pan camera (←↑↓→)
+- **setCameraFromInfo()**: Imposta camera con tutti i parametri (position, rotation, pivot, distance, fov)
+- **Sintassi Tutorial Estesa**: CameraPos, CameraTarget, CameraPivot, CameraRotation, CameraDistance, CameraFOV
 
+### 📺 Sistema Schermi Interattivi - ScreenSystem v2.0 (Gennaio 2026)
+
+**Funzionalità**: Simulazione touchscreen 3D per pannelli HMI, telecomandi e dispositivi interattivi
+
+#### Caratteristiche Principali
+- **Contenitori (Container)**: Oggetti fisici che contengono schermi (pulpito, telecomando)
+- **Viste come Modelli GLB Separati**: Ogni stato schermo è un modello GLB distinto
+- **Gestione Visibilità Automatica**: Solo vista default visibile, altre nascoste
+- **Hotspot**: Zone interattive con highlight, click detection, navigazione viste
+- **State Machine**: Stati schermo (idle → focused → interacting)
+- **Azioni**: Esecuzione animazioni su macchinari da pressione hotspot
+
+#### Architettura v2.0
+```
+[Screen:id] → Definisce CONTENITORE (Container=) con vista default
+     │
+     ├── [ScreenView:id.view1] → MODELLO GLB separato (Model=) + Hotspots
+     ├── [ScreenView:id.view2] → MODELLO GLB separato (Model=) + Hotspots
+     └── ...
+
+Navigazione: hide modello corrente → show modello target
+```
+
+#### Core
+- **File**: `js/core/ScreenSystem.js` (1200+ righe)
+- **Versione**: 2.0.0
+- **API**: `window.ScreenSystem`
+- **Dipendenze**: Three.js, Scene3D
+
+#### Sintassi Definizioni Globali (prima di [Tutorial])
+
+```ini
+# Definizione schermo (CONTENITORE)
+[Screen:pulpito]
+Container=models/pulpito_corpo.glb     # Contenitore fisico
+DefaultView=home                        # Vista iniziale (visibile al caricamento)
+CameraDistance=0.6
+CameraAngle=perpendicular
+
+# Definizione vista/schermata (MODELLO GLB SEPARATO)
+[ScreenView:pulpito.home]
+Model=models/pulpito_screen_home.glb   # Modello GLB per questa vista
+Hotspots=btn_manual,btn_auto,btn_settings
+
+[ScreenView:pulpito.manual_mode]
+Model=models/pulpito_screen_manual.glb # Modello GLB diverso
+Hotspots=btn_pump_on,btn_pump_off,btn_back
+
+# Definizione hotspot
+[Hotspot:btn_manual]
+Position=(-0.08,0.04,0.002)
+Size=(0.06,0.03)
+Label=MANUALE
+HighlightColor=rgba(255,200,0,0.4)
+NextView=pulpito.manual_mode           # Click → nasconde home, mostra manual_mode
+
+[Hotspot:btn_pump_on]
+Position=(-0.06,0.02,0.002)
+Size=(0.05,0.025)
+Label=POMPA ON
+HighlightColor=rgba(0,255,0,0.4)
+OnClick=Action:attiva_pompa
+
+# Definizione azione
+[ScreenAction:attiva_pompa]
+Target=models/pompa.glb
+Animation=rotazione:(0,0,360,1)
+Sound=sounds/pump_on.mp3
+```
+
+#### Gestione Visibilità Modelli
+
+**Al Caricamento Scenario**:
+1. Tutti i modelli vista vengono caricati normalmente
+2. `initializeVisibility()` viene chiamato automaticamente
+3. Solo i modelli delle viste `DefaultView` sono visibili
+4. Tutti gli altri modelli vista sono nascosti (`model.visible = false`)
+
+**Durante Navigazione (setView)**:
+1. Modello vista corrente → `visible = false`
+2. Modello nuova vista → `visible = true`
+3. Hotspot aggiornati per nuova vista
+
+#### Sintassi Step Tutorial
+
+```ini
+[Step 3 - Vai in modalità manuale]
+Elemento=models/pannello_hmi.glb
+Utensile=Mani
+ScreenMode=true
+ScreenView=home
+RequiredHotspot=btn_manual
+Descrizione=Premi il pulsante MANUALE per accedere ai controlli
+
+[Step 5 - Inserisci codice]
+Elemento=models/tastierino.glb
+ScreenMode=true
+RequiredSequence=key_1,key_9,key_7,key_3,key_ok
+Descrizione=Digita il codice 1973 e premi OK
+```
+
+#### Proprietà Step
+
+| Proprietà | Valori | Descrizione |
+|-----------|--------|-------------|
+| `ScreenMode=` | `true` | Attiva modalità schermo interattivo |
+| `ScreenView=` | `view_id` | Vista iniziale da mostrare |
+| `RequiredHotspot=` | `hotspot_id` | Hotspot da premere per completare step |
+| `RequiredSequence=` | `id1,id2,id3` | Sequenza hotspot obbligatoria |
+
+#### API Debug Console
+
+```javascript
+// Schermi
+ScreenSystem.listScreens()                    // Lista schermi + viste registrate
+ScreenSystem.getScreenState('pulpito')        // Stato corrente schermo
+ScreenSystem.setView('pulpito', 'manual_mode')// Cambia vista (hide/show automatico)
+ScreenSystem.listHotspots('pulpito')          // Lista hotspot vista corrente
+ScreenSystem.highlightHotspot('btn_start', true)     // Highlight forzato
+ScreenSystem.executeAction('attiva_pompa')    // Esegui azione
+ScreenSystem.initializeVisibility()           // Re-inizializza visibilità viste
+ScreenSystem.showViewModel('models/screen.glb')      // Mostra modello manualmente
+ScreenSystem.hideViewModel('models/screen.glb')      // Nascondi modello manualmente
+ScreenSystem.debugInfo()                      // Debug completo
+```
+
+#### State Machine
+
+```
+IDLE (in scena) ──click──▶ FOCUSED (camera allineata) ──hotspot──▶ INTERACTING
+     ▲                            │                                      │
+     └────────────ESC/click esterno───────────────────────────────────────┘
+```
+
+#### Caratteristiche v2.0
+- ✅ **Zero Breaking Changes**: Tutorial senza `[Screen:]` funzionano normalmente
+- ✅ **Viste GLB Separate**: Ogni vista è un modello 3D distinto
+- ✅ **Visibilità Automatica**: Hide/show gestito automaticamente al cambio vista
+- ✅ **Camera Auto-Align**: Allineamento perpendicolare automatico
+- ✅ **Highlight Dinamico**: Hover e click feedback visivo
+- ✅ **Navigazione Viste**: Transizioni fluide tra schermate
+- ✅ **Azioni Sincronizzate**: Animazioni macchinari da hotspot
+- ✅ **Sequenze**: Supporto codici e combinazioni
+
+### 🖐️ Sistema Oggetti Impugnabili - HoldableSystem (Gennaio 2026)
+
+**Funzionalità**: Gestione oggetti che possono essere presi in mano e mantenuti davanti alla camera durante le interazioni
+
+#### Caratteristiche Principali
+- **Pick & Hold**: Oggetti afferrabili che seguono la camera
+- **Posizione Mano**: Posizionamento camera-relative (mano sinistra)
+- **Integrazione ScreenSystem**: Schermi su oggetti held rimangono interattivi
+- **Salvataggio Stato**: Posizioni originali salvate per rilascio
+
+#### Core
+- **File**: `js/core/HoldableSystem.js` (500+ righe)
+- **API**: `window.HoldableSystem`
+- **Dipendenze**: Three.js, Scene3D, ScreenSystem (opzionale)
+
+#### Sintassi Definizioni Globali
+
+```ini
+# Definizione oggetto impugnabile (nella sezione [Screen:] o standalone)
+[Screen:telecomando]
+Container=models/telecomando_corpo.glb   # Contenitore fisico (il telecomando)
+Holdable=true
+HoldPosition=(-0.25,-0.15,0.4)
+HoldRotation=(15,-30,5)
+DefaultView=main
+
+[ScreenView:telecomando.main]
+Model=models/telecomando_screen_main.glb  # Schermo del telecomando
+Hotspots=btn_start,btn_stop
+```
+
+**Parametri Holdable**:
+| Parametro | Formato | Descrizione |
+|-----------|---------|-------------|
+| `Holdable=` | `true` | Abilita oggetto come impugnabile |
+| `HoldPosition=` | `(x,y,z)` | Posizione relativa alla camera (default: -0.25,-0.15,0.4) |
+| `HoldRotation=` | `(rx,ry,rz)` | Rotazione in gradi (default: 15,-30,5) |
+
+#### Sintassi Step Tutorial
+
+```ini
+[Step 2 - Prendi telecomando]
+Elemento=models/telecomando.glb
+Utensile=Mani
+HoldAction=pick
+Descrizione=Prendi il telecomando per controllare la macchina
+
+[Step 5 - Usa pulsante start]
+Elemento=models/telecomando.glb
+ScreenMode=true
+ScreenView=main
+RequiredHotspot=btn_start
+HoldState=held
+Descrizione=Premi il pulsante START sul telecomando
+
+[Step 10 - Posa telecomando]
+Elemento=models/telecomando.glb
+HoldAction=release
+Descrizione=Posa il telecomando
+```
+
+#### Proprietà Step
+
+| Proprietà | Valori | Descrizione |
+|-----------|--------|-------------|
+| `HoldAction=` | `pick` \| `release` | Azione da eseguire (prendi/posa) |
+| `HoldState=` | `held` | Richiede che l'oggetto sia già in mano |
+
+#### API Debug Console
+
+```javascript
+// Gestione oggetti
+HoldableSystem.listHoldables()              // Lista oggetti impugnabili registrati
+HoldableSystem.isHeld('telecomando')        // Verifica se oggetto è in mano
+HoldableSystem.pickObject('telecomando')    // Prendi oggetto
+HoldableSystem.releaseObject('telecomando') // Rilascia oggetto
+HoldableSystem.releaseAll()                 // Rilascia tutti gli oggetti
+
+// Stato sistema
+HoldableSystem.getCurrentlyHeld()           // Lista oggetti attualmente in mano
+HoldableSystem.getHoldableConfig('name')    // Configurazione holdable
+HoldableSystem.debugInfo()                  // Debug completo sistema
+
+// Posizionamento
+HoldableSystem.setHoldPosition('name', x, y, z)     // Override posizione
+HoldableSystem.setHoldRotation('name', rx, ry, rz)  // Override rotazione
+```
+
+#### Workflow Tipico
+
+```
+1. SCENA NORMALE
+   └── Telecomando poggiato su tavolo
+   └── Click su telecomando → HoldAction=pick
+
+2. OGGETTO IN MANO
+   └── Telecomando segue camera (mano sinistra)
+   └── Schermo telecomando interattivo (ScreenMode)
+   └── Hotspot cliccabili → azioni su macchinari
+
+3. RILASCIO
+   └── HoldAction=release → oggetto torna posizione originale
+```
+
+#### Caratteristiche
+- ✅ **Zero Breaking Changes**: Tutorial senza `Holdable=true` funzionano normalmente
+- ✅ **Camera-Relative**: Oggetto segue movimenti camera automaticamente
+- ✅ **Schermi Attivi**: Hotspot su oggetti held rimangono interattivi
+- ✅ **Multi-Hold**: Supporto multipli oggetti in mano contemporaneamente
+- ✅ **Salvataggio Posizione**: Rilascio riporta a posizione originale esatta
+
+#### Integrazione con ScreenSystem
+
+Quando un oggetto è definito come `Holdable=true` in una sezione `[Screen:]`:
+1. ScreenSystem registra automaticamente l'oggetto in HoldableSystem
+2. Durante `HoldState=held`, lo schermo rimane interattivo
+3. Hotspot funzionano normalmente anche con oggetto in mano
+4. Azioni da hotspot eseguono animazioni su macchinari nella scena
+
+---
+
+### 🔀 Sistema StateGroup - Varianti Mutuamente Esclusive (Gennaio 2026)
+
+**Funzionalità**: Gestione di oggetti 3D che rappresentano stati visivi alternativi della stessa componente logica (es. schermo.001/002/003, chiave_on/off)
+
+#### Problema Risolto
+- Oggetti come `schermo.001`, `schermo.002`, `schermo.003` sono varianti visive dello stesso componente
+- Solo UNA variante può essere visibile alla volta (mutualmente esclusive)
+- Cambio stato → nasconde attuale, mostra destinazione
+
+#### Core
+- **File**: `js/core/InteractiveObject3D.js` (estensione)
+- **API**: `window.InteractiveObject3D.setStateVariant()`, `cycleStateVariant()`
+
+#### Sintassi Tutorial
+
+```ini
+# Definizione gruppi di stato (sezione globale)
+[StateGroup:schermo]
+Variants=schermo.000,schermo.001,schermo.002
+Default=schermo.000
+
+[StateGroup:chiave]
+Variants=chiave0,chiave1
+Default=chiave0
+
+[StateGroup:start]
+Variants=Start_off,Start_on
+Default=Start_off
+```
+
+#### Azioni per Cambio Stato
+
+```ini
+# In InteractiveObject - pulsante che cambia variante
+InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo.001
+InteractiveChild=chiave0,button,onClick:cycleVariant:chiave
+
+# In Step - trigger che cambia variante
+OnPhysicalTrigger=setVariant:schermo=schermo.002
+OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo.000
+```
+
+#### API Debug Console
+
+```javascript
+// Gestione StateGroups
+InteractiveObject3D.listStateGroups()           // Lista gruppi registrati
+InteractiveObject3D.getCurrentVariant('schermo') // Variante corrente
+InteractiveObject3D.getVariants('schermo')      // Tutte le varianti del gruppo
+InteractiveObject3D.setStateVariant('schermo', 'schermo.001')  // Cambia variante
+InteractiveObject3D.cycleStateVariant('schermo') // Cicla alla prossima
+InteractiveObject3D.debugInfo()                  // Debug completo sistema
+```
+
+#### Caratteristiche
+- ✅ **Mutua Esclusione Automatica**: Solo una variante visibile per gruppo
+- ✅ **Zero Hardcoding**: Configurazione dichiarativa nel tutorial.txt
+- ✅ **Facile Estensione**: Aggiungi nuove varianti senza modificare codice
+- ✅ **Disaccoppiamento**: Logica interazione separata da rendering
+- ✅ **Retrocompatibile**: Funziona insieme a InteractiveChild/visibleWhen
+
+---
+
+### 🎮 Sistema Controller Step Centralizzato - StepController (Gennaio 2026)
+
+**Funzionalità**: Gestione centralizzata della progressione step con supporto per trigger multipli e azioni differenziate per sorgente
+
+#### Problema Risolto
+- Stesso step triggerabile da **sorgenti diverse** (hotspot schermo, pulsante fisico 3D)
+- **Azioni diverse** in base alla sorgente del trigger
+- Centralizzazione logica di progressione step
+
+#### Architettura
+
+```
+                    ┌─────────────────────┐
+                    │   StepController    │  ← Logica centralizzata
+                    │   (Step corrente)   │
+                    └──────────┬──────────┘
+                               │
+        ┌──────────────────────┼──────────────────────┐
+        │                      │                      │
+        ▼                      ▼                      ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────┐
+│ ScreenSystem  │    │HoldableSystem │    │ PhysicalInput │
+│ (hotspot UI)  │    │ (pulsanti 3D) │    │ (remote btn)  │
+└───────────────┘    └───────────────┘    └───────────────┘
+        │                      │                      │
+        └──────────────────────┼──────────────────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │  triggerStep(       │
+                    │    source,          │
+                    │    triggerId        │
+                    │  )                  │
+                    └─────────────────────┘
+```
+
+#### Core
+- **File**: `js/core/StepController.js` (700+ righe)
+- **Versione**: 1.0.0
+- **API**: `window.StepController`
+- **Dipendenze**: ScreenSystem, HoldableSystem (opzionali)
+
+#### Sorgenti Trigger Supportate
+
+| Sorgente | Codice | Descrizione |
+|----------|--------|-------------|
+| `screen` | Hotspot UI | Click su hotspot schermo (ScreenSystem) |
+| `physical` | Pulsante 3D | Click su modello 3D designato come pulsante |
+| `holdable` | Azione Hold | Pick/release/use su oggetto in mano |
+| `tutorial` | Manuale | Avanzamento da frecce navigazione |
+| `auto` | AutoMode | Esecuzione automatica mobile |
+
+#### Sintassi Tutorial
+
+```ini
+[Step 5 - Attiva pompa]
+Descrizione=Premi START per attivare la pompa
+
+# Trigger accettati (se non specificati, accetta tutti)
+AcceptTrigger_Screen=pulpito.btn_start        # Hotspot su schermo
+AcceptTrigger_Physical=remote.btn_power       # Pulsante fisico 3D
+
+# Azioni SOLO da trigger schermo
+OnScreenTrigger=Animation:pompa,rotazione:(0,0,360,1)
+
+# Azioni SOLO da trigger fisico (cambio schermo + animazione)
+OnPhysicalTrigger=Animation:pompa,rotazione:(0,0,360,1)
+OnPhysicalTrigger_SetView=pulpito.running     # Cambia anche vista schermo
+
+# Azioni SEMPRE (indipendentemente dalla sorgente)
+OnAnyTrigger=Sound:sounds/pump_start.mp3
+```
+
+#### Proprietà Step
+
+| Proprietà | Formato | Descrizione |
+|-----------|---------|-------------|
+| `AcceptTrigger_Screen=` | `screen.hotspot` | Trigger hotspot accettati |
+| `AcceptTrigger_Physical=` | `model.buttonId` | Trigger pulsanti fisici accettati |
+| `AcceptTrigger_Holdable=` | `object.action` | Trigger holdable accettati |
+| `OnScreenTrigger=` | `Action:...` | Azioni per trigger schermo |
+| `OnPhysicalTrigger=` | `Action:...` | Azioni per trigger fisico |
+| `OnAnyTrigger=` | `Action:...` | Azioni per qualsiasi trigger |
+| `OnXxxTrigger_SetView=` | `screen.view` | Cambia vista schermo |
+
+#### Formato Azioni
+
+```ini
+# Animazione su modello
+OnScreenTrigger=Animation:pompa,rotazione:(0,0,360,1)
+
+# Suono
+OnAnyTrigger=Sound:sounds/click.mp3
+
+# Cambio vista
+OnPhysicalTrigger_SetView=pulpito.manual_mode
+
+# Azioni multiple (separate da ;)
+OnPhysicalTrigger=Animation:pompa,rotazione:(0,0,360,1);Sound:sounds/pump.mp3
+```
+
+#### API Debug Console
+
+```javascript
+// Stato sistema
+StepController.debugInfo()                    // Debug completo
+StepController.listAcceptedTriggers()         // Trigger accettati step corrente
+
+// Simulazione
+StepController.simulateTrigger('screen', 'pulpito.btn_start')
+StepController.simulateTrigger('physical', 'remote.btn_power')
+
+// Pulsanti fisici
+StepController.registerPhysicalButton('remote_btn', { buttonId: 'btn_power', parentModel: 'remote' })
+StepController.getPhysicalButton('remote_btn')
+
+// Controllo
+StepController.setEnabled(true/false)
+StepController.reset()
+```
+
+#### Flusso Esempio
+
+| Sorgente | Trigger | Azioni Eseguite |
+|----------|---------|-----------------|
+| Hotspot schermo pulpito | `btn_start` click | Solo animazione pompa |
+| Pulsante fisico remote | `btn_power` click | Animazione pompa + cambio vista pulpito |
+
+#### Caratteristiche
+- ✅ **Zero Breaking Changes**: Step senza trigger specifici funzionano normalmente
+- ✅ **Trigger Multipli**: Stesso step da sorgenti diverse
+- ✅ **Azioni Differenziate**: Comportamenti diversi per sorgente
+- ✅ **Pulsanti Fisici 3D**: Supporto modelli cliccabili come pulsanti
+- ✅ **Auto-Avanzamento**: Opzionale dopo esecuzione azioni
+- ✅ **Integrazione Completa**: Con ScreenSystem, HoldableSystem, AutoMode
+
+---
+
+### 🎮 Sistema Oggetti 3D Interattivi - InteractiveObject3D (Gennaio 2026)
+
+**Funzionalità**: Gestione modelli GLB gerarchici con mesh figlie interattive (pulsanti, chiavi rotanti, LED, schermi)
+
+#### Problema Risolto
+- Modelli 3D complessi (pulpito, telecomando) con **elementi figli interattivi**
+- Pulsanti, chiavi rotanti, indicatori LED come **mesh figlie** del modello principale
+- **Stato interno** per ogni oggetto (chiave ON/OFF, schermo corrente)
+- **Visibilità condizionale** di mesh (LED visibile solo quando chiave = ON)
+
+#### Architettura
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    InteractiveObject3D                           │
+│  (Registry oggetti 3D con figli interattivi)                    │
+├─────────────────────────────────────────────────────────────────┤
+│  objects: Map<modelName, ObjectData>                            │
+│  - config: { interactiveChildren, initialState }                │
+│  - state: { key_switch: 'on', currentScreen: 'menu' }           │
+│  - childMeshes: Map<meshName, Mesh>                             │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+          ┌───────────────────┼───────────────────┐
+          ▼                   ▼                   ▼
+    ┌───────────┐       ┌───────────┐       ┌───────────┐
+    │  Button   │       │  Rotary   │       │ Indicator │
+    │  (click)  │       │  (toggle) │       │(visibility)│
+    └───────────┘       └───────────┘       └───────────┘
+          │                   │
+          └─────────┬─────────┘
+                    ▼
+          ┌───────────────────┐
+          │  StepController   │
+          │  triggerStep()    │
+          └───────────────────┘
+```
+
+#### Core
+- **File**: `js/core/InteractiveObject3D.js` (700+ righe)
+- **API**: `window.InteractiveObject3D`
+- **Dipendenze**: Three.js, StepController (opzionale)
+
+#### Tipi Figli Interattivi
+
+| Tipo | Comportamento | Proprietà |
+|------|---------------|-----------|
+| `button` | Click → emette evento | `onClick: 'setScreen:menu'` |
+| `rotary` | Click → cicla stati + rotazione | `states: ['off', 'on']`, `rotationAngles: {off: 0, on: 45}` |
+| `indicator` | Visibilità controllata da stato | `visibleWhen: { key_switch: 'on' }` |
+| `screen` | Visibilità controllata da currentScreen | `visibleWhen: { currentScreen: 'menu' }` |
+
+#### Sintassi Tutorial
+
+```ini
+# ═══════════════════════════════════════════════════════════
+# DEFINIZIONE OGGETTO INTERATTIVO (sezione globale)
+# ═══════════════════════════════════════════════════════════
+
+[InteractiveObject:pulpito]
+Model=models/pulpito_completo.glb
+# Figli interattivi: nome_mesh,tipo,opzioni
+InteractiveChild=key_switch,rotary,states:off|on,rotationAxis:z,rotationAngles:off=0|on=45
+InteractiveChild=led_on,indicator,visibleWhen:key_switch=on
+InteractiveChild=led_off,indicator,visibleWhen:key_switch=off
+InteractiveChild=screen_home,screen,visibleWhen:currentScreen=home
+InteractiveChild=screen_menu,screen,visibleWhen:currentScreen=menu
+InteractiveChild=btn_menu,button,onClick:setScreen:menu
+InitialState=key_switch:off,currentScreen:home
+
+[InteractiveObject:remote]
+Model=models/remote.glb
+Holdable=true
+HoldPosition=(-0.25,-0.15,0.4)
+InteractiveChild=btn_power,button,onClick:advance_step
+InteractiveChild=btn_up,button,onClick:navigate:up
+InteractiveChild=btn_down,button,onClick:navigate:down
+```
+
+#### Naming Convention Mesh GLB
+
+I nomi delle mesh figlie nel file GLB devono corrispondere ai nomi definiti in `InteractiveChild`:
+
+```
+pulpito_completo.glb
+├── body (mesh principale)
+├── key_switch (mesh rotante - chiave)
+├── led_on (mesh LED acceso)
+├── led_off (mesh LED spento)
+├── screen_home (mesh schermo home)
+├── screen_menu (mesh schermo menu)
+└── btn_menu (mesh pulsante)
+```
+
+#### API Debug Console
+
+```javascript
+// Oggetti registrati
+InteractiveObject3D.listObjects()                    // Lista tutti gli oggetti
+InteractiveObject3D.debugInfo()                      // Debug completo
+
+// Stato
+InteractiveObject3D.getState('pulpito')              // Stato completo oggetto
+InteractiveObject3D.getState('pulpito', 'key_switch') // Valore singola proprietà
+InteractiveObject3D.setState('pulpito', 'key_switch', 'on')  // Cambia stato
+
+// Azioni
+InteractiveObject3D.executeAction('pulpito', 'setScreen:menu')
+
+// Eventi
+InteractiveObject3D.on('button_click', (data) => console.log(data))
+InteractiveObject3D.on('state_change', (data) => console.log(data))
+```
+
+#### Flusso Interazione
+
+```
+1. CLICK SU MODELLO
+   └── Scene3D.handleModelClick() rileva click
+   └── Raycaster trova mesh figlia interattiva
+
+2. GESTIONE CLICK
+   └── InteractiveObject3D.handleClick(mesh)
+   └── Se button → emette evento per StepController
+   └── Se rotary → cicla stato + anima rotazione
+
+3. AGGIORNAMENTO STATO
+   └── setState() aggiorna oggetto.state
+   └── applyState() aggiorna visibilità mesh figlie
+   └── Notifica StepController con triggerStep('physical', triggerId)
+```
+
+#### Caratteristiche
+- ✅ **Zero Breaking Changes**: Modelli senza figli interattivi funzionano normalmente
+- ✅ **Raycast Ricorsivo**: Rileva click su mesh figlie
+- ✅ **Feedback Visivo**: Hover e click con emissione luminosa
+- ✅ **State Machine**: Ogni oggetto mantiene stato interno
+- ✅ **Visibilità Condizionale**: LED/schermi visibili in base a stato
+- ✅ **Animazioni Smooth**: Rotazione elementi con TWEEN
+- ✅ **Integrazione StepController**: Trigger automatici su interazione
+
+---
 
 ## 📝 Sintassi Tutorial Essenziali
 
@@ -177,6 +788,13 @@ SnapTargets=vite_A:foro_1_original,foro_2_original;vite_B:foro_1_original  # For
 AssemblyMode=true                    # Modalità assemblaggio
 DrivenObject=tubo.glb,traslazione:(x,y,z,durata)  # Oggetto singolo con movimento indipendente
 DrivenObjects=flangia.glb,traslazione:(x1,y1,z1,dur1);tubo.glb,traslazione:(x2,y2,z2,dur2)  # Multipli oggetti con movimenti indipendenti
+ScreenMode=true                      # Attiva modalità schermo interattivo
+ScreenView=home                      # Vista iniziale schermo
+RequiredHotspot=btn_start            # Hotspot richiesto per completare step
+RequiredSequence=key_1,key_2,key_ok  # Sequenza hotspot obbligatoria
+HoldAction=pick                      # Prendi oggetto in mano
+HoldAction=release                   # Rilascia oggetto
+HoldState=held                       # Richiede oggetto già in mano
 ```
 
 ### Comportamenti
@@ -191,6 +809,19 @@ Scene3D.getCameraInfo()                  // Posizione camera + sintassi tutorial
 Scene3D.listAvailableObjects()           // Oggetti disponibili per CameraTarget
 Scene3D.findModelByName('nome')          // Trova modello
 Scene3D.exportCurrentModelPositions()    // Export posizioni correnti
+
+// Camera avanzata
+Scene3D.setCameraFromInfo({              // Imposta camera completa
+    position: {x, y, z},
+    rotation: {x, y, z},
+    pivot: {x, y, z},
+    distance: 0.69,
+    fov: 75,
+    animate: true,
+    duration: 1.0
+})
+Scene3D.panCamera(deltaX, deltaY)        // Pan manuale camera
+// Controlli tastiera: ← → ↑ ↓ per pan camera
 
 // Drag & Drop
 DragDropSystem.isEnabled()               // Stato sistema
@@ -216,6 +847,25 @@ findStep("vite")                         // Cerca step per nome/titolo
 UI.jumpToStep(10)                        // Metodo completo (alternativo)
 UI.listTutorialSteps()                   // Metodo completo (alternativo)
 UI.jumpToStepByName("rimuovi filtro")    // Metodo completo (alternativo)
+
+// Schermi Interattivi (ScreenSystem)
+ScreenSystem.listScreens()               // Lista tutti gli schermi registrati
+ScreenSystem.getScreenState('pannello')  // Stato corrente schermo
+ScreenSystem.setView('pannello', 'menu') // Cambia vista forzato
+ScreenSystem.listHotspots('pannello')    // Lista hotspot vista corrente
+ScreenSystem.executeAction('azione')     // Esegui azione forzata
+ScreenSystem.focusScreen('pannello')     // Focus su schermo
+ScreenSystem.unfocusScreen()             // Esci da focus
+ScreenSystem.debugInfo()                 // Debug completo sistema
+
+// Oggetti Impugnabili (HoldableSystem)
+HoldableSystem.listHoldables()           // Lista oggetti impugnabili
+HoldableSystem.isHeld('telecomando')     // Verifica se in mano
+HoldableSystem.pickObject('telecomando') // Prendi oggetto
+HoldableSystem.releaseObject('name')     // Rilascia oggetto specifico
+HoldableSystem.releaseAll()              // Rilascia tutti gli oggetti
+HoldableSystem.getCurrentlyHeld()        // Lista oggetti in mano
+HoldableSystem.debugInfo()               // Debug completo sistema
 ```
 
 ## 🚀 Funzionalità Avanzate

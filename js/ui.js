@@ -1294,6 +1294,22 @@ window.UI = {
 
         // RIMOSSO: nascondimento planaxis ora avviene immediatamente durante il caricamento in Scene3D.addModel()
 
+        // ═══════════════════════════════════════════════════════════════
+        // SCREEN SYSTEM: Inizializza visibilità viste dopo caricamento modelli
+        // ═══════════════════════════════════════════════════════════════
+        if (window.ScreenSystem && window.ScreenSystem.screens.size > 0) {
+            console.log('📺 [UI] Inizializzazione visibilità viste ScreenSystem...');
+            window.ScreenSystem.initializeVisibility();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // STEP CONTROLLER: Inizializza controller step centralizzato
+        // ═══════════════════════════════════════════════════════════════
+        if (window.StepController && !window.StepController.initialized) {
+            console.log('🎮 [UI] Inizializzazione StepController...');
+            window.StepController.init();
+        }
+
         // DEBUG: Stato finale dei controlli touch dopo caricamento completo
         setTimeout(() => {
             console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');
@@ -2356,6 +2372,19 @@ window.UI = {
         let currentTutorial = null;
         let currentStep = null;
         let globalProperties = {}; // Raccoglie proprietà globali prima del primo tutorial
+
+        // ═══════════════════════════════════════════════════════════════
+        // SCREEN SYSTEM: Variabili per parsing definizioni schermi
+        // ═══════════════════════════════════════════════════════════════
+        let currentScreenSection = null;  // { type: 'screen'|'screenview'|'hotspot'|'action', id: string, properties: {} }
+        const screenDefinitions = {
+            screens: new Map(),
+            views: new Map(),
+            hotspots: new Map(),
+            actions: new Map(),
+            interactiveObjects: new Map(),  // InteractiveObject3D
+            stateGroups: new Map()          // StateGroup per varianti mutuamente esclusive
+        };
         
         for (let line of lines) {
             line = line.trim();
@@ -2373,6 +2402,93 @@ window.UI = {
             // Rileva inizio sezione [Nome]
             if (line.startsWith('[') && line.endsWith(']')) {
                 const sectionName = line.slice(1, -1);
+
+                // ═══════════════════════════════════════════════════════════════
+                // SCREEN SYSTEM: Rileva sezioni speciali per schermi interattivi
+                // ═══════════════════════════════════════════════════════════════
+
+                // [Screen:id] - Definizione schermo
+                if (sectionName.startsWith('Screen:')) {
+                    // Salva sezione precedente se era una sezione screen
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const screenId = sectionName.substring(7).trim(); // Rimuovi "Screen:"
+                    currentScreenSection = { type: 'screen', id: screenId, properties: {} };
+                    console.log(`📺 [PARSER] Sezione Screen rilevata: "${screenId}"`);
+                    continue;
+                }
+
+                // [ScreenView:screen.view] - Definizione vista
+                if (sectionName.startsWith('ScreenView:')) {
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const viewId = sectionName.substring(11).trim(); // Rimuovi "ScreenView:"
+                    currentScreenSection = { type: 'screenview', id: viewId, properties: {} };
+                    console.log(`📄 [PARSER] Sezione ScreenView rilevata: "${viewId}"`);
+                    continue;
+                }
+
+                // [Hotspot:id] - Definizione hotspot
+                if (sectionName.startsWith('Hotspot:')) {
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const hotspotId = sectionName.substring(8).trim(); // Rimuovi "Hotspot:"
+                    currentScreenSection = { type: 'hotspot', id: hotspotId, properties: {} };
+                    console.log(`🔘 [PARSER] Sezione Hotspot rilevata: "${hotspotId}"`);
+                    continue;
+                }
+
+                // [ScreenAction:id] - Definizione azione
+                if (sectionName.startsWith('ScreenAction:')) {
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const actionId = sectionName.substring(13).trim(); // Rimuovi "ScreenAction:"
+                    currentScreenSection = { type: 'action', id: actionId, properties: {} };
+                    console.log(`⚡ [PARSER] Sezione ScreenAction rilevata: "${actionId}"`);
+                    continue;
+                }
+
+                // ═══════════════════════════════════════════════════════════════
+                // INTERACTIVE OBJECT 3D: Rileva sezioni per oggetti interattivi
+                // ═══════════════════════════════════════════════════════════════
+
+                // [InteractiveObject:id] - Definizione oggetto 3D interattivo
+                if (sectionName.startsWith('InteractiveObject:')) {
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const objectId = sectionName.substring(18).trim(); // Rimuovi "InteractiveObject:"
+                    currentScreenSection = { type: 'interactiveObject', id: objectId, properties: {} };
+                    console.log(`🎮 [PARSER] Sezione InteractiveObject rilevata: "${objectId}"`);
+                    continue;
+                }
+
+                // [StateGroup:name] - Definizione gruppo varianti mutuamente esclusive
+                if (sectionName.startsWith('StateGroup:')) {
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const groupName = sectionName.substring(11).trim(); // Rimuovi "StateGroup:"
+                    currentScreenSection = { type: 'stateGroup', id: groupName, properties: {} };
+                    console.log(`🔀 [PARSER] Sezione StateGroup rilevata: "${groupName}"`);
+                    continue;
+                }
+
+                // Se arriviamo qui, non è una sezione screen - salva eventuale sezione screen precedente
+                if (currentScreenSection) {
+                    this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    currentScreenSection = null;
+                }
 
                 // Determina se è un tutorial principale o uno step
                 const isStep = sectionName.toLowerCase().startsWith('step ') ||
@@ -2451,7 +2567,15 @@ window.UI = {
             // Parsa proprietà (chiave=valore)
             else if (line && line.includes('=')) {
                 const [key, value] = line.split('=').map(s => s.trim());
-                
+
+                // ═══════════════════════════════════════════════════════════════
+                // SCREEN SYSTEM: Se siamo in una sezione screen, salva proprietà lì
+                // ═══════════════════════════════════════════════════════════════
+                if (currentScreenSection) {
+                    currentScreenSection.properties[key] = value;
+                    continue; // Salta il resto del parsing proprietà
+                }
+
                 if (!currentTutorial) {
                     // Proprietà globali prima del primo tutorial - raccogliamo in globalProperties
                     globalProperties[key] = value;
@@ -2563,12 +2687,22 @@ window.UI = {
                 currentTutorial.steps.push(currentStep);
             }
         }
-        
+
         // Salva l'ultimo tutorial se esiste
         if (currentTutorial && currentTutorial.steps.length > 0) {
             tutorials.push(currentTutorial);
         }
-        
+
+        // ═══════════════════════════════════════════════════════════════
+        // SCREEN SYSTEM: Salva ultima sezione e registra in ScreenSystem
+        // ═══════════════════════════════════════════════════════════════
+        if (currentScreenSection) {
+            this.saveScreenSection(currentScreenSection, screenDefinitions);
+        }
+
+        // Registra tutte le definizioni in ScreenSystem
+        this.registerScreenDefinitions(screenDefinitions);
+
         AppConfig.log(3, 'Tutorials parsed:', tutorials);
         
         // Memorizza i tutorial disponibili
@@ -2588,7 +2722,115 @@ window.UI = {
         
         return tutorials;
     },
-    
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SCREEN SYSTEM: Metodi helper per parsing definizioni
+    // ═══════════════════════════════════════════════════════════════════════
+
+    /**
+     * Salva una sezione screen nel registro temporaneo
+     */
+    saveScreenSection: function(section, definitions) {
+        if (!section || !section.type || !section.id) return;
+
+        switch (section.type) {
+            case 'screen':
+                definitions.screens.set(section.id, section.properties);
+                break;
+            case 'screenview':
+                definitions.views.set(section.id, section.properties);
+                break;
+            case 'hotspot':
+                definitions.hotspots.set(section.id, section.properties);
+                break;
+            case 'action':
+                definitions.actions.set(section.id, section.properties);
+                break;
+            case 'interactiveObject':
+                definitions.interactiveObjects.set(section.id, section.properties);
+                break;
+            case 'stateGroup':
+                definitions.stateGroups.set(section.id, section.properties);
+                break;
+        }
+    },
+
+    /**
+     * Registra tutte le definizioni screen in ScreenSystem
+     */
+    registerScreenDefinitions: function(definitions) {
+        if (!window.ScreenSystem) {
+            if (definitions.screens.size > 0 || definitions.views.size > 0 ||
+                definitions.hotspots.size > 0 || definitions.actions.size > 0) {
+                console.warn('[UI] ⚠️ ScreenSystem non disponibile, definizioni schermi ignorate');
+            }
+            return;
+        }
+
+        // Pulisci definizioni precedenti
+        window.ScreenSystem.clearDefinitions();
+
+        // Registra schermi
+        definitions.screens.forEach((props, id) => {
+            window.ScreenSystem.registerScreen(id, props);
+        });
+
+        // Registra viste (con supporto per Model e Hotspots)
+        definitions.views.forEach((props, viewKey) => {
+            // viewKey è nel formato "screenId.viewId"
+            const [screenId, viewId] = viewKey.split('.');
+
+            // Passa l'oggetto config completo con Model e Hotspots
+            const viewConfig = {
+                Model: props.Model || null,
+                Hotspots: props.Hotspots || ''
+            };
+
+            window.ScreenSystem.registerView(screenId, viewId, viewConfig);
+            console.log(`📄 [UI] Vista "${viewKey}": Model=${viewConfig.Model || '(nessuno)'}, Hotspots=${viewConfig.Hotspots || '(nessuno)'}`);
+        });
+
+        // Registra hotspot
+        definitions.hotspots.forEach((props, id) => {
+            window.ScreenSystem.registerHotspot(id, props);
+        });
+
+        // Registra azioni
+        definitions.actions.forEach((props, id) => {
+            window.ScreenSystem.registerAction(id, props);
+        });
+
+        const totalDefs = definitions.screens.size + definitions.views.size +
+                          definitions.hotspots.size + definitions.actions.size;
+        if (totalDefs > 0) {
+            console.log(`📺 [UI] ScreenSystem: Registrate ${definitions.screens.size} schermi, ` +
+                        `${definitions.views.size} viste, ${definitions.hotspots.size} hotspot, ` +
+                        `${definitions.actions.size} azioni`);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // INTERACTIVE OBJECT 3D: Registra oggetti interattivi
+        // ═══════════════════════════════════════════════════════════════
+        if (window.InteractiveObject3D && definitions.interactiveObjects.size > 0) {
+            definitions.interactiveObjects.forEach((props, id) => {
+                console.log(`🎮 [UI] Registrazione InteractiveObject: "${id}"`);
+                window.InteractiveObject3D.registerFromTutorial(id, props);
+            });
+            console.log(`🎮 [UI] InteractiveObject3D: Registrati ${definitions.interactiveObjects.size} oggetti interattivi`);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // STATE GROUPS: Registra gruppi varianti mutuamente esclusive
+        // ═══════════════════════════════════════════════════════════════
+        if (window.InteractiveObject3D && definitions.stateGroups.size > 0) {
+            definitions.stateGroups.forEach((props, id) => {
+                console.log(`🔀 [UI] Registrazione StateGroup: "${id}"`);
+                window.InteractiveObject3D.registerStateGroupFromTutorial(id, props);
+            });
+            console.log(`🔀 [UI] StateGroups: Registrati ${definitions.stateGroups.size} gruppi di varianti`);
+        }
+    },
+
     /**
      * Seleziona un tutorial specifico
      */
@@ -3109,6 +3351,13 @@ window.UI = {
         console.log(`[DEBUG] 🚀 Step properties:`, step.properties);
         AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
 
+        // ═══════════════════════════════════════════════════════════════
+        // STEP CONTROLLER: Notifica cambio step corrente
+        // ═══════════════════════════════════════════════════════════════
+        if (window.StepController) {
+            window.StepController.setCurrentStep(this.currentStepIndex, step);
+        }
+
         // NUOVO: Mostra modal informativo se presente parametro Message
         if (step.properties.Message) {
             const messageTitle = step.properties.MessageTitle || step.title || 'Informazione';
@@ -3162,6 +3411,99 @@ window.UI = {
         // Applica impostazioni modelli se presenti
         if (window.Scene3D && window.Scene3D.applyModelSettings) {
             window.Scene3D.applyModelSettings(step);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // SCREEN SYSTEM: Gestione modalità schermo interattivo
+        // ═══════════════════════════════════════════════════════════════════════
+        if (step.properties.ScreenMode === 'true' && window.ScreenSystem) {
+            console.log(`📺 [UI] ScreenMode attivato per step: "${step.title}"`);
+
+            // Determina quale schermo attivare
+            let screenId = null;
+            if (step.properties.Elemento) {
+                // Estrai ID schermo dal nome modello
+                const modelName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+                // Cerca schermo registrato che ha questo modello
+                window.ScreenSystem.screens.forEach((config, id) => {
+                    if (config.model && config.model.includes(modelName)) {
+                        screenId = id;
+                    }
+                });
+
+                // Se non trovato per modello, usa il nome del modello come ID
+                if (!screenId) {
+                    screenId = modelName;
+                }
+            }
+
+            if (screenId) {
+                // Attiva focus sullo schermo
+                const viewId = step.properties.ScreenView || null;
+                window.ScreenSystem.focusScreen(screenId, viewId);
+
+                // Configura requisiti per completamento step
+                const requiredHotspot = step.properties.RequiredHotspot || null;
+                const requiredSequence = step.properties.RequiredSequence || null;
+                window.ScreenSystem.configureStepRequirements(requiredHotspot, requiredSequence);
+
+                AppConfig.log(2, `📺 SCREEN MODE: Schermo "${screenId}" in focus`);
+            } else {
+                console.warn(`[UI] ⚠️ ScreenMode attivo ma nessuno schermo trovato per step`);
+            }
+        } else if (window.ScreenSystem && window.ScreenSystem.enabled) {
+            // Se ScreenMode non attivo in questo step ma era attivo prima, disattiva
+            window.ScreenSystem.unfocusScreen();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // HOLDABLE SYSTEM: Gestione oggetti prendibili in mano
+        // ═══════════════════════════════════════════════════════════════════════
+        if (window.HoldableSystem) {
+            // Gestione azione pick/release
+            if (step.properties.HoldAction) {
+                const action = step.properties.HoldAction.toLowerCase();
+
+                // Determina quale oggetto gestire
+                let objectName = null;
+                if (step.properties.Elemento) {
+                    objectName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+                }
+
+                if (objectName) {
+                    if (action === 'pick') {
+                        console.log(`[UI] 🤚 HoldAction=pick per oggetto: "${objectName}"`);
+                        window.HoldableSystem.pickObject(objectName);
+                    } else if (action === 'release') {
+                        console.log(`[UI] ✋ HoldAction=release per oggetto: "${objectName}"`);
+                        window.HoldableSystem.releaseObject(objectName);
+                    }
+                } else {
+                    console.warn(`[UI] ⚠️ HoldAction specificato ma nessun Elemento definito nello step`);
+                }
+            }
+
+            // Verifica stato richiesto (HoldState)
+            if (step.properties.HoldState) {
+                const requiredState = step.properties.HoldState.toLowerCase();
+                let objectName = null;
+
+                if (step.properties.Elemento) {
+                    objectName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+                }
+
+                if (objectName) {
+                    const isCurrentlyHeld = window.HoldableSystem.isHeld(objectName);
+
+                    if (requiredState === 'held' && !isCurrentlyHeld) {
+                        console.warn(`[UI] ⚠️ HoldState=held richiesto ma "${objectName}" non è tenuto in mano`);
+                    } else if (requiredState === 'released' && isCurrentlyHeld) {
+                        console.warn(`[UI] ⚠️ HoldState=released richiesto ma "${objectName}" è ancora tenuto`);
+                    } else {
+                        AppConfig.log(3, `🤚 HoldState="${requiredState}" verificato per "${objectName}"`);
+                    }
+                }
+            }
         }
 
         if (step.properties.Utensile) {

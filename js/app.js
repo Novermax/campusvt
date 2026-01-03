@@ -246,6 +246,38 @@ window.App = {
                 }
             }
 
+            // Carica ScreenSystem per schermi interattivi (touchscreen simulati)
+            try {
+                await this.loadModule('./js/core/ScreenSystem.js?v=1000001');
+                console.log('✅ Sistema schermi interattivi caricato');
+            } catch (error) {
+                console.warn('⚠️ ScreenSystem non caricato (opzionale):', error.message);
+            }
+
+            // Carica HoldableSystem per oggetti prendibili in mano
+            try {
+                await this.loadModule('./js/core/HoldableSystem.js?v=1000001');
+                console.log('✅ Sistema oggetti prendibili caricato');
+            } catch (error) {
+                console.warn('⚠️ HoldableSystem non caricato (opzionale):', error.message);
+            }
+
+            // Carica StepController per gestione centralizzata trigger/azioni step
+            try {
+                await this.loadModule('./js/core/StepController.js?v=1000001');
+                console.log('✅ Controller step centralizzato caricato');
+            } catch (error) {
+                console.warn('⚠️ StepController non caricato (opzionale):', error.message);
+            }
+
+            // Carica InteractiveObject3D per oggetti 3D con figli interattivi (pulsanti, chiavi, LED)
+            try {
+                await this.loadModule('./js/core/InteractiveObject3D.js?v=1000001');
+                console.log('✅ Sistema oggetti 3D interattivi caricato');
+            } catch (error) {
+                console.warn('⚠️ InteractiveObject3D non caricato (opzionale):', error.message);
+            }
+
             await this.loadModule('./js/scene3d-modular.js?nocache=1000019');  // Modulo modulare compatibile
             await this.loadModule('./js/modelloader.js?nocache=1000011');
 
