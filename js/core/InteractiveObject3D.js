@@ -182,9 +182,15 @@ window.InteractiveObject3D = {
         const childProperties = [];
         for (const [key, value] of Object.entries(properties)) {
             if (key.startsWith('InteractiveChild')) {
-                childProperties.push(value);
+                // Supporta sia array (nuovo formato) che stringa singola (vecchio formato)
+                if (Array.isArray(value)) {
+                    childProperties.push(...value);
+                } else {
+                    childProperties.push(value);
+                }
             }
         }
+        console.log(`🎮 [InteractiveObject3D] Parsing ${childProperties.length} InteractiveChild per "${modelName}"`)
 
         for (const childDef of childProperties) {
             const parsed = this.parseInteractiveChildDef(childDef);
@@ -280,13 +286,13 @@ window.InteractiveObject3D = {
         obj.model = model3D;
         obj.childMeshes.clear();
 
-        // Trova mesh figlie interattive per nome
+        // Trova mesh/group figli interattivi per nome
         model3D.traverse((child) => {
-            if (child.isMesh) {
-                const childConfig = obj.config.interactiveChildren[child.name];
+            const childConfig = obj.config.interactiveChildren[child.name];
 
-                if (childConfig) {
-                    // Marca come interattivo
+            if (childConfig) {
+                if (child.isMesh) {
+                    // È una Mesh diretta - marca come interattivo
                     child.userData.interactive = true;
                     child.userData.interactiveParent = modelName;
                     child.userData.interactiveConfig = childConfig;
@@ -299,8 +305,51 @@ window.InteractiveObject3D = {
                     // Aggiungi alla mappa
                     obj.childMeshes.set(child.name, child);
 
-                    console.log(`   ✓ Figlio interattivo trovato: "${child.name}" (${childConfig.type})`);
+                    console.log(`   ✓ Figlio interattivo (Mesh): "${child.name}" (${childConfig.type})`);
+
+                } else if (child.isGroup || child.isObject3D) {
+                    // È un Group - propaga userData.interactive a tutte le mesh child
+                    // (Blender può esportare come Group quando nome datablock ≠ nome oggetto)
+                    child.traverse((subChild) => {
+                        if (subChild.isMesh) {
+                            subChild.userData.interactive = true;
+                            subChild.userData.interactiveParent = modelName;
+                            subChild.userData.interactiveConfig = childConfig;
+                            // Salva anche il nome del Group parent per riferimento
+                            subChild.userData.interactiveGroupName = child.name;
+
+                            // Salva materiale originale per feedback
+                            if (subChild.material) {
+                                subChild.userData.originalMaterial = subChild.material.clone();
+                            }
+
+                            console.log(`   ✓ Figlio interattivo (via Group "${child.name}"): mesh "${subChild.name}" (${childConfig.type})`);
+                        }
+                    });
+
+                    // Aggiungi il Group alla mappa (per StateGroup visibility)
+                    obj.childMeshes.set(child.name, child);
+
+                    console.log(`   ✓ Figlio interattivo (Group): "${child.name}" (${childConfig.type})`);
                 }
+            }
+        });
+
+        // Fix materiali luminosi/emissivi (es. "luminoso.001" sui pulsanti)
+        // Aumenta emissiveIntensity per renderli più brillanti
+        model3D.traverse((child) => {
+            if (child.isMesh && child.material) {
+                const materials = Array.isArray(child.material) ? child.material : [child.material];
+                materials.forEach((mat, index) => {
+                    const matName = mat.name ? mat.name.toLowerCase() : '';
+                    if (matName.includes('luminoso') || matName.includes('emissive') || matName.includes('glow')) {
+                        mat.emissiveIntensity = 3.0;
+                        if (mat.emissive && mat.emissive.r === 0 && mat.emissive.g === 0 && mat.emissive.b === 0) {
+                            mat.emissive = mat.color ? mat.color.clone() : new THREE.Color(1, 1, 1);
+                        }
+                        console.log(`💡 [InteractiveObject3D] Materiale luminoso potenziato: ${mat.name} su mesh ${child.name}[${index}]`);
+                    }
+                });
             }
         });
 
@@ -377,13 +426,23 @@ window.InteractiveObject3D = {
      * Gestisce click su pulsante
      */
     handleButtonClick: function(mesh, parentName, config) {
+        // Usa il nome del Group parent se la mesh è stata registrata via Group
+        // (Blender esporta come Group quando nome datablock ≠ nome oggetto)
+        const buttonId = mesh.userData.interactiveGroupName || mesh.name;
+
+        // STEP GATING CHECK - Verifica se il pulsante è attivo nello step corrente
+        if (window.StepGatingManager && !window.StepGatingManager.isButtonActive(buttonId)) {
+            console.log(`🚫 [InteractiveObject3D] Pulsante "${buttonId}" bloccato dal gating - step ${window.StepGatingManager.currentStepIndex}`);
+            return false; // Ignora click
+        }
+
         const action = config.onClick;
 
-        console.log(`🔘 [InteractiveObject3D] Button click: ${parentName}.${mesh.name} → ${action}`);
+        console.log(`🔘 [InteractiveObject3D] Button click: ${parentName}.${buttonId} (mesh: ${mesh.name}) → ${action}`);
 
-        // Emetti evento per StepController
+        // Emetti evento per StepController - usa buttonId (nome Group) per trigger
         if (window.StepController) {
-            const triggerId = `${parentName}.${mesh.name}`;
+            const triggerId = `${parentName}.${buttonId}`;
             const handled = window.StepController.triggerStep('physical', triggerId);
 
             if (handled) {
@@ -399,7 +458,8 @@ window.InteractiveObject3D = {
         // Emetti evento custom
         this.emitEvent('button_click', {
             parent: parentName,
-            child: mesh.name,
+            child: buttonId,        // Nome Group (o mesh se non c'è Group)
+            meshName: mesh.name,    // Nome mesh effettivo
             action: action
         });
 
@@ -611,20 +671,24 @@ window.InteractiveObject3D = {
         console.log(`📋 [DEBUG] Mesh nel modello "${model3D.name || 'unnamed'}":`, allMeshNames.slice(0, 30), allMeshNames.length > 30 ? `...e altre ${allMeshNames.length - 30}` : '');
 
         for (const [groupName, group] of this.stateGroups) {
-            group.meshRefs.clear();
+            // NON fare clear() - potrebbe cancellare mesh già collegate da altri modelli!
+            // Solo aggiunge nuove mesh trovate in questo modello
 
             console.log(`🔍 [DEBUG] Cercando varianti per StateGroup "${groupName}":`, group.variants);
 
-            // Cerca le mesh varianti nel modello
+            // Cerca le varianti nel modello - sia Mesh che Group/Object3D
+            // (Blender può esportare come Group quando il nome datablock è diverso dal nome oggetto)
             model3D.traverse((child) => {
-                if (child.isMesh && group.variants.includes(child.name)) {
+                if (group.variants.includes(child.name)) {
+                    // Trovata variante - può essere Mesh o Group
                     group.meshRefs.set(child.name, child);
                     totalAttached++;
 
-                    // Imposta visibilità iniziale
+                    // Imposta visibilità iniziale (funziona sia per Mesh che Group)
                     child.visible = (child.name === group.current);
 
-                    console.log(`   🔗 StateGroup "${groupName}": mesh "${child.name}" ${child.visible ? '(visibile)' : '(nascosta)'}`);
+                    const objectType = child.isMesh ? 'Mesh' : (child.isGroup ? 'Group' : 'Object3D');
+                    console.log(`   🔗 StateGroup "${groupName}": ${objectType} "${child.name}" ${child.visible ? '(visibile)' : '(nascosta)'}`);
                 }
             });
 
@@ -801,16 +865,20 @@ window.InteractiveObject3D = {
     showHoverFeedback: function(mesh) {
         if (!mesh.material) return;
 
-        // Salva materiale se non già salvato
+        // Salva materiale e valori originali SOLO la prima volta
         if (!mesh.userData.originalMaterial) {
             mesh.userData.originalMaterial = mesh.material.clone();
         }
 
         // Applica emissione
         if (mesh.material.emissive) {
-            mesh.userData.originalEmissive = mesh.material.emissive.getHex();
+            // Salva valori originali SOLO se non già salvati
+            if (mesh.userData.originalEmissive === undefined) {
+                mesh.userData.originalEmissive = mesh.material.emissive.getHex();
+                mesh.userData.originalEmissiveIntensity = mesh.material.emissiveIntensity || 0;
+            }
             mesh.material.emissive.setHex(this.config.hoverColor);
-            mesh.material.emissiveIntensity = 0.3;
+            mesh.material.emissiveIntensity = Math.max(0.3, mesh.userData.originalEmissiveIntensity);
         }
     },
 
@@ -822,7 +890,8 @@ window.InteractiveObject3D = {
 
         if (mesh.material.emissive && mesh.userData.originalEmissive !== undefined) {
             mesh.material.emissive.setHex(mesh.userData.originalEmissive);
-            mesh.material.emissiveIntensity = 0;
+            // Ripristina intensità originale invece di resettare a 0
+            mesh.material.emissiveIntensity = mesh.userData.originalEmissiveIntensity || 0;
         }
     },
 
@@ -832,15 +901,23 @@ window.InteractiveObject3D = {
     showClickFeedback: function(mesh) {
         if (!mesh.material || !mesh.material.emissive) return;
 
-        const originalEmissive = mesh.material.emissive.getHex();
+        // Usa valori originali salvati se disponibili, altrimenti salva ora
+        if (mesh.userData.originalEmissive === undefined) {
+            mesh.userData.originalEmissive = mesh.material.emissive.getHex();
+            mesh.userData.originalEmissiveIntensity = mesh.material.emissiveIntensity || 0;
+        }
+
+        const originalEmissive = mesh.userData.originalEmissive;
+        const originalIntensity = mesh.userData.originalEmissiveIntensity;
+
         mesh.material.emissive.setHex(this.config.clickColor);
-        mesh.material.emissiveIntensity = 0.5;
+        mesh.material.emissiveIntensity = Math.max(0.5, originalIntensity);
 
         // Ripristina dopo delay
         setTimeout(() => {
             if (mesh.material && mesh.material.emissive) {
                 mesh.material.emissive.setHex(originalEmissive);
-                mesh.material.emissiveIntensity = 0;
+                mesh.material.emissiveIntensity = originalIntensity;
             }
         }, this.config.clickFeedbackDuration);
     },

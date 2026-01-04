@@ -1,0 +1,28 @@
+L'applicazione è guidata da un flusso di lavoro basato su passaggi (Step1,Step2,Step3 ...).
+
+Requisiti:
+
+1) Gating di ingresso
+- Nella scena sono presenti diversi pulsanti 3D.
+- Questi pulsanti NON devono essere sempre attivi.
+- Ogni pulsante deve rispondere SOLO durante passaggi specifici.
+- Al di fuori del passaggio (o dei passaggi) consentito, l'interazione dei pulsanti deve essere ignorata o disabilitata.
+
+2) Feature gating (controllo della tlecamera)
+- Normalmente la rotazione della telecamera è limitata.
+- In un passaggio specifico, la rotazione della telecamera deve essere sbloccata
+  (ad esempio consentire di guardare verso l'alto).
+- Al di fuori di questa fase, la telecamera deve tornare alla modalità limitata.
+
+Domande:
+- Come dovrebbe essere implementato in modo pulito il gating basato su Step?
+- In che modo la gestione degli input e le attivazioni/disattivazione delle funzionalità possono essere controllate dallo step attivo?
+- Quale modello  è consigliato per evitare controlli sparsi dei passaggi?
+
+Requisiti:
+- Stato del passo centralizzato
+- Nessuna logica hardcoded all'interno dei singoli pulsanti
+- Facile da estendere con nuovi passaggi e funzionalità recintate
+
+Fornire una spiegazione architettonica e uno pseudocodice di esempio.
+

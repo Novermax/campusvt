@@ -280,6 +280,27 @@ window.StepController = {
                 return;
             }
 
+            // Formato: "setVariant:gruppo=variante"
+            const variantMatch = part.match(/^setVariant:([^=]+)=(.+)$/i);
+            if (variantMatch) {
+                actions.push({
+                    type: 'setVariant',
+                    group: variantMatch[1].trim(),
+                    variant: variantMatch[2].trim()
+                });
+                return;
+            }
+
+            // Formato: "cycleVariant:gruppo"
+            const cycleMatch = part.match(/^cycleVariant:(.+)$/i);
+            if (cycleMatch) {
+                actions.push({
+                    type: 'cycleVariant',
+                    group: cycleMatch[1].trim()
+                });
+                return;
+            }
+
             console.warn(`[StepController] ⚠️ Azione non riconosciuta: "${part}"`);
         });
 
@@ -385,9 +406,43 @@ window.StepController = {
                 this.executeHoldAction(action);
                 break;
 
+            case 'setVariant':
+                this.executeSetVariantAction(action);
+                break;
+
+            case 'cycleVariant':
+                this.executeCycleVariantAction(action);
+                break;
+
             default:
                 console.warn(`[StepController] ⚠️ Tipo azione sconosciuto: "${action.type}"`);
         }
+    },
+
+    /**
+     * Esegue azione setVariant
+     */
+    executeSetVariantAction: function(action) {
+        if (!window.InteractiveObject3D) {
+            console.warn('[StepController] InteractiveObject3D non disponibile');
+            return;
+        }
+
+        console.log(`[StepController] 🔀 setVariant: ${action.group}=${action.variant}`);
+        window.InteractiveObject3D.setStateVariant(action.group, action.variant);
+    },
+
+    /**
+     * Esegue azione cycleVariant
+     */
+    executeCycleVariantAction: function(action) {
+        if (!window.InteractiveObject3D) {
+            console.warn('[StepController] InteractiveObject3D non disponibile');
+            return;
+        }
+
+        console.log(`[StepController] 🔄 cycleVariant: ${action.group}`);
+        window.InteractiveObject3D.cycleStateVariant(action.group);
     },
 
     /**
@@ -495,9 +550,11 @@ window.StepController = {
         console.log('[StepController] ⏭️ Auto-avanzamento schedulato...');
 
         setTimeout(() => {
-            if (window.UI && typeof window.UI.goToNextStep === 'function') {
+            if (window.UI && typeof window.UI.nextStep === 'function') {
                 console.log('[StepController] ⏭️ Avanzamento allo step successivo');
-                window.UI.goToNextStep();
+                window.UI.nextStep();
+            } else {
+                console.error('[StepController] ❌ UI.nextStep non disponibile!');
             }
         }, 500);
     },

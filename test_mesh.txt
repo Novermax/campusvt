@@ -1,0 +1,13 @@
+import bpy
+
+for name in ["chiave0", "pstart0"]:
+    o = bpy.data.objects[name]
+    print(name, o.type, o.data)
+	
+	
+ottengo
+	
+chiave0 MESH <bpy_struct, Mesh("Cylinder.001") at 0x000002658326F5A0>
+pstart0 MESH <bpy_struct, Mesh("p_off") at 0x0000026597D8D620>	
+
+

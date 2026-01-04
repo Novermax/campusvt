@@ -264,10 +264,18 @@ window.App = {
 
             // Carica StepController per gestione centralizzata trigger/azioni step
             try {
-                await this.loadModule('./js/core/StepController.js?v=1000001');
+                await this.loadModule('./js/core/StepController.js?v=1000002');
                 console.log('✅ Controller step centralizzato caricato');
             } catch (error) {
                 console.warn('⚠️ StepController non caricato (opzionale):', error.message);
+            }
+
+            // Carica StepGatingManager per gating pulsanti e camera basato su step
+            try {
+                await this.loadModule('./js/core/StepGatingManager.js?v=1000001');
+                console.log('✅ Step Gating Manager caricato');
+            } catch (error) {
+                console.warn('⚠️ StepGatingManager non caricato (opzionale):', error.message);
             }
 
             // Carica InteractiveObject3D per oggetti 3D con figli interattivi (pulsanti, chiavi, LED)

@@ -3094,4 +3094,380 @@ console.log(MobileOptimizer.deviceCapabilities)
 
 ---
 
-**Ultimo aggiornamento**: 21 Gennaio 2026 - Sistema MobileOptimizer implementato e documentato
+## 🚦 Sistema StepGatingManager - Gating Basato su Step (Gennaio 2026)
+
+**Implementazione**: Sistema centralizzato per controllare l'attivazione di pulsanti 3D e limiti camera in base allo step corrente del tutorial
+
+### Problema Risolto
+- **Pulsanti Sempre Attivi**: I pulsanti 3D rispondevano in qualsiasi step
+- **Camera Non Controllata**: Limiti di rotazione camera fissi per tutto il tutorial
+- **Soluzione**: Gating dichiarativo nel tutorial.txt con stato centralizzato
+
+### Architettura
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                  StepGatingManager                       │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │  currentStep: number                             │    │
+│  │  stepConfigs: Map<stepId, StepConfig>           │    │
+│  │  listeners: Array<callback>                      │    │
+│  └─────────────────────────────────────────────────┘    │
+│                         │                                │
+│    setStep() ──────────▶│◀────────── isButtonActive()   │
+│                         │                                │
+└─────────────────────────┼───────────────────────────────┘
+                          │ notifica
+         ┌────────────────┼────────────────┐
+         ▼                ▼                ▼
+   ┌──────────┐    ┌──────────┐    ┌──────────┐
+   │ Buttons  │    │  Camera  │    │  Tools   │
+   │ System   │    │ Controls │    │  System  │
+   └──────────┘    └──────────┘    └──────────┘
+```
+
+### File Core
+- **File**: `js/core/StepGatingManager.js` (350+ righe)
+- **API**: `window.StepGatingManager`
+- **Dipendenze**: Scene3D (per limiti camera)
+
+### Sintassi Tutorial.txt
+
+```ini
+[Step 3 - Premi pulsante START]
+Elemento=models/pannello.glb
+Descrizione=Premi il pulsante START per avviare
+
+# GATING CONFIG
+ActiveButtons=btn_start,btn_emergency    # Solo questi pulsanti rispondono
+EnabledTools=Mani                         # Solo tool Mani disponibile
+CameraUnlocked=false                      # Camera limitata (default)
+
+[Step 5 - Guarda in alto]
+Descrizione=Guarda verso l'alto per vedere il display
+
+# Camera sbloccata per questo step
+CameraUnlocked=true
+CameraLimits=(0, 3.14)                    # minPhi, maxPhi in radianti
+
+[Step 6 - Configurazione manuale]
+ActiveButtons=btn_manual,btn_up,btn_down,btn_confirm
+CameraUnlocked=false                      # Torna limitata
+```
+
+### Proprietà Gating
+
+| Proprietà | Formato | Descrizione |
+|-----------|---------|-------------|
+| `ActiveButtons=` | `btn1,btn2,...` | Lista pulsanti che rispondono in questo step |
+| `EnabledTools=` | `Mani,ChiaveBrugola,...` | Lista tool abilitati in questo step |
+| `CameraUnlocked=` | `true` \| `false` | Sblocca rotazione camera completa |
+| `CameraLimits=` | `(minPhi,maxPhi)` | Limiti specifici camera in radianti |
+
+### Comportamento
+
+1. **Pulsanti Non in Lista**: Se `ActiveButtons` è definito, pulsanti non in lista vengono ignorati
+2. **Lista Vuota/Assente**: Se `ActiveButtons` non è definito, TUTTI i pulsanti rispondono (default permissivo)
+3. **Camera**: `CameraUnlocked=true` rimuove limiti, `CameraLimits` imposta limiti specifici
+4. **Reset Automatico**: Configurazioni resettate quando si cambia tutorial
+
+### API Debug Console
+
+```javascript
+// Stato sistema
+StepGatingManager.debugInfo()                    // Info completa sistema
+StepGatingManager.listConfigs()                  // Lista tutte le configurazioni
+
+// Verifica gating
+StepGatingManager.isButtonActive('btn_start')    // true/false
+StepGatingManager.isToolEnabled('Mani')          // true/false
+StepGatingManager.isCameraUnlocked()             // true/false
+
+// Gestione manuale (per debug)
+StepGatingManager.setStep(5, 'Step 5')           // Forza cambio step
+StepGatingManager.getStepConfig(3)               // Config step specifico
+```
+
+### Log Console
+
+```javascript
+🚦 [StepGating] Step 2 → 3 ("Step 3 - Premi pulsante START")
+🚦 [StepGating] Pulsanti attivi: [btn_start, btn_emergency]
+🚫 [InteractiveObject3D] Pulsante "btn_manual" bloccato dal gating - step 3
+📷 [StepGating] Camera SBLOCCATA - rotazione libera
+```
+
+### Integrazione
+
+#### InteractiveObject3D (automatica)
+```javascript
+// In handleButtonClick - check automatico
+if (!StepGatingManager.isButtonActive(buttonId)) {
+    return false; // Click ignorato
+}
+```
+
+#### Camera Controls (automatica)
+```javascript
+// In setStep - applica limiti camera automaticamente
+StepGatingManager.applyCameraConfig(config);
+```
+
+### Caratteristiche
+
+- ✅ **Dichiarativo**: Config in tutorial.txt, non codice sparso
+- ✅ **Centralizzato**: Un solo punto di controllo per tutti i gating
+- ✅ **Permissivo di Default**: Se non specifichi gating, tutto funziona normalmente
+- ✅ **Estensibile**: Facile aggiungere nuovi tipi di gating
+- ✅ **Debug Facile**: Log e API console per troubleshooting
+
+### File Modificati
+
+- `js/core/StepGatingManager.js` - NUOVO - Sistema gating completo
+- `js/core/InteractiveObject3D.js:385-392` - Check gating in handleButtonClick
+- `js/ui.js:2909-2969` - Parsing proprietà gating dal tutorial
+- `js/ui.js:3375-3380` - Notifica StepGatingManager al cambio step
+- `js/app.js:273-279` - Caricamento modulo
+
+### Compatibilità
+
+- ✅ **Zero Breaking Changes**: Tutorial senza proprietà gating funzionano normalmente
+- ✅ **Backward Compatible**: Pulsanti rispondono sempre se ActiveButtons non definito
+- ✅ **Progressive Enhancement**: Aggiungi gating gradualmente ai tutorial esistenti
+
+---
+
+## 🔄 Comportamento Export Blender - Group vs Mesh (Gennaio 2026)
+
+**Problema**: Blender esporta oggetti in modo diverso a seconda della nomenclatura, causando problemi di rilevamento mesh.
+
+### Causa Root
+
+Quando in Blender il **nome dell'oggetto** è diverso dal **nome del datablock (mesh)**:
+- `chiave0` con datablock `Cylinder.001` → Esportato come **Mesh** diretta ✅
+- `pstart0` con datablock `p_off` → Esportato come **Group** con Mesh child ⚠️
+
+### Struttura Risultante
+
+```
+# Oggetto con stesso nome e datablock → Mesh diretta
+pulpito
+├── chiave0 (Mesh) ✅ direttamente interattivo
+└── chiave1 (Mesh) ✅ direttamente interattivo
+
+# Oggetto con nome diverso dal datablock → Group + child
+pulpito
+├── pstart0 (Group)
+│   ├── p_off (Mesh)      # Nome dal datablock
+│   └── p_off_1 (Mesh)    # Secondo materiale
+└── pstart1 (Group)
+    ├── p_on (Mesh)
+    └── p_on_1 (Mesh)     # Materiale luminoso
+```
+
+### Soluzione Implementata
+
+**InteractiveObject3D.attachModel()** ora gestisce entrambi i casi:
+
+```javascript
+// Per Mesh diretta
+if (child.isMesh) {
+    child.userData.interactive = true;
+    child.userData.interactiveConfig = childConfig;
+}
+
+// Per Group - propaga userData a tutte le mesh figlie
+else if (child.isGroup) {
+    child.traverse((subChild) => {
+        if (subChild.isMesh) {
+            subChild.userData.interactive = true;
+            subChild.userData.interactiveConfig = childConfig;
+            subChild.userData.interactiveGroupName = child.name; // Nome del Group
+        }
+    });
+}
+```
+
+### Mesh Multi-Materiale
+
+Quando un oggetto Blender ha **più materiali**, viene diviso in mesh separate:
+
+```
+p_on (oggetto Blender con 2 materiali)
+├── p_on (Mesh) → Material.068
+└── p_on_1 (Mesh) → Luminoso.001
+```
+
+### Best Practice Blender
+
+Per evitare problemi:
+1. **Rinomina il datablock** per farlo coincidere col nome oggetto
+2. Oppure usa i nomi che escono dall'export nel `tutorial.txt`
+3. Il sistema gestisce automaticamente entrambi i casi
+
+---
+
+## 💡 Sistema Materiali Luminosi - Auto-Potenziamento (Gennaio 2026)
+
+**Funzionalità**: Potenziamento automatico di materiali emissivi durante il caricamento modelli
+
+### Problema Risolto
+
+- Materiali con `emissiveIntensity` basso (0 o 1) non visibili
+- Pulsanti luminosi che dovrebbero brillare appaiono spenti
+- Materiali emissivi da Blender non rispettano intensità attesa
+
+### Soluzione Implementata
+
+**ModelLoader.fixLuminousMaterial()** - Chiamato per ogni materiale durante il caricamento:
+
+```javascript
+fixLuminousMaterial: function(material, meshName) {
+    const matName = material.name.toLowerCase();
+
+    // Materiali luminosi/emissivi
+    if (matName.includes('luminoso') || matName.includes('emissive') || matName.includes('glow')) {
+        material.emissiveIntensity = 3.0;  // Potenzia intensità
+
+        // Se emissive è nero, usa colore base
+        if (material.emissive.r === 0 && material.emissive.g === 0 && material.emissive.b === 0) {
+            material.emissive = material.color.clone();
+        }
+
+        console.log(`💡 Materiale luminoso potenziato: ${material.name}`);
+    }
+}
+```
+
+### Naming Convention Materiali
+
+Per attivare il potenziamento automatico, nomina i materiali in Blender con:
+- `luminoso` - es. `Luminoso.001`, `pulsante_luminoso`
+- `emissive` - es. `LED_emissive`, `glow_emissive`
+- `glow` - es. `button_glow`, `indicator_glow`
+
+### Supporto Multi-Materiale
+
+Il sistema gestisce correttamente mesh con array di materiali:
+
+```javascript
+const materials = Array.isArray(child.material) ? child.material : [child.material];
+materials.forEach((mat) => {
+    this.fixLuminousMaterial(mat, child.name);
+});
+```
+
+### Log Console
+
+```javascript
+💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.001 su mesh p_on_1, emissiveIntensity=3
+💡 [ModelLoader] Materiale luminoso potenziato: Letter Glow.001 su mesh telaio_14, emissiveIntensity=3
+```
+
+---
+
+## 🎨 Sistema Feedback Visivo - Preservazione Colori Originali (Gennaio 2026)
+
+**Funzionalità**: Sistema hover/click che preserva correttamente i colori originali dei materiali
+
+### Problema Risolto
+
+- Dopo hover/click, i materiali rimanevano col colore feedback (verde/giallo)
+- I valori `originalEmissive` venivano sovrascritti ad ogni hover
+- Materiali luminosi perdevano la loro intensità originale
+
+### Soluzione Implementata
+
+**Salvataggio valori originali SOLO la prima volta**:
+
+```javascript
+showHoverFeedback: function(mesh) {
+    // Salva valori originali SOLO se non già salvati
+    if (mesh.userData.originalEmissive === undefined) {
+        mesh.userData.originalEmissive = mesh.material.emissive.getHex();
+        mesh.userData.originalEmissiveIntensity = mesh.material.emissiveIntensity || 0;
+    }
+
+    // Applica feedback
+    mesh.material.emissive.setHex(this.config.hoverColor);
+    mesh.material.emissiveIntensity = Math.max(0.3, mesh.userData.originalEmissiveIntensity);
+}
+
+removeHoverFeedback: function(mesh) {
+    // Ripristina valori originali salvati
+    mesh.material.emissive.setHex(mesh.userData.originalEmissive);
+    mesh.material.emissiveIntensity = mesh.userData.originalEmissiveIntensity || 0;
+}
+```
+
+### Comportamento
+
+1. **Prima interazione**: Salva `originalEmissive` e `originalEmissiveIntensity` in `userData`
+2. **Hover**: Applica colore verde (`hoverColor: 0x44ff44`) mantenendo intensità minima
+3. **Click**: Applica colore giallo (`clickColor: 0xffff00`) con intensità aumentata
+4. **Fine interazione**: Ripristina esattamente i valori originali salvati
+
+### Preservazione Intensità Luminosa
+
+Per materiali luminosi (es. `emissiveIntensity: 3.0`):
+- L'intensità originale viene preservata dopo hover/click
+- Il feedback usa `Math.max(threshold, originalIntensity)` per non ridurre luminosità
+
+### File Modificati
+
+- `js/modelloader.js:904-923` - Nuova funzione `fixLuminousMaterial()`
+- `js/modelloader.js:777-784` - Chiamata per ogni materiale durante caricamento
+- `js/core/InteractiveObject3D.js:865-923` - Fix salvataggio colori originali
+
+---
+
+## 🎯 Sessione 4 Gennaio 2026 - Fix StepController e Auto-Avanzamento
+
+### Problemi Risolti
+
+1. **Materiale Luminoso Non Rilevato**
+   - Mesh con materiali multipli (`child.material` array) non processati
+   - Fix: `ModelLoader.fixLuminousMaterial()` gestisce `Array.isArray(child.material)`
+
+2. **Colori Originali Persi Durante Hover/Click**
+   - `emissiveIntensity` resettato a 0 dopo ogni interazione
+   - Fix: Salva `originalEmissiveIntensity` solo la prima volta
+
+3. **Azione `setVariant` Non Riconosciuta**
+   - StepController non parsava `setVariant:gruppo=variante`
+   - Fix: Aggiunto regex parsing e `executeSetVariantAction()` in StepController.js
+
+4. **Step Non Avanza Dopo Trigger Accettato** ⭐ BUG CRITICO
+   - `scheduleAutoAdvance()` chiamava `UI.goToNextStep()` che NON ESISTE
+   - Fix: Cambiato in `UI.nextStep()` (linea 555 StepController.js)
+
+### File Modificati
+
+- `js/core/StepController.js:555` - Fix `goToNextStep()` → `nextStep()`
+- `js/core/StepController.js:283-302` - Parsing setVariant/cycleVariant
+- `js/core/StepController.js:409-446` - Esecuzione setVariant/cycleVariant
+- `js/app.js:267` - Versione StepController v=1000002
+- `js/modelloader.js` - Fix materiali multipli
+- `js/core/InteractiveObject3D.js` - Fix salvataggio colori originali
+
+### Sintassi Tutorial Verificata
+
+```ini
+# Step con trigger fisico e cambio variante
+[Step 1 - Vai alla schermata MDI]
+ActiveButtons=Pulsante_mdi                    # NO prefisso "pulpito."
+AcceptTrigger_Physical=pulpito.Pulsante_mdi   # CON prefisso per trigger
+OnPhysicalTrigger=setVariant:schermo=schermo002
+```
+
+### Debug Console Utili
+
+```javascript
+StepController.debugInfo()           // Stato completo controller
+StepController.listAcceptedTriggers() // Trigger accettati step corrente
+StepController.simulateTrigger('physical', 'pulpito.Pulsante_mdi') // Test
+```
+
+---
+
+**Ultimo aggiornamento**: 4 Gennaio 2026 - Fix StepController auto-avanzamento (goToNextStep → nextStep)

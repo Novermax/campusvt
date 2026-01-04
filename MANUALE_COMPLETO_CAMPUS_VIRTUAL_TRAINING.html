@@ -2897,6 +2897,353 @@ CameraTarget=pompa_vuoto
         </div>
     </div>
 
+    <!-- ===== SISTEMA STEPCONTROLLER E TRIGGER ===== -->
+    <div class="section page-break">
+        <h2>🎮 Sistema StepController - Trigger Fisici e Screen</h2>
+
+        <div class="info">
+            <strong>Funzionalità:</strong> Gestisce l'avanzamento del tutorial in base a interazioni dell'utente con pulsanti 3D fisici e hotspot su schermi. Permette di definire quali trigger sono accettati per ogni step.
+        </div>
+
+        <div class="controls-section">
+            <h3>📋 Sintassi Trigger nel Tutorial</h3>
+            <div class="code-block" data-lang="Tutorial">
+[Step 1 - Vai alla schermata MDI]
+Descrizione=Premi il pulsante MDI sul pulpito
+Utensile=Mani
+
+# Trigger fisico: click su pulsante 3D
+AcceptTrigger_Physical=pulpito.Pulsante_mdi
+
+# Azione da eseguire quando il trigger viene attivato
+OnPhysicalTrigger=setVariant:schermo=schermo002
+
+[Step 2 - Accendi la macchina]
+Descrizione=Ruota la chiave per accendere
+AcceptTrigger_Physical=pulpito.chiave0
+OnPhysicalTrigger=setVariant:chiave=chiave1
+
+[Step 3 - Premi hotspot su schermo]
+Descrizione=Tocca il pulsante START sullo schermo
+ScreenMode=true
+ScreenView=main
+
+# Trigger screen: click su hotspot
+AcceptTrigger_Screen=pannello.btn_start
+OnScreenTrigger=changeView:running
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h3>⚙️ Proprietà Trigger</h3>
+            <table>
+                <thead>
+                    <tr><th>Proprietà</th><th>Formato</th><th>Descrizione</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>AcceptTrigger_Physical=</code></td><td><code>modello.pulsante</code></td><td>Pulsante 3D che attiva lo step</td></tr>
+                    <tr><td><code>AcceptTrigger_Screen=</code></td><td><code>schermo.hotspot</code></td><td>Hotspot schermo che attiva lo step</td></tr>
+                    <tr><td><code>OnPhysicalTrigger=</code></td><td><code>azione1;azione2</code></td><td>Azioni da eseguire al trigger fisico</td></tr>
+                    <tr><td><code>OnScreenTrigger=</code></td><td><code>azione1;azione2</code></td><td>Azioni da eseguire al trigger screen</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-section">
+            <h3>🔧 Azioni Disponibili per OnTrigger</h3>
+            <table>
+                <thead>
+                    <tr><th>Azione</th><th>Sintassi</th><th>Descrizione</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Cambia Variante</td><td><code>setVariant:gruppo=variante</code></td><td>Cambia StateGroup</td></tr>
+                    <tr><td>Cambia Vista</td><td><code>changeView:vista</code></td><td>Cambia vista schermo</td></tr>
+                    <tr><td>Animazione</td><td><code>Animation:modello,rotazione:(x,y,z,dur)</code></td><td>Esegue animazione</td></tr>
+                    <tr><td>Suono</td><td><code>Sound:path/audio.mp3</code></td><td>Riproduce audio</td></tr>
+                </tbody>
+            </table>
+            <div class="tip">
+                <strong>💡 Azioni Multiple:</strong> Separa più azioni con <code>;</code> - Es: <code>OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo001</code>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h3>🔧 Comandi Debug Console</h3>
+            <div class="code-block" data-lang="JavaScript">
+// Debug completo
+StepController.debugInfo()
+
+// Lista trigger accettati nello step corrente
+StepController.listAcceptedTriggers()
+
+// Simula trigger (per test)
+StepController.simulateTrigger('physical', 'pulpito.chiave0')
+StepController.simulateTrigger('screen', 'pannello.btn_start')
+
+// Abilita/disabilita sistema
+StepController.setEnabled(true)
+StepController.setEnabled(false)
+            </div>
+        </div>
+
+        <div class="example">
+            <h5>🏭 Esempio Completo: Accensione Macchina</h5>
+            <div class="code-block" data-lang="Tutorial">
+# StateGroups definiti globalmente
+[StateGroup:chiave]
+Variants=chiave0,chiave1
+Default=chiave0
+
+[StateGroup:schermo]
+Variants=schermo_off,schermo_home,schermo_mdi
+Default=schermo_off
+
+# InteractiveObject
+[InteractiveObject:pulpito]
+Model=models/pulpito.glb
+InteractiveChild=chiave0,button,onClick:cycleVariant:chiave
+InteractiveChild=chiave1,button,onClick:cycleVariant:chiave
+InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo_mdi
+
+# Tutorial
+[Manutenzione Macchina]
+
+[Step 1 - Accendi macchina]
+Descrizione=Ruota la chiave per accendere
+AcceptTrigger_Physical=pulpito.chiave0
+OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo_home
+
+[Step 2 - Vai in MDI]
+Descrizione=Premi il pulsante MDI
+AcceptTrigger_Physical=pulpito.Pulsante_mdi
+OnPhysicalTrigger=setVariant:schermo=schermo_mdi
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SISTEMA STATEGROUP ===== -->
+    <div class="section page-break">
+        <h2>🔀 Sistema StateGroup - Varianti Mutuamente Esclusive</h2>
+
+        <div class="info">
+            <strong>Funzionalità:</strong> Gestisce gruppi di oggetti 3D dove solo UNO può essere visibile alla volta (es. chiave ON/OFF, schermi multipli, LED stati)
+        </div>
+
+        <div class="controls-section">
+            <h3>📋 Definizione StateGroup</h3>
+            <p>Definisci i gruppi di varianti nella sezione globale del tutorial.txt (prima del primo [Tutorial]):</p>
+            <div class="code-block" data-lang="Tutorial">
+# StateGroup per chiave accensione (due stati)
+[StateGroup:chiave]
+Variants=chiave0,chiave1
+Default=chiave0
+
+# StateGroup per pulsante Start (due stati)
+[StateGroup:start]
+Variants=pstart0,pstart1
+Default=pstart0
+
+# StateGroup per schermi (tre varianti)
+[StateGroup:schermo]
+Variants=schermo001,schermo002,schermo003
+Default=schermo001
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h3>🎮 Collegamento con InteractiveObject</h3>
+            <p>Collega i pulsanti alle azioni di cambio variante:</p>
+            <div class="code-block" data-lang="Tutorial">
+[InteractiveObject:pulpito]
+Model=models/pulpito.glb
+
+# Chiave rotante - click cicla variante
+InteractiveChild=chiave0,button,onClick:cycleVariant:chiave
+InteractiveChild=chiave1,button,onClick:cycleVariant:chiave
+
+# Pulsanti che impostano variante specifica
+InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo002
+InteractiveChild=Pulsante_home,button,onClick:setVariant:schermo=schermo001
+
+# Pulsante Start - cicla stato
+InteractiveChild=pstart0,button,onClick:cycleVariant:start
+InteractiveChild=pstart1,button,onClick:cycleVariant:start
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h3>🔧 Comandi Debug Console</h3>
+            <div class="code-block" data-lang="JavaScript">
+// Lista gruppi registrati
+InteractiveObject3D.listStateGroups()
+
+// Variante corrente di un gruppo
+InteractiveObject3D.getCurrentVariant('schermo')  // → "schermo001"
+
+// Tutte le varianti del gruppo
+InteractiveObject3D.getVariants('schermo')  // → ["schermo001", "schermo002", "schermo003"]
+
+// Cambia variante manualmente
+InteractiveObject3D.setStateVariant('schermo', 'schermo002')
+
+// Cicla alla prossima variante
+InteractiveObject3D.cycleStateVariant('chiave')
+
+// Debug completo sistema
+InteractiveObject3D.debugInfo()
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr><th>Azione</th><th>Sintassi</th><th>Descrizione</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>cycleVariant</code></td><td><code>onClick:cycleVariant:nomeGruppo</code></td><td>Cicla alla prossima variante</td></tr>
+                <tr><td><code>setVariant</code></td><td><code>onClick:setVariant:gruppo=variante</code></td><td>Imposta variante specifica</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== SISTEMA STEPGATINGMANAGER ===== -->
+    <div class="section page-break">
+        <h2>🚦 Sistema StepGatingManager - Controllo Step-Based</h2>
+
+        <div class="info">
+            <strong>Funzionalità:</strong> Controlla quali pulsanti 3D rispondono ai click in base allo step corrente del tutorial. Permette anche di sbloccare/limitare la camera per step specifici.
+        </div>
+
+        <div class="controls-section">
+            <h3>📋 Sintassi Tutorial</h3>
+            <div class="code-block" data-lang="Tutorial">
+[Step 3 - Premi pulsante START]
+Elemento=models/pannello.glb
+Descrizione=Premi il pulsante START per avviare
+
+# GATING - Solo questi pulsanti rispondono in questo step
+ActiveButtons=btn_start,btn_emergency
+
+# Tool abilitati (opzionale)
+EnabledTools=Mani
+
+# Camera bloccata (default)
+CameraUnlocked=false
+
+[Step 5 - Guarda in alto]
+Descrizione=Guarda verso l'alto per vedere il display
+
+# Camera sbloccata per questo step
+CameraUnlocked=true
+CameraLimits=(0, 3.14)    # minPhi, maxPhi in radianti
+
+[Step 6 - Configurazione]
+ActiveButtons=btn_manual,btn_up,btn_down,btn_confirm
+CameraUnlocked=false      # Torna limitata
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h3>⚙️ Proprietà Gating</h3>
+            <table>
+                <thead>
+                    <tr><th>Proprietà</th><th>Formato</th><th>Descrizione</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>ActiveButtons=</code></td><td><code>btn1,btn2,...</code></td><td>Lista pulsanti che rispondono (altri ignorati)</td></tr>
+                    <tr><td><code>EnabledTools=</code></td><td><code>Mani,ChiaveBrugola,...</code></td><td>Tool abilitati in questo step</td></tr>
+                    <tr><td><code>CameraUnlocked=</code></td><td><code>true|false</code></td><td>Sblocca rotazione camera completa</td></tr>
+                    <tr><td><code>CameraLimits=</code></td><td><code>(minPhi,maxPhi)</code></td><td>Limiti specifici camera (radianti)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-section">
+            <h3>🔧 Comandi Debug Console</h3>
+            <div class="code-block" data-lang="JavaScript">
+// Stato sistema
+StepGatingManager.debugInfo()              // Info completa
+StepGatingManager.listConfigs()            // Lista configurazioni
+
+// Verifica gating
+StepGatingManager.isButtonActive('btn_start')  // true/false
+StepGatingManager.isToolEnabled('Mani')        // true/false
+StepGatingManager.isCameraUnlocked()           // true/false
+
+// Gestione manuale (debug)
+StepGatingManager.setStep(5, 'Step 5')     // Forza cambio step
+StepGatingManager.getStepConfig(3)         // Config step specifico
+            </div>
+        </div>
+
+        <div class="tip">
+            <strong>💡 Comportamento Default:</strong> Se <code>ActiveButtons</code> NON è definito nello step, TUTTI i pulsanti rispondono normalmente. Il gating è opt-in.
+        </div>
+    </div>
+
+    <!-- ===== SISTEMA MATERIALI LUMINOSI ===== -->
+    <div class="section page-break">
+        <h2>💡 Sistema Materiali Luminosi e Feedback Visivo</h2>
+
+        <div class="info">
+            <strong>Funzionalità:</strong> Potenziamento automatico di materiali emissivi e preservazione colori originali durante hover/click
+        </div>
+
+        <div class="controls-section">
+            <h3>✨ Auto-Potenziamento Materiali</h3>
+            <p>I materiali con nomi specifici vengono automaticamente potenziati al caricamento:</p>
+            <table>
+                <thead>
+                    <tr><th>Nome Materiale (Blender)</th><th>Esempio</th><th>Effetto</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Contiene <code>luminoso</code></td><td><code>Luminoso.001</code>, <code>pulsante_luminoso</code></td><td><code>emissiveIntensity = 3.0</code></td></tr>
+                    <tr><td>Contiene <code>emissive</code></td><td><code>LED_emissive</code></td><td><code>emissiveIntensity = 3.0</code></td></tr>
+                    <tr><td>Contiene <code>glow</code></td><td><code>button_glow</code></td><td><code>emissiveIntensity = 3.0</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-section">
+            <h3>🔄 Comportamento Export Blender</h3>
+            <div class="warning">
+                <strong>⚠️ Attenzione:</strong> Blender esporta oggetti in modo diverso a seconda del naming:
+            </div>
+            <ul>
+                <li><strong>Nome oggetto = Nome datablock</strong> → Esportato come <strong>Mesh</strong> diretta ✅</li>
+                <li><strong>Nome oggetto ≠ Nome datablock</strong> → Esportato come <strong>Group</strong> con Mesh child</li>
+            </ul>
+            <p><strong>Multi-materiale:</strong> Oggetti con più materiali vengono divisi in mesh separate (es. <code>p_on</code> → <code>p_on</code> + <code>p_on_1</code>)</p>
+        </div>
+
+        <div class="controls-section">
+            <h3>🎨 Feedback Visivo Hover/Click</h3>
+            <table>
+                <thead>
+                    <tr><th>Evento</th><th>Colore</th><th>Intensità</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Hover</td><td>Verde (<code>#44ff44</code>)</td><td><code>max(0.3, originale)</code></td></tr>
+                    <tr><td>Click</td><td>Giallo (<code>#ffff00</code>)</td><td><code>max(0.5, originale)</code></td></tr>
+                    <tr><td>Rilascio</td><td>Originale</td><td>Originale</td></tr>
+                </tbody>
+            </table>
+            <div class="tip">
+                <strong>💡 Preservazione:</strong> I colori e intensità originali vengono salvati al primo hover e ripristinati correttamente. Materiali luminosi mantengono la loro luminosità.
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h3>📝 Log Console</h3>
+            <div class="code-block" data-lang="Console">
+💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.001 su mesh p_on_1, emissiveIntensity=3
+💡 [ModelLoader] Materiale luminoso potenziato: Letter Glow.001 su mesh telaio_14, emissiveIntensity=3
+🚦 [StepGating] Step 2 → 3 ("Step 3 - Premi pulsante START")
+🚦 [StepGating] Pulsanti attivi: [btn_start, btn_emergency]
+🚫 [InteractiveObject3D] Pulsante "btn_manual" bloccato dal gating - step 3
+            </div>
+        </div>
+    </div>
+
     <!-- ===== SEZIONE FINALE ===== -->
     <div class="section no-print" style="text-align: center; margin: 50px 0; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;">
         <h3>📄 Manuale Stampabile Completo</h3>

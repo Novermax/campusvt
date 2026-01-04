@@ -30,11 +30,11 @@ window.AppConfig = {
         lighting: {
             ambient: {
                 color: 0x606060,        // Colore luce ambientale (grigio medio)
-                intensity: 2.0          // Intensità luce ambientale bilanciata
+                intensity: 1.2          // Intensità luce ambientale (ridotta per schermi)
             },
             directional: {
                 color: 0xffffff,        // Colore luce direzionale (bianco)
-                intensity: 3.3,         // Intensità luce direzionale bilanciata
+                intensity: 2.0,         // Intensità luce direzionale (ridotta per schermi)
                 position: {             // Posizione della luce
                     x: 1,
                     y: 1,

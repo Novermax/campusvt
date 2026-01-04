@@ -776,10 +776,12 @@ window.ModelLoader = {
                                 // Multipli materiali
                                 child.material.forEach(mat => {
                                     this.fixGLTFMaterial(mat);
+                                    this.fixLuminousMaterial(mat, child.name);
                                 });
                             } else {
                                 // Singolo materiale
                                 this.fixGLTFMaterial(child.material);
+                                this.fixLuminousMaterial(child.material, child.name);
                             }
                         }
                         
@@ -830,10 +832,14 @@ window.ModelLoader = {
             console.log('🔍 Controllo material:', material.name, 'colorSum=' + colorSum);
             
             // Controlla se il materiale si chiama "nero" o simili - mantienilo nero
-            const isIntentionallyBlack = material.name && 
-                (material.name.toLowerCase().includes('nero') || 
+            // Include anche "schermo" per preservare texture degli schermi
+            const isIntentionallyBlack = material.name &&
+                (material.name.toLowerCase().includes('nero') ||
                  material.name.toLowerCase().includes('black') ||
-                 material.name.toLowerCase().includes('dark'));
+                 material.name.toLowerCase().includes('dark') ||
+                 material.name.toLowerCase().includes('schermo') ||
+                 material.name.toLowerCase().includes('screen') ||
+                 material.name.toLowerCase().includes('display'));
             
             if (isIntentionallyBlack) {
                 console.log('🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato:', material.name);
@@ -890,6 +896,30 @@ window.ModelLoader = {
             roughness: material.roughness,
             opacity: material.opacity
         });
+    },
+
+    /**
+     * Potenzia materiali luminosi/emissivi (es. "luminoso.001" sui pulsanti)
+     */
+    fixLuminousMaterial: function(material, meshName) {
+        if (!material || !material.name) return;
+
+        const matName = material.name.toLowerCase();
+
+        // Materiali luminosi/emissivi
+        if (matName.includes('luminoso') || matName.includes('emissive') || matName.includes('glow')) {
+            // Aumenta intensità emissiva
+            material.emissiveIntensity = 3.0;
+
+            // Se non ha già un colore emissivo, usa il colore base o bianco
+            if (material.emissive && material.emissive.r === 0 && material.emissive.g === 0 && material.emissive.b === 0) {
+                material.emissive = material.color ? material.color.clone() : new THREE.Color(1, 1, 1);
+            }
+
+            material.needsUpdate = true;
+
+            console.log(`💡 [ModelLoader] Materiale luminoso potenziato: ${material.name} su mesh ${meshName}, emissiveIntensity=${material.emissiveIntensity}`);
+        }
     },
     
     /**

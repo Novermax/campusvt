@@ -422,6 +422,98 @@ OnPhysicalTrigger=changeView:menu;animate:pump</code>
 </ul>
 </div>
 
+<div>
+<h2>🎮 StepController Trigger</h2>
+<div class="box syntax-section">
+<code><span class="param-important"># Trigger Fisici (pulsanti 3D)</span><br>
+AcceptTrigger_Physical=pulpito.chiave0<br>
+OnPhysicalTrigger=setVariant:chiave=chiave1<br><br>
+<span class="param-important"># Trigger Screen (hotspot)</span><br>
+AcceptTrigger_Screen=pannello.btn_start<br>
+OnScreenTrigger=changeView:running<br><br>
+<span class="param-important"># Azioni Multiple</span><br>
+OnPhysicalTrigger=setVariant:a=b;setVariant:c=d</code>
+</div>
+
+<h3>Azioni OnTrigger</h3>
+<table>
+<tr><th>Azione</th><th>Sintassi</th></tr>
+<tr><td>Variante</td><td><code>setVariant:gruppo=var</code></td></tr>
+<tr><td>Vista</td><td><code>changeView:nome</code></td></tr>
+<tr><td>Animazione</td><td><code>Animation:mod,rot:(x,y,z,d)</code></td></tr>
+<tr><td>Audio</td><td><code>Sound:path.mp3</code></td></tr>
+</table>
+
+<h3>Console StepController</h3>
+<ul>
+<li><code>StepController.debugInfo()</code></li>
+<li><code>StepController.listAcceptedTriggers()</code></li>
+<li><code>StepController.simulateTrigger('physical','id')</code></li>
+</ul>
+</div>
+
+<div>
+<h2>🔀 StateGroup</h2>
+<div class="box syntax-section">
+<code><span class="param-important"># Definizione (globale)</span><br>
+[StateGroup:chiave]<br>
+Variants=chiave0,chiave1<br>
+Default=chiave0<br><br>
+<span class="param-important"># InteractiveChild Azioni</span><br>
+onClick:cycleVariant:chiave<br>
+onClick:setVariant:schermo=schermo002</code>
+</div>
+
+<h3>Console StateGroup</h3>
+<ul>
+<li><code>InteractiveObject3D.listStateGroups()</code></li>
+<li><code>InteractiveObject3D.getCurrentVariant('nome')</code></li>
+<li><code>InteractiveObject3D.setStateVariant('gruppo','var')</code></li>
+<li><code>InteractiveObject3D.cycleStateVariant('gruppo')</code></li>
+</ul>
+</div>
+
+<div>
+<h2>🚦 StepGatingManager</h2>
+<div class="box syntax-section">
+<code><span class="param-important"># Sintassi Step</span><br>
+ActiveButtons=btn_start,btn_stop<br>
+EnabledTools=Mani,ChiaveBrugola<br>
+CameraUnlocked=true<br>
+CameraLimits=(0,3.14)</code>
+</div>
+
+<h3>Console Gating</h3>
+<ul>
+<li><code>StepGatingManager.debugInfo()</code></li>
+<li><code>StepGatingManager.isButtonActive('btn')</code></li>
+<li><code>StepGatingManager.isToolEnabled('Mani')</code></li>
+<li><code>StepGatingManager.isCameraUnlocked()</code></li>
+</ul>
+<p><strong>Default:</strong> Se ActiveButtons non definito → tutti rispondono</p>
+</div>
+
+<div>
+<h2>💡 Materiali Luminosi</h2>
+<div class="box syntax-section">
+<code><span class="param-important"># Naming Blender</span><br>
+Luminoso.001 → emissiveIntensity=3<br>
+LED_emissive → emissiveIntensity=3<br>
+button_glow → emissiveIntensity=3<br><br>
+<span class="param-important"># Feedback Visivo</span><br>
+Hover: verde #44ff44<br>
+Click: giallo #ffff00<br>
+Colori originali preservati</code>
+</div>
+
+<h3>⚠️ Export Blender</h3>
+<ul>
+<li>Nome obj = datablock → Mesh diretta</li>
+<li>Nome obj ≠ datablock → Group + child</li>
+<li>Multi-mat → p_on + p_on_1</li>
+</ul>
+</div>
+
 </div>
 
 </body>

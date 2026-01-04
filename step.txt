@@ -1,0 +1,69 @@
+ui.js?nocache=1000030:3209 🔥 CLICK TUTORIAL BUTTON: index=0, name="Manutenzione Elettromandrino"
+ui.js?nocache=1000030:3387 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+scene3d-modular.js?nocache=1000019:3285 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
+scene3d-modular.js?nocache=1000019:3370 🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...
+scene3d-modular.js?nocache=1000019:3371 🏠 DEBUG: loadedModels count: 4
+scene3d-modular.js?nocache=1000019:3372 🏠 DEBUG: scenarioOriginalPositions size: 4
+scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: pulpito
+scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: pulpito - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: pulpito
+scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: remote
+scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: remote - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: remote
+scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: pavimento
+scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: pavimento - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: pavimento
+scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: a500
+scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: a500 - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: a500
+scene3d-modular.js?nocache=1000019:3387 🏠 RESET SCENARIO: 4 modelli ripristinati alle posizioni originali dello scenario
+ui.js?nocache=1000030:2870 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
+config.js?nocache=999999:242 [6:24:06 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
+config.js?nocache=999999:242 [6:24:06 PM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
+config.js?nocache=999999:242 [6:24:06 PM] INFO: Tutorial selezionato: Manutenzione Elettromandrino (7 step)
+StepGatingManager.js?v=1000001:64 [StepGating] 🔄 Reset sistema...
+StepGatingManager.js?v=1000001:69 [StepGating] ✅ Reset completato
+StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 0: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 1 - Vai alla schermata MDI'}
+config.js?nocache=999999:242 [6:24:06 PM] INFO: 🚦 Step Gating: 1 configurazioni registrate
+ui.js?nocache=1000030:3325 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=1
+ui.js?nocache=1000030:3334 🔥 Button 0 set to ACTIVE (green)
+config.js?nocache=999999:242 [6:24:06 PM] INFO: Tutorial 1 attivato (comportamento radio button)
+ui.js?nocache=1000030:3212 🔥 Tutorial button state updated for index: 0
+ui.js?nocache=1000030:2979 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
+ui.js?nocache=1000030:3106 📹 TUTORIAL: CameraPos globale = (0.94, 1.29, 4.07)
+ui.js?nocache=1000030:3112 📹 TUTORIAL: CameraTarget globale = (0.97, 1.15, 3.52)
+ui.js?nocache=1000030:3131 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino"
+scene3d-modular.js?nocache=1000019:4159 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
+scene3d-modular.js?nocache=1000019:4180 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+scene3d-modular.js?nocache=1000019:4214 📹 CAMERA: Durata transizione = 2s
+scene3d-modular.js?nocache=1000019:4237 📹 CAMERA: Avvio animazione camera (durata: 2s)
+scene3d-modular.js?nocache=1000019:1251 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+scene3d-modular.js?nocache=1000019:1254 🔍 HIGHLIGHT: Nessun step o elemento corrente
+config.js?nocache=999999:242 [6:24:07 PM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
+ui.js?nocache=1000030:3426 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
+ui.js?nocache=1000030:3427 [DEBUG] 🚀 Step properties: {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.94, 1.29, 4.07)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
+config.js?nocache=999999:242 [6:24:07 PM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.94, 1.29, 4.07)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
+StepController.js?v=1000001:136 [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
+StepController.js?v=1000001:283  [StepController] ⚠️ Azione non riconosciuta: "setVariant:schermo=schermo002"
+(anonymous) @ StepController.js?v=1000001:283
+parseActionString @ StepController.js?v=1000001:240
+parseStepProperties @ StepController.js?v=1000001:192
+setCurrentStep @ StepController.js?v=1000001:140
+executeStep @ ui.js?nocache=1000030:3434
+(anonymous) @ ui.js?nocache=1000030:2994
+setTimeout
+selectTutorial @ ui.js?nocache=1000030:2978
+tutorialBtn.onclick @ ui.js?nocache=1000030:3210
+StepController.js?v=1000001:225 [StepController] 📋 Step 0 auto-configurato da proprietà: {triggers: {…}, actions: {…}, autoAdvance: true}
+StepGatingManager.js?v=1000001:134 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
+StepGatingManager.js?v=1000001:137 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
+scene3d-modular.js?nocache=1000019:4159 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
+scene3d-modular.js?nocache=1000019:4180 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+scene3d-modular.js?nocache=1000019:4214 📹 CAMERA: Durata transizione = 2s
+scene3d-modular.js?nocache=1000019:4237 📹 CAMERA: Avvio animazione camera (durata: 2s)
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+scene3d-modular.js?nocache=1000019:4486 📹 CAMERA: Animazione completata

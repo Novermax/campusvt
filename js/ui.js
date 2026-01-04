@@ -2566,13 +2566,27 @@ window.UI = {
             }
             // Parsa proprietà (chiave=valore)
             else if (line && line.includes('=')) {
-                const [key, value] = line.split('=').map(s => s.trim());
+                // Dividi solo sul PRIMO '=' per preservare '=' nei valori
+                const eqIndex = line.indexOf('=');
+                const key = line.substring(0, eqIndex).trim();
+                const value = line.substring(eqIndex + 1).trim();
 
                 // ═══════════════════════════════════════════════════════════════
                 // SCREEN SYSTEM: Se siamo in una sezione screen, salva proprietà lì
                 // ═══════════════════════════════════════════════════════════════
                 if (currentScreenSection) {
-                    currentScreenSection.properties[key] = value;
+                    // Gestione speciale per InteractiveChild multipli
+                    if (key === 'InteractiveChild') {
+                        if (!currentScreenSection.properties[key]) {
+                            currentScreenSection.properties[key] = [];
+                        } else if (!Array.isArray(currentScreenSection.properties[key])) {
+                            currentScreenSection.properties[key] = [currentScreenSection.properties[key]];
+                        }
+                        currentScreenSection.properties[key].push(value);
+                        console.log(`🎮 [PARSER] InteractiveChild aggiunto: ${value} (totale: ${currentScreenSection.properties[key].length})`);
+                    } else {
+                        currentScreenSection.properties[key] = value;
+                    }
                     continue; // Salta il resto del parsing proprietà
                 }
 
@@ -2889,8 +2903,70 @@ window.UI = {
         this.currentTutorial = this.availableTutorials[tutorialIndex];
         this.tutorialSteps = this.currentTutorial.steps;
         this.currentStepIndex = 0;
-        
+
         AppConfig.log(2, `Tutorial selezionato: ${this.currentTutorial.name} (${this.tutorialSteps.length} step)`);
+
+        // ═══════════════════════════════════════════════════════════════
+        // STEP GATING: Registra configurazioni gating per ogni step
+        // ═══════════════════════════════════════════════════════════════
+        if (window.StepGatingManager) {
+            window.StepGatingManager.reset(); // Reset configurazioni precedenti
+
+            this.tutorialSteps.forEach((step, index) => {
+                const props = step.properties || {};
+                const gatingConfig = {
+                    stepTitle: step.title,
+                    activeButtons: [],
+                    enabledTools: [],
+                    cameraUnlocked: false,
+                    cameraLimits: null
+                };
+
+                // Parse ActiveButtons (comma-separated list)
+                if (props.ActiveButtons) {
+                    const cleanValue = props.ActiveButtons.split('#')[0].trim();
+                    gatingConfig.activeButtons = cleanValue.split(',').map(b => b.trim()).filter(b => b);
+                }
+
+                // Parse EnabledTools (comma-separated list)
+                if (props.EnabledTools) {
+                    const cleanValue = props.EnabledTools.split('#')[0].trim();
+                    gatingConfig.enabledTools = cleanValue.split(',').map(t => t.trim()).filter(t => t);
+                }
+
+                // Parse CameraUnlocked (boolean)
+                if (props.CameraUnlocked) {
+                    gatingConfig.cameraUnlocked = props.CameraUnlocked.toLowerCase() === 'true';
+                }
+
+                // Parse CameraLimits (minPhi,maxPhi) o (minPhi,maxPhi,minTheta,maxTheta)
+                if (props.CameraLimits) {
+                    const cleanValue = props.CameraLimits.split('#')[0].trim();
+                    // Rimuovi parentesi se presenti
+                    const valuesStr = cleanValue.replace(/[()]/g, '');
+                    const values = valuesStr.split(',').map(v => parseFloat(v.trim()));
+
+                    if (values.length >= 2) {
+                        gatingConfig.cameraLimits = {
+                            minPhi: values[0],
+                            maxPhi: values[1],
+                            minTheta: values[2] !== undefined ? values[2] : -Infinity,
+                            maxTheta: values[3] !== undefined ? values[3] : Infinity
+                        };
+                    }
+                }
+
+                // Registra solo se ci sono configurazioni specifiche
+                if (gatingConfig.activeButtons.length > 0 ||
+                    gatingConfig.enabledTools.length > 0 ||
+                    gatingConfig.cameraUnlocked ||
+                    gatingConfig.cameraLimits) {
+                    window.StepGatingManager.registerStepConfig(index, gatingConfig);
+                }
+            });
+
+            AppConfig.log(2, `🚦 Step Gating: ${window.StepGatingManager.stepConfigs.size} configurazioni registrate`);
+        }
         
         // NON applicare le impostazioni camera del tutorial qui - rimani sulla posizione dello scenario
         // Le impostazioni camera del tutorial verranno applicate quando parte il primo step
@@ -3356,6 +3432,13 @@ window.UI = {
         // ═══════════════════════════════════════════════════════════════
         if (window.StepController) {
             window.StepController.setCurrentStep(this.currentStepIndex, step);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // STEP GATING MANAGER: Notifica cambio step per gating pulsanti/camera
+        // ═══════════════════════════════════════════════════════════════
+        if (window.StepGatingManager) {
+            window.StepGatingManager.setStep(this.currentStepIndex, step.title);
         }
 
         // NUOVO: Mostra modal informativo se presente parametro Message

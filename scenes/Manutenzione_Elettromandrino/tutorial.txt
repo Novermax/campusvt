@@ -23,10 +23,10 @@ CameraTransitionTime=2.0
 Variants=chiave0,chiave1
 Default=chiave0
 
-# NOTA: Pulsante Start non presente nel modello pulpito.glb
-# [StateGroup:start]
-# Variants=Start_off,Start_on
-# Default=Start_off
+# Pulsante Start: due stati (off/on)
+[StateGroup:start]
+Variants=pstart0,pstart1
+Default=pstart1
 
 # Emergenza: due stati (off/on)
 [StateGroup:emergenza]
@@ -53,9 +53,14 @@ InteractiveChild=chiave1,button,onClick:cycleVariant:chiave
 InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo002
 InteractiveChild=Pulsante_tool,button,onClick:setVariant:schermo=schermo002
 
-# NOTA: Pulsante Start non presente nel modello
-# InteractiveChild=Start_off,button,onClick:cycleVariant:start
-# InteractiveChild=Start_on,button,onClick:cycleVariant:start
+# Fungo di emergenza - cambia variante StateGroup "emergenza"
+InteractiveChild=emergenza_off,button,onClick:setVariant:emergenza=emergenza_on
+InteractiveChild=emergenza_on,button,onClick:setVariant:emergenza=emergenza_off   
+
+
+# Pulsante Start - cambia variante StateGroup "start"
+InteractiveChild=pstart0,button,onClick:cycleVariant:start
+InteractiveChild=pstart1,button,onClick:cycleVariant:start
 
 # ═══════════════════════════════════════════════════════════════════════════
 # TUTORIAL
@@ -74,19 +79,6 @@ CameraTransitionTime=2.0
 # FASE 1: ACCENSIONE MACCHINA
 # ───────────────────────────────────────────────────────────────────────────
 
-#[Step 1 - Accendi la macchina]
-#Descrizione=Ruota la chiave sul pulpito per accendere la macchina. Clicca sulla chiave per ruotarla in posizione ON.
-#CameraTarget=(0.97, 1.15, 3.52)
-#CameraPivot=(0.97, 1.15, 3.52)
-#CameraDistance=0.48
-#CameraFOV=75.0
-#CameraTransitionTime=2.0
-#Utensile=Mani
-# Trigger: click sulla chiave fisica
-#AcceptTrigger_Physical=pulpito.chiave0
-# Azioni: cambia variante chiave a "chiave1"
-#OnPhysicalTrigger=setVariant:chiave=chiave1
-
 [Step 1 - Vai alla schermata MDI]
 Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
 CameraPos=(0.94, 1.29, 4.07)
@@ -98,6 +90,7 @@ CameraFOV=55.0
 CameraTransitionTime=2.0
 Utensile=Mani
 # Trigger: click sul pulsante MDI
+ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
 OnPhysicalTrigger=setVariant:schermo=schermo002
 
@@ -107,9 +100,9 @@ CameraPos=(0.5, 1.2, 1.5)
 CameraTarget=(0, 0.8, 0)
 CameraZoom=0.8
 Utensile=Mani
-# NOTA: Pulsante Start non presente nel modello - step solo informativo
-# AcceptTrigger_Physical=pulpito.Start_off
-# OnPhysicalTrigger=setVariant:start=Start_on
+# Trigger: click sul pulsante Start (stato off)
+AcceptTrigger_Physical=pulpito.pstart0
+OnPhysicalTrigger=setVariant:start=pstart1
 
 # ───────────────────────────────────────────────────────────────────────────
 # FASE 2: OPERAZIONI MANUTENZIONE
@@ -139,9 +132,9 @@ CameraPos=(0.5, 1.2, 1.5)
 CameraTarget=(0, 0.8, 0)
 CameraZoom=0.8
 Utensile=Mani
-# NOTA: Pulsante Start non presente nel modello - step solo informativo
-# AcceptTrigger_Physical=pulpito.Start_on
-# OnPhysicalTrigger=setVariant:start=Start_off
+# Trigger: click sul pulsante Start (stato on)
+AcceptTrigger_Physical=pulpito.pstart1
+OnPhysicalTrigger=setVariant:start=pstart0
 
 # ───────────────────────────────────────────────────────────────────────────
 # FASE 3: SPEGNIMENTO

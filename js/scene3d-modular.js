@@ -81,7 +81,7 @@ const Scene3D = {
             minPhi: 0.2,
             maxPhi: Math.PI * 0.45,
             minY: 0.0,
-            minZoom: 0.3,
+            minZoom: 0.15,  // Permette zoom molto vicino (era 0.3)
             maxZoom: 15
         }
     },
@@ -173,7 +173,7 @@ const Scene3D = {
         }
         
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 2.8;
+        this.renderer.toneMappingExposure = 1.5; // Ridotto per migliorare visibilità schermi
     },
 
     initLights: function() {
@@ -206,7 +206,7 @@ const Scene3D = {
         this.scene.add(directionalLight);
 
         // Seconda luce direzionale dalla parte opposta (senza ombre)
-        const backLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.6); // Ridotta per schermi
         backLight.position.set(
             -directionalConfig.position.x,
             directionalConfig.position.y,
@@ -1025,6 +1025,79 @@ const Scene3D = {
             window.InteractiveObject3D.attachStateGroupMeshes(model);
         }
 
+        // Fix schermi: auto-illuminato con solo texture (non influenzato da luci scena)
+        // Include sia "schermo" (pulpito) che "schermo_r" (remote)
+        model.traverse((child) => {
+            const meshName = child.name ? child.name.toLowerCase() : '';
+            if (child.isMesh && (meshName.includes('schermo') || meshName.includes('screen') || meshName.includes('display'))) {
+                if (child.material) {
+                    const mat = child.material;
+
+                    // Usa la texture come emissiva (auto-illuminata)
+                    if (mat.map) {
+                        mat.emissiveMap = mat.map;
+                        mat.emissive = new THREE.Color(1, 1, 1); // Bianco = mostra texture completa
+                    }
+
+                    // Luminosità schermo (sempre applicata)
+                    mat.emissiveIntensity = 0.5; // Regola luminosità (0.3-1.0)
+
+                    // Rimuovi influenza luci (colore nero = nessun contributo diffuso)
+                    mat.color.setRGB(0, 0, 0);
+                    mat.metalness = 0;
+                    mat.roughness = 1;
+
+                    console.log(`🖥️ [Scene3D] Schermo auto-illuminato: ${child.name}, emissiveIntensity=${mat.emissiveIntensity}`);
+                }
+            }
+        });
+
+        // Fix trasparenza per materiali con texture alpha (es. "simbolini")
+        // Abilita la trasparenza e imposta alphaTest per scartare pixel trasparenti
+        model.traverse((child) => {
+            if (child.isMesh && child.material) {
+                const mat = child.material;
+                const matName = mat.name ? mat.name.toLowerCase() : '';
+
+                // Materiali che richiedono trasparenza (simbolini, etichette, labels, ecc.)
+                if (matName.includes('simbolini') || matName.includes('etichett') || matName.includes('label')) {
+                    mat.transparent = true;
+                    mat.alphaTest = 0.5;  // Scarta pixel con alpha < 0.5
+                    mat.depthWrite = true; // Mantiene depth buffer per evitare z-fighting
+                    mat.side = THREE.DoubleSide; // Visibile da entrambi i lati
+
+                    console.log(`🏷️ [Scene3D] Trasparenza attivata per materiale: ${mat.name} su mesh ${child.name}`);
+                }
+            }
+        });
+
+        // Fix materiali luminosi/emissivi (es. "luminoso.001" sui pulsanti)
+        // Aumenta emissiveIntensity per renderli più brillanti
+        // Supporta sia materiali singoli che array di materiali
+        model.traverse((child) => {
+            if (child.isMesh && child.material) {
+                // Gestisce sia materiale singolo che array di materiali
+                const materials = Array.isArray(child.material) ? child.material : [child.material];
+
+                materials.forEach((mat, index) => {
+                    const matName = mat.name ? mat.name.toLowerCase() : '';
+
+                    // Materiali luminosi/emissivi
+                    if (matName.includes('luminoso') || matName.includes('emissive') || matName.includes('glow')) {
+                        // Aumenta intensità emissiva
+                        mat.emissiveIntensity = 3.0;  // Più luminoso (default è 1.0)
+
+                        // Se non ha già un colore emissivo, usa il colore base
+                        if (mat.emissive && mat.emissive.r === 0 && mat.emissive.g === 0 && mat.emissive.b === 0) {
+                            mat.emissive = mat.color ? mat.color.clone() : new THREE.Color(1, 1, 1);
+                        }
+
+                        console.log(`💡 [Scene3D] Materiale luminoso potenziato: ${mat.name} su mesh ${child.name}[${index}], emissiveIntensity=${mat.emissiveIntensity}`);
+                    }
+                });
+            }
+        });
+
         // Nascondi immediatamente il modello planaxis (stato iniziale: spento)
         if (modelFilename && modelFilename.toLowerCase().includes('planaxis')) {
             model.visible = false;
@@ -1409,17 +1482,13 @@ const Scene3D = {
             }
 
             const intersection = selectedIntersect;
-            const targetModel = this.findRootModel(intersection.object);
-            
-            let newPivotPoint;
-            if (targetModel && this.isModelSelectable(targetModel)) {
-                const box = new THREE.Box3().setFromObject(targetModel);
-                const center = box.getCenter(new THREE.Vector3());
-                newPivotPoint = center.clone();
-            } else {
-                newPivotPoint = intersection.point.clone();
-            }
-            
+
+            // Usa sempre il punto di intersezione esatto dove l'utente ha cliccato
+            // Questo permette di puntare esattamente allo schermo, non al centro del modello parent
+            const newPivotPoint = intersection.point.clone();
+
+            console.log(`[Scene3D] 🎯 PIVOT CLICK: punto esatto (${newPivotPoint.x.toFixed(3)}, ${newPivotPoint.y.toFixed(3)}, ${newPivotPoint.z.toFixed(3)}) su mesh "${intersection.object.name}"`);
+
             // Anima fluida la camera verso il nuovo pivot point
             this.animateCameraToPivot(newPivotPoint);
         }

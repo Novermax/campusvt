@@ -1,0 +1,8 @@
+scene3d-modular.js?nocache=1000019:1257 [Scene3D] Click su modello - ToolsManager: mano, Body class aria: false
+scene3d-modular.js?nocache=1000019:1267 [Scene3D] 🎯 Click rilevato su modello: pulpito
+scene3d-modular.js?nocache=1000019:1274 [Scene3D] 📺 Uso sistema tutorial legacy per: pulpito
+scene3d-modular.js?nocache=1000019:1494 [DEBUG] 🎬 handleModelAction chiamato per: pulpito
+scene3d-modular.js?nocache=1000019:1497 [DEBUG] 📋 Current step: Step 1 - Vai alla schermata MDI
+scene3d-modular.js?nocache=1000019:1501 [DEBUG] 🔧 Tool required: "mano", active: "mano"
+scene3d-modular.js?nocache=1000019:1522 [DEBUG] 🎯 Model filename: "pulpito", Step element: "undefined"
+scene3d-modular.js?nocache=1000019:1526 [DEBUG] ℹ️ Step senza Elemento (DragDrop puro) - delego a DragDropSystem

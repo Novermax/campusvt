@@ -1,0 +1,7 @@
+import bpy
+
+for name in ["chiave0", "pstart0"]:
+    o = bpy.data.objects[name]
+    print(name, o.type, o.data)
+    
+print("finito")
