@@ -661,14 +661,44 @@ window.InteractiveObject3D = {
 
         let totalAttached = 0;
 
-        // DEBUG: Log tutti i nomi delle mesh nel modello
-        const allMeshNames = [];
+        // DEBUG: Log tutti i nomi degli oggetti nel modello usando traverse RICORSIVO
+        const allObjectNames = [];
+        const traverseDeep = (obj, depth = 0) => {
+            if (obj.name) {
+                const type = obj.isMesh ? 'M' : (obj.isGroup ? 'G' : 'O');
+                allObjectNames.push(`${'  '.repeat(depth)}${obj.name}(${type})`);
+            }
+            if (obj.children) {
+                obj.children.forEach(child => traverseDeep(child, depth + 1));
+            }
+        };
+        traverseDeep(model3D);
+        console.log(`📋 [DEBUG] Gerarchia oggetti in "${model3D.name || 'unnamed'}" (${allObjectNames.length} totali):`);
+        allObjectNames.slice(0, 100).forEach(name => console.log(`   ${name}`));
+        if (allObjectNames.length > 100) {
+            console.log(`   ...e altri ${allObjectNames.length - 100}`);
+        }
+
+        // Cerca specificamente oggetti con "tool" nel nome (case-insensitive) usando traverse ricorsivo
+        const toolObjects = [];
         model3D.traverse((child) => {
-            if (child.isMesh && child.name) {
-                allMeshNames.push(child.name);
+            if (child.name && child.name.toLowerCase().includes('tool')) {
+                const type = child.isMesh ? 'Mesh' : (child.isGroup ? 'Group' : 'Object3D');
+                // Include anche il parent path per debug
+                let path = child.name;
+                let parent = child.parent;
+                while (parent && parent.name) {
+                    path = parent.name + '/' + path;
+                    parent = parent.parent;
+                }
+                toolObjects.push(`${path} (${type})`);
             }
         });
-        console.log(`📋 [DEBUG] Mesh nel modello "${model3D.name || 'unnamed'}":`, allMeshNames.slice(0, 30), allMeshNames.length > 30 ? `...e altre ${allMeshNames.length - 30}` : '');
+        if (toolObjects.length > 0) {
+            console.log(`🔧 [DEBUG] Trovati oggetti con "tool" nel nome:`, toolObjects);
+        } else {
+            console.log(`🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "${model3D.name}"`);
+        }
 
         for (const [groupName, group] of this.stateGroups) {
             // NON fare clear() - potrebbe cancellare mesh già collegate da altri modelli!
@@ -677,20 +707,48 @@ window.InteractiveObject3D = {
             console.log(`🔍 [DEBUG] Cercando varianti per StateGroup "${groupName}":`, group.variants);
 
             // Cerca le varianti nel modello - sia Mesh che Group/Object3D
-            // (Blender può esportare come Group quando il nome datablock è diverso dal nome oggetto)
+            // IMPORTANTE: traverse() è già ricorsivo, ma verifichiamo con log espliciti
+            let foundInThisModel = 0;
             model3D.traverse((child) => {
+                // Match esatto
                 if (group.variants.includes(child.name)) {
                     // Trovata variante - può essere Mesh o Group
                     group.meshRefs.set(child.name, child);
                     totalAttached++;
+                    foundInThisModel++;
 
                     // Imposta visibilità iniziale (funziona sia per Mesh che Group)
                     child.visible = (child.name === group.current);
 
                     const objectType = child.isMesh ? 'Mesh' : (child.isGroup ? 'Group' : 'Object3D');
-                    console.log(`   🔗 StateGroup "${groupName}": ${objectType} "${child.name}" ${child.visible ? '(visibile)' : '(nascosta)'}`);
+                    console.log(`   ✅ StateGroup "${groupName}": TROVATO ${objectType} "${child.name}" ${child.visible ? '(visibile)' : '(nascosta)'}`);
                 }
             });
+
+            // Se non trovato con match esatto, prova match parziale (es. "tool0" in "tool0.001")
+            if (foundInThisModel === 0) {
+                console.log(`   ⚠️ Nessun match esatto trovato, provo match parziale...`);
+                for (const variantName of group.variants) {
+                    if (group.meshRefs.has(variantName)) continue; // Già trovato
+
+                    model3D.traverse((child) => {
+                        if (!child.name) return;
+                        // Match parziale: il nome dell'oggetto INIZIA con il nome della variante
+                        // Es: "tool0" matcha "tool0", "tool0.001", "tool0_copy"
+                        if (child.name.startsWith(variantName) || child.name === variantName) {
+                            if (!group.meshRefs.has(variantName)) {
+                                group.meshRefs.set(variantName, child);
+                                totalAttached++;
+
+                                child.visible = (variantName === group.current);
+
+                                const objectType = child.isMesh ? 'Mesh' : (child.isGroup ? 'Group' : 'Object3D');
+                                console.log(`   ✅ StateGroup "${groupName}": MATCH PARZIALE ${objectType} "${child.name}" → variante "${variantName}" ${child.visible ? '(visibile)' : '(nascosta)'}`);
+                            }
+                        }
+                    });
+                }
+            }
 
             // Verifica che tutte le varianti siano state trovate
             const found = group.meshRefs.size;
@@ -703,6 +761,69 @@ window.InteractiveObject3D = {
 
         if (totalAttached > 0) {
             console.log(`🔀 [InteractiveObject3D] Collegate ${totalAttached} mesh a StateGroups`);
+        }
+    },
+
+    /**
+     * Cerca varianti StateGroup in TUTTI i modelli della scena
+     * Chiamare dopo che tutti i modelli sono stati caricati
+     */
+    attachStateGroupMeshesFromScene: function() {
+        if (!window.Scene3D || !window.Scene3D.scene) {
+            console.warn('[InteractiveObject3D] Scene3D non disponibile');
+            return;
+        }
+
+        console.log(`🔍 [InteractiveObject3D] Cercando varianti StateGroup in TUTTA la scena...`);
+
+        let totalAttached = 0;
+
+        // Cerca in tutti i modelli della scena
+        window.Scene3D.scene.traverse((obj) => {
+            // Per ogni StateGroup, cerca le varianti
+            for (const [groupName, group] of this.stateGroups) {
+                // Match esatto
+                if (group.variants.includes(obj.name) && !group.meshRefs.has(obj.name)) {
+                    group.meshRefs.set(obj.name, obj);
+                    totalAttached++;
+
+                    obj.visible = (obj.name === group.current);
+
+                    const objectType = obj.isMesh ? 'Mesh' : (obj.isGroup ? 'Group' : 'Object3D');
+                    console.log(`   ✅ StateGroup "${groupName}": TROVATO in scena ${objectType} "${obj.name}" ${obj.visible ? '(visibile)' : '(nascosta)'}`);
+                }
+
+                // Match parziale per varianti non ancora trovate
+                for (const variantName of group.variants) {
+                    if (group.meshRefs.has(variantName)) continue;
+
+                    if (obj.name && (obj.name.startsWith(variantName) || obj.name === variantName)) {
+                        group.meshRefs.set(variantName, obj);
+                        totalAttached++;
+
+                        obj.visible = (variantName === group.current);
+
+                        const objectType = obj.isMesh ? 'Mesh' : (obj.isGroup ? 'Group' : 'Object3D');
+                        console.log(`   ✅ StateGroup "${groupName}": MATCH PARZIALE in scena ${objectType} "${obj.name}" → variante "${variantName}" ${obj.visible ? '(visibile)' : '(nascosta)'}`);
+                    }
+                }
+            }
+        });
+
+        // Report finale
+        for (const [groupName, group] of this.stateGroups) {
+            const found = group.meshRefs.size;
+            const total = group.variants.length;
+            if (found < total) {
+                console.warn(`[InteractiveObject3D] StateGroup "${groupName}": trovate ${found}/${total} varianti dopo ricerca globale`);
+                console.warn(`   Varianti mancanti:`, group.variants.filter(v => !group.meshRefs.has(v)));
+            } else {
+                console.log(`✅ [InteractiveObject3D] StateGroup "${groupName}": tutte le ${total} varianti trovate`);
+            }
+        }
+
+        if (totalAttached > 0) {
+            console.log(`🔀 [InteractiveObject3D] Collegate ${totalAttached} mesh a StateGroups dalla scena`);
         }
     },
 

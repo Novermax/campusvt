@@ -256,7 +256,7 @@ window.App = {
 
             // Carica HoldableSystem per oggetti prendibili in mano
             try {
-                await this.loadModule('./js/core/HoldableSystem.js?v=1000001');
+                await this.loadModule('./js/core/HoldableSystem.js?v=1000007');
                 console.log('✅ Sistema oggetti prendibili caricato');
             } catch (error) {
                 console.warn('⚠️ HoldableSystem non caricato (opzionale):', error.message);
@@ -280,13 +280,13 @@ window.App = {
 
             // Carica InteractiveObject3D per oggetti 3D con figli interattivi (pulsanti, chiavi, LED)
             try {
-                await this.loadModule('./js/core/InteractiveObject3D.js?v=1000001');
+                await this.loadModule('./js/core/InteractiveObject3D.js?v=1000002');
                 console.log('✅ Sistema oggetti 3D interattivi caricato');
             } catch (error) {
                 console.warn('⚠️ InteractiveObject3D non caricato (opzionale):', error.message);
             }
 
-            await this.loadModule('./js/scene3d-modular.js?nocache=1000019');  // Modulo modulare compatibile
+            await this.loadModule('./js/scene3d-modular.js?nocache=1000023');  // Modulo modulare + TWEEN.update() + autoExecuteAnimation con rootModel fix
             await this.loadModule('./js/modelloader.js?nocache=1000011');
 
             // Carica moduli UI refactorizzati in ordine di dipendenza
@@ -298,7 +298,7 @@ window.App = {
             await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
             console.log('✅ Moduli UI refactorizzati caricati');
 
-            await this.loadModule('./js/ui.js?nocache=1000030');
+            await this.loadModule('./js/ui.js?nocache=1000038');  // AutoExecute + TargetChild + StateGroup scene-wide search
 
             // Inizializza il sistema UI refactorizzato se disponibile
             if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager !== undefined) {

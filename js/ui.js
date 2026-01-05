@@ -1310,6 +1310,17 @@ window.UI = {
             window.StepController.init();
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // INTERACTIVE OBJECT 3D: Cerca varianti StateGroup in TUTTA la scena
+        // Questo è necessario perché alcune varianti potrebbero essere:
+        // - In modelli caricati separatamente (non come child)
+        // - Con nomi che necessitano match parziale
+        // ═══════════════════════════════════════════════════════════════
+        if (window.InteractiveObject3D && window.InteractiveObject3D.stateGroups.size > 0) {
+            console.log('🔀 [UI] Ricerca varianti StateGroup in tutta la scena...');
+            window.InteractiveObject3D.attachStateGroupMeshesFromScene();
+        }
+
         // DEBUG: Stato finale dei controlli touch dopo caricamento completo
         setTimeout(() => {
             console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');
@@ -3543,26 +3554,43 @@ window.UI = {
         // HOLDABLE SYSTEM: Gestione oggetti prendibili in mano
         // ═══════════════════════════════════════════════════════════════════════
         if (window.HoldableSystem) {
-            // Gestione azione pick/release
-            if (step.properties.HoldAction) {
-                const action = step.properties.HoldAction.toLowerCase();
-
-                // Determina quale oggetto gestire
+            // PRIMA: Registra oggetto come holdable se Holdable=true
+            if (step.properties.Holdable === 'true' || step.properties.Holdable === true) {
                 let objectName = null;
                 if (step.properties.Elemento) {
                     objectName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
                 }
 
-                if (objectName) {
-                    if (action === 'pick') {
-                        console.log(`[UI] 🤚 HoldAction=pick per oggetto: "${objectName}"`);
-                        window.HoldableSystem.pickObject(objectName);
-                    } else if (action === 'release') {
+                if (objectName && !window.HoldableSystem.isHoldable(objectName)) {
+                    console.log(`[UI] 📝 Registrazione oggetto "${objectName}" come holdable`);
+                    window.HoldableSystem.registerHoldable(objectName, {
+                        HoldPosition: step.properties.HoldPosition,
+                        HoldRotation: step.properties.HoldRotation,
+                        Model: step.properties.Elemento
+                    });
+                }
+            }
+
+            // Gestione azione pick/release
+            // NOTA: HoldAction=pick NON viene eseguito automaticamente qui!
+            // L'utente deve CLICCARE sull'oggetto evidenziato per prenderlo.
+            // La logica del pick al click è in scene3d-modular.js handleModelAction
+            if (step.properties.HoldAction) {
+                const action = step.properties.HoldAction.toLowerCase();
+
+                // Solo release viene eseguito automaticamente (per rilasciare oggetto)
+                if (action === 'release') {
+                    let objectName = null;
+                    if (step.properties.Elemento) {
+                        objectName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+                    }
+                    if (objectName) {
                         console.log(`[UI] ✋ HoldAction=release per oggetto: "${objectName}"`);
                         window.HoldableSystem.releaseObject(objectName);
                     }
-                } else {
-                    console.warn(`[UI] ⚠️ HoldAction specificato ma nessun Elemento definito nello step`);
+                } else if (action === 'pick') {
+                    // pick NON automatico - aspetta click utente
+                    console.log(`[UI] 🤚 HoldAction=pick configurato - in attesa click utente su elemento`);
                 }
             }
 
@@ -4183,23 +4211,145 @@ window.UI = {
         }
 
         // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente
+        // NOTA: Non evidenziare se AutoExecute=true (l'utente non deve interagire)
         if (step.properties.Elemento && window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
-            // Piccolo delay per permettere che il modello sia caricato e visibile
-            setTimeout(() => {
-                window.Scene3D.highlightCurrentTutorialElement();
-            }, 100);
+            if (step.properties.AutoExecute !== 'true') {
+                // Piccolo delay per permettere che il modello sia caricato e visibile
+                setTimeout(() => {
+                    window.Scene3D.highlightCurrentTutorialElement();
+                }, 100);
+            } else {
+                console.log(`[UI] 🤖 AutoExecute attivo - skip evidenziazione elemento`);
+            }
         }
 
         // Aggiorna il fumetto con la descrizione dello step corrente
         this.updateStepSpeechBubble();
-        
+
         // Evento personalizzabile per altri moduli
         const event = new CustomEvent('tutorialStepChanged', {
             detail: { step, index: this.currentStepIndex, allSteps: this.tutorialSteps }
         });
         document.dispatchEvent(event);
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // AUTO EXECUTE: Esecuzione automatica azione senza click utente
+        // ═══════════════════════════════════════════════════════════════════════
+        if (step.properties.AutoExecute === 'true' && window.Scene3D) {
+            console.log(`[UI] 🤖 AutoExecute attivo per step: "${step.title}"`);
+
+            // Determina il target dell'animazione
+            let targetModel = null;
+            let targetChild = null;
+
+            if (step.properties.Elemento) {
+                const elementName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/i, '');
+                targetModel = window.Scene3D.findModelByName(elementName);
+
+                if (targetModel) {
+                    console.log(`[UI] 🤖 AutoExecute: Trovato modello "${elementName}"`);
+
+                    // Se specificato TargetChild, cerca il figlio all'interno del modello
+                    if (step.properties.TargetChild) {
+                        const childName = step.properties.TargetChild.trim();
+                        let found = false;
+                        targetModel.traverse((child) => {
+                            // Usa SOLO exact match e fermati al primo risultato
+                            if (!found && child.name === childName) {
+                                targetChild = child;
+                                found = true;
+                                console.log(`[UI] 🤖 AutoExecute: Trovato child "${childName}" in "${elementName}"`);
+                            }
+                        });
+
+                        if (!targetChild) {
+                            console.warn(`[UI] ⚠️ AutoExecute: TargetChild "${childName}" non trovato in "${elementName}"`);
+                        }
+                    }
+                } else {
+                    console.warn(`[UI] ⚠️ AutoExecute: Modello "${elementName}" non trovato`);
+                }
+            }
+
+            // Esegui animazione automaticamente con piccolo delay
+            setTimeout(() => {
+                const animTarget = targetChild || targetModel;
+                if (animTarget && window.Scene3D.autoExecuteAnimation) {
+                    // Passa sia il target che il modello root per home_config
+                    const rootModel = targetModel || animTarget;
+                    const animationStarted = window.Scene3D.autoExecuteAnimation(animTarget, step, rootModel);
+
+                    if (animationStarted) {
+                        // Aspetta che l'animazione sia registrata prima di iniziare il polling
+                        let pollAttempts = 0;
+                        const maxPollAttempts = 50; // Max 5 secondi
+
+                        const checkAnimComplete = setInterval(() => {
+                            const activeAnims = window.Scene3D.animationSystem?.activeAnimations || [];
+                            const myAnimation = activeAnims.find(anim => anim.model === animTarget);
+
+                            if (myAnimation) {
+                                // Animazione trovata! Ora controlla se è finita
+                                if (myAnimation.finished) {
+                                    clearInterval(checkAnimComplete);
+                                    console.log(`[UI] 🤖 AutoExecute: Animazione completata - avanzo allo step successivo`);
+                                    setTimeout(() => this.nextStep(), 200);
+                                }
+                            } else {
+                                // Animazione non ancora registrata
+                                pollAttempts++;
+                                if (pollAttempts >= maxPollAttempts) {
+                                    // Timeout: avanzo comunque
+                                    clearInterval(checkAnimComplete);
+                                    console.warn(`[UI] ⚠️ AutoExecute: Timeout attesa animazione - avanzo comunque`);
+                                    setTimeout(() => this.nextStep(), 200);
+                                }
+                            }
+                        }, 100);
+                    } else {
+                        // Nessuna animazione avviata, avanzo subito
+                        console.log(`[UI] 🤖 AutoExecute: Nessuna animazione da attendere - avanzo subito`);
+                        setTimeout(() => this.nextStep(), 500);
+                    }
+                } else if (animTarget && window.Scene3D.startModelAnimation) {
+                    // Fallback al metodo esistente
+                    window.Scene3D.startModelAnimation(animTarget, step);
+
+                    // Ascolta completamento animazione per auto-avanzare
+                    const checkAnimComplete = setInterval(() => {
+                        const stillAnimating = window.Scene3D.animationSystem?.activeAnimations?.some(
+                            anim => anim.model === animTarget && !anim.finished
+                        );
+                        if (!stillAnimating) {
+                            clearInterval(checkAnimComplete);
+                            console.log(`[UI] 🤖 AutoExecute: Animazione completata - avanzo allo step successivo`);
+                            setTimeout(() => this.nextStep(), 200);
+                        }
+                    }, 100);
+                } else {
+                    console.warn(`[UI] ⚠️ AutoExecute: Nessun target valido per animazione`);
+                    // Avanzo comunque se non c'è animazione da fare
+                    setTimeout(() => this.nextStep(), 500);
+                }
+            }, 300);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // SET VARIANT: Esecuzione automatica setVariant senza click
+        // ═══════════════════════════════════════════════════════════════════════
+        if (step.properties.AutoSetVariant && window.InteractiveObject3D) {
+            const variants = step.properties.AutoSetVariant.split(';');
+            variants.forEach(variantDecl => {
+                const match = variantDecl.trim().match(/^(\w+)=(\w+)$/);
+                if (match) {
+                    const [, groupName, variantName] = match;
+                    console.log(`[UI] 🔀 AutoSetVariant: ${groupName}=${variantName}`);
+                    window.InteractiveObject3D.setStateVariant(groupName, variantName);
+                }
+            });
+        }
     },
-    
+
     /**
      * Mappa i nomi degli strumenti dal tutorial ai nomi interni
      */

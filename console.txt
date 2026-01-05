@@ -1,14 +1,18 @@
+(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
+(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
+(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
 (index):483 💻 Dispositivo desktop rilevato
 MobileOptimizer.js?v=1000021:430 [MobileOptimizer] Modulo caricato
 AutoMode.js?v=1000020:456 [AutoMode] Modulo caricato
 app.js?v=1000010:654 📄 App.js caricato, in attesa del DOM...
 app.js?v=1000010:628 📄 DOM pronto, avvio applicazione...
 favicon.png:1   GET http://localhost:8000/favicon.png 404 (File not found)
-[NEW] Explain Console errors by using Copilot in Edge: click
-         
-         to explain an error. 
-        Learn more
-        Don't show again
 app.js?v=1000010:49 🚀 Avvio Visualizzatore Modelli 3D
 app.js?v=1000010:50 📅 Caricamento moduli in corso...
 app.js?v=1000010:113 ✅ Browser compatibile
@@ -39,13 +43,13 @@ ScreenSystem.js?v=1000001:22 [ScreenSystem] Modulo caricato v2.0.0
 ScreenSystem.js?v=1000001:1336 [ScreenSystem] ✅ Modulo ScreenSystem pronto
 app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/ScreenSystem.js?v=1000001
 app.js?v=1000010:252 ✅ Sistema schermi interattivi caricato
-HoldableSystem.js?v=1000001:14 [HoldableSystem] Modulo caricato v1.0.0
-HoldableSystem.js?v=1000001:560 [HoldableSystem] ✅ Modulo HoldableSystem pronto
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/HoldableSystem.js?v=1000001
+HoldableSystem.js?v=1000007:14 [HoldableSystem] Modulo caricato v1.0.0
+HoldableSystem.js?v=1000007:675 [HoldableSystem] ✅ Modulo HoldableSystem pronto
+app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/HoldableSystem.js?v=1000007
 app.js?v=1000010:260 ✅ Sistema oggetti prendibili caricato
-StepController.js?v=1000001:25 [StepController] Modulo caricato v1.0.0
-StepController.js?v=1000001:793 [StepController] ✅ Modulo StepController pronto
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/StepController.js?v=1000001
+StepController.js?v=1000002:25 [StepController] Modulo caricato v1.0.0
+StepController.js?v=1000002:795 [StepController] ✅ Modulo StepController pronto
+app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/StepController.js?v=1000002
 app.js?v=1000010:268 ✅ Controller step centralizzato caricato
 StepGatingManager.js?v=1000001:362 [StepGatingManager] 📦 Modulo caricato
 app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/StepGatingManager.js?v=1000001
@@ -53,7 +57,7 @@ app.js?v=1000010:276 ✅ Step Gating Manager caricato
 InteractiveObject3D.js?v=1000001:1152 📦 [InteractiveObject3D] Modulo caricato
 app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/InteractiveObject3D.js?v=1000001
 app.js?v=1000010:284 ✅ Sistema oggetti 3D interattivi caricato
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/scene3d-modular.js?nocache=1000019
+app.js?v=1000010:339 ✅ Modulo caricato: ./js/scene3d-modular.js?nocache=1000023
 app.js?v=1000010:339 ✅ Modulo caricato: ./js/modelloader.js?nocache=1000011
 app.js?v=1000010:293 📦 Caricamento moduli UI refactorizzati...
 UICore.js?nocache=1000026:436 [UICore] ✅ Modulo caricato e disponibile su window.UICore
@@ -66,9 +70,27 @@ ui-coordinator.js?nocache=1000026:728 [UI] 🏗️ Sistema UI refactorizzato car
 ui-coordinator.js?nocache=1000026:729 [ui-coordinator] ✅ Modulo caricato e window.UI sostituito con sistema refactorizzato
 app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui/ui-coordinator.js?nocache=1000026
 app.js?v=1000010:299 ✅ Moduli UI refactorizzati caricati
-ui.js?nocache=1000030:20 [ui.js] 📦 Caricamento sistema UI legacy
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui.js?nocache=1000030
-app.js?v=1000010:317 📦 Sistema UI legacy attivo
+app.js?v=1000010:638  💥 Errore JavaScript globale: SyntaxError: missing ) after argument list (at ui.js?nocache=1000036:4304:17)
+(anonymous) @ app.js?v=1000010:638
+ui.js?nocache=1000036:4304  Uncaught SyntaxError: missing ) after argument list (at ui.js?nocache=1000036:4304:17)
+app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui.js?nocache=1000036
+app.js?v=1000010:305 🚀 Inizializzazione sistema UI refactorizzato...
+ui-coordinator.js?nocache=1000026:59 [UI] 🚀 Inizializzazione sistema UI refactorizzato...
+ui-coordinator.js?nocache=1000026:125 [UI] 📦 Moduli UI specializzati inizializzati
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Inizializzazione core UI...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Core UI inizializzato con successo
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzazione...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzato con successo
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzazione...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzato con successo
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Inizializzazione gestione strumenti...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Sistema strumenti inizializzato con successo
+ui-coordinator.js?nocache=1000026:142 [UI] 🔗 Cross-references configurate tra moduli
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
+ui-coordinator.js?nocache=1000026:87 [UI] ✅ Sistema UI refactorizzato inizializzato con successo
+app.js?v=1000010:309 ✅ Sistema UI refactorizzato inizializzato con successo
 MobileOptimizer.js?v=1000021:63 [MobileOptimizer] Inizializzazione...
 MobileOptimizer.js?v=1000021:95 📊 RAM rilevata: 8 GB
 MobileOptimizer.js?v=1000021:110 📊 GPU: ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)
@@ -76,8 +98,37 @@ MobileOptimizer.js?v=1000021:138 📊 [MobileOptimizer] Capacità dispositivo: {
 MobileOptimizer.js?v=1000021:71 ⚠️ [MobileOptimizer] DISABILITATO - lazy loading causava schermo vuoto
 app.js?v=1000010:325 ✅ Tutti i moduli caricati (architettura modulare ottimizzata)
 app.js?v=1000010:64 ✅ Versione: 1.0.0
-app.js?v=1000010:65 📅 Build: 2026-01-04
+app.js?v=1000010:65 📅 Build: 2026-01-05
 app.js?v=1000010:354 🔧 Inizializzazione moduli...
+ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
+loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
+init @ ScenarioManager.js?nocache=1000026:45
+init @ ui-coordinator.js?nocache=1000026:69
+loadModules @ app.js?v=1000010:307
+await in loadModules
+(anonymous) @ app.js?v=1000010:60
+Promise.then
+init @ app.js?v=1000010:58
+(anonymous) @ app.js?v=1000010:632
+setTimeout
+(anonymous) @ app.js?v=1000010:631
+config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
+    at ScenarioManager.js?nocache=1000026:68:27
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
+ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
+loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
+init @ ui-coordinator.js?nocache=1000026:85
+loadModules @ app.js?v=1000010:307
+await in loadModules
+(anonymous) @ app.js?v=1000010:60
+Promise.then
+init @ app.js?v=1000010:58
+(anonymous) @ app.js?v=1000010:632
+setTimeout
+(anonymous) @ app.js?v=1000010:631
+config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
+    at ScenarioManager.js?nocache=1000026:68:27
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
 StepGatingManager.js?v=1000001:43 [StepGating] 🚦 Inizializzazione sistema Step Gating...
 StepGatingManager.js?v=1000001:53 [StepGating] 📷 Limiti camera default salvati: {minPhi: 0.1, maxPhi: 2.670353755551324, minTheta: -Infinity, maxTheta: Infinity}
 StepGatingManager.js?v=1000001:57 [StepGating] ✅ Sistema inizializzato
@@ -89,1176 +140,89 @@ app.js?v=1000010:391   ❌ Mancanti: []
 app.js?v=1000010:397   🌐 Oggetti globali rilevanti: (6) ['App', 'AppConfig', 'Scene3D', 'ModelLoader', 'UICore', 'UI']
 app.js?v=1000010:403 ✅ Tutti i moduli richiesti sono disponibili
 app.js?v=1000010:457 🔧 Inizializzazione ModelLoader...
-config.js?nocache=999999:242 [6:27:15 PM] INFO: ModelLoader inizializzato
+config.js?nocache=999999:242 [3:12:57 PM] INFO: ModelLoader inizializzato
 app.js?v=1000010:481 ✅ ModelLoader inizializzato
 app.js?v=1000010:457 🔧 Inizializzazione UI...
-config.js?nocache=999999:242 [6:27:15 PM] INFO: Inizializzazione UI...
-ui.js?nocache=1000030:1709 📱 Controlli touch - Mobile: false Hidden: true
-config.js?nocache=999999:242 [6:27:15 PM] INFO: Tentativo caricamento home_config.txt dal server...
-config.js?nocache=999999:242 [6:27:15 PM] INFO: ToolsManager istanziato globalmente
-config.js?nocache=999999:242 [6:27:15 PM] INFO: [ToolsManager] Inizializzazione gestione strumenti...
-config.js?nocache=999999:242 [6:27:15 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
-config.js?nocache=999999:242 [6:27:15 PM] INFO: [ToolsManager] Sistema strumenti inizializzato con successo
-config.js?nocache=999999:242 [6:27:15 PM] INFO: ToolsManager inizializzato con successo
-AutoMode.js?v=1000020:36 [AutoMode] Inizializzazione sistema...
-AutoMode.js?v=1000020:50 💻 [AutoMode] Dispositivo desktop - AutoMode disabilitato
-config.js?nocache=999999:242 [6:27:15 PM] INFO: AutoMode inizializzato
-config.js?nocache=999999:242 [6:27:15 PM] INFO: UI inizializzata con successo
+ui-coordinator.js?nocache=1000026:59 [UI] 🚀 Inizializzazione sistema UI refactorizzato...
+ui-coordinator.js?nocache=1000026:125 [UI] 📦 Moduli UI specializzati inizializzati
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Inizializzazione core UI...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Core UI inizializzato con successo
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzazione...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzato con successo
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzazione...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzato con successo
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Inizializzazione gestione strumenti...
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Sistema strumenti inizializzato con successo
+ui-coordinator.js?nocache=1000026:142 [UI] 🔗 Cross-references configurate tra moduli
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
+ui-coordinator.js?nocache=1000026:87 [UI] ✅ Sistema UI refactorizzato inizializzato con successo
 app.js?v=1000010:481 ✅ UI inizializzato
-app.js?v=1000010:507 🎉 Applicazione inizializzata in 357ms
+app.js?v=1000010:507 🎉 Applicazione inizializzata in 394ms
 app.js?v=1000010:508 📊 Moduli attivi: (2) ['ModelLoader', 'UI']
 app.js?v=1000010:512 ⚙️ Configurazione: {version: '1.0.0', debug: 2, device: {…}}
-config.js?nocache=999999:242 [6:27:15 PM] INFO: home_config.txt caricato con successo dal server
-ui.js?nocache=1000030:537 🧭 RIEPILOGO DIREZIONI per scenario "Sostituzione e regolazione tastatore":
-ui.js?nocache=1000030:539   0: scenario_probe_replacement_description -> direzione: null
-config.js?nocache=999999:242 [6:27:15 PM] INFO: Configurazione home caricata: 14 scenari
+ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
+loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
+init @ ScenarioManager.js?nocache=1000026:45
+init @ ui-coordinator.js?nocache=1000026:69
+(anonymous) @ app.js?v=1000010:468
+initializeModule @ app.js?v=1000010:456
+sequence @ app.js?v=1000010:419
+(anonymous) @ app.js?v=1000010:442
+executeSequence @ app.js?v=1000010:436
+(anonymous) @ app.js?v=1000010:444
+Promise.then
+(anonymous) @ app.js?v=1000010:443
+executeSequence @ app.js?v=1000010:436
+(anonymous) @ app.js?v=1000010:444
+Promise.then
+(anonymous) @ app.js?v=1000010:443
+executeSequence @ app.js?v=1000010:436
+(anonymous) @ app.js?v=1000010:426
+initializeModuleSequence @ app.js?v=1000010:410
+(anonymous) @ app.js?v=1000010:363
+setTimeout
+(anonymous) @ app.js?v=1000010:357
+initializeModules @ app.js?v=1000010:353
+(anonymous) @ app.js?v=1000010:68
+Promise.then
+init @ app.js?v=1000010:62
+(anonymous) @ app.js?v=1000010:632
+setTimeout
+(anonymous) @ app.js?v=1000010:631
+config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
+    at ScenarioManager.js?nocache=1000026:68:27
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
+ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
+loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
+init @ ui-coordinator.js?nocache=1000026:85
+(anonymous) @ app.js?v=1000010:468
+initializeModule @ app.js?v=1000010:456
+sequence @ app.js?v=1000010:419
+(anonymous) @ app.js?v=1000010:442
+executeSequence @ app.js?v=1000010:436
+(anonymous) @ app.js?v=1000010:444
+Promise.then
+(anonymous) @ app.js?v=1000010:443
+executeSequence @ app.js?v=1000010:436
+(anonymous) @ app.js?v=1000010:444
+Promise.then
+(anonymous) @ app.js?v=1000010:443
+executeSequence @ app.js?v=1000010:436
+(anonymous) @ app.js?v=1000010:426
+initializeModuleSequence @ app.js?v=1000010:410
+(anonymous) @ app.js?v=1000010:363
+setTimeout
+(anonymous) @ app.js?v=1000010:357
+initializeModules @ app.js?v=1000010:353
+(anonymous) @ app.js?v=1000010:68
+Promise.then
+init @ app.js?v=1000010:62
+(anonymous) @ app.js?v=1000010:632
+setTimeout
+(anonymous) @ app.js?v=1000010:631
+config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
+    at ScenarioManager.js?nocache=1000026:68:27
+config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
 (index):576 ✅ Login riuscito per: mloffredo@scmgroup.com
-config.js?nocache=999999:242 [6:27:18 PM] INFO: Scenario selezionato: Manutenzione Elettromandrino
-scene3d-modular.js?nocache=1000019:218 [Scene3D] ✅ Luci configurate: Ambient + Directional (ombre) + BackLight (no ombre)
-scene3d-modular.js?nocache=1000019:538 [Scene3D] ⌨️ Controlli tastiera attivati (frecce = pan camera)
-DragDropSystem.js?nocache=1000031:97 [DragDropSystem] Inizializzazione sistema drag & drop...
-DragDropSystem.js?nocache=1000031:170 [DragDropSystem] Materiali visivi inizializzati
-DragDropSystem.js?nocache=1000031:205 [DragDropSystem] Event listeners configurati (ESC = force reset)
-InterchangeableTracker.js?v=1000001:29 [InterchangeableTracker] 🏗️ Inizializzazione sistema tracking...
-InterchangeableTracker.js?v=1000001:39 [InterchangeableTracker] ✅ Sistema tracking inizializzato
-DragDropSystem.js?nocache=1000031:215 [DragDropSystem] ✅ InterchangeableTracker collegato
-SnapSystem.js?v=1000001:37 [SnapSystem] 🎯 Inizializzazione sistema snap...
-SnapSystem.js?v=1000001:53 [SnapSystem] ✅ Sistema snap inizializzato
-DragDropSystem.js?nocache=1000031:228 [DragDropSystem] ✅ SnapSystem collegato
-DragDropSystem.js?nocache=1000031:137 [DragDropSystem] Sistema inizializzato correttamente
-scene3d-modular.js?nocache=1000019:549 [Scene3D] ✅ DragDropSystem inizializzato
-scene3d-modular.js?nocache=1000019:562 [Scene3D] 🔍 DEBUG ParticleSystem - window object keys: ['ParticleSystem']
-scene3d-modular.js?nocache=1000019:563 [Scene3D] 🔍 DEBUG ParticleSystem - window.ParticleSystem exists: true
-scene3d-modular.js?nocache=1000019:564 [Scene3D] 🔍 DEBUG ParticleSystem - full object: {scene: null, camera: null, isActive: false, activeEffects: Map(0), presets: {…}, …}
-scene3d-modular.js?nocache=1000019:565 [Scene3D] 🔍 DEBUG ParticleSystem - init function type: function
-scene3d-modular.js?nocache=1000019:569 [Scene3D] 🚀 Tentativo inizializzazione ParticleSystem...
-ParticleSystem.js?v=1000018:56 [ParticleSystem] Sistema particellare inizializzato
-scene3d-modular.js?nocache=1000019:572 [Scene3D] ✅ ParticleSystem inizializzato con successo!
-scene3d-modular.js?nocache=1000019:573 [Scene3D] 🔍 ParticleSystem methods: (17) ['scene', 'camera', 'isActive', 'activeEffects', 'presets', 'init', 'createAirJet', 'createDustEffect', 'update', 'updateParticleEffect', 'createAirJetFromMouse', 'removeEffect', 'clearAllEffects', 'setEnabled', 'getStats', 'testAirJet', 'cleanup']
-scene3d-modular.js?nocache=1000019:593  [Scene3D] ⚠️ AssemblySystem non disponibile
-initSubsystems @ scene3d-modular.js?nocache=1000019:593
-init @ scene3d-modular.js?nocache=1000019:116
-onScenarioPageShown @ ui.js?nocache=1000030:350
-showPage @ ui.js?nocache=1000030:189
-loadScenario @ ui.js?nocache=1000030:714
-onScenarioCardClick @ ui.js?nocache=1000030:699
-scene3d-modular.js?nocache=1000019:600 [Scene3D] 📺 Inizializzazione ScreenSystem...
-ScreenSystem.js?v=1000001:128 [ScreenSystem] Inizializzazione sistema schermi...
-ScreenSystem.js?v=1000001:190 [ScreenSystem] Materiali hotspot inizializzati
-ScreenSystem.js?v=1000001:208 [ScreenSystem] Event listeners configurati
-ScreenSystem.js?v=1000001:155 [ScreenSystem] ✅ Sistema inizializzato correttamente
-scene3d-modular.js?nocache=1000019:604 [Scene3D] ✅ ScreenSystem inizializzato con successo!
-scene3d-modular.js?nocache=1000019:619 [Scene3D] 🤚 Inizializzazione HoldableSystem...
-HoldableSystem.js?v=1000001:80 [HoldableSystem] Inizializzazione sistema oggetti prendibili...
-HoldableSystem.js?v=1000001:110 [HoldableSystem] ✅ Sistema inizializzato correttamente
-scene3d-modular.js?nocache=1000019:623 [Scene3D] ✅ HoldableSystem inizializzato con successo!
-scene3d-modular.js?nocache=1000019:122 [Scene3D] ✅ Inizializzazione completata
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🎭 Applicazione configurazione per scenario: Manutenzione Elettromandrino
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 📷 Camera position applicata: (-1.11, 1.44, 3.97) - Auto-fitting disabilitato
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🎯 Camera target applicato: (0, 0, 0)
-config.js?nocache=999999:242 [6:27:18 PM] INFO: ✅ Configurazione scenario applicata per: Manutenzione Elettromandrino
-ui.js?nocache=1000030:929 🔄 loadScenarioModels chiamata per: Manutenzione Elettromandrino
-ui.js?nocache=1000030:930 🔄 Files nello scenario: (5) [{…}, {…}, {…}, {…}, {…}]
-ui.js?nocache=1000030:944 🔄 File modello filtrati: (4) [{…}, {…}, {…}, {…}]
-config.js?nocache=999999:242 [6:27:18 PM] INFO: Caricamento 4 modelli per scenario: Manutenzione Elettromandrino
-ui.js?nocache=1000030:1459 📊 Progress aggiornato: 0% - Preparazione...
-ui.js?nocache=1000030:1420 📊 Progress bar modelli mostrata
-ui.js?nocache=1000030:980 🌐 Avvio fetch per: (4) [{…}, {…}, {…}, {…}]
-ui.js?nocache=1000030:1020 🌐 Fetching: models/pulpito.glb
-ui.js?nocache=1000030:998 🌐 Timeout per pulpito.glb: 60s (isLarge: false)
-ui.js?nocache=1000030:1020 🌐 Fetching: models/remote.glb
-ui.js?nocache=1000030:998 🌐 Timeout per remote.glb: 60s (isLarge: false)
-ui.js?nocache=1000030:1020 🌐 Fetching: models/a500.glb
-ui.js?nocache=1000030:998 🌐 Timeout per a500.glb: 60s (isLarge: false)
-ui.js?nocache=1000030:1020 🌐 Fetching: models/pavimento.glb
-ui.js?nocache=1000030:998 🌐 Timeout per pavimento.glb: 120s (isLarge: true)
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🎓 Caricamento tutorial per scenario: scenes/Manutenzione_Elettromandrino/tutorial.txt
-config.js?nocache=999999:242 [6:27:18 PM] INFO: Caricamento tutorial: scenes/Manutenzione_Elettromandrino/tutorial.txt
-ui.js?nocache=1000030:1028 🌐 Response per models/pulpito.glb: 200 OK
-ui.js?nocache=1000030:1028 🌐 Response per models/remote.glb: 200 OK
-ui.js?nocache=1000030:1028 🌐 Response per models/a500.glb: 200 OK
-ui.js?nocache=1000030:1028 🌐 Response per models/pavimento.glb: 200 OK
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraPos = (1.01, 1.22, 3.87)
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraTarget = (0,0,0)
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraRotation = (-0.26, -0.01, 0)
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraPivot = (1.02, 1.1, 3.4)
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraDistance = 0.48
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraFOV = 75.0
-ui.js?nocache=1000030:2596 📝 PARSER: Proprietà globale pre-tutorial: CameraTransitionTime = 2.0
-ui.js?nocache=1000030:2483 🔀 [PARSER] Sezione StateGroup rilevata: "chiave"
-ui.js?nocache=1000030:2483 🔀 [PARSER] Sezione StateGroup rilevata: "start"
-ui.js?nocache=1000030:2483 🔀 [PARSER] Sezione StateGroup rilevata: "emergenza"
-ui.js?nocache=1000030:2483 🔀 [PARSER] Sezione StateGroup rilevata: "schermo"
-ui.js?nocache=1000030:2471 🎮 [PARSER] Sezione InteractiveObject rilevata: "pulpito"
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: chiave0,button,onClick:cycleVariant:chiave (totale: 1)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: chiave1,button,onClick:cycleVariant:chiave (totale: 2)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: Pulsante_mdi,button,onClick:setVariant:schermo=schermo002 (totale: 3)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: Pulsante_tool,button,onClick:setVariant:schermo=schermo002 (totale: 4)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: emergenza_off,button,onClick:setVariant:emergenza=emergenza_on (totale: 5)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: emergenza_on,button,onClick:setVariant:emergenza=emergenza_off (totale: 6)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: pstart0,button,onClick:cycleVariant:start (totale: 7)
-ui.js?nocache=1000030:2586 🎮 [PARSER] InteractiveChild aggiunto: pstart1,button,onClick:cycleVariant:start (totale: 8)
-ui.js?nocache=1000030:2559 📝 PARSER: Applicazione 7 proprietà globali al primo tutorial "Manutenzione Elettromandrino"
-ScreenSystem.js?v=1000001:1197 [ScreenSystem] 🗑️ Definizioni cancellate
-ui.js?nocache=1000030:2830 🎮 [UI] Registrazione InteractiveObject: "pulpito"
-InteractiveObject3D.js?v=1000001:193 🎮 [InteractiveObject3D] Parsing 8 InteractiveChild per "pulpito"
-InteractiveObject3D.js?v=1000001:129 🎮 [InteractiveObject3D] Registrato: "pulpito" {figli: 8, statoIniziale: {…}}
-ui.js?nocache=1000030:2833 🎮 [UI] InteractiveObject3D: Registrati 1 oggetti interattivi
-ui.js?nocache=1000030:2841 🔀 [UI] Registrazione StateGroup: "chiave"
-InteractiveObject3D.js?v=1000001:622 🔀 [InteractiveObject3D] StateGroup registrato: "chiave" {variants: Array(2), default: 'chiave0'}
-ui.js?nocache=1000030:2841 🔀 [UI] Registrazione StateGroup: "start"
-InteractiveObject3D.js?v=1000001:622 🔀 [InteractiveObject3D] StateGroup registrato: "start" {variants: Array(2), default: 'pstart1'}
-ui.js?nocache=1000030:2841 🔀 [UI] Registrazione StateGroup: "emergenza"
-InteractiveObject3D.js?v=1000001:622 🔀 [InteractiveObject3D] StateGroup registrato: "emergenza" {variants: Array(2), default: 'emergenza_off'}
-ui.js?nocache=1000030:2841 🔀 [UI] Registrazione StateGroup: "schermo"
-InteractiveObject3D.js?v=1000001:622 🔀 [InteractiveObject3D] StateGroup registrato: "schermo" {variants: Array(2), default: 'schermo001'}
-ui.js?nocache=1000030:2844 🔀 [UI] StateGroups: Registrati 4 gruppi di varianti
-scene3d-modular.js?nocache=1000019:3285 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
-ui.js?nocache=1000030:3387 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
-scene3d-modular.js?nocache=1000019:3285 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
-scene3d-modular.js?nocache=1000019:3370 🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...
-scene3d-modular.js?nocache=1000019:3371 🏠 DEBUG: loadedModels count: 0
-scene3d-modular.js?nocache=1000019:3372 🏠 DEBUG: scenarioOriginalPositions size: 0
-scene3d-modular.js?nocache=1000019:3387 🏠 RESET SCENARIO: 0 modelli ripristinati alle posizioni originali dello scenario
-ui.js?nocache=1000030:2870 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
-config.js?nocache=999999:242 [6:27:18 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
-config.js?nocache=999999:242 [6:27:18 PM] INFO: Tutorial selezionato: Manutenzione Elettromandrino (7 step)
-StepGatingManager.js?v=1000001:64 [StepGating] 🔄 Reset sistema...
-StepGatingManager.js?v=1000001:69 [StepGating] ✅ Reset completato
-StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 0: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 1 - Vai alla schermata MDI'}
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🚦 Step Gating: 1 configurazioni registrate
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 📹 CAMERA INIZIALE: CameraPos = (0.94, 1.29, 4.07)
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 📹 CAMERA INIZIALE: CameraTarget = (0.97, 1.15, 3.52)
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 📹 CAMERA INIZIALE: Applicazione impostazioni camera da "Manutenzione Elettromandrino"
-scene3d-modular.js?nocache=1000019:4159 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
-scene3d-modular.js?nocache=1000019:4180 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
-scene3d-modular.js?nocache=1000019:4214 📹 CAMERA: Durata transizione = 2s
-scene3d-modular.js?nocache=1000019:4237 📹 CAMERA: Avvio animazione camera (durata: 2s)
-ui.js?nocache=1000030:3387 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
-config.js?nocache=999999:242 [6:27:18 PM] INFO: Tutorial disponibili: 1 - Camera impostata dal primo tutorial
-ui.js?nocache=1000030:2194 [DEBUG] 🔍 getActiveTool() - toolsState: {}
-ui.js?nocache=1000030:2201 [DEBUG] ❌ getActiveTool() returning null - no active tools
-ui.js?nocache=1000030:2273 🖱️ Cursore aggiornato: default → cursor-default
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🔄 Rimozione luci esistenti...
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🗑️ Rimosse 3 luci esistenti
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 💡 Luce ambientale applicata: colore=404040, intensità=1.05
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🔆 Luce direzionale applicata: pos=(-8, 15, 10), intensità=2.05
-config.js?nocache=999999:242 [6:27:18 PM] INFO: 🔅 Luce posteriore applicata: pos=(-8, 15, 10), intensità=1
-config.js?nocache=999999:242 [6:27:18 PM] INFO: ✅ Applicazione luci scenario completata
-ui.js?nocache=1000030:1035 🌐 Blob creato per pulpito.glb: 7353884 bytes
-ui.js?nocache=1000030:1035 🌐 Blob creato per pavimento.glb: 8221420 bytes
-ui.js?nocache=1000030:1035 🌐 Blob creato per remote.glb: 14325260 bytes
-ui.js?nocache=1000030:1035 🌐 Blob creato per a500.glb: 35429980 bytes
-ui.js?nocache=1000030:1053 🌐 Risultati fetch: (4) [{…}, {…}, {…}, {…}]
-ui.js?nocache=1000030:1069 🌐 File validi: 4 File falliti: 0
-ui.js?nocache=1000030:1070 🌐 ValidFiles dettaglio: (4) [File, File, File, File]
-config.js?nocache=999999:242 [6:27:18 PM] INFO: ✅ 4/4 modelli caricati con successo
-ui.js?nocache=1000030:1085 🌐 Chiamando ModelLoader.loadFiles con: (4) [File, File, File, File]
-ui.js?nocache=1000030:1086 🌐 ModelLoader disponibile? true
-ui.js?nocache=1000030:1087 🌐 loadFiles function? function
-ui.js?nocache=1000030:1090 🌐 Avvio ModelLoader.loadFiles...
-config.js?nocache=999999:242 [6:27:18 PM] INFO: Inizio caricamento di 4 file(s)
-modelloader.js?nocache=1000011:117 📁 File organizzati: {modelli: Array(4), materiali: Array(0), texture: Array(0)}
-ui.js?nocache=1000030:1103 🌐 Progress: 0
-modelloader.js?nocache=1000011:193 🚀 Avvio caricamento parallelo: 4 modelli, concurrency=6
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:737 ✅ GLTFLoader inizializzato
-modelloader.js?nocache=1000011:749 🔄 Inizio caricamento GLTF/GLB: pulpito.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:749 🔄 Inizio caricamento GLTF/GLB: remote.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:749 🔄 Inizio caricamento GLTF/GLB: a500.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:749 🔄 Inizio caricamento GLTF/GLB: pavimento.glb
-ui.js?nocache=1000030:2979 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
-scene3d-modular.js?nocache=1000019:1251 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
-scene3d-modular.js?nocache=1000019:1254 🔍 HIGHLIGHT: Nessun step o elemento corrente
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 24.95%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 28.52%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 53.47%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 57.04%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 71.29%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 85.55%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 99.81%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 14.64%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 29.28%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 5.92%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 11.84%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 43.92%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 58.56%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 73.20%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 87.84%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 17.76%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 23.68%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 29.60%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 35.51%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 25.51%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 51.02%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 41.43%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 47.35%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 53.27%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 59.19%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 65.11%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 71.03%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 76.95%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 82.87%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 76.53%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 88.79%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 94.71%
-modelloader.js?nocache=1000011:802 📊 GLTF/GLB Progress: 100.00%
- ✅ GLTF/GLB caricato con successo: {scene: Group, scenes: Array(1), animations: Array(0), cameras: Array(0), asset: {…}, …}
- 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: nero.002 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'nero.002', color: Color, metalness: 0.3, roughness: 0.39230769872665405, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: Keyboard.004 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.00901826098561287, g: 0.00901826098561287, b: 0.00901826098561287}
- 🎨 Color RGB values: 0.00901826098561287 0.00901826098561287 0.00901826098561287
- 🎨 Color sum: 0.027054782956838608
- 🔍 Controllo material: Keyboard.004 colorSum=0.027054782956838608
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 181818
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Keyboard.004', color: Color, metalness: 0, roughness: 0.4000000059604645, opacity: 1}
- 🎨 Fixing material: Material.023 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.02539406530559063, g: 0.02539406530559063, b: 0.02539406530559063}
- 🎨 Color RGB values: 0.02539406530559063 0.02539406530559063 0.02539406530559063
- 🎨 Color sum: 0.07618219591677189
- 🔍 Controllo material: Material.023 colorSum=0.07618219591677189
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 2c2c2c
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Material.023', color: Color, metalness: 0, roughness: 0.699999988079071, opacity: 1}
- 🎨 Fixing material: Silver.004 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.4200245141983032, g: 0.4200245141983032, b: 0.4200245141983032}
- 🎨 Color RGB values: 0.4200245141983032 0.4200245141983032 0.4200245141983032
- 🎨 Color sum: 1.2600735425949097
- 🔍 Controllo material: Silver.004 colorSum=1.2600735425949097
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Silver.004', color: Color, metalness: 0.699999988079071, roughness: 0.30000001192092896, opacity: 1}
- 🎨 Fixing material: Material.024 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.2202576845884323, g: 0.18442445993423462, b: 0}
- 🎨 Color RGB values: 0.2202576845884323 0.18442445993423462 0
- 🎨 Color sum: 0.40468214452266693
- 🔍 Controllo material: Material.024 colorSum=0.40468214452266693
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.024', color: Color, metalness: 0.3, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Keyboard.005 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.00901826098561287, g: 0.00901826098561287, b: 0.00901826098561287}
- 🎨 Color RGB values: 0.00901826098561287 0.00901826098561287 0.00901826098561287
- 🎨 Color sum: 0.027054782956838608
- 🔍 Controllo material: Keyboard.005 colorSum=0.027054782956838608
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 181818
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Keyboard.005', color: Color, metalness: 0, roughness: 0.4000000059604645, opacity: 1}
- 🎨 Fixing material: Material.025 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.02539406530559063, g: 0.02539406530559063, b: 0.02539406530559063}
- 🎨 Color RGB values: 0.02539406530559063 0.02539406530559063 0.02539406530559063
- 🎨 Color sum: 0.07618219591677189
- 🔍 Controllo material: Material.025 colorSum=0.07618219591677189
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 2c2c2c
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Material.025', color: Color, metalness: 0, roughness: 0.699999988079071, opacity: 1}
- 🎨 Fixing material: Silver.005 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.4200245141983032, g: 0.4200245141983032, b: 0.4200245141983032}
- 🎨 Color RGB values: 0.4200245141983032 0.4200245141983032 0.4200245141983032
- 🎨 Color sum: 1.2600735425949097
- 🔍 Controllo material: Silver.005 colorSum=1.2600735425949097
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Silver.005', color: Color, metalness: 0.699999988079071, roughness: 0.30000001192092896, opacity: 1}
- 🎨 Fixing material: Material.026 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.2202576845884323, g: 0.18442445993423462, b: 0}
- 🎨 Color RGB values: 0.2202576845884323 0.18442445993423462 0
- 🎨 Color sum: 0.40468214452266693
- 🔍 Controllo material: Material.026 colorSum=0.40468214452266693
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.026', color: Color, metalness: 0.3, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Keyboard.006 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.00901826098561287, g: 0.00901826098561287, b: 0.00901826098561287}
- 🎨 Color RGB values: 0.00901826098561287 0.00901826098561287 0.00901826098561287
- 🎨 Color sum: 0.027054782956838608
- 🔍 Controllo material: Keyboard.006 colorSum=0.027054782956838608
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 181818
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Keyboard.006', color: Color, metalness: 0, roughness: 0.4000000059604645, opacity: 1}
- 🎨 Fixing material: Material.027 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.02539406530559063, g: 0.02539406530559063, b: 0.02539406530559063}
- 🎨 Color RGB values: 0.02539406530559063 0.02539406530559063 0.02539406530559063
- 🎨 Color sum: 0.07618219591677189
- 🔍 Controllo material: Material.027 colorSum=0.07618219591677189
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 2c2c2c
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Material.027', color: Color, metalness: 0, roughness: 0.699999988079071, opacity: 1}
- 🎨 Fixing material: Silver.006 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.4200245141983032, g: 0.4200245141983032, b: 0.4200245141983032}
- 🎨 Color RGB values: 0.4200245141983032 0.4200245141983032 0.4200245141983032
- 🎨 Color sum: 1.2600735425949097
- 🔍 Controllo material: Silver.006 colorSum=1.2600735425949097
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Silver.006', color: Color, metalness: 0.699999988079071, roughness: 0.30000001192092896, opacity: 1}
- 🎨 Fixing material: Material.028 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.2202576845884323, g: 0.18442445993423462, b: 0}
- 🎨 Color RGB values: 0.2202576845884323 0.18442445993423462 0
- 🎨 Color sum: 0.40468214452266693
- 🔍 Controllo material: Material.028 colorSum=0.40468214452266693
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.028', color: Color, metalness: 0.3, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Letter Glow.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Letter Glow.001 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'Letter Glow.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 💡 [ModelLoader] Materiale luminoso potenziato: Letter Glow.001 su mesh telaio_14, emissiveIntensity=3
- 🎨 Fixing material: Material.037 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.32002297043800354, g: 0.32002297043800354, b: 0.32002297043800354}
- 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
- 🎨 Color sum: 0.9600689113140106
- 🔍 Controllo material: Material.037 colorSum=0.9600689113140106
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.037', color: Color, metalness: 0.3, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.003 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.32002297043800354, g: 0.32002297043800354, b: 0.32002297043800354}
- 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
- 🎨 Color sum: 0.9600689113140106
- 🔍 Controllo material: Material.003 colorSum=0.9600689113140106
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.003', color: Color, metalness: 0.3, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.058 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.8000074625015259, g: 0.0017059262609109282, b: 0}
- 🎨 Color RGB values: 0.8000074625015259 0.0017059262609109282 0
- 🎨 Color sum: 0.8017133887624368
- 🔍 Controllo material: Material.058 colorSum=0.8017133887624368
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.058', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.035 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.8000074625015259, g: 0.0017059262609109282, b: 0}
- 🎨 Color RGB values: 0.8000074625015259 0.0017059262609109282 0
- 🎨 Color sum: 0.8017133887624368
- 🔍 Controllo material: Material.035 colorSum=0.8017133887624368
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.035', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.069 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.3583120107650757, g: 0.3583120107650757, b: 0.3583120107650757}
- 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
- 🎨 Color sum: 1.074936032295227
- 🔍 Controllo material: Material.069 colorSum=1.074936032295227
- ✅ Colore OK, non modificato
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.069', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: bianco.005 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco.005 colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco.005', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: Material.068 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.3583120107650757, g: 0.3583120107650757, b: 0.3583120107650757}
- 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
- 🎨 Color sum: 1.074936032295227
- 🔍 Controllo material: Material.068 colorSum=1.074936032295227
- ✅ Colore OK, non modificato
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.068', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Luminoso.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Luminoso.001 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'Luminoso.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.001 su mesh p_on_1, emissiveIntensity=3
- 🎨 Fixing material: Material Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: Material colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material', color: Color, metalness: 0, roughness: 0.5, opacity: 0}
- 🎨 Fixing material: Material.067 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: Material.067 colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.067', color: Color, metalness: 0, roughness: 0.5, opacity: 0}
- 🎨 Fixing material: simbolini.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: simbolini.001 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'simbolini.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: Material.029 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.3583120107650757, g: 0.3583120107650757, b: 0.3583120107650757}
- 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
- 🎨 Color sum: 1.074936032295227
- 🔍 Controllo material: Material.029 colorSum=1.074936032295227
- ✅ Colore OK, non modificato
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.029', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.030 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.030 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: {name: 'Material.030', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Luminoso.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.2, g: 0.2, b: 0.2}
- 🎨 Color RGB values: 0.2 0.2 0.2
- 🎨 Color sum: 0.6000000000000001
- 🔍 Controllo material: Luminoso.001 colorSum=0.6000000000000001
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Luminoso.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.001 su mesh simbolini001_3, emissiveIntensity=3
- 🎨 Fixing material: Material.031 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0.2581735849380493, b: 0.46068859100341797}
- 🎨 Color RGB values: 0 0.2581735849380493 0.46068859100341797
- 🎨 Color sum: 0.7188621759414673
- 🔍 Controllo material: Material.031 colorSum=0.7188621759414673
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.031', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.032 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0.04249753803014755, b: 0.250879168510437}
- 🎨 Color RGB values: 0 0.04249753803014755 0.250879168510437
- 🎨 Color sum: 0.29337670654058456
- 🔍 Controllo material: Material.032 colorSum=0.29337670654058456
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.032', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.033 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.3583120107650757, g: 0.3583120107650757, b: 0.3583120107650757}
- 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
- 🎨 Color sum: 1.074936032295227
- 🔍 Controllo material: Material.033 colorSum=1.074936032295227
- ✅ Colore OK, non modificato
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: {name: 'Material.033', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.034 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0.250879168510437, b: 0.010888764634728432}
- 🎨 Color RGB values: 0 0.250879168510437 0.010888764634728432
- 🎨 Color sum: 0.26176793314516544
- 🔍 Controllo material: Material.034 colorSum=0.26176793314516544
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.034', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: nero.002 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
- ✅ Materiale corretto: {name: 'nero.002', color: Color, metalness: 0.3, roughness: 0.39230769872665405, opacity: 1}
- 🎨 Fixing material: Material.036 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.8000156879425049, g: 0.40019044280052185, b: 0}
- 🎨 Color RGB values: 0.8000156879425049 0.40019044280052185 0
- 🎨 Color sum: 1.2002061307430267
- 🔍 Controllo material: Material.036 colorSum=1.2002061307430267
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.036', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: Material.037 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.32002297043800354, g: 0.32002297043800354, b: 0.32002297043800354}
- 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
- 🎨 Color sum: 0.9600689113140106
- 🔍 Controllo material: Material.037 colorSum=0.9600689113140106
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.037', color: Color, metalness: 0.3, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: mat_1.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.03310476616024971, g: 0.03310476616024971, b: 0.03310476616024971}
- 🎨 Color RGB values: 0.03310476616024971 0.03310476616024971 0.03310476616024971
- 🎨 Color sum: 0.09931429848074913
- 🔍 Controllo material: mat_1.001 colorSum=0.09931429848074913
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 333333
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'mat_1.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: Material.002 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.002 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'Material.002', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: Material.066 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.066 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'Material.066', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 1/4 caricato: pulpito.glb
-ui.js?nocache=1000030:1096 🌐 Progress: 1/4 - pulpito.glb
-ui.js?nocache=1000030:1459 📊 Progress aggiornato: 25% - pulpito.glb
-modelloader.js?nocache=1000011:754 ✅ GLTF/GLB caricato con successo: {scene: Group, scenes: Array(1), animations: Array(0), cameras: Array(0), asset: {…}, …}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: bianco.002 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
-modelloader.js?nocache=1000011:825 🎨 Color sum: 2.400000035762787
-modelloader.js?nocache=1000011:832 🔍 Controllo material: bianco.002 colorSum=2.400000035762787
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'bianco.002', color: Color, metalness: 0.3, roughness: 0.5307692289352417, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_1.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.03310476616024971, g: 0.03310476616024971, b: 0.03310476616024971}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.03310476616024971 0.03310476616024971 0.03310476616024971
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.09931429848074913
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_1.001 colorSum=0.09931429848074913
-modelloader.js?nocache=1000011:848 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 333333
-modelloader.js?nocache=1000011:850 🎨 NUOVO COLORE: 7c7c7c
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_1.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_4.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.1946178525686264, g: 0.20507876574993134, b: 0.1946178525686264}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.1946178525686264 0.20507876574993134 0.1946178525686264
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.5943144708871841
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_4.001 colorSum=0.5943144708871841
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_4.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_5.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.03310476616024971, g: 0.03310476616024971, b: 0.03310476616024971}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.03310476616024971 0.03310476616024971 0.03310476616024971
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.09931429848074913
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_5.001 colorSum=0.09931429848074913
-modelloader.js?nocache=1000011:848 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 333333
-modelloader.js?nocache=1000011:850 🎨 NUOVO COLORE: 7c7c7c
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_5.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_6.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.7874122262001038, g: 0.7874122262001038, b: 0.7874122262001038}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.7874122262001038 0.7874122262001038 0.7874122262001038
-modelloader.js?nocache=1000011:825 🎨 Color sum: 2.3622366786003113
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_6.001 colorSum=2.3622366786003113
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_6.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_7.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.013411748223006725, g: 0.5225215554237366, b: 0.013411748223006725}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.013411748223006725 0.5225215554237366 0.013411748223006725
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.54934505186975
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_7.001 colorSum=0.54934505186975
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_7.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_8.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.7304608821868896, g: 0.16202940046787262, b: 0}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.7304608821868896 0.16202940046787262 0
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.8924902826547623
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_8.001 colorSum=0.8924902826547623
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_8.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_9.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.010022825561463833, g: 0.010022825561463833, b: 0.010022825561463833}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.010022825561463833 0.010022825561463833 0.010022825561463833
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.0300684766843915
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_9.001 colorSum=0.0300684766843915
-modelloader.js?nocache=1000011:848 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 1a1a1a
-modelloader.js?nocache=1000011:850 🎨 NUOVO COLORE: 7c7c7c
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_9.001', color: Color, metalness: 0, roughness: 1, opacity: 0.30000001192092896}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_10.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.7874122262001038, g: 0.7874122262001038, b: 0}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.7874122262001038 0.7874122262001038 0
-modelloader.js?nocache=1000011:825 🎨 Color sum: 1.5748244524002075
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_10.001 colorSum=1.5748244524002075
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_10.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_11.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.4479883909225464, g: 0.013411748223006725, b: 0.013411748223006725}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.4479883909225464 0.013411748223006725 0.013411748223006725
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.47481188736855984
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_11.001 colorSum=0.47481188736855984
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_11.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_12.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.7874122262001038, g: 0, b: 0}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.7874122262001038 0 0
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.7874122262001038
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_12.001 colorSum=0.7874122262001038
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_12.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: mat_13.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.1946178525686264, g: 0.20507876574993134, b: 0.1946178525686264}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.1946178525686264 0.20507876574993134 0.1946178525686264
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.5943144708871841
-modelloader.js?nocache=1000011:832 🔍 Controllo material: mat_13.001 colorSum=0.5943144708871841
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:857 ⚠️ Metalness troppo alta, riducendo
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'mat_13.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: Keyboard.007 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.00901826098561287, g: 0.00901826098561287, b: 0.00901826098561287}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.00901826098561287 0.00901826098561287 0.00901826098561287
-modelloader.js?nocache=1000011:825 🎨 Color sum: 0.027054782956838608
-modelloader.js?nocache=1000011:832 🔍 Controllo material: Keyboard.007 colorSum=0.027054782956838608
-modelloader.js?nocache=1000011:848 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 181818
-modelloader.js?nocache=1000011:850 🎨 NUOVO COLORE: 7c7c7c
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'Keyboard.007', color: Color, metalness: 0, roughness: 0.4000000059604645, opacity: 1}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: vuoto Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
-modelloader.js?nocache=1000011:825 🎨 Color sum: 2.400000035762787
-modelloader.js?nocache=1000011:832 🔍 Controllo material: vuoto colorSum=2.400000035762787
-modelloader.js?nocache=1000011:852 ✅ Colore OK, non modificato
-modelloader.js?nocache=1000011:892 ✅ Materiale corretto: {name: 'vuoto', color: Color, metalness: 0, roughness: 0.5, opacity: 0}
-modelloader.js?nocache=1000011:823 🎨 Fixing material: vuoto Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
-modelloader.js?nocache=1000011:824 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
-modelloader.js?nocache=1000011:825 🎨 Color sum: 2.400000035762787
-modelloader.js?nocache=1000011:832 🔍 Controllo material: vuoto colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'vuoto', color: Color, metalness: 0, roughness: 0.5, opacity: 0}
- 🎨 Fixing material: vuoto Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: vuoto colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'vuoto', color: Color, metalness: 0, roughness: 0.5, opacity: 0}
- 🎨 Fixing material: schermo_remote.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: schermo_remote.001 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: schermo_remote.001
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'schermo_remote.001', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: schermo_remote.002 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: schermo_remote.002 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: schermo_remote.002
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'schermo_remote.002', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 2/4 caricato: remote.glb
- 🌐 Progress: 2/4 - remote.glb
- 📊 Progress aggiornato: 50% - remote.glb
- ✅ GLTF/GLB caricato con successo: {scene: Group, scenes: Array(2), animations: Array(0), cameras: Array(0), asset: {…}, …}
- 🎨 Fixing material: Matte Porcelain Tile Beige Type: MeshStandardMaterial Color: Color {isColor: true, r: 1, g: 1, b: 1}
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material: Matte Porcelain Tile Beige colorSum=3
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Matte Porcelain Tile Beige', color: Color, metalness: 0, roughness: 1, opacity: 1}
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 3/4 caricato: pavimento.glb
- 🌐 Progress: 3/4 - pavimento.glb
- 📊 Progress aggiornato: 75% - pavimento.glb
- ✅ GLTF/GLB caricato con successo: {scene: Group, scenes: Array(1), animations: Array(0), cameras: Array(0), asset: {…}, …}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: rosso Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.8000074625015259, g: 0.0017022979445755482, b: 0}
- 🎨 Color RGB values: 0.8000074625015259 0.0017022979445755482 0
- 🎨 Color sum: 0.8017097604461014
- 🔍 Controllo material: rosso colorSum=0.8017097604461014
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'rosso', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: rosso Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.8000074625015259, g: 0.0017022979445755482, b: 0}
- 🎨 Color RGB values: 0.8000074625015259 0.0017022979445755482 0
- 🎨 Color sum: 0.8017097604461014
- 🔍 Controllo material: rosso colorSum=0.8017097604461014
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'rosso', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color {isColor: true, r: 1, g: 1, b: 1}
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material:  colorSum=3
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: '', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color {isColor: true, r: 1, g: 1, b: 1}
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material:  colorSum=3
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: '', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: nero Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: nero colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'nero', color: Color, metalness: 0.3, roughness: 0.39230769872665405, opacity: 1}
- 🎨 Fixing material: bandelle Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bandelle colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bandelle', color: Color, metalness: 0, roughness: 0.5, opacity: 0.4692307114601135}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color {isColor: true, r: 1, g: 1, b: 1}
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material:  colorSum=3
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: '', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color {isColor: true, r: 1, g: 1, b: 1}
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material:  colorSum=3
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: '', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6543524861335754, g: 0.6543524861335754, b: 0.6543524861335754}
- 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
- 🎨 Color sum: 1.9630574584007263
- 🔍 Controllo material: metal colorSum=1.9630574584007263
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'metal', color: Color, metalness: 0.7384615540504456, roughness: 0.36153846979141235, opacity: 1}
- 🎨 Fixing material: nero.001 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0, b: 0}
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: nero.001 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.001
- ✅ Materiale corretto: {name: 'nero.001', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color {isColor: true, r: 1, g: 1, b: 1}
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material:  colorSum=3
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: '', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎨 Fixing material: bandelle Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bandelle colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bandelle', color: Color, metalness: 0, roughness: 0.5, opacity: 0.4692307114601135}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: Material.012 Type: MeshStandardMaterial Color: Color {isColor: true, r: 0, g: 0.00837901420891285, b: 0.8000074625015259}
- 🎨 Color RGB values: 0 0.00837901420891285 0.8000074625015259
- 🎨 Color sum: 0.8083864767104387
- 🔍 Controllo material: Material.012 colorSum=0.8083864767104387
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'Material.012', color: Color, metalness: 0, roughness: 0.5, opacity: 1}
- 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.800000011920929, g: 0.800000011920929, b: 0.800000011920929}
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: {name: 'bianco', color: Color, metalness: 0.47692304849624634, roughness: 0.5307692289352417, opacity: 1}
- 🎨 Fixing material: Glass Type: MeshStandardMaterial Color: Color {isColor: true, r: 0.6443073153495789, g: 0.619080126285553, b: 0.549913763999939}
- 🎨 Color RGB values: 0.6443073153495789 0.619080126285553 0.549913763999939
- 🎨 Color sum: 1.8133012056350708
- 🔍 Controllo material: Glass colorSum=1.8133012056350708
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: {name: 'Glass', color: Color, metalness: 0.3, roughness: 1, opacity: 1}
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 4/4 caricato: a500.glb
- 🌐 Progress: 4/4 - a500.glb
- 📊 Progress aggiornato: 100% - a500.glb
- ✅ Caricamento completato: 4 successi, 0 fallimenti
- ✅ Tutti i modelli caricati, rendering finale...
- 🎨 Batch rendering completato
- 🌐 Modelli caricati, chiamando onModelLoadComplete: (4) [Group, Group, Group, Group]
- [6:27:19 PM] INFO: Modelli caricati con successo: 4
- 🔍 Ricerca config per modello: "pulpito"
- 🔍 Files scenario disponibili: (5) [{…}, {…}, {…}, {…}, {…}]
- 🔍 Test file "scenario_spindle_maintenance_description": modelName="pulpito", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/pulpito.glb": modelName="pulpito", fileName="pulpito", exactMatch=true, direction= {x: 0, y: 0, z: 1}
- ✅ EXACT MATCH FOUND for "pulpito": models/pulpito.glb with direction: {x: 0, y: 0, z: 1}
- 🔍✅ Config trovato per "pulpito": {label: 'model', path: 'models/pulpito.glb', direction: {…}}
- 📐 Bounding box per undefined:
-    Min: (0.739, 0.004, 3.460)
-    Max: (1.251, 1.276, 3.947)
-    Center: (0.995, 0.640, 3.703)
-    Size: (0.512, 1.273, 0.487)
- 💾 Posizione iniziale salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
- 📐 Bounding box per undefined:
-    Min: (0.739, 0.004, 3.460)
-    Max: (1.251, 1.276, 3.947)
-    Center: (0.995, 0.640, 3.703)
-    Size: (0.512, 1.273, 0.487)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
-    ✓ Figlio interattivo (Mesh): "chiave0" (button)
-    ✓ Figlio interattivo (Mesh): "chiave1" (button)
-    ✓ Figlio interattivo (Mesh): "emergenza_off" (button)
-    ✓ Figlio interattivo (Mesh): "emergenza_on" (button)
-    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off" (button)
-    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off_1" (button)
-    ✓ Figlio interattivo (Group): "pstart0" (button)
-    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on" (button)
-    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on_1" (button)
-    ✓ Figlio interattivo (Group): "pstart1" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_mdi" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_tool" (button)
- 💡 [InteractiveObject3D] Materiale luminoso potenziato: Letter Glow.001 su mesh telaio_14[0]
- 💡 [InteractiveObject3D] Materiale luminoso potenziato: Luminoso.001 su mesh p_on_1[0]
- 💡 [InteractiveObject3D] Materiale luminoso potenziato: Luminoso.001 su mesh simbolini001_3[0]
- 🔗 [InteractiveObject3D] Modello "pulpito" collegato con 8 figli interattivi
- 📋 [DEBUG] Mesh nel modello "pulpito": (30) ['telaio', 'telaio_1', 'telaio_2', 'telaio_3', 'telaio_4', 'telaio_5', 'telaio_6', 'telaio_7', 'telaio_8', 'telaio_9', 'telaio_10', 'telaio_11', 'telaio_12', 'telaio_13', 'telaio_14', 'chiave0', 'chiave1', 'emergenza_off', 'emergenza_on', 'p_off', 'p_off_1', 'p_on', 'p_on_1', 'Pulsante_mdi', 'Pulsante_tool', 'simbolini001', 'simbolini001_1', 'simbolini001_2', 'simbolini001_3', 'simbolini001_4'] ...e altre 9
- 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": (2) ['chiave0', 'chiave1']
-    🔗 StateGroup "chiave": Mesh "chiave0" (visibile)
-    🔗 StateGroup "chiave": Mesh "chiave1" (nascosta)
- 🔍 [DEBUG] Cercando varianti per StateGroup "start": (2) ['pstart0', 'pstart1']
-    🔗 StateGroup "start": Group "pstart0" (nascosta)
-    🔗 StateGroup "start": Group "pstart1" (visibile)
- 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": (2) ['emergenza_off', 'emergenza_on']
-    🔗 StateGroup "emergenza": Mesh "emergenza_off" (visibile)
-InteractiveObject3D.js?v=1000001:691    🔗 StateGroup "emergenza": Mesh "emergenza_on" (nascosta)
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": (2) ['schermo001', 'schermo002']
-InteractiveObject3D.js?v=1000001:691    🔗 StateGroup "schermo": Mesh "schermo001" (visibile)
-InteractiveObject3D.js?v=1000001:691    🔗 StateGroup "schermo": Mesh "schermo002" (nascosta)
-InteractiveObject3D.js?v=1000001:705 🔀 [InteractiveObject3D] Collegate 8 mesh a StateGroups
-scene3d-modular.js?nocache=1000019:1050 🖥️ [Scene3D] Schermo auto-illuminato: schermo001, emissiveIntensity=0.5
-scene3d-modular.js?nocache=1000019:1050 🖥️ [Scene3D] Schermo auto-illuminato: schermo002, emissiveIntensity=0.5
-scene3d-modular.js?nocache=1000019:1069 🏷️ [Scene3D] Trasparenza attivata per materiale: simbolini.001 su mesh simbolini001
-scene3d-modular.js?nocache=1000019:1095 💡 [Scene3D] Materiale luminoso potenziato: Letter Glow.001 su mesh telaio_14[0], emissiveIntensity=3
-scene3d-modular.js?nocache=1000019:1095 💡 [Scene3D] Materiale luminoso potenziato: Luminoso.001 su mesh p_on_1[0], emissiveIntensity=3
-scene3d-modular.js?nocache=1000019:1095 💡 [Scene3D] Materiale luminoso potenziato: Luminoso.001 su mesh simbolini001_3[0], emissiveIntensity=3
-scene3d-modular.js?nocache=1000019:1109 🧭 Direction loaded for pulpito: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1200 🔍 Ricerca config per modello: "remote"
-ui.js?nocache=1000030:1201 🔍 Files scenario disponibili: (5) [{…}, {…}, {…}, {…}, {…}]
-ui.js?nocache=1000030:1211 🔍 Test file "scenario_spindle_maintenance_description": modelName="remote", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
-ui.js?nocache=1000030:1211 🔍 Test file "models/pulpito.glb": modelName="remote", fileName="pulpito", exactMatch=false, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1211 🔍 Test file "models/remote.glb": modelName="remote", fileName="remote", exactMatch=true, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1214 ✅ EXACT MATCH FOUND for "remote": models/remote.glb with direction: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1221 🔍✅ Config trovato per "remote": {label: 'model', path: 'models/remote.glb', direction: {…}}
-scene3d-modular.js?nocache=1000019:1758 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000019:1759    Min: (0.863, 0.779, 3.591)
-scene3d-modular.js?nocache=1000019:1760    Max: (1.094, 0.916, 3.653)
-scene3d-modular.js?nocache=1000019:1761    Center: (0.979, 0.848, 3.622)
-scene3d-modular.js?nocache=1000019:1762    Size: (0.231, 0.136, 0.062)
-scene3d-modular.js?nocache=1000019:3304 💾 Posizione iniziale salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
-scene3d-modular.js?nocache=1000019:1758 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000019:1759    Min: (0.863, 0.779, 3.591)
-scene3d-modular.js?nocache=1000019:1760    Max: (1.094, 0.916, 3.653)
-scene3d-modular.js?nocache=1000019:1761    Center: (0.979, 0.848, 3.622)
-scene3d-modular.js?nocache=1000019:1762    Size: (0.231, 0.136, 0.062)
-scene3d-modular.js?nocache=1000019:3324 🏠 Posizione ORIGINALE SCENARIO salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
-InteractiveObject3D.js?v=1000001:671 📋 [DEBUG] Mesh nel modello "remote": (18) ['07L0676941A_001002', '07L0676941A_001002_1', '07L0676941A_001002_2', '07L0676941A_001002_3', '07L0676941A_001002_4', '07L0676941A_001002_5', '07L0676941A_001002_6', '07L0676941A_001002_7', '07L0676941A_001002_8', '07L0676941A_001002_9', '07L0676941A_001002_10', '07L0676941A_001002_11', '07L0676941A_001002_12', 'pulsante_r_play', 'Pulsante_r_status', 'Pulsante_r_unlock', 'Schermo_R000', 'Schermo_R001'] 
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": (2) ['chiave0', 'chiave1']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "start": (2) ['pstart0', 'pstart1']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": (2) ['emergenza_off', 'emergenza_on']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": (2) ['schermo001', 'schermo002']
-scene3d-modular.js?nocache=1000019:1050 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R000, emissiveIntensity=0.5
-scene3d-modular.js?nocache=1000019:1050 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R001, emissiveIntensity=0.5
-scene3d-modular.js?nocache=1000019:1109 🧭 Direction loaded for remote: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1200 🔍 Ricerca config per modello: "pavimento"
-ui.js?nocache=1000030:1201 🔍 Files scenario disponibili: (5) [{…}, {…}, {…}, {…}, {…}]
-ui.js?nocache=1000030:1211 🔍 Test file "scenario_spindle_maintenance_description": modelName="pavimento", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
-ui.js?nocache=1000030:1211 🔍 Test file "models/pulpito.glb": modelName="pavimento", fileName="pulpito", exactMatch=false, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1211 🔍 Test file "models/remote.glb": modelName="pavimento", fileName="remote", exactMatch=false, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1211 🔍 Test file "models/a500.glb": modelName="pavimento", fileName="a500", exactMatch=false, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1211 🔍 Test file "models/pavimento.glb": modelName="pavimento", fileName="pavimento", exactMatch=true, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1214 ✅ EXACT MATCH FOUND for "pavimento": models/pavimento.glb with direction: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1221 🔍✅ Config trovato per "pavimento": {label: 'model', path: 'models/pavimento.glb', direction: {…}}
-scene3d-modular.js?nocache=1000019:1758 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000019:1759    Min: (-6.119, 0.000, -7.115)
-scene3d-modular.js?nocache=1000019:1760    Max: (8.110, 0.000, 7.115)
-scene3d-modular.js?nocache=1000019:1761    Center: (0.996, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:1762    Size: (14.229, 0.000, 14.229)
-scene3d-modular.js?nocache=1000019:3304 💾 Posizione iniziale salvata per modello: pavimento - Centro BB: (0.996, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:1758 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000019:1759    Min: (-6.119, 0.000, -7.115)
-scene3d-modular.js?nocache=1000019:1760    Max: (8.110, 0.000, 7.115)
-scene3d-modular.js?nocache=1000019:1761    Center: (0.996, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:1762    Size: (14.229, 0.000, 14.229)
-scene3d-modular.js?nocache=1000019:3324 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pavimento - Centro BB: (0.996, 0.000, 0.000)
-InteractiveObject3D.js?v=1000001:671 📋 [DEBUG] Mesh nel modello "pavimento": ['Plane001'] 
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": (2) ['chiave0', 'chiave1']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "start": (2) ['pstart0', 'pstart1']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": (2) ['emergenza_off', 'emergenza_on']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": (2) ['schermo001', 'schermo002']
-scene3d-modular.js?nocache=1000019:1109 🧭 Direction loaded for pavimento: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1200 🔍 Ricerca config per modello: "a500"
-ui.js?nocache=1000030:1201 🔍 Files scenario disponibili: (5) [{…}, {…}, {…}, {…}, {…}]
-ui.js?nocache=1000030:1211 🔍 Test file "scenario_spindle_maintenance_description": modelName="a500", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
-ui.js?nocache=1000030:1211 🔍 Test file "models/pulpito.glb": modelName="a500", fileName="pulpito", exactMatch=false, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1211 🔍 Test file "models/remote.glb": modelName="a500", fileName="remote", exactMatch=false, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1211 🔍 Test file "models/a500.glb": modelName="a500", fileName="a500", exactMatch=true, direction= {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1214 ✅ EXACT MATCH FOUND for "a500": models/a500.glb with direction: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1221 🔍✅ Config trovato per "a500": {label: 'model', path: 'models/a500.glb', direction: {…}}
-scene3d-modular.js?nocache=1000019:1758 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000019:1759    Min: (-4.109, -0.005, -1.832)
-scene3d-modular.js?nocache=1000019:1760    Max: (3.938, 2.793, 3.177)
-scene3d-modular.js?nocache=1000019:1761    Center: (-0.085, 1.394, 0.672)
-scene3d-modular.js?nocache=1000019:1762    Size: (8.047, 2.798, 5.009)
-scene3d-modular.js?nocache=1000019:3304 💾 Posizione iniziale salvata per modello: a500 - Centro BB: (-0.085, 1.394, 0.672)
-scene3d-modular.js?nocache=1000019:1758 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000019:1759    Min: (-4.109, -0.005, -1.832)
-scene3d-modular.js?nocache=1000019:1760    Max: (3.938, 2.793, 3.177)
-scene3d-modular.js?nocache=1000019:1761    Center: (-0.085, 1.394, 0.672)
-scene3d-modular.js?nocache=1000019:1762    Size: (8.047, 2.798, 5.009)
-scene3d-modular.js?nocache=1000019:3324 🏠 Posizione ORIGINALE SCENARIO salvata per modello: a500 - Centro BB: (-0.085, 1.394, 0.672)
-InteractiveObject3D.js?v=1000001:671 📋 [DEBUG] Mesh nel modello "a500": (30) ['A500', 'Basamento_BarraFissaDx_1', 'Basamento_BarraFissaDx_2', 'Basamento_BarraFissaDx_3', 'Basamento_BarraFissaSx_1', 'Basamento_BarraFissaSx_2', 'Basamento_BarraFissaSx_3', 'Basamento_BarraTondaAnteriore', 'Basamento_BarreTonde_BarraDx_1', 'Basamento_BarreTonde_BarraDx_2', 'Basamento_BarreTonde_BarraDx(2)_1', 'Basamento_BarreTonde_BarraDx(2)_2', 'Basamento_BarreTonde_BarraDx(3)_1', 'Basamento_BarreTonde_BarraDx(3)_2', 'Basamento_BarreTonde_BarraDx(4)001', 'Basamento_BarreTonde_BarraDx(4)001_1', 'Basamento_BarreTonde_BarraSx', 'Basamento_BarreTonde_BarraSx(2)_1', 'Basamento_BarreTonde_BarraSx(2)_2', 'Basamento_BarreTonde_BarraSx(3)_1', 'Basamento_BarreTonde_BarraSx(3)_2', 'Basamento_BarreTonde_BarraSx(4)_1', 'Basamento_BarreTonde_BarraSx(4)_2', 'Basamento_Portale', 'Basamento_Portale_BraccioQuadro', 'Basamento_Portale_CarroY', 'Basamento_Portale_CarroY_CarroZ', 'Basamento_Portale_CarroY_CarroZ_Prisma', 'Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_1', 'Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_2'] ...e altre 15
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": (2) ['chiave0', 'chiave1']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "start": (2) ['pstart0', 'pstart1']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": (2) ['emergenza_off', 'emergenza_on']
-InteractiveObject3D.js?v=1000001:677 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": (2) ['schermo001', 'schermo002']
-scene3d-modular.js?nocache=1000019:1109 🧭 Direction loaded for a500: {x: 0, y: 0, z: 1}
-ui.js?nocache=1000030:1518  Pannello controlli visibilità modelli non trovato
-createModelVisibilityControls @ ui.js?nocache=1000030:1518
-onModelLoadComplete @ ui.js?nocache=1000030:1242
-(anonymous) @ ui.js?nocache=1000030:1109
-(anonymous) @ modelloader.js?nocache=1000011:248
-requestAnimationFrame
-(anonymous) @ modelloader.js?nocache=1000011:243
-Promise.then
-processFileGroups @ modelloader.js?nocache=1000011:237
-loadFiles @ modelloader.js?nocache=1000011:86
-(anonymous) @ ui.js?nocache=1000030:1091
-Promise.then
-loadModelsFromUrls @ ui.js?nocache=1000030:1052
-loadScenarioModels @ ui.js?nocache=1000030:970
-loadScenario @ ui.js?nocache=1000030:723
-onScenarioCardClick @ ui.js?nocache=1000030:699
-ui.js?nocache=1000030:1469 📊 Progress bar modelli nascosta
-ui.js?nocache=1000030:1258 🔧 DRAG&DROP: Salvataggio posizioni originali post-caricamento modelli
-DragDropSystem.js?nocache=1000031:495 [DragDropSystem] 📍 Memorizzata posizione originale per pulpito: (0.995, 0.640, 3.703)
-DragDropSystem.js?nocache=1000031:495 [DragDropSystem] 📍 Memorizzata posizione originale per remote: (0.979, 0.848, 3.622)
-DragDropSystem.js?nocache=1000031:495 [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
-DragDropSystem.js?nocache=1000031:495 [DragDropSystem] 📍 Memorizzata posizione originale per a500: (-0.085, 1.394, 0.672)
-DragDropSystem.js?nocache=1000031:499 [DragDropSystem] ✅ Salvate 4 posizioni originali
-InterchangeableTracker.js?v=1000001:184 [InterchangeableTracker] ℹ️ AssemblySystem non in modalità assemblaggio - skip inizializzazione occupazioni
-ui.js?nocache=1000030:1309 🎮 [UI] Inizializzazione StepController...
-StepController.js?v=1000001:66 [StepController] Inizializzazione...
-StepController.js?v=1000001:83 [StepController] Event listeners configurati
-StepController.js?v=1000001:72 [StepController] ✅ Inizializzato
-config.js?nocache=999999:242 [6:27:19 PM] INFO: Scenario Manutenzione Elettromandrino caricato completamente
-ui.js?nocache=1000030:1232 🔍 DEBUG: Controllo stato controlli touch dopo addModel
-ui.js?nocache=1000030:1801 🔍 STATO CONTROLLI TOUCH: {exists: true, classList: Array(2), style: {…}, computed: {…}, rect: {…}, …}
-ui.js?nocache=1000030:1232 🔍 DEBUG: Controllo stato controlli touch dopo addModel
-ui.js?nocache=1000030:1801 🔍 STATO CONTROLLI TOUCH: {exists: true, classList: Array(2), style: {…}, computed: {…}, rect: {…}, …}
-ui.js?nocache=1000030:1232 🔍 DEBUG: Controllo stato controlli touch dopo addModel
-ui.js?nocache=1000030:1801 🔍 STATO CONTROLLI TOUCH: {exists: true, classList: Array(2), style: {…}, computed: {…}, rect: {…}, …}
-ui.js?nocache=1000030:1232 🔍 DEBUG: Controllo stato controlli touch dopo addModel
-ui.js?nocache=1000030:1801 🔍 STATO CONTROLLI TOUCH: {exists: true, classList: Array(2), style: {…}, computed: {…}, rect: {…}, …}
-ui.js?nocache=1000030:1315 🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli
-ui.js?nocache=1000030:1801 🔍 STATO CONTROLLI TOUCH: {exists: true, classList: Array(2), style: {…}, computed: {…}, rect: {…}, …}
-ui.js?nocache=1000030:1722 🔧 FORCE SHOW - isMobile: false touchControls exists: true
-scene3d-modular.js?nocache=1000019:4486 📹 CAMERA: Animazione completata
-scene3d-modular.js?nocache=1000019:1490 [Scene3D] 🎯 PIVOT CLICK: punto esatto (0.996, 1.112, 3.592) su mesh "schermo001"
-scene3d-modular.js?nocache=1000019:1527 🎯 Animazione pivot: da (0.97, 1.15, 3.52) a (1.00, 1.11, 3.59)
-scene3d-modular.js?nocache=1000019:4522 🎯 Animazione pivot completata
-ui.js?nocache=1000030:3209 🔥 CLICK TUTORIAL BUTTON: index=0, name="Manutenzione Elettromandrino"
-ui.js?nocache=1000030:3387 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
-scene3d-modular.js?nocache=1000019:3285 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
-scene3d-modular.js?nocache=1000019:3370 🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...
-scene3d-modular.js?nocache=1000019:3371 🏠 DEBUG: loadedModels count: 4
-scene3d-modular.js?nocache=1000019:3372 🏠 DEBUG: scenarioOriginalPositions size: 4
-scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: pulpito
-scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: pulpito - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: pulpito
-scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: remote
-scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: remote - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: remote
-scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: pavimento
-scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: pavimento - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: pavimento
-scene3d-modular.js?nocache=1000019:3378 🏠 DEBUG: Tentativo reset SCENARIO modello: a500
-scene3d-modular.js?nocache=1000019:3474 🏠 Modello ripristinato SCENARIO: a500 - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000019:3381 🏠 DEBUG: Reset SCENARIO riuscito per: a500
-scene3d-modular.js?nocache=1000019:3387 🏠 RESET SCENARIO: 4 modelli ripristinati alle posizioni originali dello scenario
-ui.js?nocache=1000030:2870 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
-config.js?nocache=999999:242 [6:27:31 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
-config.js?nocache=999999:242 [6:27:31 PM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
-config.js?nocache=999999:242 [6:27:31 PM] INFO: Tutorial selezionato: Manutenzione Elettromandrino (7 step)
-StepGatingManager.js?v=1000001:64 [StepGating] 🔄 Reset sistema...
-StepGatingManager.js?v=1000001:69 [StepGating] ✅ Reset completato
-StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 0: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 1 - Vai alla schermata MDI'}
-config.js?nocache=999999:242 [6:27:31 PM] INFO: 🚦 Step Gating: 1 configurazioni registrate
-ui.js?nocache=1000030:3325 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=1
-ui.js?nocache=1000030:3334 🔥 Button 0 set to ACTIVE (green)
-config.js?nocache=999999:242 [6:27:31 PM] INFO: Tutorial 1 attivato (comportamento radio button)
-ui.js?nocache=1000030:3212 🔥 Tutorial button state updated for index: 0
-ui.js?nocache=1000030:2979 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
-ui.js?nocache=1000030:3106 📹 TUTORIAL: CameraPos globale = (0.94, 1.29, 4.07)
-ui.js?nocache=1000030:3112 📹 TUTORIAL: CameraTarget globale = (0.97, 1.15, 3.52)
-ui.js?nocache=1000030:3131 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino"
-scene3d-modular.js?nocache=1000019:4159 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
-scene3d-modular.js?nocache=1000019:4180 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
-scene3d-modular.js?nocache=1000019:4214 📹 CAMERA: Durata transizione = 2s
-scene3d-modular.js?nocache=1000019:4237 📹 CAMERA: Avvio animazione camera (durata: 2s)
-scene3d-modular.js?nocache=1000019:1251 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
-scene3d-modular.js?nocache=1000019:1254 🔍 HIGHLIGHT: Nessun step o elemento corrente
-config.js?nocache=999999:242 [6:27:31 PM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
-ui.js?nocache=1000030:3426 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
-ui.js?nocache=1000030:3427 [DEBUG] 🚀 Step properties: {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.94, 1.29, 4.07)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
-config.js?nocache=999999:242 [6:27:31 PM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.94, 1.29, 4.07)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
-StepController.js?v=1000001:136 [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
-StepController.js?v=1000001:225 [StepController] 📋 Step 0 auto-configurato da proprietà: {triggers: {…}, actions: {…}, autoAdvance: true}
-StepGatingManager.js?v=1000001:134 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
-StepGatingManager.js?v=1000001:137 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
-scene3d-modular.js?nocache=1000019:4159 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
-scene3d-modular.js?nocache=1000019:4180 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
-scene3d-modular.js?nocache=1000019:4214 📹 CAMERA: Durata transizione = 2s
-scene3d-modular.js?nocache=1000019:4237 📹 CAMERA: Avvio animazione camera (durata: 2s)
-scene3d-modular.js?nocache=1000019:4486 📹 CAMERA: Animazione completata
-config.js?nocache=999999:242 [6:27:35 PM] INFO: [ToolsManager] Strumento attivato: mano
-scene3d-modular.js?nocache=1000019:1490 [Scene3D] 🎯 PIVOT CLICK: punto esatto (1.159, 1.019, 3.615) su mesh "schermo001"
-scene3d-modular.js?nocache=1000019:1527 🎯 Animazione pivot: da (0.97, 1.15, 3.52) a (1.16, 1.02, 3.61)
-scene3d-modular.js?nocache=1000019:4522 🎯 Animazione pivot completata
-scene3d-modular.js?nocache=1000019:1295 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_mdi
-InteractiveObject3D.js?v=1000001:406 🖱️ [InteractiveObject3D] Click su "Pulsante_mdi" (parent: pulpito)
-InteractiveObject3D.js?v=1000001:441 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_mdi (mesh: Pulsante_mdi) → setVariant:schermo=schermo002
-StepController.js?v=1000001:326 [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_mdi"
- [StepController] ✅ Trigger "pulpito.Pulsante_mdi" accettato da sorgente "physical"
- [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
- [StepController]    1. setVariant: {type: 'setVariant', group: 'schermo', variant: 'schermo002'}
- [StepController] 🔀 setVariant: schermo=schermo002
- 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo001" → "schermo002"
- [StepController] ⏭️ Auto-avanzamento schedulato...
-    ✓ Gestito da StepController
- ⚡ [InteractiveObject3D] Eseguo azione: setVariant(schermo=schermo002)
- [InteractiveObject3D] StateGroup "schermo" già su "schermo002"
- [Scene3D] ✅ Click gestito da InteractiveObject3D
-

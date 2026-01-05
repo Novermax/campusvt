@@ -48,7 +48,7 @@
 .step-speech-bubble {
     position: absolute;
     left: 20px;
-    top: 50%;
+    top: 20%;
     transform: translateY(-50%);
     z-index: 150;
     max-width: 350px;

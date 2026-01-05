@@ -1,0 +1,11 @@
+scarico utensile: 
+
+1.Basamento_Portale_CarroY traslazione z- 1
+2.Basamento_Portale_CarroY_CarroZ_Prisma y- 0.1
+3.Basamento_Portale_MagazzinoInternoX1 x+ 0.2
+4 deve scomparire tool1 e deve comparire al suo posto tool0
+5.Basamento_Portale_CarroY_CarroZ_Prisma y+ 0.1
+6.Basamento_Portale_MagazzinoInternoX1 x- 0.2
+7.Basamento_Portale_CarroY_CarroZ_Prisma y+ 0.5
+
+

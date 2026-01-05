@@ -1610,8 +1610,77 @@ const Scene3D = {
             return;
         }
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // HOLDABLE SYSTEM: Gestione HoldAction=pick al click
+        // ═══════════════════════════════════════════════════════════════════════
+        if (currentStep.properties.HoldAction) {
+            const holdAction = currentStep.properties.HoldAction.toLowerCase();
+
+            if (holdAction === 'pick' && window.HoldableSystem) {
+                console.log(`[DEBUG] 🤚 HoldAction=pick - Eseguo pickObject per: ${cleanModelName}`);
+
+                // Esegui pick
+                const success = window.HoldableSystem.pickObject(cleanModelName);
+
+                if (success) {
+                    // Rimuovi highlight
+                    this.removeHighlight();
+
+                    // Avanza allo step successivo dopo un breve delay
+                    setTimeout(() => {
+                        if (window.UI && typeof window.UI.nextStep === 'function') {
+                            console.log(`[DEBUG] ⏭️ Avanzo allo step successivo dopo pick`);
+                            window.UI.nextStep();
+                        }
+                    }, 300);
+                }
+                return; // Non proseguire con animazione normale
+            }
+        }
+
         console.log(`[DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation`);
         this.startModelAnimation(model, currentStep);
+    },
+
+    /**
+     * AutoExecute: Esegue animazione automaticamente senza click utente
+     * Usato quando step ha AutoExecute=true
+     * @param {Object} target - Il modello o child da animare
+     * @param {Object} tutorialStep - Lo step del tutorial con le proprietà
+     * @param {Object} rootModel - Il modello root per cercare home_config (opzionale)
+     */
+    autoExecuteAnimation: function(target, tutorialStep, rootModel = null) {
+        console.log(`[Scene3D] 🤖 AutoExecute: Avvio animazione per "${target.name}"`);
+        console.log(`[Scene3D] 🤖 AutoExecute: Target type:`, target.type);
+        console.log(`[Scene3D] 🤖 AutoExecute: Target position:`, target.position);
+        console.log(`[Scene3D] 🤖 AutoExecute: Tutorial step properties:`, tutorialStep.properties);
+
+        // Usa il nome del modello root per home_config, altrimenti il target
+        const modelForConfig = rootModel || target;
+        const modelFilename = modelForConfig.userData?.originalFilename || modelForConfig.name;
+        console.log(`[Scene3D] 🤖 AutoExecute: ModelFilename per home_config: "${modelFilename}"`);
+        console.log(`[Scene3D] 🤖 AutoExecute: Target da animare: "${target.name}"`);
+
+        // Parse le azioni dallo step
+        const movementSteps = this.parseMovementSteps(tutorialStep, modelFilename);
+        console.log(`[Scene3D] 🤖 AutoExecute: Movement steps parsed:`, movementSteps);
+
+        if (movementSteps.length > 0) {
+            console.log(`[Scene3D] 🤖 AutoExecute: ${movementSteps.length} azioni da eseguire`);
+
+            // Recupera slave e driven objects se presenti
+            const slaveObjects = tutorialStep.properties?.SlaveObjectsList || [];
+            const drivenObjectsConfig = tutorialStep.properties?.DrivenObjectsConfig ||
+                                       (tutorialStep.properties?.DrivenObjectConfig ? [tutorialStep.properties.DrivenObjectConfig] : []);
+
+            const result = this.startMultiStepMovement(target, movementSteps, slaveObjects, drivenObjectsConfig);
+            console.log(`[Scene3D] 🤖 AutoExecute: startMultiStepMovement returned:`, result);
+            return result;
+        } else {
+            console.warn(`[Scene3D] ⚠️ AutoExecute: Nessuna azione trovata nello step!`);
+            console.warn(`[Scene3D] ⚠️ AutoExecute: Verifica che ci sia Azione1=... nel tutorial.txt`);
+            return null;
+        }
     },
 
     startModelAnimation: function(model, tutorialStep) {
@@ -4083,6 +4152,11 @@ const Scene3D = {
 
     render: function() {
         if (this.scene && this.camera && this.renderer) {
+            // Aggiorna animazioni TWEEN (richiesto per HoldableSystem e altre animazioni)
+            if (typeof TWEEN !== 'undefined') {
+                TWEEN.update();
+            }
+
             this.updateAnimations();
             this.updateCameraAnimation();
             this.updatePivotAnimation();

@@ -276,56 +276,166 @@ window.HoldableSystem = {
     // ═══════════════════════════════════════════════════════════════════
 
     /**
-     * Anima il pick di un oggetto
+     * Anima il pick di un oggetto con transizione smooth TWEEN
+     * APPROCCIO: NON spostiamo il modello nella gerarchia camera,
+     * ma lo lasciamo nella scena e aggiorniamo la sua posizione world ogni frame
      */
     animatePick: function(model, config, onComplete) {
+        // Salva l'offset locale desiderato (relativo alla camera)
+        const holdOffset = config.holdPosition.clone();
+        holdOffset.z = -Math.abs(holdOffset.z); // Z negativo = davanti alla camera
+
+        const holdRotation = config.holdRotation.clone();
+
+        // Salva posizione/rotazione di partenza
         const startPosition = model.position.clone();
-        const startRotation = model.rotation.clone();
+        const startQuaternion = model.quaternion.clone();
 
-        // Calcola posizione world target (camera + offset)
-        const targetLocalPos = config.holdPosition.clone();
-        const targetLocalRot = config.holdRotation.clone();
+        // Salviamo i parametri per l'update loop
+        model.userData.holdOffset = holdOffset;
+        model.userData.holdRotation = holdRotation;
+        model.userData.isBeingHeld = true;
+        model.userData.pickAnimationProgress = 0; // 0 = inizio, 1 = fine
 
-        // Rimuovi dal parent originale e aggiungi al container della camera
-        const originalParent = model.parent;
-        if (originalParent) {
-            originalParent.remove(model);
+        // Disabilita frustum culling
+        model.traverse((child) => {
+            child.frustumCulled = false;
+        });
+
+        console.log(`[HoldableSystem] 🎬 Animazione PICK avviata per "${model.name}"`);
+
+        // Animazione con TWEEN
+        const duration = this.config.pickDuration;
+        const tweenData = { progress: 0 };
+
+        if (typeof TWEEN !== 'undefined') {
+            new TWEEN.Tween(tweenData)
+                .to({ progress: 1 }, duration)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onUpdate(() => {
+                    model.userData.pickAnimationProgress = tweenData.progress;
+
+                    // Calcola posizione target (relativa alla camera)
+                    const targetPosition = new THREE.Vector3();
+                    targetPosition.copy(holdOffset);
+                    targetPosition.applyQuaternion(this.camera.quaternion);
+                    targetPosition.add(this.camera.position);
+
+                    // Calcola rotazione target
+                    const cameraQuat = this.camera.quaternion.clone();
+                    const localQuat = new THREE.Quaternion();
+                    localQuat.setFromEuler(holdRotation);
+                    const targetQuat = new THREE.Quaternion();
+                    targetQuat.multiplyQuaternions(cameraQuat, localQuat);
+
+                    // Interpola posizione
+                    model.position.lerpVectors(startPosition, targetPosition, tweenData.progress);
+
+                    // Interpola rotazione (slerp per quaternioni)
+                    model.quaternion.slerpQuaternions(startQuaternion, targetQuat, tweenData.progress);
+                })
+                .onComplete(() => {
+                    model.userData.pickAnimationProgress = 1;
+                    console.log(`[HoldableSystem] ✅ Animazione PICK completata per "${model.name}"`);
+                    if (onComplete) onComplete();
+                })
+                .start();
+        } else {
+            // Fallback senza TWEEN - posizionamento immediato
+            this.updateHeldObjectPosition(model);
+            console.log(`[HoldableSystem] ⚠️ TWEEN non disponibile - posizionamento immediato`);
+            if (onComplete) onComplete();
         }
-
-        // Converti posizione world in posizione locale rispetto alla camera
-        model.position.copy(targetLocalPos);
-        model.rotation.copy(targetLocalRot);
-
-        // Aggiungi al container della camera
-        this.holdContainer.add(model);
-
-        // Per ora, nessuna animazione - posizionamento immediato
-        // TODO: Aggiungere animazione smooth con TWEEN
-        if (onComplete) onComplete();
     },
 
     /**
-     * Anima il release di un oggetto
+     * Aggiorna la posizione di un oggetto held per seguire la camera
+     */
+    updateHeldObjectPosition: function(model) {
+        if (!model || !model.userData.isBeingHeld || !this.camera) return;
+
+        const offset = model.userData.holdOffset;
+        const localRotation = model.userData.holdRotation;
+
+        // Calcola la posizione world: camera position + offset ruotato secondo la rotazione camera
+        const worldPosition = new THREE.Vector3();
+        worldPosition.copy(offset);
+        worldPosition.applyQuaternion(this.camera.quaternion);
+        worldPosition.add(this.camera.position);
+
+        // Applica posizione
+        model.position.copy(worldPosition);
+
+        // Calcola rotazione usando QUATERNIONI (non Euler additivi)
+        // 1. Quaternione della camera
+        const cameraQuat = this.camera.quaternion.clone();
+
+        // 2. Quaternione della rotazione locale desiderata
+        const localQuat = new THREE.Quaternion();
+        localQuat.setFromEuler(localRotation);
+
+        // 3. Combinazione: prima applica rotazione camera, poi rotazione locale
+        const finalQuat = new THREE.Quaternion();
+        finalQuat.multiplyQuaternions(cameraQuat, localQuat);
+
+        // Applica rotazione finale
+        model.quaternion.copy(finalQuat);
+    },
+
+    /**
+     * Anima il release di un oggetto con transizione smooth TWEEN
      */
     animateRelease: function(model, state, onComplete) {
-        // Rimuovi dal container camera
-        this.holdContainer.remove(model);
+        // Rimuovi flag di hold PRIMA dell'animazione (così update() non interferisce)
+        model.userData.isBeingHeld = false;
+        model.userData.holdOffset = null;
+        model.userData.holdRotation = null;
 
-        // Ripristina nel parent originale
-        if (state.originalParent) {
-            state.originalParent.add(model);
+        // Salva posizione/rotazione di partenza (corrente)
+        const startPosition = model.position.clone();
+        const startQuaternion = model.quaternion.clone();
+
+        // Target: posizione/rotazione originale
+        const targetPosition = state.originalPosition.clone();
+        const targetQuaternion = new THREE.Quaternion();
+        targetQuaternion.setFromEuler(state.originalRotation);
+
+        console.log(`[HoldableSystem] 🎬 Animazione RELEASE avviata per "${model.name}"`);
+
+        // Animazione con TWEEN
+        const duration = this.config.releaseDuration;
+        const tweenData = { progress: 0 };
+
+        if (typeof TWEEN !== 'undefined') {
+            new TWEEN.Tween(tweenData)
+                .to({ progress: 1 }, duration)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(() => {
+                    // Interpola posizione
+                    model.position.lerpVectors(startPosition, targetPosition, tweenData.progress);
+
+                    // Interpola rotazione (slerp per quaternioni)
+                    model.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, tweenData.progress);
+                })
+                .onComplete(() => {
+                    // Assicura posizione/rotazione finale esatte
+                    model.position.copy(state.originalPosition);
+                    model.rotation.copy(state.originalRotation);
+                    model.scale.copy(state.originalScale);
+
+                    console.log(`[HoldableSystem] ✅ Animazione RELEASE completata per "${model.name}"`);
+                    if (onComplete) onComplete();
+                })
+                .start();
         } else {
-            this.scene.add(model);
+            // Fallback senza TWEEN - posizionamento immediato
+            model.position.copy(state.originalPosition);
+            model.rotation.copy(state.originalRotation);
+            model.scale.copy(state.originalScale);
+
+            console.log(`[HoldableSystem] ⚠️ TWEEN non disponibile - rilascio immediato`);
+            if (onComplete) onComplete();
         }
-
-        // Ripristina posizione/rotazione originale
-        model.position.copy(state.originalPosition);
-        model.rotation.copy(state.originalRotation);
-        model.scale.copy(state.originalScale);
-
-        // Per ora, nessuna animazione - posizionamento immediato
-        // TODO: Aggiungere animazione smooth con TWEEN
-        if (onComplete) onComplete();
     },
 
     // ═══════════════════════════════════════════════════════════════════
@@ -339,12 +449,17 @@ window.HoldableSystem = {
     update: function() {
         if (!this.enabled || this.currentlyHeldList.length === 0) return;
 
-        // Gli oggetti sono già nel holdContainer che è child della camera,
-        // quindi seguono automaticamente il movimento della camera.
-        // Questo metodo può essere usato per effetti aggiuntivi come:
-        // - Oscillazione leggera (breathing)
-        // - Smoothing del movimento
-        // - Effetti di inerzia
+        // Aggiorna la posizione di tutti gli oggetti held per seguire la camera
+        this.currentlyHeldList.forEach(objectName => {
+            const model = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
+            if (model && model.userData.isBeingHeld) {
+                // NON aggiornare durante l'animazione pick (TWEEN gestisce l'interpolazione)
+                if (model.userData.pickAnimationProgress < 1) {
+                    return; // Lascia che TWEEN gestisca
+                }
+                this.updateHeldObjectPosition(model);
+            }
+        });
     },
 
     // ═══════════════════════════════════════════════════════════════════
