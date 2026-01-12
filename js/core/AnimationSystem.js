@@ -1090,13 +1090,22 @@ export class AnimationSystem {
             AppConfig.log(3, '🎯 No tutorial system available for auto-advancement');
             return;
         }
-        
+
         const currentIndex = window.UI.currentStepIndex;
+        const currentStep = window.UI.tutorialSteps[currentIndex];
+
+        // IMPORTANTE: Se lo step corrente ha AutoExecute=true, l'avanzamento è gestito da UI.js
+        // NON chiamare goToStep() qui per evitare doppio avanzamento che causa skip di step
+        if (currentStep && currentStep.properties && currentStep.properties.AutoExecute === 'true') {
+            AppConfig.log(2, `🤖 advanceToNextTutorialStep: Skip - step ha AutoExecute=true, avanzamento gestito da UI.js`);
+            return;
+        }
+
         const totalSteps = window.UI.tutorialSteps.length;
-        
+
         if (currentIndex < totalSteps - 1) {
             AppConfig.log(2, `🎯 Auto-advance from step ${currentIndex + 1} to step ${currentIndex + 2}`);
-            
+
             setTimeout(() => {
                 if (window.UI && window.UI.goToStep) {
                     window.UI.goToStep(currentIndex + 1);

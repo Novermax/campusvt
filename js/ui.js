@@ -142,14 +142,14 @@ window.UI = {
         window.addEventListener('orientationchange', this.onOrientationChange.bind(this));
         window.addEventListener('resize', this.onWindowResize.bind(this));
 
-        // Event listener per click sul fumetto descrizione → avanza step
+        // Event listener per click sul fumetto descrizione → avanza step (SOLO mobile)
         const stepSpeechBubble = document.getElementById('stepSpeechBubble');
         if (stepSpeechBubble) {
             stepSpeechBubble.addEventListener('click', () => {
                 this.onSpeechBubbleClick();
             });
-            stepSpeechBubble.style.cursor = 'pointer'; // Mostra che è cliccabile
-            AppConfig.log(3, 'Event listener click fumetto configurato');
+            // Nota: cursor gestito da CSS - pointer su mobile, default su desktop
+            AppConfig.log(3, 'Event listener click fumetto configurato (solo mobile)');
         }
 
         AppConfig.log(3, 'Event listeners configurati');
@@ -4526,15 +4526,15 @@ window.UI = {
 
     /**
      * Gestisce il click sul fumetto descrizione → avanza allo step successivo
-     * SOLO su mobile con AutoMode attivo
+     * SOLO su dispositivi mobile/tablet
      */
     onSpeechBubbleClick: async function() {
-        // Verifica che siamo su mobile con AutoMode attivo
-        const isMobileAutoMode = window.AutoMode && window.AutoMode.isMobile && window.AutoMode.enabled;
+        // Verifica che siamo su mobile
+        const isMobile = window.isMobileDevice && window.isMobileDevice();
 
-        if (!isMobileAutoMode) {
+        if (!isMobile) {
             // Su desktop, il click sul fumetto non fa nulla
-            AppConfig.log(3, '[UI] Click fumetto ignorato - disponibile solo su mobile con AutoMode');
+            AppConfig.log(3, '[UI] Click fumetto ignorato - funzionalità disponibile solo su mobile/tablet');
             return;
         }
 
@@ -4659,7 +4659,14 @@ window.UI = {
         } else {
             stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
         }
-        
+
+        // Aggiungi/rimuovi classe per ultimo step (nasconde indicatore "Tocca per continuare" su mobile)
+        if (this.currentStepIndex === this.tutorialSteps.length - 1) {
+            bubble.classList.add('last-step');
+        } else {
+            bubble.classList.remove('last-step');
+        }
+
         // Mostra il fumetto (sequenza controllata solo dal sistema)
         this.showStepSpeechBubble();
         

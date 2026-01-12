@@ -2844,8 +2844,17 @@ const Scene3D = {
         if (!window.UI || !window.UI.tutorialSteps) {
             return;
         }
-        
+
         const currentIndex = window.UI.currentStepIndex;
+        const currentStep = window.UI.tutorialSteps[currentIndex];
+
+        // IMPORTANTE: Se lo step corrente ha AutoExecute=true, l'avanzamento è gestito da UI.js
+        // NON chiamare goToStep() qui per evitare doppio avanzamento che causa skip di step
+        if (currentStep && currentStep.properties && currentStep.properties.AutoExecute === 'true') {
+            console.log(`[Scene3D] 🤖 advanceToNextTutorialStep: Skip - step ha AutoExecute=true, avanzamento gestito da UI.js`);
+            return;
+        }
+
         const totalSteps = window.UI.tutorialSteps.length;
         
         if (currentIndex < totalSteps - 1) {
