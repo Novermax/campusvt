@@ -1,5 +1,0 @@
-togli per sempre sposta ruota e zoom
-nell'interfaccia mobile devi rendere visibili tutti i tutorial di quel segnario
-non compare il pulsante automode
-
-

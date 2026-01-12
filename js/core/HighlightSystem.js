@@ -26,7 +26,7 @@ export class HighlightSystem {
         this.highlightMaterial = new THREE.MeshBasicMaterial({
             color: 0xcccc00,               // Bright yellow
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.4,
             wireframe: false,
             side: THREE.DoubleSide,
             depthTest: false,              // Ignore z-buffer to always be visible

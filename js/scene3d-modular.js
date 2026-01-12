@@ -1254,20 +1254,54 @@ const Scene3D = {
             console.log(`🔍 HIGHLIGHT: Nessun step o elemento corrente`);
             return;
         }
-        
+
         const stepElement = currentStep.properties.Elemento;
+        const targetChild = currentStep.properties.TargetChild; // NUOVO: Supporto TargetChild
+
         const targetModel = this.loadedModels.find(model => {
             const modelFilename = model.userData?.originalFilename || model.name;
             const cleanModelName = modelFilename.split('/').pop().replace('.glb', '');
             const cleanStepElement = stepElement.split('/').pop().replace('.glb', '');
             return cleanModelName === cleanStepElement;
         });
-        
-        if (targetModel && this.isModelSelectable(targetModel)) {
-            console.log(`🔍 HIGHLIGHT: Tentativo di evidenziare modello: ${targetModel.name}`);
-            this.highlightModel(targetModel);
+
+        if (!targetModel) {
+            console.log(`🔍 HIGHLIGHT: Modello parent non trovato`);
+            return;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // TARGETCHILD: Se specificato, cerca e evidenzia il child invece del parent
+        // ═══════════════════════════════════════════════════════════════════════
+        let modelToHighlight = targetModel;
+
+        if (targetChild) {
+            console.log(`🔍 HIGHLIGHT: TargetChild specificato: "${targetChild}"`);
+            let foundChild = null;
+            const cleanChildName = targetChild.trim();
+
+            targetModel.traverse(function(child) {
+                if (!foundChild && child.name === cleanChildName) {
+                    foundChild = child;
+                }
+            });
+
+            if (foundChild) {
+                console.log(`✅ HIGHLIGHT: Trovato child "${cleanChildName}" da evidenziare`);
+                modelToHighlight = foundChild;
+                // Salva riferimento al parent
+                foundChild.userData.parentModel = targetModel;
+            } else {
+                console.warn(`⚠️ HIGHLIGHT: Child "${cleanChildName}" non trovato, uso parent`);
+            }
+        }
+
+        if (this.isModelSelectable(modelToHighlight) || targetChild) {
+            // Se c'è TargetChild, evidenzia sempre (anche se il child non è in loadedModels)
+            console.log(`🔍 HIGHLIGHT: Evidenzio: ${modelToHighlight.name}`);
+            this.highlightModel(modelToHighlight);
         } else {
-            console.log(`🔍 HIGHLIGHT: Modello non trovato o non selezionabile`);
+            console.log(`🔍 HIGHLIGHT: Modello non selezionabile`);
         }
     },
 
@@ -1588,7 +1622,8 @@ const Scene3D = {
 
         const modelFilename = model.userData?.originalFilename || model.name;
         const stepElement = currentStep.properties.Elemento;
-        console.log(`[DEBUG] 🎯 Model filename: "${modelFilename}", Step element: "${stepElement}"`);
+        const targetChildName = currentStep.properties.TargetChild; // NUOVO: Supporto TargetChild
+        console.log(`[DEBUG] 🎯 Model filename: "${modelFilename}", Step element: "${stepElement}", TargetChild: "${targetChildName || 'none'}"`);
 
         // IMPORTANTE: Step DragDrop puri non hanno Elemento - esci subito
         if (!stepElement) {
@@ -1605,7 +1640,36 @@ const Scene3D = {
             return;
         }
 
-        if (this.isModelAnimating(model)) {
+        // ═══════════════════════════════════════════════════════════════════════
+        // TARGETCHILD: Se specificato, trova il child da animare invece del parent
+        // ═══════════════════════════════════════════════════════════════════════
+        let modelToAnimate = model;
+        let parentModelForConfig = model; // Per home_config usa sempre il parent
+
+        if (targetChildName) {
+            console.log(`[DEBUG] 🔍 TARGETCHILD: Cercando child "${targetChildName}" dentro "${model.name}"`);
+            let foundChild = null;
+            const cleanChildName = targetChildName.trim();
+
+            model.traverse(function(child) {
+                if (!foundChild && child.name === cleanChildName) {
+                    foundChild = child;
+                }
+            });
+
+            if (foundChild) {
+                console.log(`[DEBUG] ✅ TARGETCHILD: Trovato child "${cleanChildName}" (tipo: ${foundChild.type})`);
+                modelToAnimate = foundChild;
+                // Salva riferimento al parent per home_config
+                foundChild.userData.parentModel = model;
+                foundChild.userData.parentModelName = stepElement;
+            } else {
+                console.warn(`[DEBUG] ⚠️ TARGETCHILD: Child "${cleanChildName}" non trovato, uso parent`);
+                console.warn(`[DEBUG] ⚠️ TARGETCHILD: Children disponibili:`, this.listChildNames(model));
+            }
+        }
+
+        if (this.isModelAnimating(modelToAnimate)) {
             console.log(`[DEBUG] ❌ Model already animating - USCITA EARLY`);
             return;
         }
@@ -1639,7 +1703,8 @@ const Scene3D = {
         }
 
         console.log(`[DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation`);
-        this.startModelAnimation(model, currentStep);
+        // Passa sia il modello da animare che il parent per la config
+        this.startModelAnimation(modelToAnimate, currentStep, parentModelForConfig);
     },
 
     /**
@@ -1650,9 +1715,13 @@ const Scene3D = {
      * @param {Object} rootModel - Il modello root per cercare home_config (opzionale)
      */
     autoExecuteAnimation: function(target, tutorialStep, rootModel = null) {
+        console.log(`[Scene3D] 🤖 AutoExecute: ═══════════════════════════════════════════`);
         console.log(`[Scene3D] 🤖 AutoExecute: Avvio animazione per "${target.name}"`);
         console.log(`[Scene3D] 🤖 AutoExecute: Target type:`, target.type);
-        console.log(`[Scene3D] 🤖 AutoExecute: Target position:`, target.position);
+        console.log(`[Scene3D] 🤖 AutoExecute: Target position:`, target.position.clone());
+        console.log(`[Scene3D] 🤖 AutoExecute: isChild (ha parentModel)?`, !!target.userData?.parentModel);
+        console.log(`[Scene3D] 🤖 AutoExecute: parentModel name:`, target.userData?.parentModel?.name || 'N/A');
+        console.log(`[Scene3D] 🤖 AutoExecute: matrixAutoUpdate:`, target.matrixAutoUpdate);
         console.log(`[Scene3D] 🤖 AutoExecute: Tutorial step properties:`, tutorialStep.properties);
 
         // Usa il nome del modello root per home_config, altrimenti il target
@@ -1661,8 +1730,8 @@ const Scene3D = {
         console.log(`[Scene3D] 🤖 AutoExecute: ModelFilename per home_config: "${modelFilename}"`);
         console.log(`[Scene3D] 🤖 AutoExecute: Target da animare: "${target.name}"`);
 
-        // Parse le azioni dallo step
-        const movementSteps = this.parseMovementSteps(tutorialStep, modelFilename);
+        // Parse le azioni dallo step usando MovementParser
+        const movementSteps = window.MovementParser.parseMovementSteps(tutorialStep, modelFilename);
         console.log(`[Scene3D] 🤖 AutoExecute: Movement steps parsed:`, movementSteps);
 
         if (movementSteps.length > 0) {
@@ -1673,7 +1742,7 @@ const Scene3D = {
             const drivenObjectsConfig = tutorialStep.properties?.DrivenObjectsConfig ||
                                        (tutorialStep.properties?.DrivenObjectConfig ? [tutorialStep.properties.DrivenObjectConfig] : []);
 
-            const result = this.startMultiStepMovement(target, movementSteps, slaveObjects, drivenObjectsConfig);
+            const result = window.MultiStepAnimationSystem.startMultiStepMovement(target, movementSteps, slaveObjects, drivenObjectsConfig);
             console.log(`[Scene3D] 🤖 AutoExecute: startMultiStepMovement returned:`, result);
             return result;
         } else {
@@ -1683,20 +1752,34 @@ const Scene3D = {
         }
     },
 
-    startModelAnimation: function(model, tutorialStep) {
-        const modelFilename = model.userData?.originalFilename || model.name;
+    /**
+     * Avvia l'animazione di un modello o child
+     * @param {Object} model - Il modello da animare (può essere un child)
+     * @param {Object} tutorialStep - Lo step del tutorial con le proprietà
+     * @param {Object} parentModelForConfig - Il modello parent per cercare home_config (opzionale, per TargetChild)
+     */
+    startModelAnimation: function(model, tutorialStep, parentModelForConfig = null) {
+        // Se parentModelForConfig specificato, usa quello per home_config (caso TargetChild)
+        // Altrimenti usa il modello stesso
+        const configModel = parentModelForConfig || model;
+        const modelFilename = configModel.userData?.originalFilename || configModel.name;
 
-        // SEMPRE usa sistema multi-step per Azione1, Azione2, etc.
-        const movementSteps = this.parseMovementSteps(tutorialStep, modelFilename);
+        console.log(`[Scene3D] 🎬 startModelAnimation: Modello da animare: "${model.name}"`);
+        if (parentModelForConfig) {
+            console.log(`[Scene3D] 🎬 startModelAnimation: Usando parent "${configModel.name}" per home_config`);
+        }
+
+        // SEMPRE usa sistema multi-step per Azione1, Azione2, etc. usando MovementParser
+        const movementSteps = window.MovementParser.parseMovementSteps(tutorialStep, modelFilename);
         if (movementSteps.length > 0) {
             // Recupera slave objects dal tutorial step (se presenti)
             const slaveObjects = tutorialStep.properties?.SlaveObjectsList || [];
             // Recupera driven objects config dal tutorial step (se presenti) - supporta sia array che singolo
             const drivenObjectsConfig = tutorialStep.properties?.DrivenObjectsConfig ||
                                        (tutorialStep.properties?.DrivenObjectConfig ? [tutorialStep.properties.DrivenObjectConfig] : []);
-            return this.startMultiStepMovement(model, movementSteps, slaveObjects, drivenObjectsConfig);
+            return window.MultiStepAnimationSystem.startMultiStepMovement(model, movementSteps, slaveObjects, drivenObjectsConfig);
         }
-        
+
         // Fallback legacy solo se non ci sono azioni multi-step
         const direction = this.getModelDirection(modelFilename);
         
@@ -2158,887 +2241,46 @@ const Scene3D = {
         this.rotationCenterSphere = sphere;
         
         console.log(`🔵 Sfera BLU creata al centro di rotazione personalizzato`);
-        
+
         return rotationCenter;
     },
 
-    parseMovementSteps: function(tutorialStep, modelFilename = null) {
-        const movementSteps = [];
-        let stepIndex = 1;
-        
-        while (tutorialStep.properties[`Azione${stepIndex}`]) {
-            const stepString = tutorialStep.properties[`Azione${stepIndex}`];
-            const parsedStep = this.parseMovementStepString(stepString, stepIndex, modelFilename);
-            
-            if (parsedStep) {
-                movementSteps.push(parsedStep);
-            }
-            
-            stepIndex++;
-        }
-        
-        return movementSteps;
-    },
+    // ═══════════════════════════════════════════════════════════════════════════
+    // MOVIMENTO PARSING - Estratto in MovementParser.js
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Le seguenti funzioni sono state estratte nel modulo MovementParser:
+    // - parseMovementSteps()
+    // - parseMovementStepString()
+    // - parseMovementOperation()
+    // - loadModelDirections()
+    // - getModelDirection()
+    //
+    // Usa window.MovementParser.* per accedere a queste funzioni
+    // ═══════════════════════════════════════════════════════════════════════════
 
-    parseMovementStepString: function(stepString, stepIndex, modelFilename = null) {
-        try {
-            const step = {
-                index: stepIndex,
-                rotazione: null,
-                traslazione: null,
-                appoggia: null,
-                resetCenteredOriginal: null,
-                svita: null,
-                avvita: null,
-                estrai: null,
-                inserisci: null,
-                centro: null,
-                durata: 1.0
-            };
-            
-            const operations = stepString.split(';');
-            
-            for (const operation of operations) {
-                const trimmed = operation.trim();
-                
-                if (trimmed.startsWith('rotazione:')) {
-                    step.rotazione = this.parseMovementOperation(trimmed, 'rotazione', modelFilename);
-                } else if (trimmed.startsWith('traslazione:')) {
-                    step.traslazione = this.parseMovementOperation(trimmed, 'traslazione', modelFilename);
-                } else if (trimmed.startsWith('appoggia')) {
-                    step.appoggia = this.parseMovementOperation(trimmed, 'appoggia', modelFilename);
-                } else if (trimmed.startsWith('resetCenteredOriginal')) {
-                    step.resetCenteredOriginal = this.parseMovementOperation(trimmed, 'resetCenteredOriginal', modelFilename);
-                } else if (trimmed.startsWith('svita')) {
-                    step.svita = this.parseMovementOperation(trimmed, 'svita', modelFilename);
-                } else if (trimmed.startsWith('avvita')) {
-                    step.avvita = this.parseMovementOperation(trimmed, 'avvita', modelFilename);
-                } else if (trimmed.startsWith('estrai')) {
-                    step.estrai = this.parseMovementOperation(trimmed, 'estrai', modelFilename);
-                } else if (trimmed.startsWith('inserisci')) {
-                    step.inserisci = this.parseMovementOperation(trimmed, 'inserisci', modelFilename);
-                } else if (trimmed.startsWith('centro:')) {
-                    step.centro = this.parseMovementOperation(trimmed, 'centro', modelFilename);
-                }
-            }
-            
-            const durateOperazioni = [];
-            if (step.rotazione) {
-                durateOperazioni.push(step.rotazione.durata);
-            }
-            if (step.traslazione) {
-                durateOperazioni.push(step.traslazione.durata);
-            }
-            if (step.appoggia) {
-                durateOperazioni.push(step.appoggia.durata);
-            }
-            if (step.resetCenteredOriginal) {
-                durateOperazioni.push(step.resetCenteredOriginal.durata);
-            }
-            if (step.svita) {
-                durateOperazioni.push(step.svita.durata);
-            }
-            if (step.avvita) {
-                durateOperazioni.push(step.avvita.durata);
-            }
-            if (step.estrai) {
-                durateOperazioni.push(step.estrai.durata);
-            }
-            if (step.inserisci) {
-                durateOperazioni.push(step.inserisci.durata);
-            }
-            if (step.centro && step.centro.durata) {
-                durateOperazioni.push(step.centro.durata);
-            }
-            
-            if (durateOperazioni.length > 0) {
-                step.durata = Math.max(...durateOperazioni);
-            }
-            
-            return step;
-            
-        } catch (error) {
-            return null;
-        }
-    },
-
-    parseMovementOperation: function(operationString, type, modelFilename = null) {
-        if (type === 'traslazione' && operationString.includes(':') && !operationString.match(/^traslazione:\(/)) {
-            const colonIndex = operationString.indexOf(':');
-            const afterColon = operationString.substring(colonIndex + 1);
-            
-            let targetElement = null;
-            let offsetValues = null;
-            let isAbsoluteToOriginal = false;
-            
-            if (afterColon.includes(',')) {
-                const commaIndex = afterColon.indexOf(',');
-                targetElement = afterColon.substring(0, commaIndex).trim();
-                const offsetPart = afterColon.substring(commaIndex + 1);
-                
-                const offsetMatch = offsetPart.match(/\(([^)]+)\)/);
-                if (offsetMatch) {
-                    offsetValues = offsetMatch[1].split(',').map(v => parseFloat(v.trim()));
-                    if (offsetValues.length !== 4) {
-                        throw new Error(`Offset traslazione verso target deve avere 4 valori (x,y,z,durata): ${operationString}`);
-                    }
-                } else {
-                    throw new Error(`Formato offset non valido in traslazione verso target: ${operationString}`);
-                }
-            } else {
-                targetElement = afterColon.trim();
-                
-                // Verifica se è una traslazione assoluta verso posizione originale
-                if (targetElement.endsWith('_original')) {
-                    isAbsoluteToOriginal = true;
-                    offsetValues = [0, 0, 0, 1.0]; // Valori default per posizione assoluta
-                } else {
-                    offsetValues = [0, 0, 0, 1.0]; // Offset di default per target normale
-                }
-            }
-            
-            console.log(`🎯 TRASLAZIONE: Target=${targetElement}, Absolute to Original=${isAbsoluteToOriginal}`);
-            
-            return {
-                x: offsetValues[0],
-                y: offsetValues[1],
-                z: offsetValues[2], 
-                durata: offsetValues[3],
-                targetElement: targetElement,
-                isAbsoluteToOriginal: isAbsoluteToOriginal
-            };
-        }
-        
-        // Per comandi semplificati senza parametri, non serve match
-        let match = null;
-        let values = [];
-        
-        if (['svita', 'avvita', 'estrai', 'inserisci'].includes(type)) {
-            // Skip match per comandi semplificati
-        } else {
-            match = operationString.match(/\(([^)]+)\)/);
-            if (!match) {
-                throw new Error(`Formato ${type} non valido: ${operationString}`);
-            }
-            values = match[1].split(',').map(v => parseFloat(v.trim()));
-        }
-        
-        if (type === 'centro') {
-            if (values.length !== 3) {
-                throw new Error(`${type} deve avere 3 valori (x,y,z): ${operationString}`);
-            }
-            return {
-                x: values[0],
-                y: values[1], 
-                z: values[2]
-            };
-        } else if (type === 'appoggia') {
-            // Gestisce appoggia(durata) o appoggia senza parentesi
-            const matchWithParens = operationString.match(/appoggia\(([^)]+)\)/);
-            const matchWithoutParens = operationString.match(/^appoggia$/);
-            
-            if (matchWithParens) {
-                const durata = parseFloat(matchWithParens[1]);
-                if (isNaN(durata)) {
-                    throw new Error(`Durata non valida in appoggia: ${operationString}`);
-                }
-                return {
-                    durata: durata
-                };
-            } else if (matchWithoutParens) {
-                // Durata di default se non specificata
-                return {
-                    durata: 1.0
-                };
-            } else {
-                throw new Error(`Formato appoggia non valido: ${operationString}`);
-            }
-        } else if (type === 'resetCenteredOriginal') {
-            // Gestisce resetCenteredOriginal(durata) o resetCenteredOriginal senza parentesi
-            const matchWithParens = operationString.match(/resetCenteredOriginal\(([^)]+)\)/);
-            const matchWithoutParens = operationString.match(/^resetCenteredOriginal$/);
-
-            if (matchWithParens) {
-                const durata = parseFloat(matchWithParens[1]);
-                if (isNaN(durata)) {
-                    throw new Error(`Durata non valida in resetCenteredOriginal: ${operationString}`);
-                }
-                return {
-                    durata: durata,
-                    animated: true  // Se ha durata, usa animazione
-                };
-            } else if (matchWithoutParens) {
-                // Reset immediato se non specificata durata
-                return {
-                    durata: 0,
-                    animated: false
-                };
-            } else {
-                throw new Error(`Formato resetCenteredOriginal non valido: ${operationString}`);
-            }
-        } else if (type === 'svita') {
-            // Comando semplificato: svita = rotazione attorno asse direction + traslazione lungo direction
-            // Supporta sintassi: svita oppure svita(distanza)
-            const direction = this.getModelDirection(modelFilename);
-
-            // Estrai parametro distanza opzionale da svita(distanza)
-            let extractionDistance = 0.5; // Default
-            const distanceMatch = operationString.match(/svita\(([0-9.]+)\)/);
-            if (distanceMatch) {
-                extractionDistance = parseFloat(distanceMatch[1]);
-                if (isNaN(extractionDistance) || extractionDistance < 0) {
-                    console.warn(`⚠️ Distanza svita non valida: ${distanceMatch[1]}, uso default 0.5`);
-                    extractionDistance = 0.5;
-                }
-            }
-
-            const rotazione = {
-                x: direction.x * 1800, // 5 giri completi, verso coerente con direction
-                y: direction.y * 1800, // 5 giri completi, verso coerente con direction
-                z: direction.z * 1800, // 5 giri completi, verso coerente con direction
-                durata: 1.0
-            };
-            console.log(`🔄 SVITA per ${modelFilename}: direction=`, direction, `distanza=${extractionDistance}`, `rotazione=`, rotazione);
-            return {
-                tipo: 'svita',
-                rotazione: rotazione,
-                traslazione: {
-                    x: direction.x * extractionDistance,
-                    y: direction.y * extractionDistance,
-                    z: direction.z * extractionDistance,
-                    durata: 1.0
-                },
-                durata: 2.0
-            };
-        } else if (type === 'avvita') {
-            // Comando semplificato: avvita = rotazione attorno asse direction + traslazione inversa lungo direction
-            // Supporta sintassi: avvita oppure avvita(distanza)
-            const direction = this.getModelDirection(modelFilename);
-
-            // Estrai parametro distanza opzionale da avvita(distanza)
-            let insertionDistance = 0.5; // Default
-            const distanceMatch = operationString.match(/avvita\(([0-9.]+)\)/);
-            if (distanceMatch) {
-                insertionDistance = parseFloat(distanceMatch[1]);
-                if (isNaN(insertionDistance) || insertionDistance < 0) {
-                    console.warn(`⚠️ Distanza avvita non valida: ${distanceMatch[1]}, uso default 0.5`);
-                    insertionDistance = 0.5;
-                }
-            }
-
-            console.log(`🔄 AVVITA per ${modelFilename}: direction=`, direction, `distanza=${insertionDistance}`);
-            return {
-                tipo: 'avvita',
-                rotazione: {
-                    x: direction.x * -1800, // 5 giri completi, verso opposto a svita, coerente con direction
-                    y: direction.y * -1800, // 5 giri completi, verso opposto a svita, coerente con direction
-                    z: direction.z * -1800, // 5 giri completi, verso opposto a svita, coerente con direction
-                    durata: 1.0
-                },
-                traslazione: {
-                    x: -direction.x * insertionDistance,
-                    y: -direction.y * insertionDistance,
-                    z: -direction.z * insertionDistance,
-                    durata: 1.0
-                },
-                durata: 2.0
-            };
-        } else if (type === 'estrai') {
-            // Comando semplificato: estrai = solo traslazione lungo direction
-            // Supporta sintassi: estrai oppure estrai(distanza)
-            const direction = this.getModelDirection(modelFilename);
-
-            // Estrai parametro distanza opzionale da estrai(distanza)
-            let extractionDistance = 0.4; // Default
-            const distanceMatch = operationString.match(/estrai\(([0-9.]+)\)/);
-            if (distanceMatch) {
-                extractionDistance = parseFloat(distanceMatch[1]);
-                if (isNaN(extractionDistance) || extractionDistance < 0) {
-                    console.warn(`⚠️ Distanza estrai non valida: ${distanceMatch[1]}, uso default 0.4`);
-                    extractionDistance = 0.4;
-                }
-            }
-
-            console.log(`🔄 ESTRAI per ${modelFilename}: direction=`, direction, `distanza=${extractionDistance}`);
-            return {
-                tipo: 'estrai',
-                traslazione: {
-                    x: direction.x * extractionDistance,
-                    y: direction.y * extractionDistance,
-                    z: direction.z * extractionDistance,
-                    durata: 1.0
-                },
-                durata: 1.0
-            };
-        } else if (type === 'inserisci') {
-            // Comando semplificato: inserisci = solo traslazione inversa lungo direction
-            // Supporta sintassi: inserisci oppure inserisci(distanza)
-            const direction = this.getModelDirection(modelFilename);
-
-            // Estrai parametro distanza opzionale da inserisci(distanza)
-            let insertionDistance = 0.4; // Default
-            const distanceMatch = operationString.match(/inserisci\(([0-9.]+)\)/);
-            if (distanceMatch) {
-                insertionDistance = parseFloat(distanceMatch[1]);
-                if (isNaN(insertionDistance) || insertionDistance < 0) {
-                    console.warn(`⚠️ Distanza inserisci non valida: ${distanceMatch[1]}, uso default 0.4`);
-                    insertionDistance = 0.4;
-                }
-            }
-
-            console.log(`🔄 INSERISCI per ${modelFilename}: direction=`, direction, `distanza=${insertionDistance}`);
-            return {
-                tipo: 'inserisci',
-                traslazione: {
-                    x: -direction.x * insertionDistance,
-                    y: -direction.y * insertionDistance,
-                    z: -direction.z * insertionDistance,
-                    durata: 1.0
-                },
-                durata: 1.0
-            };
-        } else {
-            if (values.length !== 4) {
-                throw new Error(`${type} deve avere 4 valori (x,y,z,durata): ${operationString}`);
-            }
-            return {
-                x: values[0],
-                y: values[1], 
-                z: values[2],
-                durata: values[3]
-            };
-        }
-    },
-
-    loadModelDirections: function(scenarioConfig) {
-        // Per ora carica le direzioni manualmente per TEST
-        if (scenarioConfig && scenarioConfig.name === 'TEST') {
-            this.animationSystem.modelDirections = {
-                'tappino_grasso_dx': { x: -1, y: 0, z: 0 },
-                'ingrassatore': { x: -1, y: 0, z: 0 },
-                'tappino_grasso_sx': { x: -1, y: 0, z: 0 },
-                'assi': { x: -1, y: 0, z: 0 },
-                'vite_coperchio_1': { x: -1, y: 0, z: 0 }
-            };
-            return;
-        }
-        
-        if (!scenarioConfig || !scenarioConfig.models) {
-            return;
-        }
-        
-        scenarioConfig.models.forEach(modelConfig => {
-            if (modelConfig.model && modelConfig.direction) {
-                const modelName = modelConfig.model.split('/').pop().replace('.glb', '');
-                this.animationSystem.modelDirections[modelName] = modelConfig.direction;
-            }
-        });
-    },
-
-    getModelDirection: function(modelFilename) {
-        if (!this.animationSystem.modelDirections) {
-            this.animationSystem.modelDirections = {};
-        }
-        
-        // Prova prima con nome completo, poi solo nome file
-        const cleanName = modelFilename ? modelFilename.split('/').pop().replace('.glb', '') : '';
-        
-        if (modelFilename && this.animationSystem.modelDirections[modelFilename]) {
-            console.log(`🧭 Using direction for ${modelFilename}:`, this.animationSystem.modelDirections[modelFilename]);
-            return this.animationSystem.modelDirections[modelFilename];
-        }
-        
-        if (cleanName && this.animationSystem.modelDirections[cleanName]) {
-            console.log(`🧭 Using direction for ${cleanName}:`, this.animationSystem.modelDirections[cleanName]);
-            return this.animationSystem.modelDirections[cleanName];
-        }
-        
-        console.log(`⚠️ No direction found for ${modelFilename}, using default (0,0,1)`);
-        // Default fallback direction
-        return { x: 0, y: 0, z: 1 };
-    },
-
-    startMultiStepMovement: function(model, movementSteps, slaveObjects = [], drivenObjectsConfig = []) {
-        if (!movementSteps || movementSteps.length === 0) {
-            return false;
-        }
-
-        const modelUuid = model.uuid;
-        const modelName = model.userData?.originalFilename || model.name;
-
-        this.animationSystem.multiStepAnimations.set(modelUuid, {
-            model: model,
-            steps: movementSteps,
-            currentStepIndex: 0,
-            isActive: true,
-            modelName: modelName,
-            slaveObjects: slaveObjects, // Lista di oggetti slave che seguono il master
-            drivenObjectsConfig: drivenObjectsConfig // Array di configurazioni driven objects (movimento indipendente)
-        });
-
-        if (slaveObjects && slaveObjects.length > 0) {
-            console.log(`🔗 SLAVE OBJECTS: ${slaveObjects.length} oggetti seguiranno "${modelName}": [${slaveObjects.join(', ')}]`);
-        }
-
-        if (drivenObjectsConfig && drivenObjectsConfig.length > 0) {
-            console.log(`🚗 DRIVEN OBJECTS: ${drivenObjectsConfig.length} oggetti si muoveranno in modo indipendente:`);
-            drivenObjectsConfig.forEach((config, index) => {
-                console.log(`   ${index + 1}. "${config.objectName}" → traslazione (${config.translation.x}, ${config.translation.y}, ${config.translation.z}) in ${config.duration}s`);
-            });
-        }
-
-        this.executeCurrentMultiStep(modelUuid);
-        return true;
-    },
-
-    executeCurrentMultiStep: function(modelUuid) {
-        const multiStepData = this.animationSystem.multiStepAnimations.get(modelUuid);
-        if (!multiStepData || !multiStepData.isActive) {
-            return;
-        }
-        
-        const currentStep = multiStepData.steps[multiStepData.currentStepIndex];
-        if (!currentStep) {
-            this.finishMultiStepMovement(modelUuid);
-            return;
-        }
-        
-        const model = multiStepData.model;
-        const initialPosition = model.position.clone();
-        const initialRotation = new THREE.Euler().copy(model.rotation);
-        
-        let targetPosition = initialPosition.clone();
-        let targetRotation = new THREE.Euler().copy(initialRotation);
-        
-        let rotationCenter = null;
-        
-        if (currentStep.centro) {
-            // Usa il centro del bounding box attuale (ricalcolato ogni volta) come base per il comando centro:
-            const currentBoundingBoxCenter = this.calculateBoundingBoxCenter(model);
-            const centroOffset = new THREE.Vector3(
-                currentStep.centro.x,
-                currentStep.centro.y,
-                currentStep.centro.z
-            );
-            
-            rotationCenter = currentBoundingBoxCenter.clone().add(centroOffset);
-            console.log(`🎯 DEBUG CENTRO:`);
-            console.log(`   Centro bounding box attuale: (${currentBoundingBoxCenter.x.toFixed(3)}, ${currentBoundingBoxCenter.y.toFixed(3)}, ${currentBoundingBoxCenter.z.toFixed(3)})`);
-            console.log(`   Offset richiesto: (${centroOffset.x.toFixed(3)}, ${centroOffset.y.toFixed(3)}, ${centroOffset.z.toFixed(3)})`);
-            console.log(`   Centro rotazione finale: (${rotationCenter.x.toFixed(3)}, ${rotationCenter.y.toFixed(3)}, ${rotationCenter.z.toFixed(3)})`);
-            console.log(`   Posizione attuale modello: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
-            
-            // Mostra automaticamente la sfera nera del centro di rotazione solo se debug è attivo
-            if (window.AppConfig && window.AppConfig.debug && window.AppConfig.debug.showRotationCenter) {
-                this.createRotationCenterSphere(model.userData?.originalFilename || model.name, rotationCenter);
-            }
-        }
-        
-        if (currentStep.rotazione) {
-            // Calcola il centro di rotazione fisso all'INIZIO dell'animazione
-            const fixedRotationCenter = rotationCenter ? rotationCenter.clone() : this.calculateBoundingBoxCenter(model);
-            console.log(`DEBUG: Centro rotazione fisso ingrassatore: (${fixedRotationCenter.x.toFixed(3)}, ${fixedRotationCenter.y.toFixed(3)}, ${fixedRotationCenter.z.toFixed(3)})`);
-                
-            const rotationMatrix = new THREE.Matrix4();
-            rotationMatrix.makeRotationFromEuler(new THREE.Euler(
-                THREE.MathUtils.degToRad(currentStep.rotazione.x),
-                THREE.MathUtils.degToRad(currentStep.rotazione.y),
-                THREE.MathUtils.degToRad(currentStep.rotazione.z)
-            ));
-                
-            // Calcola sempre la targetPosition per rotazioni attorno a qualsiasi centro
-            const relativePosition = model.position.clone().sub(fixedRotationCenter);
-            relativePosition.applyMatrix4(rotationMatrix);
-            targetPosition = fixedRotationCenter.clone().add(relativePosition);
-            
-            console.log(`DEBUG ROTAZIONE:`);
-            console.log(`   Posizione iniziale: (${model.position.x.toFixed(3)}, ${model.position.y.toFixed(3)}, ${model.position.z.toFixed(3)})`);
-            console.log(`   Centro rotazione: (${fixedRotationCenter.x.toFixed(3)}, ${fixedRotationCenter.y.toFixed(3)}, ${fixedRotationCenter.z.toFixed(3)})`);
-            console.log(`   Posizione finale calcolata: (${targetPosition.x.toFixed(3)}, ${targetPosition.y.toFixed(3)}, ${targetPosition.z.toFixed(3)})`);
-            
-            // Anche per centro personalizzato, calcola la target position
-            
-            targetRotation.x += THREE.MathUtils.degToRad(currentStep.rotazione.x);
-            targetRotation.y += THREE.MathUtils.degToRad(currentStep.rotazione.y);
-            targetRotation.z += THREE.MathUtils.degToRad(currentStep.rotazione.z);
-            
-            // Salva il centro fisso per l'animazione
-            rotationCenter = fixedRotationCenter;
-        }
-        
-        if (currentStep.traslazione) {
-            if (currentStep.traslazione.targetElement) {
-                const targetModel = this.findModelByName(currentStep.traslazione.targetElement);
-                if (targetModel) {
-                    // Gestione traslazione assoluta verso posizione originale
-                    if (currentStep.traslazione.isAbsoluteToOriginal) {
-                        // Traslazione assoluta: sposta direttamente alla posizione originale
-                        targetPosition = targetModel.position.clone();
-                        console.log(`🎯 ABSOLUTE ORIGINAL: Spostamento verso posizione originale`, {
-                            model: model.userData?.originalFilename || model.name,
-                            target: currentStep.traslazione.targetElement,
-                            targetPosition: targetPosition.clone()
-                        });
-                    } else {
-                        // Traslazione relativa: calcola offset come prima  
-                        const targetBoundingBoxCenter = this.calculateBoundingBoxCenter(targetModel);
-                        const sourceBoundingBoxCenter = this.calculateBoundingBoxCenter(model);
-                        const centerOffset = targetBoundingBoxCenter.clone().sub(sourceBoundingBoxCenter);
-                        
-                        const additionalOffset = new THREE.Vector3(
-                            currentStep.traslazione.x,
-                            currentStep.traslazione.y,
-                            currentStep.traslazione.z
-                        );
-                        
-                        targetPosition = model.position.clone().add(centerOffset).add(additionalOffset);
-                    }
-                } else {
-                    targetPosition.add(new THREE.Vector3(
-                        currentStep.traslazione.x,
-                        currentStep.traslazione.y,
-                        currentStep.traslazione.z
-                    ));
-                }
-            } else {
-                const currentBoundingBoxCenter = this.calculateBoundingBoxCenter(model);
-                
-                const newBoundingBoxCenter = currentBoundingBoxCenter.clone().add(new THREE.Vector3(
-                    currentStep.traslazione.x,
-                    currentStep.traslazione.y,
-                    currentStep.traslazione.z
-                ));
-                
-                const offsetFromBoundingBoxMove = newBoundingBoxCenter.clone().sub(currentBoundingBoxCenter);
-                targetPosition = model.position.clone().add(offsetFromBoundingBoxMove);
-            }
-        }
-        
-        if (currentStep.appoggia) {
-            // Calcola il bounding box del modello nella sua posizione attuale
-            const boundingBox = new THREE.Box3().setFromObject(model);
-            const minY = boundingBox.min.y;
-            
-            // Calcola quanto spostare il modello per appoggiare la parte inferiore a Y=0
-            // La differenza tra la posizione attuale del modello e il punto più basso
-            const offsetY = model.position.y - minY;
-            
-            // Imposta la posizione target Y per appoggiare il punto più basso a Y=0
-            targetPosition.y = offsetY;
-        }
-
-        if (currentStep.resetCenteredOriginal) {
-            // Reset posizione centrata originale
-            if (currentStep.resetCenteredOriginal.animated) {
-                // Reset animato - usa il sistema di animazione
-                console.log(`🎬 RESET ANIMATO: Avvio reset centrato animato per "${modelName}" (${currentStep.resetCenteredOriginal.durata}s)`);
-                this.animateAllModelsToCenteredOriginalPositions(currentStep.resetCenteredOriginal.durata);
-            } else {
-                // Reset immediato
-                console.log(`🎯 RESET IMMEDIATO: Esecuzione reset centrato per tutti i modelli`);
-                this.resetAllModelsToCenteredOriginalPositions();
-            }
-
-            // Termina immediatamente questo step multi-step
-            this.finishMultiStepMovement(modelUuid);
-            return;
-        }
-
-        if (currentStep.svita) {
-            // Comando semplificato svita: rotazione + traslazione
-            // Imposta il centro di rotazione al centro del bounding box del modello
-            rotationCenter = this.calculateBoundingBoxCenter(model);
-
-            console.log(`🔩 SVITA DEBUG per ${model.name}:`);
-            console.log(`   Rotazione gradi:`, currentStep.svita.rotazione);
-            console.log(`   Rotazione radianti: x=${THREE.MathUtils.degToRad(currentStep.svita.rotazione.x)}, y=${THREE.MathUtils.degToRad(currentStep.svita.rotazione.y)}, z=${THREE.MathUtils.degToRad(currentStep.svita.rotazione.z)}`);
-
-            targetRotation.x += THREE.MathUtils.degToRad(currentStep.svita.rotazione.x);
-            targetRotation.y += THREE.MathUtils.degToRad(currentStep.svita.rotazione.y);
-            targetRotation.z += THREE.MathUtils.degToRad(currentStep.svita.rotazione.z);
-            
-            targetPosition.add(new THREE.Vector3(
-                currentStep.svita.traslazione.x,
-                currentStep.svita.traslazione.y,
-                currentStep.svita.traslazione.z
-            ));
-        }
-        
-        if (currentStep.avvita) {
-            // Comando semplificato avvita: rotazione inversa + traslazione inversa
-            // Imposta il centro di rotazione al centro del bounding box del modello
-            rotationCenter = this.calculateBoundingBoxCenter(model);
-
-            console.log(`🔩 AVVITA DEBUG per ${model.name}:`);
-            console.log(`   Rotazione gradi:`, currentStep.avvita.rotazione);
-            console.log(`   Rotazione radianti: x=${THREE.MathUtils.degToRad(currentStep.avvita.rotazione.x)}, y=${THREE.MathUtils.degToRad(currentStep.avvita.rotazione.y)}, z=${THREE.MathUtils.degToRad(currentStep.avvita.rotazione.z)}`);
-
-            targetRotation.x += THREE.MathUtils.degToRad(currentStep.avvita.rotazione.x);
-            targetRotation.y += THREE.MathUtils.degToRad(currentStep.avvita.rotazione.y);
-            targetRotation.z += THREE.MathUtils.degToRad(currentStep.avvita.rotazione.z);
-
-            targetPosition.add(new THREE.Vector3(
-                currentStep.avvita.traslazione.x,
-                currentStep.avvita.traslazione.y,
-                currentStep.avvita.traslazione.z
-            ));
-        }
-        
-        if (currentStep.estrai) {
-            // Comando semplificato estrai: solo traslazione in uscita
-            targetPosition.add(new THREE.Vector3(
-                currentStep.estrai.traslazione.x,
-                currentStep.estrai.traslazione.y,
-                currentStep.estrai.traslazione.z
-            ));
-        }
-        
-        if (currentStep.inserisci) {
-            // Comando semplificato inserisci: solo traslazione in entrata
-            targetPosition.add(new THREE.Vector3(
-                currentStep.inserisci.traslazione.x,
-                currentStep.inserisci.traslazione.y,
-                currentStep.inserisci.traslazione.z
-            ));
-        }
-        
-        // Risolvi slave objects da nomi a riferimenti modelli reali
-        const slaveModels = [];
-        if (multiStepData.slaveObjects && multiStepData.slaveObjects.length > 0) {
-            console.log(`🔗 SLAVE OBJECTS: Elaborazione ${multiStepData.slaveObjects.length} oggetti slave...`);
-
-            multiStepData.slaveObjects.forEach(slaveName => {
-                try {
-                    // Rimuovi estensione file se presente (es: tubograsso.glb -> tubograsso)
-                    const cleanSlaveName = slaveName.replace(/\.(glb|gltf|obj|stl)$/i, '');
-
-                    // Prova prima con il nome pulito, poi con il nome originale come fallback
-                    let slaveModel = this.findModelByName(cleanSlaveName);
-                    if (!slaveModel && cleanSlaveName !== slaveName) {
-                        slaveModel = this.findModelByName(slaveName);
-                    }
-
-                    if (slaveModel) {
-                        slaveModels.push({
-                            model: slaveModel,
-                            name: cleanSlaveName,
-                            initialPosition: slaveModel.position.clone(),
-                            initialRotation: new THREE.Euler().copy(slaveModel.rotation)
-                        });
-                        console.log(`🔗 SLAVE: "${cleanSlaveName}" collegato a master "${multiStepData.modelName}"`);
-                    } else {
-                        console.warn(`⚠️ SLAVE: Oggetto "${slaveName}" (cercato anche come "${cleanSlaveName}") non trovato nella scena`);
-                        console.warn(`⚠️ SLAVE: Animazione continuerà SENZA questo slave object`);
-                    }
-                } catch (error) {
-                    console.error(`❌ SLAVE ERROR: Errore elaborazione slave "${slaveName}":`, error);
-                    console.warn(`⚠️ SLAVE: Animazione continuerà SENZA questo slave object`);
-                }
-            });
-
-            console.log(`🔗 SLAVE OBJECTS: ${slaveModels.length}/${multiStepData.slaveObjects.length} slave objects collegati con successo`);
-        }
-
-        const animation = {
-            model: model,
-            modelUuid: modelUuid,
-            stepIndex: multiStepData.currentStepIndex,
-            initialPosition: initialPosition,
-            targetPosition: targetPosition,
-            initialRotation: initialRotation,
-            targetRotation: targetRotation,
-            startTime: performance.now(),
-            duration: currentStep.durata,
-            finished: false,
-            isMultiStep: true,
-            hasRotation: !!(currentStep.rotazione || currentStep.svita || currentStep.avvita),
-            hasTranslation: !!(currentStep.traslazione || currentStep.svita || currentStep.avvita || currentStep.estrai || currentStep.inserisci),
-            hasAppoggia: !!currentStep.appoggia,
-            hasSvita: !!currentStep.svita,
-            hasAvvita: !!currentStep.avvita,
-            hasEstrai: !!currentStep.estrai,
-            hasInserisci: !!currentStep.inserisci,
-            action: `MultiStep-${multiStepData.currentStepIndex + 1}`,
-            modelCenter: rotationCenter,
-            slaveModels: slaveModels // Oggetti slave da animare insieme al master
-        };
-
-        this.animationSystem.activeAnimations.push(animation);
-
-        // NUOVO: Crea animazioni parallele per driven objects (se presenti)
-        if (multiStepData.drivenObjectsConfig && multiStepData.drivenObjectsConfig.length > 0) {
-            console.log(`🚗 DRIVEN OBJECTS: Creazione ${multiStepData.drivenObjectsConfig.length} animazioni parallele`);
-
-            multiStepData.drivenObjectsConfig.forEach((drivenConfig, index) => {
-                try {
-                    console.log(`🚗 DRIVEN OBJECT ${index + 1}: Creazione animazione parallela per "${drivenConfig.objectName}"`);
-
-                    // Trova il modello driven
-                    const cleanDrivenName = drivenConfig.objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
-                    let drivenModel = this.findModelByName(cleanDrivenName);
-
-                    if (!drivenModel && cleanDrivenName !== drivenConfig.objectName) {
-                        drivenModel = this.findModelByName(drivenConfig.objectName);
-                    }
-
-                    if (drivenModel) {
-                        // Posizione iniziale e target del driven object
-                        const drivenInitialPosition = drivenModel.position.clone();
-                        const drivenTargetPosition = drivenInitialPosition.clone().add(
-                            new THREE.Vector3(
-                                drivenConfig.translation.x,
-                                drivenConfig.translation.y,
-                                drivenConfig.translation.z
-                            )
-                        );
-
-                        // Crea animazione driven completamente indipendente
-                        const drivenAnimation = {
-                            model: drivenModel,
-                            modelUuid: drivenModel.uuid,
-                            initialPosition: drivenInitialPosition,
-                            targetPosition: drivenTargetPosition,
-                            initialRotation: new THREE.Euler().copy(drivenModel.rotation),
-                            targetRotation: null, // Driven object: solo traslazione, no rotazione
-                            startTime: performance.now(), // Parte in sincronia con master
-                            duration: drivenConfig.duration,
-                            finished: false,
-                            isDriven: true, // Flag per identificare animazioni driven
-                            masterModelUuid: modelUuid, // Riferimento al master per sincronizzazione completamento
-                            action: `Driven-${cleanDrivenName}`
-                        };
-
-                        this.animationSystem.activeAnimations.push(drivenAnimation);
-
-                        console.log(`🚗 DRIVEN OBJECT ${index + 1}: Animazione creata per "${cleanDrivenName}"`);
-                        console.log(`   Posizione iniziale: (${drivenInitialPosition.x.toFixed(3)}, ${drivenInitialPosition.y.toFixed(3)}, ${drivenInitialPosition.z.toFixed(3)})`);
-                        console.log(`   Posizione target: (${drivenTargetPosition.x.toFixed(3)}, ${drivenTargetPosition.y.toFixed(3)}, ${drivenTargetPosition.z.toFixed(3)})`);
-                        console.log(`   Durata: ${drivenConfig.duration}s`);
-                    } else {
-                        console.warn(`⚠️ DRIVEN OBJECT ${index + 1}: Modello "${drivenConfig.objectName}" (cercato anche come "${cleanDrivenName}") non trovato nella scena`);
-                        console.warn(`⚠️ DRIVEN OBJECT: Animazione master continuerà SENZA questo driven object`);
-                    }
-                } catch (error) {
-                    console.error(`❌ DRIVEN ERROR ${index + 1}: Errore creazione animazione driven:`, error);
-                    console.warn(`⚠️ DRIVEN OBJECT: Animazione master continuerà SENZA questo driven object`);
-                }
-            });
-        }
-    },
-
-    findModelByName: function(targetName) {
-        let foundModel = null;
-
-        // Protezione contro targetName undefined/null
-        if (!targetName || typeof targetName !== 'string') {
-            console.warn(`[Scene3D] findModelByName chiamato con targetName non valido:`, targetName);
-            return null;
-        }
-
-        // PRIORITÀ 1: Controlla target virtuali da SnapPoint globale (es: snap_point_0_original)
-        if (this.virtualSnapTargets && this.virtualSnapTargets.has(targetName)) {
-            const virtualTarget = this.virtualSnapTargets.get(targetName);
-            console.log(`📍 SNAP VIRTUALE: Trovato target virtuale "${targetName}" a (${virtualTarget.position.x.toFixed(3)}, ${virtualTarget.position.y.toFixed(3)}, ${virtualTarget.position.z.toFixed(3)})`);
-            return virtualTarget;
-        }
-
-        // PRIORITÀ 2: Gestione suffisso _original per posizioni iniziali modelli reali
-        const isOriginalReference = targetName.endsWith('_original');
-        const cleanTargetName = targetName
-            .replace('_original', '')
-            .split('/').pop()
-            .replace('.glb', '');
-
-        this.scene.traverse(function(child) {
-            if (child.isMesh || child.isGroup || child.isObject3D) {
-                const modelName = (child.userData?.originalFilename || child.name || '').split('/').pop().replace('.glb', '');
-                if (modelName === cleanTargetName) {
-                    foundModel = child;
-                    return;
-                }
-            }
-        });
-
-        // Se richiesta posizione originale, crea oggetto virtuale
-        if (foundModel && isOriginalReference) {
-            return this.createOriginalPositionReference(foundModel, targetName);
-        }
-
-        return foundModel;
-    },
-    
-    /**
-     * Crea un riferimento virtuale alla posizione originale di un modello
-     */
-    createOriginalPositionReference: function(model, referenceName) {
-        const initialState = this.initialModelPositions.get(model.uuid);
-        
-        if (!initialState) {
-            console.warn(`🔍 ORIGINAL: Posizione originale non trovata per ${referenceName}`);
-            return model; // Fallback al modello corrente
-        }
-        
-        // Oggetto virtuale con posizione originale
-        const originalReference = {
-            position: initialState.position.clone(),
-            rotation: initialState.rotation.clone(),
-            scale: initialState.scale.clone(),
-            isOriginalReference: true,  // Flag diretta per controllo veloce
-            originalModelName: referenceName,
-            userData: {
-                isOriginalReference: true,
-                sourceName: referenceName,
-                sourceModel: model
-            },
-            // Metodi compatibili per bounding box calculation
-            geometry: model.geometry,
-            children: model.children,
-            getWorldPosition: function(target) {
-                return target.copy(this.position);
-            }
-        };
-        
-        console.log(`🔍 ORIGINAL: Riferimento creato per ${referenceName}:`, {
-            current: model.position.clone(),
-            original: originalReference.position.clone()
-        });
-        
-        return originalReference;
-    },
-
-    onMultiStepCompleted: function(modelUuid) {
-        const multiStepData = this.animationSystem.multiStepAnimations.get(modelUuid);
-        if (!multiStepData || !multiStepData.isActive) {
-            return;
-        }
-        
-        const completedStepIndex = multiStepData.currentStepIndex;
-        multiStepData.currentStepIndex++;
-        
-        setTimeout(() => {
-            if (multiStepData.currentStepIndex < multiStepData.steps.length) {
-                // continue
-            }
-            this.executeCurrentMultiStep(modelUuid);
-        }, 100);
-    },
-
-    finishMultiStepMovement: function(modelUuid) {
-        const multiStepData = this.animationSystem.multiStepAnimations.get(modelUuid);
-        if (multiStepData) {
-            this.animationSystem.multiStepAnimations.delete(modelUuid);
-            
-            if (window.UI && window.UI.currentStepIndex !== undefined && window.UI.currentStepIndex >= 0) {
-                this.markStepAsCompleted(window.UI.currentStepIndex);
-            }
-            
-            this.advanceToNextTutorialStep();
-        }
-    },
+    // ═══════════════════════════════════════════════════════════════════════════
+    // MULTI-STEP ANIMATION SYSTEM - Estratto in MultiStepAnimationSystem.js
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Le seguenti funzioni sono state estratte nel modulo MultiStepAnimationSystem:
+    // - startMultiStepMovement()
+    // - executeCurrentMultiStep()
+    // - onMultiStepCompleted()
+    // - finishMultiStepMovement()
+    //
+    // Usa window.MultiStepAnimationSystem.* per accedere a queste funzioni
+    // ═══════════════════════════════════════════════════════════════════════════
 
     updateAnimations: function() {
+        // DEBUG SEMPRE ATTIVO: Log numero animazioni all'inizio di ogni frame (solo se ci sono animazioni)
+        if (this.animationSystem.activeAnimations.length > 0) {
+            console.log(`🔄 [UPDATE_ANIMS] Animazioni attive: ${this.animationSystem.activeAnimations.length}`);
+            this.animationSystem.activeAnimations.forEach((anim, idx) => {
+                console.log(`   [${idx}] model=${anim.model?.name}, hasTranslation=${!!anim.hasTranslation}, hasRotation=${!!anim.hasRotation}, finished=${anim.finished}`);
+            });
+        }
+
         if (this.animationSystem.activeAnimations.length === 0) return;
-        
+
         const currentTime = performance.now();
         
         for (let i = this.animationSystem.activeAnimations.length - 1; i >= 0; i--) {
@@ -3053,20 +2295,66 @@ const Scene3D = {
             let progress = Math.min(elapsed / anim.duration, 1.0);
             
             progress = this.smoothStep(progress);
-            
-            // Gestione uniforme di animazioni per evitare duplicazioni e conflitti
-            if (anim.targetRotation && (anim.modelCenter || anim.hasSvita || anim.hasAvvita)) {
+
+            // DEBUG: Log per capire quale branch viene preso
+            if (Math.random() < 0.02) {
+                console.log(`🔍 ANIM DEBUG [${anim.model?.name}]: hasTranslation=${!!anim.hasTranslation}, hasRotation=${!!anim.hasRotation}, modelCenter=${!!anim.modelCenter}, hasSvita=${!!anim.hasSvita}, hasAvvita=${!!anim.hasAvvita}`);
+            }
+
+            // Gestione uniforme di animazioni - USA hasRotation/hasTranslation invece di controllare esistenza targetRotation
+            if (anim.hasRotation && (anim.modelCenter || anim.hasSvita || anim.hasAvvita)) {
                 // Rotazione attorno a centro (personalizzato o standard) - NO movimento lineare
                 this.applyRotationAroundCenter(anim, progress);
-            } else if (anim.targetRotation && !anim.targetPosition) {
+            } else if (anim.hasRotation && !anim.hasTranslation) {
                 // Solo rotazione senza centro personalizzato
                 const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
                 const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
                 const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
                 anim.model.setRotationFromQuaternion(resultQuaternion);
-            } else if (anim.targetPosition && !anim.targetRotation) {
+
+                // IMPORTANTE: Forza aggiornamento matrici per nodi GLB annidati
+                anim.model.updateMatrix();
+                anim.model.updateMatrixWorld(true);
+            } else if (anim.hasTranslation && !anim.hasRotation) {
                 // Solo movimento lineare (traslazione pura)
-                anim.model.position.lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+                // CRITICO: Crea un NUOVO Vector3 invece di modificare in-place
+                // Three.js potrebbe non rilevare cambiamenti a Vector3 modificato in-place
+                const newPosition = new THREE.Vector3().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+                anim.model.position.copy(newPosition);
+
+                // DEBUG: Log ogni 20 frame circa per verificare che l'animazione giri
+                if (Math.random() < 0.05) {
+                    console.log(`🎯 ANIM LOOP [${anim.model.name}]: progress=${progress.toFixed(2)}, pos=(${anim.model.position.x.toFixed(3)}, ${anim.model.position.y.toFixed(3)}, ${anim.model.position.z.toFixed(3)}), hasParent=${!!anim.model.userData?.parentModel}`);
+                }
+
+                // IMPORTANTE: Forza aggiornamento matrici per nodi GLB annidati
+                // Aggiorna dalla ROOT del GLB fino al child
+                if (anim.model.userData?.parentModel) {
+                    // Se è un child, aggiorna prima il parent root poi il child
+                    anim.model.userData.parentModel.updateMatrixWorld(true);
+                }
+                anim.model.updateMatrix();
+                anim.model.updateMatrixWorld(true);
+
+                // CRITICO: Marca anche tutta la catena parent come "needs update"
+                let currentParent = anim.model.parent;
+                while (currentParent) {
+                    currentParent.updateMatrix();
+                    currentParent = currentParent.parent;
+                }
+
+                // CRITICO: Per GLB children, forza anche il re-render dei materiali
+                if (anim.model.userData?.parentModel) {
+                    anim.model.traverse((child) => {
+                        if (child.isMesh && child.material) {
+                            if (Array.isArray(child.material)) {
+                                child.material.forEach(mat => mat.needsUpdate = true);
+                            } else {
+                                child.material.needsUpdate = true;
+                            }
+                        }
+                    });
+                }
 
                 // Applica stessa traslazione agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
@@ -3081,13 +2369,17 @@ const Scene3D = {
                         console.error(`❌ SLAVE ERROR durante traslazione:`, error);
                     }
                 }
-            } else if (anim.targetPosition && anim.targetRotation) {
+            } else if (anim.hasTranslation && anim.hasRotation) {
                 // Movimento combinato (traslazione + rotazione semplice)
                 anim.model.position.lerpVectors(anim.initialPosition, anim.targetPosition, progress);
                 const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
                 const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
                 const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
                 anim.model.setRotationFromQuaternion(resultQuaternion);
+
+                // IMPORTANTE: Forza aggiornamento matrici per nodi GLB annidati
+                anim.model.updateMatrix();  // Prima aggiorna matrice locale
+                anim.model.updateMatrixWorld(true);  // Poi propaga a world
 
                 // Applica stessa traslazione e rotazione agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
@@ -3170,7 +2462,7 @@ const Scene3D = {
                 if (anim.isDriven) {
                     console.log(`🚗 DRIVEN OBJECT: Animazione completata per "${anim.model.name || anim.model.userData?.originalFilename}" - NO avanzamento tutorial`);
                 } else if (anim.isMultiStep) {
-                    this.onMultiStepCompleted(anim.modelUuid);
+                    window.MultiStepAnimationSystem.onMultiStepCompleted(anim.modelUuid);
                 } else {
                     if (window.UI && window.UI.currentStepIndex !== undefined && window.UI.currentStepIndex >= 0) {
                         this.markStepAsCompleted(window.UI.currentStepIndex);
@@ -3293,6 +2585,10 @@ const Scene3D = {
             anim.model.rotation.copy(currentRotation);
             anim.model.position.copy(linearMovement);
         }
+
+        // IMPORTANTE: Forza aggiornamento matrici per nodi GLB annidati
+        anim.model.updateMatrix();  // Prima aggiorna matrice locale
+        anim.model.updateMatrixWorld(true);  // Poi propaga a world
     },
 
     smoothStep: function(t) {
@@ -4474,7 +3770,7 @@ const Scene3D = {
         const silhouetteMaterial = new THREE.MeshBasicMaterial({
             color: color,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.4,
             depthTest: false,  // Visibile attraverso tutti gli oggetti
             depthWrite: false, // Non scrive nel depth buffer
             side: THREE.DoubleSide // Visibile da entrambi i lati
@@ -4903,6 +4199,126 @@ const Scene3D = {
     },
 
     /**
+     * Trova un modello caricato per nome, con supporto per TargetChild
+     * @param {string} targetName - Nome del modello da cercare
+     * @param {string} childName - Nome opzionale del child da cercare dentro il modello (per TargetChild)
+     * @returns {Object|null} - Il modello trovato o null
+     */
+    findModelByName: function(targetName, childName = null) {
+        let foundModel = null;
+
+        // Protezione contro targetName undefined/null
+        if (!targetName || typeof targetName !== 'string') {
+            console.warn(`[Scene3D] findModelByName chiamato con targetName non valido:`, targetName);
+            return null;
+        }
+
+        // PRIORITÀ 1: Controlla target virtuali da SnapPoint globale (es: snap_point_0_original)
+        if (this.virtualSnapTargets && this.virtualSnapTargets.has(targetName)) {
+            const virtualTarget = this.virtualSnapTargets.get(targetName);
+            console.log(`📍 SNAP VIRTUALE: Trovato target virtuale "${targetName}" a (${virtualTarget.position.x.toFixed(3)}, ${virtualTarget.position.y.toFixed(3)}, ${virtualTarget.position.z.toFixed(3)})`);
+            return virtualTarget;
+        }
+
+        // PRIORITÀ 2: Gestione suffisso _original per posizioni iniziali modelli reali
+        const isOriginalReference = targetName.endsWith('_original');
+        const cleanTargetName = targetName
+            .replace('_original', '')
+            .split('/').pop()
+            .replace('.glb', '');
+
+        this.scene.traverse(function(child) {
+            if (child.isMesh || child.isGroup || child.isObject3D) {
+                const modelName = (child.userData?.originalFilename || child.name || '').split('/').pop().replace('.glb', '');
+                if (modelName === cleanTargetName) {
+                    foundModel = child;
+                    return;
+                }
+            }
+        });
+
+        // Se richiesta posizione originale, crea oggetto virtuale
+        if (foundModel && isOriginalReference) {
+            return this.createOriginalPositionReference(foundModel, targetName);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // TARGETCHILD: Se specificato childName, cerca dentro il modello trovato
+        // ═══════════════════════════════════════════════════════════════════════
+        if (foundModel && childName) {
+            let foundChild = null;
+            const cleanChildName = childName.trim();
+
+            console.log(`🔍 TARGETCHILD: Cercando child "${cleanChildName}" dentro "${foundModel.name}"`);
+
+            foundModel.traverse(function(child) {
+                if (!foundChild && child.name === cleanChildName) {
+                    foundChild = child;
+                    console.log(`✅ TARGETCHILD: Trovato child "${cleanChildName}" (tipo: ${child.type})`);
+                }
+            });
+
+            if (foundChild) {
+                // Salva riferimento al parent per home_config
+                foundChild.userData.parentModel = foundModel;
+                foundChild.userData.parentModelName = targetName;
+                return foundChild;
+            } else {
+                console.warn(`⚠️ TARGETCHILD: Child "${cleanChildName}" non trovato in "${foundModel.name}"`);
+                console.warn(`⚠️ TARGETCHILD: Child disponibili:`, this.listChildNames(foundModel));
+                return foundModel; // Fallback al parent
+            }
+        }
+
+        return foundModel;
+    },
+
+    /**
+     * Lista i nomi dei child di un modello (per debug)
+     * @param {Object} model - Il modello da analizzare
+     * @param {number} maxDepth - Profondità massima della traversata
+     * @returns {Array} - Lista nomi dei child
+     */
+    listChildNames: function(model, maxDepth = 3) {
+        const names = [];
+        const traverseWithDepth = (obj, depth) => {
+            if (depth > maxDepth) return;
+            obj.children.forEach(child => {
+                names.push(child.name);
+                traverseWithDepth(child, depth + 1);
+            });
+        };
+        traverseWithDepth(model, 0);
+        return names.slice(0, 20); // Limita a 20 per evitare log troppo lunghi
+    },
+
+    /**
+     * Crea un riferimento virtuale alla posizione originale di un modello
+     * @param {Object} model - Il modello di riferimento
+     * @param {string} referenceName - Nome del riferimento
+     * @returns {Object} - Oggetto virtuale con posizione originale
+     */
+    createOriginalPositionReference: function(model, referenceName) {
+        const initialState = this.initialModelPositions.get(model.uuid);
+
+        if (!initialState) {
+            console.warn(`🔍 ORIGINAL: Posizione originale non trovata per ${referenceName}`);
+            return model; // Fallback al modello corrente
+        }
+
+        // Oggetto virtuale con posizione originale
+        const originalReference = {
+            position: initialState.position.clone(),
+            rotation: initialState.rotation.clone(),
+            name: referenceName,
+            isOriginalReference: true,
+            sourceModel: model
+        };
+
+        return originalReference;
+    },
+
+    /**
      * DEBUG: Testa sistema _original per verificare che le posizioni siano fisse
      */
     debugOriginalSystem: function() {
@@ -5060,6 +4476,238 @@ const Scene3D = {
 
 // Esponi Scene3D globalmente
 window.Scene3D = Scene3D;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COMANDI CONSOLE HELPER PER DEBUG TARGETCHILD
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Lista tutti i child disponibili in un modello GLB
+ * Utile per trovare i nomi corretti da usare con TargetChild
+ *
+ * @param {string} modelName - Nome del modello GLB (es: 'a500', 'models/a500.glb')
+ * @returns {Array} - Lista dei nomi dei child
+ *
+ * @example
+ * Scene3D.listChildNames('a500')
+ * // Output: ['Basamento', 'Basamento_Portale', 'Basamento_Portale_CarroY', ...]
+ */
+Scene3D.listChildNames = function(modelNameOrObject, maxDepth = 10) {
+    let model = modelNameOrObject;
+
+    // Se è una stringa, cerca il modello
+    if (typeof modelNameOrObject === 'string') {
+        model = Scene3D.findModelByName(modelNameOrObject);
+        if (!model) {
+            console.error(`❌ Modello "${modelNameOrObject}" non trovato`);
+            console.log('💡 Usa Scene3D.listAvailableObjects() per vedere i modelli disponibili');
+            return [];
+        }
+    }
+
+    console.log(`\n📋 Children disponibili in "${model.name}" (max depth: ${maxDepth}):\n`);
+
+    const names = [];
+    const traverseWithDepth = (obj, depth, prefix = '') => {
+        if (depth > maxDepth) return;
+
+        obj.children.forEach((child, index) => {
+            const indent = '  '.repeat(depth);
+            const isLast = index === obj.children.length - 1;
+            const connector = isLast ? '└─' : '├─';
+            const childType = child.type || 'Object3D';
+            const displayName = child.name || '<unnamed>';
+
+            console.log(`${indent}${connector} ${displayName} (${childType})`);
+            names.push({
+                name: displayName,
+                type: childType,
+                depth: depth,
+                path: prefix ? `${prefix}/${displayName}` : displayName
+            });
+
+            if (child.children.length > 0) {
+                traverseWithDepth(child, depth + 1, prefix ? `${prefix}/${displayName}` : displayName);
+            }
+        });
+    };
+
+    traverseWithDepth(model, 0);
+
+    console.log(`\n✅ Totale: ${names.length} child trovati\n`);
+    console.log('💡 Usa questi nomi con TargetChild nel tutorial.txt');
+    console.log('💡 Esempio: TargetChild=Basamento_Portale_CarroY\n');
+
+    return names;
+};
+
+/**
+ * Cerca un child per nome all'interno di un modello
+ * Utile per verificare se un nome TargetChild esiste prima di usarlo
+ *
+ * @param {string} parentModelName - Nome del modello parent (es: 'a500')
+ * @param {string} childName - Nome del child da cercare (es: 'Basamento_Portale')
+ * @returns {Object|null} - Il child trovato o null
+ *
+ * @example
+ * Scene3D.findChild('a500', 'Basamento_Portale_CarroY')
+ * // Output: Object3D { name: 'Basamento_Portale_CarroY', type: 'Group', ... }
+ */
+Scene3D.findChild = function(parentModelName, childName) {
+    const parentModel = Scene3D.findModelByName(parentModelName);
+
+    if (!parentModel) {
+        console.error(`❌ Modello parent "${parentModelName}" non trovato`);
+        return null;
+    }
+
+    const child = Scene3D.findModelByName(parentModelName, childName);
+
+    if (child && child !== parentModel) {
+        console.log(`✅ Child trovato: "${childName}"`);
+        console.log(`   Tipo: ${child.type}`);
+        console.log(`   Posizione: (${child.position.x.toFixed(3)}, ${child.position.y.toFixed(3)}, ${child.position.z.toFixed(3)})`);
+        console.log(`   Rotazione: (${child.rotation.x.toFixed(3)}, ${child.rotation.y.toFixed(3)}, ${child.rotation.z.toFixed(3)})`);
+        console.log(`\n💡 Usa nel tutorial.txt:`);
+        console.log(`   Elemento=models/${parentModelName}.glb`);
+        console.log(`   TargetChild=${childName}`);
+        return child;
+    } else {
+        console.error(`❌ Child "${childName}" non trovato in "${parentModelName}"`);
+        console.log(`\n💡 Usa Scene3D.listChildNames('${parentModelName}') per vedere i child disponibili`);
+        return null;
+    }
+};
+
+/**
+ * Shortcut per listare i child del modello a500
+ *
+ * @example
+ * Scene3D.listA500Children()
+ */
+Scene3D.listA500Children = function() {
+    return Scene3D.listChildNames('a500', 10);
+};
+
+/**
+ * TEST: Anima manualmente un child per verificare che funzioni
+ * Utile per debug quando un TargetChild non si muove nel tutorial
+ *
+ * @param {string} parentModelName - Nome del modello parent (es: 'a500')
+ * @param {string} childName - Nome del child da animare
+ * @param {number} x - Traslazione X (default: 0)
+ * @param {number} y - Traslazione Y (default: 0)
+ * @param {number} z - Traslazione Z (default: 0)
+ * @param {number} duration - Durata animazione in secondi (default: 1.0)
+ *
+ * @example
+ * Scene3D.testMoveChild('a500', 'Basamento_Portale', 0, 0, -1, 1.5)
+ */
+Scene3D.testMoveChild = function(parentModelName, childName, x = 0, y = 0.1, z = 0, duration = 1.0) {
+    console.log(`\n🧪 TEST MOVE CHILD: Avvio test animazione child...`);
+    console.log(`   Parent: "${parentModelName}"`);
+    console.log(`   Child: "${childName}"`);
+    console.log(`   Traslazione: (${x}, ${y}, ${z})`);
+    console.log(`   Durata: ${duration}s\n`);
+
+    // Trova il parent model
+    const parentModel = Scene3D.findModelByName(parentModelName);
+    if (!parentModel) {
+        console.error(`❌ Modello parent "${parentModelName}" non trovato`);
+        return false;
+    }
+
+    console.log(`✅ Parent trovato: "${parentModel.name}"`);
+
+    // Trova il child usando findModelByName con parametro childName
+    const child = Scene3D.findModelByName(parentModelName, childName);
+
+    if (!child || child === parentModel) {
+        console.error(`❌ Child "${childName}" non trovato in "${parentModelName}"`);
+        console.log(`\n💡 Usa Scene3D.listChildNames('${parentModelName}') per vedere i child disponibili`);
+        return false;
+    }
+
+    console.log(`✅ Child trovato: "${child.name}" (type: ${child.type})`);
+    console.log(`   Posizione iniziale: (${child.position.x.toFixed(3)}, ${child.position.y.toFixed(3)}, ${child.position.z.toFixed(3)})`);
+    console.log(`   matrixAutoUpdate: ${child.matrixAutoUpdate}`);
+
+    // Assicura che matrixAutoUpdate sia true
+    console.log(`\n🔧 Forzando matrixAutoUpdate su child e parent chain...`);
+    child.matrixAutoUpdate = true;
+    let parent = child.parent;
+    let chainLength = 0;
+    while (parent) {
+        parent.matrixAutoUpdate = true;
+        parent.updateMatrix();
+        parent = parent.parent;
+        chainLength++;
+    }
+    console.log(`✅ Parent chain aggiornata (${chainLength} livelli)`);
+
+    // Crea step per l'animazione (IMPORTANTE: usa 'traslazione' non 'translation')
+    const movementSteps = [{
+        action: 'traslazione',
+        traslazione: {  // ← FIX: era 'translation', deve essere 'traslazione'
+            x: x,
+            y: y,
+            z: z
+        },
+        durata: duration,  // ← FIX: era 'duration', deve essere 'durata'
+        isRelativeToOriginal: false
+    }];
+
+    console.log(`\n🎬 Avvio animazione...`);
+
+    // Usa MultiStepAnimationSystem per animare
+    if (!window.MultiStepAnimationSystem) {
+        console.error(`❌ MultiStepAnimationSystem non disponibile`);
+        return false;
+    }
+
+    const result = window.MultiStepAnimationSystem.startMultiStepMovement(child, movementSteps, [], []);
+
+    if (result) {
+        console.log(`✅ Animazione avviata con successo!`);
+        console.log(`   Guarda il viewport per verificare il movimento.`);
+        console.log(`   Posizione finale attesa: (${(child.position.x + x).toFixed(3)}, ${(child.position.y + y).toFixed(3)}, ${(child.position.z + z).toFixed(3)})`);
+
+        // Log posizione dopo 100ms
+        setTimeout(() => {
+            console.log(`📊 Posizione dopo 100ms: (${child.position.x.toFixed(3)}, ${child.position.y.toFixed(3)}, ${child.position.z.toFixed(3)})`);
+        }, 100);
+
+        // Log posizione finale
+        setTimeout(() => {
+            console.log(`📊 Posizione finale: (${child.position.x.toFixed(3)}, ${child.position.y.toFixed(3)}, ${child.position.z.toFixed(3)})`);
+            const moved = Math.abs(child.position.x - (child.position.x + x)) > 0.001 ||
+                         Math.abs(child.position.y - (child.position.y + y)) > 0.001 ||
+                         Math.abs(child.position.z - (child.position.z + z)) > 0.001;
+            if (moved) {
+                console.log(`✅ IL CHILD SI È MOSSO!`);
+            } else {
+                console.log(`❌ IL CHILD NON SI È MOSSO - Potrebbe essere un problema di coordinate locali/world`);
+            }
+        }, (duration * 1000) + 200);
+
+        return true;
+    } else {
+        console.error(`❌ Animazione non avviata`);
+        return false;
+    }
+};
+
+console.log(`
+🔧 COMANDI DEBUG TARGETCHILD DISPONIBILI:
+══════════════════════════════════════════════════════════════
+  Scene3D.listChildNames('a500')                → Lista child del GLB
+  Scene3D.findChild('a500', 'CarroY')           → Trova child specifico
+  Scene3D.listA500Children()                    → Shortcut per a500
+  Scene3D.testMoveChild('a500', 'child', x,y,z) → TEST animazione child
+══════════════════════════════════════════════════════════════
+💡 Esempio test:
+  Scene3D.testMoveChild('a500', 'Basamento_Portale', 0, 0, -1, 1.5)
+`);
 
 window.addEventListener('resize', function() {
     if (window.Scene3D && window.Scene3D.onWindowResize) {

@@ -403,6 +403,14 @@ window.InteractiveObject3D = {
 
         if (!obj) return false;
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // STEP GATING CHECK GLOBALE - Blocca TUTTE le interazioni prima del tutorial
+        // ═══════════════════════════════════════════════════════════════════════
+        if (window.StepGatingManager && window.StepGatingManager.currentStepIndex < 0) {
+            console.log(`🚫 [InteractiveObject3D] Interazione bloccata su "${mesh.name}" - tutorial non ancora avviato`);
+            return false; // Blocca QUALSIASI interazione prima di avviare il tutorial
+        }
+
         console.log(`🖱️ [InteractiveObject3D] Click su "${mesh.name}" (parent: ${parentName})`);
 
         // Feedback visivo
@@ -431,6 +439,7 @@ window.InteractiveObject3D = {
         const buttonId = mesh.userData.interactiveGroupName || mesh.name;
 
         // STEP GATING CHECK - Verifica se il pulsante è attivo nello step corrente
+        // (Il controllo currentStepIndex < 0 è già fatto in handleClick globale)
         if (window.StepGatingManager && !window.StepGatingManager.isButtonActive(buttonId)) {
             console.log(`🚫 [InteractiveObject3D] Pulsante "${buttonId}" bloccato dal gating - step ${window.StepGatingManager.currentStepIndex}`);
             return false; // Ignora click
@@ -440,19 +449,48 @@ window.InteractiveObject3D = {
 
         console.log(`🔘 [InteractiveObject3D] Button click: ${parentName}.${buttonId} (mesh: ${mesh.name}) → ${action}`);
 
-        // Emetti evento per StepController - usa buttonId (nome Group) per trigger
-        if (window.StepController) {
-            const triggerId = `${parentName}.${buttonId}`;
-            const handled = window.StepController.triggerStep('physical', triggerId);
+        // Rimuovi evidenziazione del pulsante cliccato (se era evidenziato)
+        const triggerId = `${parentName}.${buttonId}`;
+        if (this.highlightedButtons.has(triggerId)) {
+            const highlightedMesh = this.highlightedButtons.get(triggerId);
+            if (highlightedMesh && highlightedMesh.material) {
+                // Ripristina valori originali (emissive, opacity, transparent)
+                if (highlightedMesh.material.emissive) {
+                    highlightedMesh.material.emissive.setHex(highlightedMesh.userData.originalEmissive || 0x000000);
+                    highlightedMesh.material.emissiveIntensity = highlightedMesh.userData.originalEmissiveIntensity || 0;
+                }
 
-            if (handled) {
+                // Ripristina opacity e transparent (pulsante torna invisibile)
+                if (highlightedMesh.userData.originalOpacity !== undefined) {
+                    highlightedMesh.material.opacity = highlightedMesh.userData.originalOpacity;
+                }
+                if (highlightedMesh.userData.originalTransparent !== undefined) {
+                    highlightedMesh.material.transparent = highlightedMesh.userData.originalTransparent;
+                }
+                highlightedMesh.material.needsUpdate = true;
+            }
+            this.highlightedButtons.delete(triggerId);
+            console.log(`💡 [InteractiveObject3D] Evidenziazione rimossa da "${buttonId}" dopo click (opacity ripristinata a ${highlightedMesh.userData.originalOpacity})`);
+        }
+
+        // Emetti evento per StepController - usa buttonId (nome Group) per trigger
+        let handledByStepController = false;
+        if (window.StepController) {
+            handledByStepController = window.StepController.triggerStep('physical', triggerId);
+
+            if (handledByStepController) {
                 console.log(`   ✓ Gestito da StepController`);
             }
         }
 
-        // Esegui azione locale se definita
-        if (action) {
+        // Esegui azione locale SOLO se NON gestito da StepController
+        // Questo previene conflitti tra azioni tutorial e azioni InteractiveChild
+        // (es. OnPhysicalTrigger con setVariant vs onClick con cycleVariant)
+        if (action && !handledByStepController) {
+            console.log(`   ⚡ Esecuzione azione locale (non gestito da StepController)`);
             this.executeAction(parentName, action);
+        } else if (action && handledByStepController) {
+            console.log(`   ⏭️ Azione locale "${action}" ignorata (già gestito da StepController)`);
         }
 
         // Emetti evento custom
@@ -475,26 +513,43 @@ window.InteractiveObject3D = {
             return false;
         }
 
+        // Usa il nome del Group parent se la mesh è stata registrata via Group
+        const rotaryId = mesh.userData.interactiveGroupName || mesh.name;
+
         // Trova stato corrente
-        const currentState = obj.state[mesh.name] || config.states[0];
+        const currentState = obj.state[rotaryId] || config.states[0];
         const currentIdx = config.states.indexOf(currentState);
 
         // Calcola prossimo stato (ciclo)
         const nextIdx = (currentIdx + 1) % config.states.length;
         const nextState = config.states[nextIdx];
 
-        console.log(`🔄 [InteractiveObject3D] Rotary: ${parentName}.${mesh.name}: "${currentState}" → "${nextState}"`);
+        console.log(`🔄 [InteractiveObject3D] Rotary: ${parentName}.${rotaryId}: "${currentState}" → "${nextState}"`);
 
-        // Aggiorna stato
-        this.setState(parentName, mesh.name, nextState);
-
-        // Anima rotazione
-        this.animateRotation(mesh, config, nextState);
-
-        // Emetti evento per StepController
+        // PRIMA verifica se StepController gestisce questo trigger
+        let handledByStepController = false;
         if (window.StepController) {
-            const triggerId = `${parentName}.${mesh.name}_${nextState}`;
-            window.StepController.triggerStep('physical', triggerId);
+            // Per rotary, il trigger è semplicemente "parent.rotaryId" (es. "pulpito.chiave")
+            // StepController gestirà il cambio di variante tramite OnPhysicalTrigger
+            const triggerId = `${parentName}.${rotaryId}`;
+            handledByStepController = window.StepController.triggerStep('physical', triggerId);
+
+            if (handledByStepController) {
+                console.log(`   ✓ Gestito da StepController - cambio stato locale ignorato`);
+            }
+        }
+
+        // Esegui cambio stato locale SOLO se NON gestito da StepController
+        // Questo previene conflitti tra OnPhysicalTrigger e rotary automatico
+        if (!handledByStepController) {
+            console.log(`   ⚡ Esecuzione cambio stato locale (non gestito da StepController)`);
+            // Aggiorna stato
+            this.setState(parentName, rotaryId, nextState);
+
+            // Anima rotazione
+            this.animateRotation(mesh, config, nextState);
+        } else {
+            console.log(`   ⏭️ Cambio stato locale ignorato (già gestito da StepController)`);
         }
 
         return true;
@@ -1041,6 +1096,204 @@ window.InteractiveObject3D = {
                 mesh.material.emissiveIntensity = originalIntensity;
             }
         }, this.config.clickFeedbackDuration);
+    },
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EVIDENZIAZIONE PULSANTI RICHIESTI (Tutorial Step)
+    // ═══════════════════════════════════════════════════════════════════
+
+    highlightedButtons: new Map(), // Tracking pulsanti evidenziati: buttonId -> mesh
+
+    /**
+     * Evidenzia i pulsanti richiesti dallo step corrente
+     * @param {string[]} triggers - Array di trigger fisici (es. ["pulpito.Pulsante_mdi", "remote.pulsante_r_play"])
+     */
+    highlightRequiredButtons: function(triggers) {
+        if (!triggers || triggers.length === 0) {
+            return;
+        }
+
+        console.log(`💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti:`, triggers);
+
+        triggers.forEach(trigger => {
+            // Parse trigger: "parentName.buttonId"
+            const parts = trigger.split('.');
+            if (parts.length !== 2) {
+                console.warn(`[InteractiveObject3D] Formato trigger non valido: "${trigger}"`);
+                return;
+            }
+
+            const [parentName, buttonId] = parts;
+            console.log(`💡 [InteractiveObject3D] Cercando pulsante: parent="${parentName}", button="${buttonId}"`);
+
+            // Trova mesh del pulsante
+            let buttonMesh = null;
+
+            // STRATEGIA 1: Cerca in InteractiveObject registrato (se presente)
+            const obj = this.objects.get(parentName);
+
+            if (obj) {
+                console.log(`💡 [InteractiveObject3D] ✓ Oggetto "${parentName}" trovato in registry, childMeshes:`, obj.childMeshes.size);
+
+                // Cerca prima nelle mesh child dirette
+                buttonMesh = obj.childMeshes.get(buttonId);
+                if (buttonMesh) {
+                    console.log(`💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto`);
+                }
+
+                // Se non trovata, cerca nel modello
+                if (!buttonMesh && obj.model) {
+                    console.log(`💡 [InteractiveObject3D] Mesh non trovata in childMeshes, cercando in model.traverse...`);
+                    let childCount = 0;
+
+                    obj.model.traverse((child) => {
+                        childCount++;
+
+                        if (!buttonMesh && child.isGroup && child.name === buttonId) {
+                            console.log(`💡 [InteractiveObject3D] ✓ Trovato Group "${child.name}", cercando mesh figlia...`);
+                            child.traverse((subChild) => {
+                                if (!buttonMesh && subChild.isMesh && subChild.material) {
+                                    console.log(`💡 [InteractiveObject3D] ✓ Trovata mesh figlia in Group: "${subChild.name}"`);
+                                    buttonMesh = subChild;
+                                }
+                            });
+                        } else if (!buttonMesh && child.isMesh && child.name === buttonId) {
+                            console.log(`💡 [InteractiveObject3D] ✓ Trovata Mesh diretta: "${child.name}"`);
+                            buttonMesh = child;
+                        }
+                    });
+
+                    console.log(`💡 [InteractiveObject3D] Totale child nel model: ${childCount}`);
+                }
+            }
+
+            // STRATEGIA 2: Se non trovato in registry, cerca direttamente nella scena
+            if (!buttonMesh && window.Scene3D) {
+                console.log(`💡 [InteractiveObject3D] Oggetto non in registry, cercando modello "${parentName}" nella scena...`);
+
+                const parentModel = window.Scene3D.findModelByName(parentName);
+
+                if (parentModel) {
+                    console.log(`💡 [InteractiveObject3D] ✓ Modello parent "${parentName}" trovato nella scena, cercando child...`);
+
+                    parentModel.traverse((child) => {
+                        if (!buttonMesh && child.isGroup && child.name === buttonId) {
+                            console.log(`💡 [InteractiveObject3D] ✓ Trovato Group "${child.name}", cercando mesh figlia...`);
+                            child.traverse((subChild) => {
+                                if (!buttonMesh && subChild.isMesh && subChild.material) {
+                                    console.log(`💡 [InteractiveObject3D] ✓ Trovata mesh figlia in Group: "${subChild.name}"`);
+                                    buttonMesh = subChild;
+                                }
+                            });
+                        } else if (!buttonMesh && child.isMesh && child.name === buttonId) {
+                            console.log(`💡 [InteractiveObject3D] ✓ Trovata Mesh diretta: "${child.name}"`);
+                            buttonMesh = child;
+                        }
+                    });
+                } else {
+                    console.warn(`💡 [InteractiveObject3D] ❌ Modello parent "${parentName}" non trovato nella scena`);
+                }
+            }
+
+            if (!buttonMesh) {
+                console.warn(`[InteractiveObject3D] ❌ Mesh pulsante "${buttonId}" non trovata in "${parentName}"`);
+                if (obj) {
+                    console.log(`💡 [InteractiveObject3D] childMeshes disponibili:`, Array.from(obj.childMeshes.keys()));
+                }
+                return;
+            }
+
+            console.log(`💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...`);
+            // Applica evidenziazione gialla forte
+            this.applyButtonHighlight(buttonMesh, trigger);
+        });
+    },
+
+    /**
+     * Applica evidenziazione gialla forte a un pulsante
+     * @param {Mesh} mesh - Mesh da evidenziare
+     * @param {string} triggerId - ID del trigger per tracking
+     */
+    applyButtonHighlight: function(mesh, triggerId) {
+        console.log(`💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh:`, mesh.name);
+        console.log(`💡 [InteractiveObject3D] Mesh ha material:`, !!mesh.material);
+        console.log(`💡 [InteractiveObject3D] Material type:`, mesh.material?.type);
+        console.log(`💡 [InteractiveObject3D] Material ha emissive:`, !!mesh.material?.emissive);
+
+        if (!mesh.material) {
+            console.warn(`💡 [InteractiveObject3D] ❌ Mesh senza materiale, skip evidenziazione`);
+            return;
+        }
+
+        // Salva valori originali se non già fatto (emissive, opacity, transparent)
+        if (mesh.userData.originalEmissive === undefined) {
+            const origEmissive = mesh.material.emissive ? mesh.material.emissive.getHex() : 0x000000;
+            const origIntensity = mesh.material.emissiveIntensity || 0;
+            const origOpacity = mesh.material.opacity !== undefined ? mesh.material.opacity : 0.4;
+            const origTransparent = mesh.material.transparent !== undefined ? mesh.material.transparent : false;
+
+            mesh.userData.originalEmissive = origEmissive;
+            mesh.userData.originalEmissiveIntensity = origIntensity;
+            mesh.userData.originalOpacity = origOpacity;
+            mesh.userData.originalTransparent = origTransparent;
+
+            console.log(`💡 [InteractiveObject3D] Valori originali salvati: emissive=${origEmissive.toString(16)}, intensity=${origIntensity}, opacity=${origOpacity}, transparent=${origTransparent}`);
+        }
+
+        // Applica emissione gialla FORTE (silhouette)
+        if (mesh.material.emissive) {
+            mesh.material.emissive.setHex(0xffff00); // Giallo brillante
+            mesh.material.emissiveIntensity = 2.0;    // Intensità alta
+            console.log(`💡 [InteractiveObject3D] ✓ Emissive applicata: 0xffff00, intensity=2.0`);
+        } else {
+            console.warn(`💡 [InteractiveObject3D] ⚠️ Material non ha proprietà emissive, evidenziazione potrebbe non essere visibile`);
+        }
+
+        // IMPORTANTE: Rendi il materiale semi-trasparente per mostrare l'evidenziazione
+        // (i pulsanti sono normalmente invisibili con opacity=0)
+        mesh.material.opacity = 0.6;
+        mesh.material.transparent = true;
+        mesh.material.needsUpdate = true;
+        console.log(`💡 [InteractiveObject3D] ✓ Opacity impostata a 0.4 per visibilità evidenziazione`);
+
+        // Traccia pulsante evidenziato
+        this.highlightedButtons.set(triggerId, mesh);
+
+        console.log(`💡 [InteractiveObject3D] ✓ Pulsante "${mesh.name}" evidenziato e aggiunto a highlightedButtons (totale: ${this.highlightedButtons.size})`);
+    },
+
+    /**
+     * Rimuove tutte le evidenziazioni dei pulsanti
+     */
+    clearButtonHighlights: function() {
+        if (this.highlightedButtons.size === 0) {
+            return;
+        }
+
+        console.log(`💡 [InteractiveObject3D] Rimozione ${this.highlightedButtons.size} evidenziazioni pulsanti`);
+
+        for (const [triggerId, mesh] of this.highlightedButtons) {
+            if (mesh && mesh.material) {
+                // Ripristina valori originali (emissive, opacity, transparent)
+                if (mesh.material.emissive) {
+                    mesh.material.emissive.setHex(mesh.userData.originalEmissive || 0x000000);
+                    mesh.material.emissiveIntensity = mesh.userData.originalEmissiveIntensity || 0;
+                }
+
+                // Ripristina opacity e transparent (pulsanti tornano invisibili)
+                if (mesh.userData.originalOpacity !== undefined) {
+                    mesh.material.opacity = mesh.userData.originalOpacity;
+                }
+                if (mesh.userData.originalTransparent !== undefined) {
+                    mesh.material.transparent = mesh.userData.originalTransparent;
+                }
+                mesh.material.needsUpdate = true;
+
+                console.log(`💡 [InteractiveObject3D] ✓ Evidenziazione rimossa da "${mesh.name}" (opacity ripristinata a ${mesh.userData.originalOpacity})`);
+            }
+        }
+
+        this.highlightedButtons.clear();
     },
 
     // ═══════════════════════════════════════════════════════════════════

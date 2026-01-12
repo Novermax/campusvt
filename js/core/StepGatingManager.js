@@ -164,8 +164,9 @@ window.StepGatingManager = {
      */
     isButtonActive: function(buttonId) {
         if (this.currentStepIndex < 0) {
-            // Nessuno step attivo - permetti tutto (modalità libera)
-            return true;
+            // Nessuno step attivo - BLOCCA tutti i pulsanti
+            // (prima di avviare il tutorial, i pulsanti non devono rispondere)
+            return false;
         }
 
         const config = this.stepConfigs.get(this.currentStepIndex);

@@ -1,0 +1,233 @@
+Bug riproducibile – step saltato nel tutorial
+
+Nel tutorial
+@scenes/Manutenzione_Elettromandrino/tutorial.txt
+viene saltato indebitamente lo step:
+
+[Next Step - apri la porta]
+Descrizione=Gira la chiave per aprire la porta di accesso all'elettromandrino.
+CameraPos=(0.94, 1.29, 4.07)
+CameraTarget=(0.97, 1.15, 3.52)
+CameraRotation=(-0.25, -0.04, -0.01)
+CameraPivot=(0.97, 1.15, 3.52)
+CameraDistance=0.56
+CameraFOV=75.0
+CameraTransitionTime=2.0
+
+# Trigger: click sulla chiave del pulpito
+ActiveButtons=chiave0,chiave1
+AcceptTrigger_Physical=pulpito.chiave0,pulpito.chiave1
+OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo005;setVariant:start=pstart0
+
+
+Comportamento errato
+
+Lo step viene saltato anche se è definito correttamente.
+
+Lo step non contiene movimenti macchina, ma solo trigger fisici → questo è voluto.
+
+Il salto avviene solo quando lo step è posizionato DOPO step con AutoExecute / AutoAdvance=true.
+
+Se lo stesso step viene spostato PRIMA degli step con AutoExecute, funziona correttamente.
+
+Questo dimostra che:
+
+lo step è valido,
+
+il problema non è nello script,
+
+il problema è nella gestione dello stato di avanzamento degli step.
+
+Chiarimento fondamentale
+Uno step NON deve dipendere dalla presenza di un “elemento attivo” o di un movimento per essere considerato valido.
+Uno step basato solo su trigger (fisici o UI) deve bloccare il flusso ed attendere l’evento, esattamente come questo.
+
+Errore di logica attuale
+
+AutoExecute / AutoAdvance stanno introducendo un comportamento “sticky”:
+
+uno step automatico altera il comportamento degli step successivi.
+
+Di fatto, dopo uno step con avanzamento automatico:
+
+gli step successivi senza movimento vengono auto-saltati,
+
+come se AutoExecute=true fosse implicitamente attivo.
+
+Questo è sbagliato.
+
+Comportamento corretto richiesto
+
+AutoExecute / AutoAdvance devono avere scope SOLO locale allo step.
+
+Lo stato di avanzamento va sempre resettato allo step successivo.
+
+Uno step con:
+
+camera,
+
+descrizione,
+
+trigger (ActiveButtons, AcceptTrigger_*)
+
+deve sempre fermare il flusso fino al trigger, indipendentemente da ciò che lo precede.
+
+Non deve essere richiesto di aggiungere:
+
+AutoExecute=false
+
+AutoAdvance=false
+
+dummy element
+
+workaround nello script
+
+Nota di design
+La coesistenza di AutoExecute e AutoAdvance è semanticamente ridondante e fonte di bug.
+Se restano entrambi, devono essere trattati come flag espliciti e non persistenti, mai come stato globale del tutorial.
+
+Conclusione
+
+Non va modificato lo step.
+
+Va corretta la state machine degli step.
+
+Il tutorial deve funzionare correttamente così com’è, come funzionava prima delle modifiche recenti.
+
+Purtroppo Sonnet ha modificato le cose, ma adesso non avanza più dopo il primo step.
+
+Queste le modifiche apportate da sonnet: 
+
+
+● BUG TROVATO! Il problema è nel file StepController.js alla linea 371-374. Analizziamo:
+
+● Read(js\core\StepController.js)
+  ⎿  Read 25 lines
+
+● PROBLEMA IDENTIFICATO! Alla linea 371-374 di StepController.js, il sistema avanza SEMPRE automaticamente dopo ogni trigger, ignorando il flag AutoAdvance.
+
+  Ecco la fix:
+
+● Update(js\core\StepController.js)
+  ⎿  Added 8 lines, removed 4 lines
+      368           // Esegui azioni per questa sorgente                                                                                           
+      369           this.executeActionsForSource(source, stepConfig);                                                                              
+      370                                                                                                                                          
+      371 -         // Auto-avanzamento SEMPRE dopo trigger accettato                                                                              
+      372 -         // (il flag autoAdvance serve solo per step senza trigger, es. con AutoExecute)                                                
+      373 -         console.log('[StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni');                                           
+      374 -         this.scheduleAutoAdvance();                                                                                                    
+      371 +         // Auto-avanzamento SOLO se AutoAdvance=true nello step                                                                        
+      372 +         // Altrimenti aspetta che l'utente clicchi sulla freccia manualmente                                                           
+      373 +         if (stepConfig.autoAdvance === true) {                                                                                         
+      374 +             console.log('[StepController] ⏭️ AutoAdvance=true → auto-avanzamento dopo trigger');                                       
+      375 +             this.scheduleAutoAdvance();                                                                                                
+      376 +         } else {                                                                                                                       
+      377 +             console.log('[StepController] ⏸️ AutoAdvance non impostato → aspetto click utente sulla freccia');                         
+      378 +         }                                                                                                                              
+      379                                                                                                                                          
+      380           return true;                                                                                                                   
+      381       },                                                                                                                                 
+
+● Ora correggiamo anche il commento fuorviante che descriveva il comportamento errato:
+
+● Update(js\core\StepController.js)
+  ⎿  Added 1 line, removed 1 line
+      160                   holdable: [],                                                                                                          
+      161                   any: []                                                                                                                
+      162               },                                                                                                                         
+      163 -             autoAdvance: false // Default FALSE (step con trigger avanzano automaticamente, questo serve solo per step senza           
+          -trigger)                                                                                                                                
+      163 +             autoAdvance: false // Default FALSE - uno step con trigger SI FERMA fino al trigger, poi aspetta click utente sulla        
+          + freccia (a meno che non abbia AutoAdvance=true esplicito)                                                                              
+      164           };                                                                                                                             
+      165                                                                                                                                          
+      166           // Parse AcceptTrigger_Screen                                                                                                  
+
+● Correggiamo anche il commento alla linea 120:
+
+● Update(js\core\StepController.js)
+  ⎿  Added 1 line, removed 1 line
+      117           const stepConfig = {                                                                                                           
+      118               triggers: config.triggers || {},                                                                                           
+      119               actions: config.actions || {},                                                                                             
+      120 -            autoAdvance: config.autoAdvance === true // Default FALSE (usato solo per step senza trigger)                               
+      120 +            autoAdvance: config.autoAdvance === true // Default FALSE - step NON avanzano automaticamente dopo trigger                  
+          + a meno di AutoAdvance=true esplicito                                                                                                   
+      121           };                                                                                                                             
+      122                                                                                                                                          
+      123           this.stepConfigs.set(stepIndex, stepConfig);                                                                                   
+
+● Ora aggiorniamo la documentazione in CLAUDE.md:
+
+● Search(pattern: "AutoAdvance.*Default", path: "CLAUDE.md", output_mode: "content")
+  ⎿  Found 0 lines
+
+● Search(pattern: "AutoAdvance=", path: "CLAUDE.md", output_mode: "content")
+  ⎿  Found 30 lines (ctrl+o to expand)
+
+● Perfetto! La documentazione era già corretta. Ora verifichiamo che il file sia caricato nell'HTML con la versione aggiornata:
+
+● Search(pattern: "StepController\.js", path: "index.html", output_mode: "content")
+  ⎿  Found 0 lines
+
+● Search(pattern: "StepController", path: "js\app.js", output_mode: "content")
+  ⎿  Found 10 lines (ctrl+o to expand)
+
+● Aggiorniamo la versione del file:
+
+● Update(js\app.js)
+  ⎿  File must be read first
+
+● Read(js\app.js)
+  ⎿  Read 10 lines
+
+● Update(js\app.js)
+  ⎿  Added 2 lines, removed 2 lines
+      264                                                                                                                                          
+      265               // Carica StepController per gestione centralizzata trigger/azioni step                                                    
+      266               try {                                                                                                                      
+      267 -                await this.loadModule('./js/core/StepController.js?v=1000006');                                                         
+      268 -                console.log('✅ Controller step centralizzato caricato (v1000006 - Fix logica auto-avanzamento)');                       
+      267 +                await this.loadModule('./js/core/StepController.js?v=1000007');                                                         
+      268 +                console.log('✅ Controller step centralizzato caricato (v1000007 - Fix AutoAdvance sticky behavior)');                   
+      269               } catch (error) {                                                                                                          
+      270                   console.warn('⚠️ StepController non caricato (opzionale):', error.message);                                            
+      271               }                                                                                                                          
+
+● Ora creiamo un documento che descrive il fix completo:
+
+● Write(FIX_AUTOADVANCE_DEFAULT_COMPLETATO.md)
+  ⎿  Error writing file
+
+● Bash(cat > "C:\Users\mloffredo\claude\FIX_AUTOADVANCE_DEFAULT_COMPLETATO.md" << 'EOF'
+      # Fix AutoAdvance Default - Step con Trigger Non Avanzano Automaticamente…)
+  ⎿  (No content)
+
+● ✅ Fix Completato - AutoAdvance Sticky Behavior
+
+  Ho identificato e risolto il bug critico descritto in voluto.txt:
+
+  🐛 Problema
+
+  Step con solo trigger venivano saltati automaticamente anche senza AutoAdvance=true esplicito, creando un comportamento "sticky" dove step automatici influenzavano quelli successivi.
+
+  🔍 Causa Root
+
+  Nel file js/core/StepController.js alla linea 371-374, il sistema chiamava scheduleAutoAdvance() SEMPRE dopo ogni trigger accettato, ignorando completamente il flag autoAdvance:
+
+  // BUG (PRIMA)
+  console.log('[StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni');
+  this.scheduleAutoAdvance();  // ← chiamato SEMPRE
+
+  ✅ Soluzione
+
+  Ho implementato un controllo condizionale che rispetta il flag AutoAdvance:
+
+  // FIX (DOPO)
+  if (stepConfig.autoAdvance === true) {
+      console.log('[StepController] ⏭️ AutoAdvance=true → auto-avanzamento dopo trigger');
+      this.scheduleAutoAdvance();
+  } else {
+      console.log('[StepController] ⏸️ AutoAdvance non impostato → aspetto click utente sulla freccia');
+  }

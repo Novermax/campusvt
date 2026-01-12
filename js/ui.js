@@ -41,6 +41,7 @@ window.UI = {
     scenariosConfig: null,         // Configurazione scenari caricata
     currentScenario: null,         // Scenario attivo
     homeConfig: null,              // Configurazione home page
+    autoAdvanceTimeoutId: null,    // ID timeout auto-avanzamento (per cancellazione)
     
     /* ===== ELEMENTI DOM ===== */
     elements: {},                  // Cache elementi DOM
@@ -3361,6 +3362,17 @@ window.UI = {
             return;
         }
 
+        // IMPORTANTE: Cancella timeout auto-avanzamento pendente dallo step precedente
+        // Questo previene il bug dove step vengono saltati quando:
+        // 1. Step N con AutoAdvance schedula nextStep() con 200ms delay
+        // 2. Un trigger/azione fa avanzare a Step N+1 prima che scadano i 200ms
+        // 3. Quando scade il timeout, nextStep() salta a N+2 (saltando N+1)
+        if (this.autoAdvanceTimeoutId) {
+            console.log(`[UI] 🚫 Cancellato timeout auto-avanzamento pendente`);
+            clearTimeout(this.autoAdvanceTimeoutId);
+            this.autoAdvanceTimeoutId = null;
+        }
+
         this.currentStepIndex = stepIndex;
         const step = this.tutorialSteps[stepIndex];
 
@@ -3450,6 +3462,21 @@ window.UI = {
         // ═══════════════════════════════════════════════════════════════
         if (window.StepGatingManager) {
             window.StepGatingManager.setStep(this.currentStepIndex, step.title);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // INTERACTIVE OBJECT 3D: Evidenziazione pulsanti richiesti
+        // ═══════════════════════════════════════════════════════════════
+        if (window.InteractiveObject3D) {
+            // Pulisci evidenziazioni precedenti
+            window.InteractiveObject3D.clearButtonHighlights();
+
+            // Evidenzia pulsanti richiesti da questo step (se presenti)
+            if (step.properties.AcceptTrigger_Physical) {
+                const triggers = step.properties.AcceptTrigger_Physical.split(',').map(t => t.trim());
+                window.InteractiveObject3D.highlightRequiredButtons(triggers);
+                console.log(`💡 [UI] Evidenziati ${triggers.length} pulsanti richiesti per step "${step.title}"`);
+            }
         }
 
         // NUOVO: Mostra modal informativo se presente parametro Message
@@ -4235,7 +4262,17 @@ window.UI = {
         // ═══════════════════════════════════════════════════════════════════════
         // AUTO EXECUTE: Esecuzione automatica azione senza click utente
         // ═══════════════════════════════════════════════════════════════════════
-        if (step.properties.AutoExecute === 'true' && window.Scene3D) {
+        // IMPORTANTE: Salta questo blocco se step ha AutoSetVariant senza Elemento
+        // (verrà gestito dal blocco AUTO-SET VARIANT più sotto)
+        const hasAutoSetVariant = !!step.properties.AutoSetVariant;
+        const hasElemento = !!step.properties.Elemento;
+        const skipAutoExecute = hasAutoSetVariant && !hasElemento;
+
+        if (step.properties.AutoExecute === 'true' && skipAutoExecute) {
+            console.log(`[UI] ⏭️ AutoExecute skippato (ha AutoSetVariant senza Elemento) - verrà gestito da blocco SET VARIANT`);
+        }
+
+        if (step.properties.AutoExecute === 'true' && window.Scene3D && !skipAutoExecute) {
             console.log(`[UI] 🤖 AutoExecute attivo per step: "${step.title}"`);
 
             // Determina il target dell'animazione
@@ -4253,17 +4290,33 @@ window.UI = {
                     if (step.properties.TargetChild) {
                         const childName = step.properties.TargetChild.trim();
                         let found = false;
+
+                        // DEBUG: Mostra tutti i child disponibili nel modello
+                        console.log(`[UI] 🔍 DEBUG: Cercando child "${childName}" in "${elementName}"`);
+                        console.log(`[UI] 🔍 DEBUG: Children disponibili nel modello:`);
+                        let childCount = 0;
                         targetModel.traverse((child) => {
+                            if (child.name) {
+                                childCount++;
+                                if (childCount <= 20) { // Limita output
+                                    console.log(`   [${childCount}] "${child.name}" (type: ${child.type})`);
+                                }
+                            }
                             // Usa SOLO exact match e fermati al primo risultato
                             if (!found && child.name === childName) {
                                 targetChild = child;
                                 found = true;
-                                console.log(`[UI] 🤖 AutoExecute: Trovato child "${childName}" in "${elementName}"`);
+                                // IMPORTANTE: Imposta riferimento al parent per il fix matrixAutoUpdate in scene3d
+                                targetChild.userData.parentModel = targetModel;
+                                targetChild.userData.parentModelName = elementName;
+                                console.log(`[UI] ✅ AutoExecute: TROVATO child "${childName}" in "${elementName}" (parentModel impostato)`);
                             }
                         });
+                        console.log(`[UI] 🔍 DEBUG: Totale ${childCount} child nel modello`);
 
                         if (!targetChild) {
-                            console.warn(`[UI] ⚠️ AutoExecute: TargetChild "${childName}" non trovato in "${elementName}"`);
+                            console.warn(`[UI] ⚠️ AutoExecute: TargetChild "${childName}" NON TROVATO in "${elementName}"`);
+                            console.warn(`[UI] 💡 Suggerimento: verifica che il nome esatto sia presente nell'elenco sopra`);
                         }
                     }
                 } else {
@@ -4292,44 +4345,78 @@ window.UI = {
                                 // Animazione trovata! Ora controlla se è finita
                                 if (myAnimation.finished) {
                                     clearInterval(checkAnimComplete);
-                                    console.log(`[UI] 🤖 AutoExecute: Animazione completata - avanzo allo step successivo`);
-                                    setTimeout(() => this.nextStep(), 200);
+                                    console.log(`[UI] 🤖 AutoExecute: Animazione completata`);
+
+                                    // Controlla AutoAdvance prima di avanzare
+                                    if (step.properties.AutoAdvance === 'true') {
+                                        console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
+                                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 200);
+                                    } else {
+                                        console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
+                                    }
                                 }
                             } else {
                                 // Animazione non ancora registrata
                                 pollAttempts++;
                                 if (pollAttempts >= maxPollAttempts) {
-                                    // Timeout: avanzo comunque
+                                    // Timeout
                                     clearInterval(checkAnimComplete);
-                                    console.warn(`[UI] ⚠️ AutoExecute: Timeout attesa animazione - avanzo comunque`);
-                                    setTimeout(() => this.nextStep(), 200);
+                                    console.warn(`[UI] ⚠️ AutoExecute: Timeout attesa animazione`);
+
+                                    // Controlla AutoAdvance prima di avanzare
+                                    if (step.properties.AutoAdvance === 'true') {
+                                        console.log(`[UI] ⏭️ AutoAdvance=true → avanzo comunque`);
+                                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 200);
+                                    } else {
+                                        console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
+                                    }
                                 }
                             }
                         }, 100);
                     } else {
-                        // Nessuna animazione avviata, avanzo subito
-                        console.log(`[UI] 🤖 AutoExecute: Nessuna animazione da attendere - avanzo subito`);
-                        setTimeout(() => this.nextStep(), 500);
+                        // Nessuna animazione avviata
+                        console.log(`[UI] 🤖 AutoExecute: Nessuna animazione da attendere`);
+
+                        // Controlla AutoAdvance prima di avanzare
+                        if (step.properties.AutoAdvance === 'true') {
+                            console.log(`[UI] ⏭️ AutoAdvance=true → avanzo subito`);
+                            this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 500);
+                        } else {
+                            console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
+                        }
                     }
                 } else if (animTarget && window.Scene3D.startModelAnimation) {
                     // Fallback al metodo esistente
                     window.Scene3D.startModelAnimation(animTarget, step);
 
-                    // Ascolta completamento animazione per auto-avanzare
+                    // Ascolta completamento animazione
                     const checkAnimComplete = setInterval(() => {
                         const stillAnimating = window.Scene3D.animationSystem?.activeAnimations?.some(
                             anim => anim.model === animTarget && !anim.finished
                         );
                         if (!stillAnimating) {
                             clearInterval(checkAnimComplete);
-                            console.log(`[UI] 🤖 AutoExecute: Animazione completata - avanzo allo step successivo`);
-                            setTimeout(() => this.nextStep(), 200);
+                            console.log(`[UI] 🤖 AutoExecute: Animazione completata`);
+
+                            // Controlla AutoAdvance prima di avanzare
+                            if (step.properties.AutoAdvance === 'true') {
+                                console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
+                                this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 200);
+                            } else {
+                                console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
+                            }
                         }
                     }, 100);
                 } else {
                     console.warn(`[UI] ⚠️ AutoExecute: Nessun target valido per animazione`);
-                    // Avanzo comunque se non c'è animazione da fare
-                    setTimeout(() => this.nextStep(), 500);
+
+                    // Controlla AutoAdvance prima di avanzare
+                    if (step.properties.AutoAdvance === 'true') {
+                        console.log(`[UI] ⏭️ AutoAdvance=true → avanzo comunque`);
+                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 500);
+                    } else {
+                        console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
+                    }
                 }
             }, 300);
         }
@@ -4347,6 +4434,25 @@ window.UI = {
                     window.InteractiveObject3D.setStateVariant(groupName, variantName);
                 }
             });
+
+            // ═══════════════════════════════════════════════════════════════════
+            // AUTO-AVANZAMENTO: Se AutoSetVariant con AutoExecute e AutoAdvance
+            // ═══════════════════════════════════════════════════════════════════
+            // Condizione: AutoExecute=true E AutoAdvance=true MA senza Elemento (quindi nessuna animazione da attendere)
+            const hasAutoExecute = step.properties.AutoExecute === 'true';
+            const hasAutoAdvance = step.properties.AutoAdvance === 'true';
+            const hasElemento = !!step.properties.Elemento;
+
+            if (hasAutoExecute && hasAutoAdvance && !hasElemento) {
+                console.log(`[UI] 🔀 AutoSetVariant: AutoExecute + AutoAdvance senza animazioni`);
+                // Breve delay per permettere al cambio variante di renderizzarsi
+                this.autoAdvanceTimeoutId = setTimeout(() => {
+                    console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
+                    this.nextStep();
+                }, 300);
+            } else if (hasAutoExecute && !hasAutoAdvance && !hasElemento) {
+                console.log(`[UI] 🔀 AutoSetVariant: AutoExecute senza AutoAdvance → aspetto interazione utente`);
+            }
         }
     },
 

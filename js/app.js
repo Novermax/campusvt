@@ -264,8 +264,8 @@ window.App = {
 
             // Carica StepController per gestione centralizzata trigger/azioni step
             try {
-                await this.loadModule('./js/core/StepController.js?v=1000002');
-                console.log('✅ Controller step centralizzato caricato');
+                await this.loadModule('./js/core/StepController.js?v=1000008');
+                console.log('✅ Controller step centralizzato caricato (v1000008 - Fix auto-avanzamento dopo trigger)');
             } catch (error) {
                 console.warn('⚠️ StepController non caricato (opzionale):', error.message);
             }
@@ -280,13 +280,21 @@ window.App = {
 
             // Carica InteractiveObject3D per oggetti 3D con figli interattivi (pulsanti, chiavi, LED)
             try {
-                await this.loadModule('./js/core/InteractiveObject3D.js?v=1000002');
+                await this.loadModule('./js/core/InteractiveObject3D.js?v=1000003');
                 console.log('✅ Sistema oggetti 3D interattivi caricato');
             } catch (error) {
                 console.warn('⚠️ InteractiveObject3D non caricato (opzionale):', error.message);
             }
 
-            await this.loadModule('./js/scene3d-modular.js?nocache=1000023');  // Modulo modulare + TWEEN.update() + autoExecuteAnimation con rootModel fix
+            // Carica MovementParser per parsing comandi movimento tutorial
+            await this.loadModule('./js/core/MovementParser.js?v=1000001');
+            console.log('✅ Parser comandi movimento caricato');
+
+            // Carica MultiStepAnimationSystem per gestione animazioni sequenziali
+            await this.loadModule('./js/core/MultiStepAnimationSystem.js?v=1000001');
+            console.log('✅ Sistema animazioni multi-step caricato');
+
+            await this.loadModule('./js/scene3d-modular.js?nocache=1000032');  // REFACTOR: usa MovementParser e MultiStepAnimationSystem esterni
             await this.loadModule('./js/modelloader.js?nocache=1000011');
 
             // Carica moduli UI refactorizzati in ordine di dipendenza
@@ -298,7 +306,7 @@ window.App = {
             await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
             console.log('✅ Moduli UI refactorizzati caricati');
 
-            await this.loadModule('./js/ui.js?nocache=1000038');  // AutoExecute + TargetChild + StateGroup scene-wide search
+            await this.loadModule('./js/ui.js?nocache=1000040');  // DEBUG: mostra child disponibili per TargetChild
 
             // Inizializza il sistema UI refactorizzato se disponibile
             if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager !== undefined) {

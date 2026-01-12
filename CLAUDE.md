@@ -558,6 +558,27 @@ OnAnyTrigger=Sound:sounds/pump_start.mp3
 | `OnPhysicalTrigger=` | `Action:...` | Azioni per trigger fisico |
 | `OnAnyTrigger=` | `Action:...` | Azioni per qualsiasi trigger |
 | `OnXxxTrigger_SetView=` | `screen.view` | Cambia vista schermo |
+| `AutoAdvance=` | `true` \| `false` | Auto-avanza dopo trigger (default: **false**) |
+
+#### Auto-Avanzamento (⚠️ IMPORTANTE)
+
+**Default**: `AutoAdvance=false` - Gli step **aspettano interazione utente**
+
+```ini
+# Step interattivo (DEFAULT) - aspetta che utente clicchi freccia →
+[Step - Premi pulsante]
+AcceptTrigger_Physical=pulpito.btn_start
+OnPhysicalTrigger=setVariant:schermo=menu
+# NO AutoAdvance → utente controlla quando avanzare ✅
+
+# Step automatico (ESPLICITO) - avanza automaticamente dopo trigger
+[Step - Animazione automatica]
+AcceptTrigger_Physical=remote.btn_play
+OnPhysicalTrigger=Animation:pompa,rotazione:(0,0,360,1)
+AutoAdvance=true  ← Avanza automaticamente dopo 500ms
+```
+
+**⚠️ Breaking Change (Gennaio 2026)**: Il default è cambiato da `true` a `false` per evitare avanzamenti involontari. Tutorial esistenti con trigger ora **aspettano** l'utente a meno che non specifichi `AutoAdvance=true`.
 
 #### Formato Azioni
 
@@ -607,7 +628,7 @@ StepController.reset()
 - ✅ **Trigger Multipli**: Stesso step da sorgenti diverse
 - ✅ **Azioni Differenziate**: Comportamenti diversi per sorgente
 - ✅ **Pulsanti Fisici 3D**: Supporto modelli cliccabili come pulsanti
-- ✅ **Auto-Avanzamento**: Opzionale dopo esecuzione azioni
+- ✅ **Auto-Avanzamento**: Opzionale con `AutoAdvance=true` (default: **false** - aspetta utente)
 - ✅ **Integrazione Completa**: Con ScreenSystem, HoldableSystem, AutoMode
 
 ---
@@ -755,6 +776,115 @@ InteractiveObject3D.on('state_change', (data) => console.log(data))
 
 ---
 
+## 💡 Sistema Evidenziazione Pulsanti Richiesti (Gennaio 2026)
+
+**Funzionalità**: Evidenziazione automatica con silhouette gialla dei pulsanti che devono essere premuti in ogni step del tutorial
+
+### Problema Risolto
+- **Pulsanti Non Visibili**: L'utente non sapeva quali pulsanti premere tra tutti quelli disponibili
+- **Confusione Utente**: Modelli complessi (pulpito, remote) hanno molti pulsanti
+- **Soluzione**: Evidenziazione gialla forte (emissive 2.0) automatica basata su `AcceptTrigger_Physical`
+
+### Come Funziona
+
+1. **Quando uno step ha `AcceptTrigger_Physical`**: Sistema evidenzia automaticamente i pulsanti specificati
+2. **Evidenziazione gialla**: `emissive = 0xffff00`, `emissiveIntensity = 2.0` (silhouette brillante)
+3. **Rimozione automatica**: Quando il pulsante viene cliccato, l'evidenziazione viene rimossa
+4. **Cambio step**: Evidenziazioni precedenti pulite, nuovi pulsanti evidenziati
+
+### Sintassi Tutorial
+
+```ini
+[Step 1 - Vai alla schermata MDI]
+Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
+# Pulsante viene evidenziato automaticamente
+AcceptTrigger_Physical=pulpito.Pulsante_mdi
+OnPhysicalTrigger=setVariant:schermo=schermo002
+
+[Step 4 - Premi il pulsante start]
+Descrizione=Premi il pulsante Start sul telecomando per avviare lo scarico utensile.
+# Pulsante sul remote evidenziato automaticamente
+AcceptTrigger_Physical=remote.pulsante_r_play
+OnPhysicalTrigger=setVariant:schermo=schermo004
+```
+
+### Comportamento Step
+
+**All'Inizio dello Step**:
+```
+1. executeStep() chiamato
+2. clearButtonHighlights() → rimuove evidenziazioni precedenti
+3. Se AcceptTrigger_Physical presente:
+   - Parse trigger: "pulpito.Pulsante_mdi" → ["pulpito", "Pulsante_mdi"]
+   - Trova mesh del pulsante nel modello GLB
+   - Applica emissive gialla 0xffff00 con intensità 2.0
+4. Pulsante ora visibile con silhouette gialla brillante
+```
+
+**Quando Pulsante Cliccato**:
+```
+1. handleButtonClick() chiamato
+2. Verifica se pulsante era evidenziato
+3. Se sì:
+   - Ripristina emissive originale
+   - Ripristina emissiveIntensity originale
+   - Rimuove da highlightedButtons Map
+4. Trigger step avanza normalmente
+```
+
+### API Debug Console
+
+```javascript
+// Evidenziazione manuale
+InteractiveObject3D.highlightRequiredButtons(['pulpito.Pulsante_mdi', 'remote.pulsante_r_play'])
+
+// Rimozione manuale
+InteractiveObject3D.clearButtonHighlights()
+
+// Stato sistema
+InteractiveObject3D.highlightedButtons  // Map dei pulsanti evidenziati
+```
+
+### Caratteristiche
+
+- ✅ **Automatico**: Zero configurazione aggiuntiva, usa AcceptTrigger_Physical esistente
+- ✅ **Visibile**: Emissione gialla (0xffff00) con intensità 2.0 - molto visibile
+- ✅ **Smart**: Cerca mesh sia come child diretto che in Group (supporto export Blender)
+- ✅ **Cleanup**: Evidenziazioni pulite ad ogni cambio step
+- ✅ **Non Invasivo**: Ripristina sempre valori originali dopo rimozione
+- ✅ **Multi-Pulsante**: Supporta multipli pulsanti evidenziati contemporaneamente
+
+### Log Console
+
+```javascript
+💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: ["pulpito.Pulsante_mdi"]
+💡 [InteractiveObject3D] Pulsante "Pulsante_mdi" evidenziato (giallo)
+💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI"
+
+// Dopo click
+💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click
+```
+
+### File Modificati
+
+- `js/core/InteractiveObject3D.js:1055-1165` - Sistema evidenziazione pulsanti
+  - `highlightedButtons: Map()` - Tracking pulsanti evidenziati
+  - `highlightRequiredButtons(triggers)` - Applica evidenziazioni
+  - `applyButtonHighlight(mesh, triggerId)` - Emissive gialla 2.0
+  - `clearButtonHighlights()` - Rimuove tutte le evidenziazioni
+- `js/core/InteractiveObject3D.js:452-463` - Rimozione evidenziazione dopo click
+- `js/ui.js:3455-3468` - Integrazione automatica in executeStep()
+
+### Esempi Visivi
+
+**Prima** (senza evidenziazione):
+- Pulpito con 10+ pulsanti → utente confuso, quale premere?
+
+**Dopo** (con evidenziazione):
+- Solo `Pulsante_mdi` brilla in giallo → chiaro quale premere!
+
+---
+
 ## 📝 Sintassi Tutorial Essenziali
 
 ### Camera e Posizionamento
@@ -796,6 +926,220 @@ HoldAction=pick                      # Prendi oggetto in mano
 HoldAction=release                   # Rilascia oggetto
 HoldState=held                       # Richiede oggetto già in mano
 ```
+
+### 🎯 Sistema TargetChild - Movimento Nodi Figli GLB (Gennaio 2026)
+
+**Funzionalità**: Permette di animare nodi figli (children) all'interno di un GLB complesso invece di muovere l'intero modello.
+
+#### Problema Risolto
+- GLB complessi (es. `a500.glb`) hanno gerarchie profonde di nodi (Object3D / Group / Mesh)
+- Prima si poteva muovere solo il root del GLB, non i sotto-assembly interni
+- Ora si può specificare quale child animare tramite `TargetChild`
+
+#### Sintassi Tutorial
+```ini
+# Movimento del GLB intero (comportamento default)
+[Step 1 - Muovi macchina]
+Elemento=models/a500.glb
+Azione1=traslazione:(0,0,1,1.5)
+
+# Movimento di un child specifico
+[Step 2 - Movimento CarroY]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_CarroY
+Azione1=traslazione:(0,0,-1,1.5)
+
+# Con AutoExecute (esecuzione automatica)
+[Step 3 - Discesa Prisma]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
+Azione1=traslazione:(0,-0.1,0,1.0)
+AutoExecute=true
+```
+
+#### Come Funziona
+1. **Highlight**: Il child specificato viene evidenziato invece del parent
+2. **Click**: L'utente clicca sul modello parent, ma l'animazione parte sul child
+3. **Animazione**: Tutte le azioni (`traslazione`, `rotazione`, ecc.) si applicano al child
+4. **home_config**: La direzione viene cercata usando il nome del parent per compatibilità
+
+#### Gerarchia GLB Tipica (es. a500.glb)
+```
+A500 (root)
+├── Basamento
+├── Basamento_Portale
+│   ├── Basamento_Portale_CarroY        ← TargetChild per movimento Y
+│   │   └── Basamento_Portale_CarroY_CarroZ
+│   │       └── ...Prisma               ← TargetChild per discesa prisma
+│   └── Basamento_Portale_MagazzinoInternoX1  ← TargetChild per apertura magazzino
+└── ...
+```
+
+#### API Debug Console
+```javascript
+// Lista child di un modello (per trovare i nomi corretti)
+Scene3D.listChildNames(Scene3D.findModelByName('a500'))
+
+// Trova child specifico
+Scene3D.findModelByName('a500', 'Basamento_Portale_CarroY')
+```
+
+#### Caratteristiche
+- ✅ **Zero Breaking Changes**: Step senza TargetChild funzionano normalmente
+- ✅ **Compatibile con AutoExecute**: Funziona sia con click utente che automatico
+- ✅ **home_config**: Usa il parent per cercare direzioni configurate
+- ✅ **Highlight Corretto**: Evidenzia il child invece del parent
+- ✅ **Fallback**: Se child non trovato, usa il parent con warning
+
+#### File Modificati
+- `js/scene3d-modular.js:2929-3012` - `findModelByName()` estesa con supporto childName
+- `js/scene3d-modular.js:1250-1306` - `highlightCurrentTutorialElement()` gestisce TargetChild
+- `js/scene3d-modular.js:1596-1708` - `handleModelAction()` cerca e anima il child
+- `js/scene3d-modular.js:1751-1780` - `startModelAnimation()` accetta parentModelForConfig
+
+---
+
+### 🤖 Sistema AutoExecute e AutoSetVariant - Esecuzione Automatica Step (Gennaio 2026)
+
+**Funzionalità**: Permette l'esecuzione automatica di azioni e cambio varianti senza interazione utente, garantendo la natura **bloccante** di ogni step.
+
+#### Principio Fondamentale: Step Bloccanti
+
+**IMPORTANTE**: Ogni step è **bloccante** - lo step successivo NON può iniziare finché tutte le azioni asincrone dello step corrente non sono completate.
+
+- ✅ `AutoExecute=true` indica che lo step parte **automaticamente** quando diventa attivo
+- ✅ Lo step successivo parte **solo dopo** il completamento di tutte le animazioni
+- ✅ Nessuna sovrapposizione tra step, anche con `AutoExecute=true`
+
+#### Sintassi Tutorial
+
+```ini
+# Step con animazione automatica
+[Step 1 - Apertura Magazzino]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_MagazzinoInternoX1
+Azione1=traslazione:(565,0,0,1.0)
+AutoExecute=true
+# Comportamento:
+# 1. Step diventa attivo
+# 2. Animazione traslazione parte automaticamente
+# 3. Sistema aspetta completamento (1.0s)
+# 4. Quando finito → avanza automaticamente a Step 2
+
+# Step solo cambio variante
+[Step 2 - Scambio Utensile]
+AutoSetVariant=tool=tool0
+AutoExecute=true
+# Comportamento:
+# 1. Step diventa attivo (DOPO completamento Step 1)
+# 2. Cambio variante eseguito immediatamente (sincrono)
+# 3. Nessuna animazione da attendere
+# 4. Auto-avanza a Step 3 dopo 300ms
+
+# Step con animazione + cambio variante
+[Step 3 - Risalita Prisma]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
+Azione1=traslazione:(0,85,0,1.0)
+AutoSetVariant=led=on
+AutoExecute=true
+# Comportamento:
+# 1. Step diventa attivo (DOPO completamento Step 2)
+# 2. AutoSetVariant eseguito immediatamente (led=on)
+# 3. Animazione traslazione parte
+# 4. Sistema aspetta completamento (1.0s)
+# 5. Quando finito → avanza a Step 4
+```
+
+#### Timing e Sequenza
+
+**Step con Elemento + Azioni (con animazione)**:
+```
+T=0ms    → executeStep() chiamato
+T=0ms    → AutoSetVariant eseguito (se presente) - sincrono
+T=300ms  → AutoExecute avvia animazione
+T=300ms+ → Animazione in corso (es. traslazione 1.0s)
+T=1300ms → Animazione completata
+T=1500ms → nextStep() chiamato automaticamente
+```
+
+**Step solo AutoSetVariant (senza animazione)**:
+```
+T=0ms   → executeStep() chiamato
+T=0ms   → AutoSetVariant eseguito - sincrono
+T=300ms → nextStep() chiamato automaticamente (nessuna animazione da attendere)
+```
+
+#### Proprietà
+
+| Proprietà | Valori | Descrizione |
+|-----------|--------|-------------|
+| `AutoExecute=` | `true` | Avvia automaticamente azioni/animazioni dello step |
+| `AutoSetVariant=` | `gruppo=variante` | Cambia variante StateGroup automaticamente |
+| `AutoSetVariant=` | `g1=v1;g2=v2` | Multipli cambi variante (separati da `;`) |
+
+#### Comportamento Auto-Avanzamento
+
+Il sistema avanza automaticamente allo step successivo quando:
+
+1. **Step con Elemento + AutoExecute**:
+   - Tutte le animazioni (`Azione1`, `Azione2`, ...) sono completate
+   - Delay 200ms → `nextStep()`
+
+2. **Step con solo AutoSetVariant + AutoExecute (senza Elemento)**:
+   - Cambio variante eseguito immediatamente
+   - Delay 300ms → `nextStep()`
+
+3. **Step normale (senza AutoExecute)**:
+   - Utente deve cliccare freccia → manualmente
+
+#### Casi d'Uso
+
+**Sequenza Automatica Completa**:
+```ini
+[Step 1 - Movimento CarroY]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_CarroY
+Azione1=traslazione:(0,0,2623,1.5)
+AutoExecute=true
+
+[Step 2 - Discesa Prisma]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
+Azione1=traslazione:(0,-85,0,1.0)
+AutoExecute=true
+
+[Step 3 - Scambio Utensile]
+AutoSetVariant=tool=tool0
+AutoExecute=true
+
+[Step 4 - Risalita Prisma]
+Elemento=models/a500.glb
+TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
+Azione1=traslazione:(0,85,0,1.0)
+AutoExecute=true
+
+# Risultato: Sequenza completamente automatica
+# Step 1 → 1.5s animazione → Step 2 → 1.0s animazione →
+# Step 3 → cambio variante → Step 4 → 1.0s animazione → Fine
+# Totale: ~3.8s (senza intervento utente)
+```
+
+#### Caratteristiche
+
+- ✅ **Bloccante**: Step successivo aspetta completamento precedente
+- ✅ **Sincrono**: AutoSetVariant eseguito immediatamente
+- ✅ **Asincrono**: Animazioni con polling completamento
+- ✅ **Zero Overlap**: Nessuna sovrapposizione tra step
+- ✅ **Timeout Protezione**: Max 5s attesa animazione, poi avanza comunque
+
+#### File Modificati
+
+- `js/ui.js:4238-4351` - Sistema AutoExecute con polling animazioni
+- `js/ui.js:4356-4382` - Sistema AutoSetVariant con auto-avanzamento
+- `js/scene3d-modular.js:1710-1739` - Metodo `autoExecuteAnimation()`
+
+---
 
 ### Comportamenti
 - **Globali**: Proprietà prima del primo `[Tutorial]` → applicate al caricamento
@@ -3099,9 +3443,10 @@ console.log(MobileOptimizer.deviceCapabilities)
 **Implementazione**: Sistema centralizzato per controllare l'attivazione di pulsanti 3D e limiti camera in base allo step corrente del tutorial
 
 ### Problema Risolto
+- **Pulsanti Attivi Prima del Tutorial**: I pulsanti 3D rispondevano anche PRIMA di avviare il tutorial
 - **Pulsanti Sempre Attivi**: I pulsanti 3D rispondevano in qualsiasi step
 - **Camera Non Controllata**: Limiti di rotazione camera fissi per tutto il tutorial
-- **Soluzione**: Gating dichiarativo nel tutorial.txt con stato centralizzato
+- **Soluzione**: Gating dichiarativo nel tutorial.txt con stato centralizzato + blocco pre-tutorial
 
 ### Architettura
 
@@ -3166,6 +3511,12 @@ CameraUnlocked=false                      # Torna limitata
 
 ### Comportamento
 
+**Blocco Pre-Tutorial** (⭐ IMPORTANTE):
+- **Prima di avviare il tutorial** (`currentStepIndex = -1`): **TUTTI i pulsanti e interazioni sono BLOCCATI**
+- Include: button, rotary (chiavi), e qualsiasi elemento in StateGroup
+- I pulsanti diventano attivi solo quando si avvia il tutorial (primo step)
+
+**Durante Tutorial** (`currentStepIndex >= 0`):
 1. **Pulsanti Non in Lista**: Se `ActiveButtons` è definito, pulsanti non in lista vengono ignorati
 2. **Lista Vuota/Assente**: Se `ActiveButtons` non è definito, TUTTI i pulsanti rispondono (default permissivo)
 3. **Camera**: `CameraUnlocked=true` rimuove limiti, `CameraLimits` imposta limiti specifici
@@ -3191,6 +3542,10 @@ StepGatingManager.getStepConfig(3)               // Config step specifico
 ### Log Console
 
 ```javascript
+// Prima di avviare il tutorial
+🚫 [InteractiveObject3D] Interazione bloccata su "Pulsante_mdi" - tutorial non ancora avviato
+
+// Durante il tutorial
 🚦 [StepGating] Step 2 → 3 ("Step 3 - Premi pulsante START")
 🚦 [StepGating] Pulsanti attivi: [btn_start, btn_emergency]
 🚫 [InteractiveObject3D] Pulsante "btn_manual" bloccato dal gating - step 3
@@ -3215,16 +3570,19 @@ StepGatingManager.applyCameraConfig(config);
 
 ### Caratteristiche
 
+- ✅ **Blocco Pre-Tutorial**: Pulsanti inattivi finché tutorial non avviato
 - ✅ **Dichiarativo**: Config in tutorial.txt, non codice sparso
 - ✅ **Centralizzato**: Un solo punto di controllo per tutti i gating
-- ✅ **Permissivo di Default**: Se non specifichi gating, tutto funziona normalmente
+- ✅ **Globale**: Blocco applicato a button, rotary, e tutti i tipi di interazioni
+- ✅ **Permissivo Durante Tutorial**: Se non specifichi gating, pulsanti attivi (quando tutorial avviato)
 - ✅ **Estensibile**: Facile aggiungere nuovi tipi di gating
 - ✅ **Debug Facile**: Log e API console per troubleshooting
 
-### File Modificati
+### File Modificati (Gennaio 2026 - Blocco Pre-Tutorial)
 
-- `js/core/StepGatingManager.js` - NUOVO - Sistema gating completo
-- `js/core/InteractiveObject3D.js:385-392` - Check gating in handleButtonClick
+- `js/core/StepGatingManager.js:165-170` - `isButtonActive()` ritorna false quando currentStepIndex < 0
+- `js/core/InteractiveObject3D.js:406-412` - Check globale in `handleClick()` blocca tutte le interazioni pre-tutorial
+- `js/core/InteractiveObject3D.js:441-446` - Check gating step-specifico in `handleButtonClick()`
 - `js/ui.js:2909-2969` - Parsing proprietà gating dal tutorial
 - `js/ui.js:3375-3380` - Notifica StepGatingManager al cambio step
 - `js/app.js:273-279` - Caricamento modulo

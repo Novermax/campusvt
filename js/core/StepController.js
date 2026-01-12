@@ -117,7 +117,7 @@ window.StepController = {
         const stepConfig = {
             triggers: config.triggers || {},
             actions: config.actions || {},
-            autoAdvance: config.autoAdvance !== false // Default true
+            autoAdvance: config.autoAdvance === true // Default FALSE - step NON avanzano automaticamente dopo trigger a meno di AutoAdvance=true esplicito
         };
 
         this.stepConfigs.set(stepIndex, stepConfig);
@@ -160,7 +160,7 @@ window.StepController = {
                 holdable: [],
                 any: []
             },
-            autoAdvance: true
+            autoAdvance: false // Default FALSE - uno step con trigger SI FERMA fino al trigger, poi aspetta click utente sulla freccia (a meno che non abbia AutoAdvance=true esplicito)
         };
 
         // Parse AcceptTrigger_Screen
@@ -210,10 +210,13 @@ window.StepController = {
             config.actions.any.push({ type: 'setView', screen, view });
         }
 
-        // AutoAdvance
-        if (props.AutoAdvance === 'false') {
+        // AutoAdvance - legge esplicitamente true/false dal tutorial
+        if (props.AutoAdvance === 'true') {
+            config.autoAdvance = true;
+        } else if (props.AutoAdvance === 'false') {
             config.autoAdvance = false;
         }
+        // altrimenti rimane il default (false)
 
         // Salva configurazione solo se ci sono trigger definiti
         const hasTriggers = config.triggers.screen.length > 0 ||
@@ -222,7 +225,16 @@ window.StepController = {
 
         if (hasTriggers) {
             this.stepConfigs.set(stepIndex, config);
-            console.log(`[StepController] 📋 Step ${stepIndex} auto-configurato da proprietà:`, config);
+            console.log(`[StepController] 📋 Step ${stepIndex} auto-configurato da proprietà:`);
+            console.log(`[StepController]    Triggers Physical: [${config.triggers.physical.join(', ')}]`);
+            console.log(`[StepController]    Actions Physical: ${config.actions.physical.length} azioni`);
+            if (config.actions.physical.length > 0) {
+                config.actions.physical.forEach((action, i) => {
+                    console.log(`[StepController]      ${i+1}. ${action.type}: ${action.group}=${action.variant || 'N/A'}`);
+                });
+            }
+        } else {
+            console.log(`[StepController] ⏭️ Step ${stepIndex} skippato (nessun trigger definito)`);
         }
     },
 
@@ -324,14 +336,20 @@ window.StepController = {
         }
 
         console.log(`[StepController] 🎯 Trigger ricevuto: source="${source}", id="${triggerId}"`);
+        console.log(`[StepController] 🔍 currentStepIndex=${this.currentStepIndex}`);
+        console.log(`[StepController] 🔍 stepConfigs.size=${this.stepConfigs.size}`);
+        console.log(`[StepController] 🔍 stepConfigs.keys=[${Array.from(this.stepConfigs.keys()).join(', ')}]`);
 
         const stepConfig = this.stepConfigs.get(this.currentStepIndex);
 
         // Se non c'è configurazione specifica, lascia gestire al sistema tradizionale
         if (!stepConfig) {
             console.log('[StepController] ℹ️ Nessuna configurazione specifica, delegando a sistema tradizionale');
+            console.log(`[StepController] 🔍 Configurazione per step ${this.currentStepIndex} NON TROVATA`);
             return false;
         }
+
+        console.log(`[StepController] 🔍 Configurazione trovata:`, stepConfig);
 
         // Verifica se il trigger è accettato per questa sorgente
         const acceptedTriggers = stepConfig.triggers[source] || [];
@@ -350,10 +368,11 @@ window.StepController = {
         // Esegui azioni per questa sorgente
         this.executeActionsForSource(source, stepConfig);
 
-        // Auto-avanzamento se configurato
-        if (stepConfig.autoAdvance) {
-            this.scheduleAutoAdvance();
-        }
+        // Auto-avanzamento SEMPRE dopo trigger accettato
+        // (Il flag AutoAdvance serve solo per step con AutoExecute, non per trigger manuali)
+        // Comportamento: trigger accettato → azioni eseguite → avanza automaticamente
+        console.log('[StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni');
+        this.scheduleAutoAdvance();
 
         return true;
     },
@@ -549,14 +568,17 @@ window.StepController = {
     scheduleAutoAdvance: function() {
         console.log('[StepController] ⏭️ Auto-avanzamento schedulato...');
 
-        setTimeout(() => {
-            if (window.UI && typeof window.UI.nextStep === 'function') {
-                console.log('[StepController] ⏭️ Avanzamento allo step successivo');
-                window.UI.nextStep();
-            } else {
-                console.error('[StepController] ❌ UI.nextStep non disponibile!');
-            }
-        }, 500);
+        // Salva ID timeout in UI per permettere cancellazione se step cambia
+        if (window.UI) {
+            window.UI.autoAdvanceTimeoutId = setTimeout(() => {
+                if (window.UI && typeof window.UI.nextStep === 'function') {
+                    console.log('[StepController] ⏭️ Avanzamento allo step successivo');
+                    window.UI.nextStep();
+                } else {
+                    console.error('[StepController] ❌ UI.nextStep non disponibile!');
+                }
+            }, 500);
+        }
     },
 
     // ═══════════════════════════════════════════════════════════════════

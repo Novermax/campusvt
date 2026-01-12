@@ -1,0 +1,103 @@
+Problema osservato
+
+Nel file di tutorial allegato, il penultimo step interattivo (“apri la porta”) viene saltato.
+Il flusso passa direttamente allo step successivo, anche se:
+
+lo step non ha AutoExecute=true
+
+è presente un trigger fisico valido (AcceptTrigger_Physical)
+
+sono stati provati step dummy finali senza alcun effetto
+
+Il problema si manifesta solo dopo l’introduzione e l’uso di step con AutoExecute=true.
+
+Sintomo chiave
+
+Dopo una sequenza di step con:
+
+AutoExecute=true
+
+
+il sistema si comporta come se AutoExecute fosse globalmente attivo, anche per gli step successivi che:
+
+non dichiarano AutoExecute
+
+richiedono un’interazione utente (click su pulsante o chiave)
+
+Risultato:
+
+gli step interattivi successivi vengono auto-completati
+
+i trigger fisici (AcceptTrigger_Physical) non vengono mai messi in ascolto
+
+Step coinvolto (che viene saltato)
+[Next Step - apri la porta]
+ActiveButtons=chiave0,chiave1
+AcceptTrigger_Physical=pulpito.chiave0,pulpito.chiave1
+OnPhysicalTrigger=
+  setVariant:chiave=chiave1;
+  setVariant:schermo=schermo005;
+  setVariant:start=pstart0
+
+
+Questo step:
+
+è correttamente definito
+
+funziona se isolato
+
+viene ignorato solo se preceduto da step AutoExecute=true
+
+Ipotesi tecnica forte
+
+C’è uno stato interno persistente legato ad AutoExecute che:
+
+viene attivato da uno step con AutoExecute=true
+
+non viene resettato alla fine dello step
+
+viene ereditato implicitamente dagli step successivi
+
+Possibili bug concreti:
+
+autoExecute gestito come flag globale invece che per-step
+
+mancato reset del flag a false nello onStepEnter / onStepExit
+
+AutoSetVariant che forza un completeStep() immediato e bypassa la logica di trigger
+
+pipeline tipo:
+
+if (autoExecute || noTriggersDefined) -> step.complete()
+
+
+dove autoExecute resta true
+
+Evidenza importante
+
+Anche impostando esplicitamente AutoExecute=false (o omettendolo, default=false), il problema persiste
+
+Questo indica che il valore non viene ricalcolato dal parser, ma letto da uno stato precedente
+
+Comportamento atteso
+
+AutoExecute deve essere strettamente locale allo step
+
+Al cambio step:
+
+autoExecute deve tornare a false
+
+i trigger fisici devono essere sempre armati se presenti
+
+Uno step con AcceptTrigger_Physical non deve mai essere auto-completato
+
+Suggerimento di debug rapido
+
+Loggare, all’ingresso di ogni step:
+
+stepName
+autoExecute (valore runtime)
+hasPhysicalTriggers
+
+
+Verificare se allo step “apri la porta” autoExecute === true

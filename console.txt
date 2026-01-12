@@ -1,228 +1,106 @@
-(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
-[NEW] Explain Console errors by using Copilot in Edge: click
-         
-         to explain an error. 
-        Learn more
-        Don't show again
-(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
-(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
-(index):1  Tracking Prevention blocked access to storage for https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js.
-(index):483 💻 Dispositivo desktop rilevato
-MobileOptimizer.js?v=1000021:430 [MobileOptimizer] Modulo caricato
-AutoMode.js?v=1000020:456 [AutoMode] Modulo caricato
-app.js?v=1000010:654 📄 App.js caricato, in attesa del DOM...
-app.js?v=1000010:628 📄 DOM pronto, avvio applicazione...
-favicon.png:1   GET http://localhost:8000/favicon.png 404 (File not found)
-app.js?v=1000010:49 🚀 Avvio Visualizzatore Modelli 3D
-app.js?v=1000010:50 📅 Caricamento moduli in corso...
-app.js?v=1000010:113 ✅ Browser compatibile
-app.js?v=1000010:135 📦 Verifica dipendenze ES Module...
-app.js?v=1000010:139 ✅ Three.js ES Module disponibile, versione: 155
-app.js?v=1000010:191 📦 Caricamento moduli dinamico...
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/config.js?nocache=999999
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/ParticleSystem.js?v=1000018
-app.js?v=1000010:199 ✅ Sistema particellare caricato
-InterchangeableTracker.js?v=1000001:254 [InterchangeableTracker] 📦 Modulo caricato e disponibile globalmente
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/InterchangeableTracker.js?v=1000001
-app.js?v=1000010:204 ✅ Sistema tracking intercambiabili caricato
-SnapSystem.js?v=1000001:664 [SnapSystem] 📦 Modulo caricato e disponibile globalmente
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/SnapSystem.js?v=1000001
-app.js?v=1000010:212 ✅ Sistema snap caricato
-DragDropSystem.js?nocache=1000031:15 🔥🔥🔥 [DragDropSystem] Versione 1.3.8 SNAPPOINTPIVOT-FIX caricata - 2025-12-04 🔥🔥🔥
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/DragDropSystem.js?nocache=1000031
-app.js?v=1000010:220 ✅ Sistema drag & drop caricato
-DragDropDebugHelpers.js?v=1000001:10 🔧 [DragDropDebugHelpers] Debug helpers caricati
-DragDropDebugHelpers.js?v=1000001:197 🔧 Debug helpers disponibili - usa dragDropHelp() per lista comandi
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/DragDropDebugHelpers.js?v=1000001
-app.js?v=1000010:225 ✅ Debug helpers drag & drop caricati
-AssemblySystemSimplified.js?v=2000001:14 🚀 [AssemblySystemSimplified] Versione 2.0 caricata - Dicembre 2025
-AssemblySystemSimplified.js?v=2000001:448 [AssemblySystemSimplified] 📦 Modulo caricato e disponibile globalmente
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/AssemblySystemSimplified.js?v=2000001
-app.js?v=1000010:236 ✅ Sistema assemblaggio semplificato caricato
-ScreenSystem.js?v=1000001:22 [ScreenSystem] Modulo caricato v2.0.0
-ScreenSystem.js?v=1000001:1336 [ScreenSystem] ✅ Modulo ScreenSystem pronto
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/ScreenSystem.js?v=1000001
-app.js?v=1000010:252 ✅ Sistema schermi interattivi caricato
-HoldableSystem.js?v=1000007:14 [HoldableSystem] Modulo caricato v1.0.0
-HoldableSystem.js?v=1000007:675 [HoldableSystem] ✅ Modulo HoldableSystem pronto
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/HoldableSystem.js?v=1000007
-app.js?v=1000010:260 ✅ Sistema oggetti prendibili caricato
-StepController.js?v=1000002:25 [StepController] Modulo caricato v1.0.0
-StepController.js?v=1000002:795 [StepController] ✅ Modulo StepController pronto
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/StepController.js?v=1000002
-app.js?v=1000010:268 ✅ Controller step centralizzato caricato
-StepGatingManager.js?v=1000001:362 [StepGatingManager] 📦 Modulo caricato
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/StepGatingManager.js?v=1000001
-app.js?v=1000010:276 ✅ Step Gating Manager caricato
-InteractiveObject3D.js?v=1000001:1152 📦 [InteractiveObject3D] Modulo caricato
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/core/InteractiveObject3D.js?v=1000001
-app.js?v=1000010:284 ✅ Sistema oggetti 3D interattivi caricato
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/scene3d-modular.js?nocache=1000023
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/modelloader.js?nocache=1000011
-app.js?v=1000010:293 📦 Caricamento moduli UI refactorizzati...
-UICore.js?nocache=1000026:436 [UICore] ✅ Modulo caricato e disponibile su window.UICore
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui/UICore.js?nocache=1000026
-ScenarioManager.js?nocache=1000026:605 [ScenarioManager] ✅ Modulo caricato e disponibile su window.ScenarioManager
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui/ScenarioManager.js?nocache=1000026
-TutorialManager.js?nocache=1000026:631 [TutorialManager] ✅ Modulo caricato e disponibile su window.TutorialManager
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui/TutorialManager.js?nocache=1000026
-ui-coordinator.js?nocache=1000026:728 [UI] 🏗️ Sistema UI refactorizzato caricato - API backward compatible mantenute
-ui-coordinator.js?nocache=1000026:729 [ui-coordinator] ✅ Modulo caricato e window.UI sostituito con sistema refactorizzato
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui/ui-coordinator.js?nocache=1000026
-app.js?v=1000010:299 ✅ Moduli UI refactorizzati caricati
-app.js?v=1000010:638  💥 Errore JavaScript globale: SyntaxError: missing ) after argument list (at ui.js?nocache=1000036:4304:17)
-(anonymous) @ app.js?v=1000010:638
-ui.js?nocache=1000036:4304  Uncaught SyntaxError: missing ) after argument list (at ui.js?nocache=1000036:4304:17)
-app.js?v=1000010:339 ✅ Modulo caricato: ./js/ui.js?nocache=1000036
-app.js?v=1000010:305 🚀 Inizializzazione sistema UI refactorizzato...
-ui-coordinator.js?nocache=1000026:59 [UI] 🚀 Inizializzazione sistema UI refactorizzato...
-ui-coordinator.js?nocache=1000026:125 [UI] 📦 Moduli UI specializzati inizializzati
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Inizializzazione core UI...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Core UI inizializzato con successo
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzazione...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzato con successo
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzazione...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzato con successo
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Inizializzazione gestione strumenti...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Sistema strumenti inizializzato con successo
-ui-coordinator.js?nocache=1000026:142 [UI] 🔗 Cross-references configurate tra moduli
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
-ui-coordinator.js?nocache=1000026:87 [UI] ✅ Sistema UI refactorizzato inizializzato con successo
-app.js?v=1000010:309 ✅ Sistema UI refactorizzato inizializzato con successo
-MobileOptimizer.js?v=1000021:63 [MobileOptimizer] Inizializzazione...
-MobileOptimizer.js?v=1000021:95 📊 RAM rilevata: 8 GB
-MobileOptimizer.js?v=1000021:110 📊 GPU: ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)
-MobileOptimizer.js?v=1000021:138 📊 [MobileOptimizer] Capacità dispositivo: {isMobile: false, isLowEnd: false, maxMemoryMB: 8192, gpuTier: 'high', maxConcurrentModels: 10}
-MobileOptimizer.js?v=1000021:71 ⚠️ [MobileOptimizer] DISABILITATO - lazy loading causava schermo vuoto
-app.js?v=1000010:325 ✅ Tutti i moduli caricati (architettura modulare ottimizzata)
-app.js?v=1000010:64 ✅ Versione: 1.0.0
-app.js?v=1000010:65 📅 Build: 2026-01-05
-app.js?v=1000010:354 🔧 Inizializzazione moduli...
-ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
-loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
-init @ ScenarioManager.js?nocache=1000026:45
-init @ ui-coordinator.js?nocache=1000026:69
-loadModules @ app.js?v=1000010:307
-await in loadModules
-(anonymous) @ app.js?v=1000010:60
-Promise.then
-init @ app.js?v=1000010:58
-(anonymous) @ app.js?v=1000010:632
-setTimeout
-(anonymous) @ app.js?v=1000010:631
-config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
-    at ScenarioManager.js?nocache=1000026:68:27
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
-ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
-loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
-init @ ui-coordinator.js?nocache=1000026:85
-loadModules @ app.js?v=1000010:307
-await in loadModules
-(anonymous) @ app.js?v=1000010:60
-Promise.then
-init @ app.js?v=1000010:58
-(anonymous) @ app.js?v=1000010:632
-setTimeout
-(anonymous) @ app.js?v=1000010:631
-config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
-    at ScenarioManager.js?nocache=1000026:68:27
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
-StepGatingManager.js?v=1000001:43 [StepGating] 🚦 Inizializzazione sistema Step Gating...
-StepGatingManager.js?v=1000001:53 [StepGating] 📷 Limiti camera default salvati: {minPhi: 0.1, maxPhi: 2.670353755551324, minTheta: -Infinity, maxTheta: Infinity}
-StepGatingManager.js?v=1000001:57 [StepGating] ✅ Sistema inizializzato
-InteractiveObject3D.js?v=1000001:91 🎮 [InteractiveObject3D] Inizializzazione sistema...
-InteractiveObject3D.js?v=1000001:98 ✅ [InteractiveObject3D] Sistema inizializzato
-app.js?v=1000010:389 🔍 Verifica moduli:
-app.js?v=1000010:390   ✅ Disponibili: (4) ['AppConfig', 'Scene3D', 'ModelLoader', 'UI']
-app.js?v=1000010:391   ❌ Mancanti: []
-app.js?v=1000010:397   🌐 Oggetti globali rilevanti: (6) ['App', 'AppConfig', 'Scene3D', 'ModelLoader', 'UICore', 'UI']
-app.js?v=1000010:403 ✅ Tutti i moduli richiesti sono disponibili
-app.js?v=1000010:457 🔧 Inizializzazione ModelLoader...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: ModelLoader inizializzato
-app.js?v=1000010:481 ✅ ModelLoader inizializzato
-app.js?v=1000010:457 🔧 Inizializzazione UI...
-ui-coordinator.js?nocache=1000026:59 [UI] 🚀 Inizializzazione sistema UI refactorizzato...
-ui-coordinator.js?nocache=1000026:125 [UI] 📦 Moduli UI specializzati inizializzati
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Inizializzazione core UI...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [UICore] Core UI inizializzato con successo
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzazione...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Inizializzato con successo
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzazione...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [TutorialManager] Inizializzato con successo
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Inizializzazione gestione strumenti...
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ToolsManager] Sistema strumenti inizializzato con successo
-ui-coordinator.js?nocache=1000026:142 [UI] 🔗 Cross-references configurate tra moduli
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Caricamento configurazione home dal server...
-ui-coordinator.js?nocache=1000026:87 [UI] ✅ Sistema UI refactorizzato inizializzato con successo
-app.js?v=1000010:481 ✅ UI inizializzato
-app.js?v=1000010:507 🎉 Applicazione inizializzata in 394ms
-app.js?v=1000010:508 📊 Moduli attivi: (2) ['ModelLoader', 'UI']
-app.js?v=1000010:512 ⚙️ Configurazione: {version: '1.0.0', debug: 2, device: {…}}
-ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
-loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
-init @ ScenarioManager.js?nocache=1000026:45
-init @ ui-coordinator.js?nocache=1000026:69
-(anonymous) @ app.js?v=1000010:468
-initializeModule @ app.js?v=1000010:456
-sequence @ app.js?v=1000010:419
-(anonymous) @ app.js?v=1000010:442
-executeSequence @ app.js?v=1000010:436
-(anonymous) @ app.js?v=1000010:444
-Promise.then
-(anonymous) @ app.js?v=1000010:443
-executeSequence @ app.js?v=1000010:436
-(anonymous) @ app.js?v=1000010:444
-Promise.then
-(anonymous) @ app.js?v=1000010:443
-executeSequence @ app.js?v=1000010:436
-(anonymous) @ app.js?v=1000010:426
-initializeModuleSequence @ app.js?v=1000010:410
-(anonymous) @ app.js?v=1000010:363
-setTimeout
-(anonymous) @ app.js?v=1000010:357
-initializeModules @ app.js?v=1000010:353
-(anonymous) @ app.js?v=1000010:68
-Promise.then
-init @ app.js?v=1000010:62
-(anonymous) @ app.js?v=1000010:632
-setTimeout
-(anonymous) @ app.js?v=1000010:631
-config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
-    at ScenarioManager.js?nocache=1000026:68:27
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
-ScenarioManager.js?nocache=1000026:65   GET http://localhost:8000/scenes/home.config 404 (File not found)
-loadHomeConfigFromServer @ ScenarioManager.js?nocache=1000026:65
-init @ ui-coordinator.js?nocache=1000026:85
-(anonymous) @ app.js?v=1000010:468
-initializeModule @ app.js?v=1000010:456
-sequence @ app.js?v=1000010:419
-(anonymous) @ app.js?v=1000010:442
-executeSequence @ app.js?v=1000010:436
-(anonymous) @ app.js?v=1000010:444
-Promise.then
-(anonymous) @ app.js?v=1000010:443
-executeSequence @ app.js?v=1000010:436
-(anonymous) @ app.js?v=1000010:444
-Promise.then
-(anonymous) @ app.js?v=1000010:443
-executeSequence @ app.js?v=1000010:436
-(anonymous) @ app.js?v=1000010:426
-initializeModuleSequence @ app.js?v=1000010:410
-(anonymous) @ app.js?v=1000010:363
-setTimeout
-(anonymous) @ app.js?v=1000010:357
-initializeModules @ app.js?v=1000010:353
-(anonymous) @ app.js?v=1000010:68
-Promise.then
-init @ app.js?v=1000010:62
-(anonymous) @ app.js?v=1000010:632
-setTimeout
-(anonymous) @ app.js?v=1000010:631
-config.js?nocache=999999:242 [3:12:57 PM] WARN: [ScenarioManager] Impossibile caricare home.config dal server: Error: HTTP 404: File not found
-    at ScenarioManager.js?nocache=1000026:68:27
-config.js?nocache=999999:242 [3:12:57 PM] INFO: [ScenarioManager] Modalità manuale attivata automaticamente
-(index):576 ✅ Login riuscito per: mloffredo@scmgroup.com
+ui.js?nocache=1000040:3220 🔥 CLICK TUTORIAL BUTTON: index=0, name="Manutenzione Elettromandrino"
+ui.js?nocache=1000040:3398 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+scene3d-modular.js?nocache=1000032:2650 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
+scene3d-modular.js?nocache=1000032:2735 🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...
+scene3d-modular.js?nocache=1000032:2736 🏠 DEBUG: loadedModels count: 4
+scene3d-modular.js?nocache=1000032:2737 🏠 DEBUG: scenarioOriginalPositions size: 4
+scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: a500
+scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: a500 - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: a500
+scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: pulpito
+scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: pulpito - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: pulpito
+scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: pavimento
+scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: pavimento - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: pavimento
+scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: remote
+scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: remote - Pos: (0.000, 0.000, 0.000)
+scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: remote
+scene3d-modular.js?nocache=1000032:2752 🏠 RESET SCENARIO: 4 modelli ripristinati alle posizioni originali dello scenario
+ui.js?nocache=1000040:2881 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
+config.js?nocache=999999:242 [9:08:29 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
+config.js?nocache=999999:242 [9:08:29 PM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
+config.js?nocache=999999:242 [9:08:29 PM] INFO: Tutorial selezionato: Manutenzione Elettromandrino (12 step)
+StepGatingManager.js?v=1000001:64 [StepGating] 🔄 Reset sistema...
+StepGatingManager.js?v=1000001:69 [StepGating] ✅ Reset completato
+StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 0: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 1 - Vai alla schermata MDI'}
+StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 1: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: "Step 2 - Scarica l'utensile"}
+StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 3: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 4 - Premi il pulsante start'}
+StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 10: {activeButtons: Array(2), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 11 - apri la porta'}
+config.js?nocache=999999:242 [9:08:29 PM] INFO: 🚦 Step Gating: 4 configurazioni registrate
+ui.js?nocache=1000040:3336 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=1
+ui.js?nocache=1000040:3345 🔥 Button 0 set to ACTIVE (green)
+config.js?nocache=999999:242 [9:08:29 PM] INFO: Tutorial 1 attivato (comportamento radio button)
+ui.js?nocache=1000040:3223 🔥 Tutorial button state updated for index: 0
+ui.js?nocache=1000040:2990 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
+ui.js?nocache=1000040:3117 📹 TUTORIAL: CameraPos globale = (0.94, 1.29, 4.07)
+ui.js?nocache=1000040:3123 📹 TUTORIAL: CameraTarget globale = (0.97, 1.15, 3.52)
+ui.js?nocache=1000040:3142 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino"
+scene3d-modular.js?nocache=1000032:3529 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
+scene3d-modular.js?nocache=1000032:3550 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+scene3d-modular.js?nocache=1000032:3584 📹 CAMERA: Durata transizione = 2s
+scene3d-modular.js?nocache=1000032:3607 📹 CAMERA: Avvio animazione camera (durata: 2s)
+scene3d-modular.js?nocache=1000032:1251 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+scene3d-modular.js?nocache=1000032:1254 🔍 HIGHLIGHT: Nessun step o elemento corrente
+config.js?nocache=999999:242 [9:08:29 PM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
+ui.js?nocache=1000040:3437 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
+ui.js?nocache=1000040:3438 [DEBUG] 🚀 Step properties: {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.96, 1.2, 3.8)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
+config.js?nocache=999999:242 [9:08:29 PM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.96, 1.2, 3.8)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
+StepController.js?v=1000005:136 [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
+StepController.js?v=1000005:228 [StepController] 📋 Step 0 auto-configurato da proprietà:
+StepController.js?v=1000005:229 [StepController]    Triggers Physical: [pulpito.Pulsante_mdi]
+StepController.js?v=1000005:230 [StepController]    Actions Physical: 1 azioni
+StepController.js?v=1000005:233 [StepController]      1. setVariant: schermo=schermo002
+StepGatingManager.js?v=1000001:134 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
+StepGatingManager.js?v=1000001:137 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
+InteractiveObject3D.js?v=1000003:1116 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: ['pulpito.Pulsante_mdi']
+InteractiveObject3D.js?v=1000003:1127 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_mdi"
+InteractiveObject3D.js?v=1000003:1136 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 8
+InteractiveObject3D.js?v=1000003:1141 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
+InteractiveObject3D.js?v=1000003:1206 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+InteractiveObject3D.js?v=1000003:1218 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_mdi
+InteractiveObject3D.js?v=1000003:1219 💡 [InteractiveObject3D] Mesh ha material: true
+InteractiveObject3D.js?v=1000003:1220 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+InteractiveObject3D.js?v=1000003:1221 💡 [InteractiveObject3D] Material ha emissive: true
+InteractiveObject3D.js?v=1000003:1240 💡 [InteractiveObject3D] Valori originali salvati: emissive=0, intensity=1, opacity=0, transparent=false
+InteractiveObject3D.js?v=1000003:1247 💡 [InteractiveObject3D] ✓ Emissive applicata: 0xffff00, intensity=2.0
+InteractiveObject3D.js?v=1000003:1257 💡 [InteractiveObject3D] ✓ Opacity impostata a 0.4 per visibilità evidenziazione
+InteractiveObject3D.js?v=1000003:1262 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_mdi" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ui.js?nocache=1000040:3466 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI"
+scene3d-modular.js?nocache=1000032:3529 📹 CAMERA: Posizione assoluta (0.96, 1.2, 3.8)
+scene3d-modular.js?nocache=1000032:3550 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+scene3d-modular.js?nocache=1000032:3584 📹 CAMERA: Durata transizione = 2s
+scene3d-modular.js?nocache=1000032:3607 📹 CAMERA: Avvio animazione camera (durata: 2s)
+scene3d-modular.js?nocache=1000032:3856 📹 CAMERA: Animazione completata
+scene3d-modular.js?nocache=1000032:1329 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_mdi
+InteractiveObject3D.js?v=1000003:414 🖱️ [InteractiveObject3D] Click su "Pulsante_mdi" (parent: pulpito)
+InteractiveObject3D.js?v=1000003:450 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_mdi (mesh: Pulsante_mdi) → setVariant:schermo=schermo002
+InteractiveObject3D.js?v=1000003:473 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click (opacity ripristinata a 0)
+StepController.js?v=1000005:338 [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_mdi"
+StepController.js?v=1000005:339 [StepController] 🔍 currentStepIndex=0
+StepController.js?v=1000005:340 [StepController] 🔍 stepConfigs.size=1
+StepController.js?v=1000005:341 [StepController] 🔍 stepConfigs.keys=[0]
+StepController.js?v=1000005:352 [StepController] 🔍 Configurazione trovata: {triggers: {…}, actions: {…}, autoAdvance: false}
+StepController.js?v=1000005:366 [StepController] ✅ Trigger "pulpito.Pulsante_mdi" accettato da sorgente "physical"
+StepController.js?v=1000005:387 [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
+StepController.js?v=1000005:390 [StepController]    1. setVariant: {type: 'setVariant', group: 'schermo', variant: 'schermo002'}
+StepController.js?v=1000005:449 [StepController] 🔀 setVariant: schermo=schermo002
+InteractiveObject3D.js?v=1000003:910 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo001" → "schermo002"
+InteractiveObject3D.js?v=1000003:482    ✓ Gestito da StepController
+InteractiveObject3D.js?v=1000003:493    ⏭️ Azione locale "setVariant:schermo=schermo002" ignorata (già gestito da StepController)
+scene3d-modular.js?nocache=1000032:1332 [Scene3D] ✅ Click gestito da InteractiveObject3D
+scene3d-modular.js?nocache=1000032:1329 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_tool
+InteractiveObject3D.js?v=1000003:414 🖱️ [InteractiveObject3D] Click su "Pulsante_tool" (parent: pulpito)
+StepGatingManager.js?v=1000001:190 🚫 [StepGating] Pulsante "Pulsante_tool" NON attivo nello step 0
+InteractiveObject3D.js?v=1000003:444 🚫 [InteractiveObject3D] Pulsante "Pulsante_tool" bloccato dal gating - step 0
+scene3d-modular.js?nocache=1000032:1329 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_tool
+InteractiveObject3D.js?v=1000003:414 🖱️ [InteractiveObject3D] Click su "Pulsante_tool" (parent: pulpito)
+StepGatingManager.js?v=1000001:190 🚫 [StepGating] Pulsante "Pulsante_tool" NON attivo nello step 0
+InteractiveObject3D.js?v=1000003:444 🚫 [InteractiveObject3D] Pulsante "Pulsante_tool" bloccato dal gating - step 0
+scene3d-modular.js?nocache=1000032:1364 [Scene3D] Click su modello - ToolsManager: null, Body class aria: false
+scene3d-modular.js?nocache=1000032:1374 [Scene3D] 🎯 Click rilevato su modello: pulpito
+scene3d-modular.js?nocache=1000032:1381 [Scene3D] 📺 Uso sistema tutorial legacy per: pulpito
+scene3d-modular.js?nocache=1000032:1597 [DEBUG] 🎬 handleModelAction chiamato per: pulpito
+scene3d-modular.js?nocache=1000032:1600 [DEBUG] 📋 Current step: Step 1 - Vai alla schermata MDI
+scene3d-modular.js?nocache=1000032:1604 [DEBUG] 🔧 Tool required: "mano", active: "null"
+scene3d-modular.js?nocache=1000032:1614 [DEBUG] ❌ Tool mismatch - USCITA EARLY

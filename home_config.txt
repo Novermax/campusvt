@@ -9,9 +9,9 @@ subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione  //
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(-1.11, 1.44, 3.97)                               // Camera positioned farther for complete framing
 CameraTarget=(0, 0, 0)                                    // Camera points to scene center
-AmbientLight=0x404040,1.05                                 // Ambient light for general illumination
-DirectionalLight=0xffffff,2.05,(-8, 15, 10)               // Main directional light from upper right
-BackLight=0xffffff,1.0,(-8, 15, 10)                      // Back light to eliminate harsh shadows
+AmbientLight=0xffffff,1.05                                 // Ambient light for general illumination
+DirectionalLight=0xffffff,1.05,(-8, 15, 0)               // Main directional light from upper right
+BackLight=0xffffff,2,(-8, 15,  5 )                      // Back light to eliminate harsh shadows
 
 // === SCENARIO INFORMATION ===
 description=Controllo e manutenzione elettromandrino con coni HSK: pulizia pinza, lubrificazione, sblocco/blocco manuale della pinza.
