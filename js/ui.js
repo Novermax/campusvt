@@ -42,7 +42,8 @@ window.UI = {
     currentScenario: null,         // Scenario attivo
     homeConfig: null,              // Configurazione home page
     autoAdvanceTimeoutId: null,    // ID timeout auto-avanzamento (per cancellazione)
-    
+    autoExecuteIntervalId: null,   // ID interval polling AutoExecute (per cancellazione)
+
     /* ===== ELEMENTI DOM ===== */
     elements: {},                  // Cache elementi DOM
     
@@ -3219,6 +3220,13 @@ window.UI = {
             tutorialBtn.className = 'tutorial-arrow-btn';
             tutorialBtn.onclick = () => {
                 console.log(`🔥 CLICK TUTORIAL BUTTON: index=${index}, name="${tutorial.name}"`);
+
+                // ⚠️ NON riselezionare se è già il tutorial attivo (evita di farlo ripartire)
+                if (this.currentTutorial && this.currentTutorial.name === tutorial.name) {
+                    console.log(`⚠️ Tutorial "${tutorial.name}" già attivo - click ignorato`);
+                    return;
+                }
+
                 this.selectTutorial(index);
                 this.updateTutorialButtonsState(index);
                 console.log(`🔥 Tutorial button state updated for index: ${index}`);
@@ -3373,6 +3381,14 @@ window.UI = {
             this.autoAdvanceTimeoutId = null;
         }
 
+        // IMPORTANTE: Cancella anche l'interval di polling AutoExecute
+        // Questo previene che il polling del vecchio step scheduli un nextStep()
+        if (this.autoExecuteIntervalId) {
+            console.log(`[UI] 🚫 Cancellato polling AutoExecute dello step precedente`);
+            clearInterval(this.autoExecuteIntervalId);
+            this.autoExecuteIntervalId = null;
+        }
+
         this.currentStepIndex = stepIndex;
         const step = this.tutorialSteps[stepIndex];
 
@@ -3409,7 +3425,19 @@ window.UI = {
 
         console.log('[UI] 🧹 Reset silhouette/highlight da tutti gli oggetti');
 
-        // Itera tutti gli oggetti nella scena
+        // 1. Rimuovi evidenziazione modello corrente (Scene3D)
+        if (window.Scene3D.removeHighlight) {
+            window.Scene3D.removeHighlight();
+            console.log('[UI] 🧹 Rimossa evidenziazione modello corrente');
+        }
+
+        // 2. Rimuovi evidenziazioni pulsanti (InteractiveObject3D)
+        if (window.InteractiveObject3D && window.InteractiveObject3D.clearButtonHighlights) {
+            window.InteractiveObject3D.clearButtonHighlights();
+            console.log('[UI] 🧹 Rimosse evidenziazioni pulsanti');
+        }
+
+        // 3. Ripristina materiali DragDropSystem
         window.Scene3D.scene.traverse((object) => {
             if (object.isMesh) {
                 // Ripristina materiale originale se salvato in DragDropSystem
@@ -3436,7 +3464,7 @@ window.UI = {
             window.DragDropSystem.originalMaterialsMap.clear();
         }
 
-        AppConfig.log(3, '🧹 Reset highlight completato');
+        AppConfig.log(3, '🧹 Reset highlight completato - tutti i sistemi puliti');
     },
 
     /* La funzione updateStepStates è stata rimossa perché ora i pulsanti
@@ -4325,6 +4353,7 @@ window.UI = {
             }
 
             // Esegui animazione automaticamente con piccolo delay
+            const self = this; // Riferimento per closure in tutti i path
             setTimeout(() => {
                 const animTarget = targetChild || targetModel;
                 if (animTarget && window.Scene3D.autoExecuteAnimation) {
@@ -4333,46 +4362,72 @@ window.UI = {
                     const animationStarted = window.Scene3D.autoExecuteAnimation(animTarget, step, rootModel);
 
                     if (animationStarted) {
-                        // Aspetta che l'animazione sia registrata prima di iniziare il polling
+                        // Aspetta che l'animazione multi-step sia completamente terminata
                         let pollAttempts = 0;
-                        const maxPollAttempts = 50; // Max 5 secondi
+                        const maxPollAttempts = 100; // Max 5 secondi (animazioni possono essere lunghe)
+                        let animationWasFound = false; // Flag per sapere se l'animazione è stata trovata almeno una volta
 
-                        const checkAnimComplete = setInterval(() => {
+                        // Salva l'interval ID per poterlo cancellare in goToStep
+                        this.autoExecuteIntervalId = setInterval(function() {
                             const activeAnims = window.Scene3D.animationSystem?.activeAnimations || [];
+                            const multiStepAnims = window.Scene3D.animationSystem?.multiStepAnimations || new Map();
+
+                            // Per animazioni multi-step, controlla se la sequenza è ancora in corso
+                            const modelUuid = animTarget.uuid;
+                            const isMultiStepInProgress = multiStepAnims.has(modelUuid);
+
+                            // Cerca l'animazione corrente per questo modello
                             const myAnimation = activeAnims.find(anim => anim.model === animTarget);
 
                             if (myAnimation) {
-                                // Animazione trovata! Ora controlla se è finita
-                                if (myAnimation.finished) {
-                                    clearInterval(checkAnimComplete);
-                                    console.log(`[UI] 🤖 AutoExecute: Animazione completata`);
+                                animationWasFound = true;
+                                // Animazione trovata! Per multi-step, non controllare finished qui
+                                // perché ogni sub-step ha il suo ciclo
+                                if (!myAnimation.isMultiStep && myAnimation.finished) {
+                                    // Animazione semplice completata
+                                    clearInterval(self.autoExecuteIntervalId);
+                                    self.autoExecuteIntervalId = null;
+                                    console.log(`[UI] 🤖 AutoExecute: Animazione semplice completata`);
 
-                                    // Controlla AutoAdvance prima di avanzare
                                     if (step.properties.AutoAdvance === 'true') {
                                         console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
-                                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 200);
+                                        self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                                     } else {
                                         console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
                                     }
                                 }
+                                // Per multi-step, continua il polling
+                            } else if (animationWasFound && !isMultiStepInProgress) {
+                                // L'animazione era in corso ma ora non c'è più E la sequenza multi-step è terminata
+                                // Questo significa che TUTTA la sequenza è completata!
+                                clearInterval(self.autoExecuteIntervalId);
+                                self.autoExecuteIntervalId = null;
+                                console.log(`[UI] 🤖 AutoExecute: Sequenza multi-step completata`);
+
+                                if (step.properties.AutoAdvance === 'true') {
+                                    console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
+                                    self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
+                                } else {
+                                    console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
+                                }
                             } else {
-                                // Animazione non ancora registrata
+                                // Animazione non ancora trovata o ancora in corso
                                 pollAttempts++;
                                 if (pollAttempts >= maxPollAttempts) {
                                     // Timeout
-                                    clearInterval(checkAnimComplete);
-                                    console.warn(`[UI] ⚠️ AutoExecute: Timeout attesa animazione`);
+                                    clearInterval(self.autoExecuteIntervalId);
+                                    self.autoExecuteIntervalId = null;
+                                    console.warn(`[UI] ⚠️ AutoExecute: Timeout attesa animazione (${maxPollAttempts * 50}ms)`);
 
-                                    // Controlla AutoAdvance prima di avanzare
                                     if (step.properties.AutoAdvance === 'true') {
                                         console.log(`[UI] ⏭️ AutoAdvance=true → avanzo comunque`);
-                                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 200);
+                                        self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                                     } else {
                                         console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
                                     }
                                 }
                             }
-                        }, 100);
+                        }, 50); // Polling ogni 50ms
                     } else {
                         // Nessuna animazione avviata
                         console.log(`[UI] 🤖 AutoExecute: Nessuna animazione da attendere`);
@@ -4380,7 +4435,7 @@ window.UI = {
                         // Controlla AutoAdvance prima di avanzare
                         if (step.properties.AutoAdvance === 'true') {
                             console.log(`[UI] ⏭️ AutoAdvance=true → avanzo subito`);
-                            this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 500);
+                            this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 50);
                         } else {
                             console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
                         }
@@ -4389,36 +4444,37 @@ window.UI = {
                     // Fallback al metodo esistente
                     window.Scene3D.startModelAnimation(animTarget, step);
 
-                    // Ascolta completamento animazione
-                    const checkAnimComplete = setInterval(() => {
+                    // Ascolta completamento animazione (usa stesso sistema del path principale)
+                    self.autoExecuteIntervalId = setInterval(function() {
                         const stillAnimating = window.Scene3D.animationSystem?.activeAnimations?.some(
                             anim => anim.model === animTarget && !anim.finished
                         );
                         if (!stillAnimating) {
-                            clearInterval(checkAnimComplete);
-                            console.log(`[UI] 🤖 AutoExecute: Animazione completata`);
+                            clearInterval(self.autoExecuteIntervalId);
+                            self.autoExecuteIntervalId = null;
+                            console.log(`[UI] 🤖 AutoExecute: Animazione completata (fallback)`);
 
                             // Controlla AutoAdvance prima di avanzare
                             if (step.properties.AutoAdvance === 'true') {
                                 console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
-                                this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 200);
+                                self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                             } else {
                                 console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
                             }
                         }
-                    }, 100);
+                    }, 50);
                 } else {
                     console.warn(`[UI] ⚠️ AutoExecute: Nessun target valido per animazione`);
 
                     // Controlla AutoAdvance prima di avanzare
                     if (step.properties.AutoAdvance === 'true') {
                         console.log(`[UI] ⏭️ AutoAdvance=true → avanzo comunque`);
-                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 500);
+                        this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 50);
                     } else {
                         console.log(`[UI] ⏸️ AutoAdvance non impostato → aspetto interazione utente`);
                     }
                 }
-            }, 300);
+            }, 20); // Delay ridotto per transizioni più veloci
         }
 
         // ═══════════════════════════════════════════════════════════════════════

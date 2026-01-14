@@ -577,7 +577,7 @@ window.StepController = {
                 } else {
                     console.error('[StepController] ❌ UI.nextStep non disponibile!');
                 }
-            }, 500);
+            }, 100);
         }
     },
 

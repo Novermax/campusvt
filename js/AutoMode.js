@@ -23,10 +23,10 @@
 
         // Configurazione
         config: {
-            actionDelay: 1500,        // Delay tra azioni automatiche (ms)
-            dragDropDelay: 1000,      // Delay tra drag&drop multipli (ms)
-            clickSimulationDelay: 500, // Delay prima di simulare click
-            autoAdvanceDelay: 1000    // Delay prima di avanzare step successivo
+            actionDelay: 100,        // Delay tra azioni automatiche (ms) 1500
+            dragDropDelay: 150,      // Delay tra drag&drop multipli (ms)
+            clickSimulationDelay: 50, // Delay prima di simulare click
+            autoAdvanceDelay: 50    // Delay prima di avanzare step successivo 1000
         },
 
         /**

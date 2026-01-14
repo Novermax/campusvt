@@ -232,6 +232,7 @@ TargetChild=Basamento_Portale_MagazzinoInternoX1
 Azione1=traslazione:(-0.565,0,0,1.0)
 AutoExecute=true
 AutoAdvance=true  
+AutoSetVariant=schermo=schermo002 
 
 
 [Next Step - apri la porta]

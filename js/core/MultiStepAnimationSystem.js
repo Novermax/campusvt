@@ -466,7 +466,7 @@ window.MultiStepAnimationSystem = {
                 // continue
             }
             this.executeCurrentMultiStep(modelUuid);
-        }, 100);
+        }, 20); // Delay ridotto per transizioni più veloci tra sub-step
     },
 
     /**

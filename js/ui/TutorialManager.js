@@ -18,6 +18,7 @@ class TutorialManager {
         this.tutorialSteps = [];
         this.availableTutorials = [];
         this.currentTutorial = null;
+        this.currentTutorialIndex = -1;
         this.currentStepIndex = -1;
         this.isInitialized = false;
     }
@@ -338,8 +339,15 @@ class TutorialManager {
             return;
         }
 
+        // Ignora click se il tutorial è già attivo
+        if (tutorialIndex === this.currentTutorialIndex) {
+            this.safeLog(2, '[TutorialManager] ℹ️ Tutorial già attivo - click ignorato');
+            return;
+        }
+
         const tutorial = this.availableTutorials[tutorialIndex];
         this.currentTutorial = tutorial;
+        this.currentTutorialIndex = tutorialIndex;
         this.tutorialSteps = tutorial.steps;
         this.currentStepIndex = 0;
 
