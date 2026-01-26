@@ -68,7 +68,19 @@ window.UI = {
             
             // Carica automaticamente la configurazione home se disponibile
             this.loadHomeConfigFromServer();
-            
+
+            // Inizializza ToolRegistry prima di ToolsManager
+            if (window.ToolRegistry && typeof window.ToolRegistry.init === 'function') {
+                window.ToolRegistry.init();
+                this.safeLog(2, 'ToolRegistry inizializzato');
+            }
+
+            // Genera CSS dinamico per tool default all'inizializzazione
+            if (window.DynamicToolStyles && typeof window.DynamicToolStyles.generateToolStyles === 'function') {
+                window.DynamicToolStyles.generateToolStyles();
+                this.safeLog(2, 'CSS dinamico tool generato all\'inizializzazione');
+            }
+
             // Inizializza ToolsManager
             this.initToolsManager();
 
@@ -308,6 +320,12 @@ window.UI = {
             AppConfig.log(3, '[goHome] AutoMode disabilitato');
         }
 
+        // === FASE 6.5: RESET HOLDABLE SYSTEM ===
+        if (window.HoldableSystem && window.HoldableSystem.reset) {
+            window.HoldableSystem.reset();
+            AppConfig.log(3, '[goHome] HoldableSystem resettato');
+        }
+
         // === FASE 7: RESET STATO TUTORIAL ===
         this.tutorialSteps = [];
         this.availableTutorials = [];
@@ -497,7 +515,11 @@ window.UI = {
                 } else if (line.startsWith('BackLight=')) {
                     currentScenario.backLight = line.substring(10);
                     AppConfig.log(3, `  🔅 Back Light: ${currentScenario.backLight}`);
-                    
+
+                } else if (line.startsWith('Configuration=')) {
+                    currentScenario.configuration = line.substring(14).trim();
+                    AppConfig.log(3, `  ⚙️ Configuration: ${currentScenario.configuration}`);
+
                 } else if (line.startsWith('position=')) {
                     // Posizione modello (formato: position=x,y,z)
                     const positionStr = line.substring(9);
@@ -706,7 +728,13 @@ window.UI = {
      */
     loadScenario: function(scenario) {
         this.currentScenario = scenario;
-        
+
+        // Reset HoldableSystem per nuovo scenario
+        if (window.HoldableSystem && window.HoldableSystem.reset) {
+            window.HoldableSystem.reset();
+            AppConfig.log(3, '[loadScenario] HoldableSystem resettato per nuovo scenario');
+        }
+
         // Aggiorna titolo scenario
         if (this.elements.scenarioTitle) {
             this.elements.scenarioTitle.textContent = scenario.name;
@@ -720,7 +748,60 @@ window.UI = {
         
         // Applica le configurazioni camera e luci dello scenario
         this.applyScenarioConfiguration(scenario);
-        
+
+        // Carica configurazione tool per scenario se specificata
+        if (scenario.configuration && window.ToolRegistry) {
+            // Determina il path corretto del config
+            // Se inizia con '/' o 'scenes/' è già un path completo, altrimenti è relativo allo scenario
+            let configPath;
+            if (scenario.configuration.startsWith('/') || scenario.configuration.startsWith('scenes/')) {
+                configPath = scenario.configuration;
+            } else {
+                // Path relativo allo scenario (es. "config.txt" → "scenes/NomeScenario/config.txt")
+                configPath = `scenes/${scenario.name}/${scenario.configuration}`;
+            }
+
+            AppConfig.log(2, `⚙️ Caricamento configurazione tool da: ${configPath}`);
+
+            window.ToolRegistry.loadConfig(configPath, `scenes/${scenario.name}/`)
+                .then(() => {
+                    AppConfig.log(2, `✅ Tool configurati da: ${configPath}`);
+
+                    // Genera CSS dinamico per tool custom
+                    if (window.DynamicToolStyles) {
+                        window.DynamicToolStyles.generateToolStyles();
+                    }
+
+                    // Aggiorna UI con nuovi tool
+                    if (window.ToolsManager) {
+                        window.ToolsManager.refreshToolsUI();
+                    }
+                })
+                .catch(error => {
+                    AppConfig.log(1, `⚠️ Errore caricamento configuration, uso default: ${error.message}`);
+                    // Fallback: genera CSS per tool default
+                    if (window.DynamicToolStyles) {
+                        window.DynamicToolStyles.generateToolStyles();
+                    }
+                });
+        } else {
+            // Nessuna configurazione custom: RESET a tool default
+            AppConfig.log(2, `🔧 Uso tool di default (nessuna Configuration= specificata)`);
+
+            // Resetta ToolRegistry ai default
+            if (window.ToolRegistry) {
+                window.ToolRegistry.reset();
+            }
+
+            if (window.DynamicToolStyles) {
+                window.DynamicToolStyles.generateToolStyles();
+            }
+
+            if (window.ToolsManager && window.ToolsManager.refreshToolsUI) {
+                window.ToolsManager.refreshToolsUI();
+            }
+        }
+
         // Carica automaticamente tutti i modelli OBJ/MTL dello scenario
         this.loadScenarioModels(scenario);
         
@@ -994,14 +1075,17 @@ window.UI = {
         // Helper function per fetch con timeout e retry
         const fetchWithTimeoutAndRetry = (url, filename, maxRetries = 2) => {
             // Timeout dinamico basato su dimensione stimata del file
-            const isLargeFile = /culatta|corpo|coperchio|pavimento|filtro/i.test(filename);
+            // Aggiunti a500, remote, pulpito che sono file grandi (>10MB)
+            const isLargeFile = /culatta|corpo|coperchio|pavimento|filtro|a500|remote|pulpito/i.test(filename);
             const timeout = isLargeFile ? 120000 : 60000; // 120s per file grandi, 60s per altri
 
             console.log(`🌐 Timeout per ${filename}: ${timeout/1000}s (isLarge: ${isLargeFile})`);
 
             const attemptFetch = (retriesLeft) => {
                 return Promise.race([
-                    fetch(url),
+                    // IMPORTANTE: cache: 'no-store' forza il browser a bypassare la cache HTTP
+                    // Risolve il problema "Modelli mancanti" causato da risposte corrotte/parziali in cache
+                    fetch(url, { cache: 'no-store' }),
                     new Promise((_, reject) =>
                         setTimeout(() => reject(new Error(`Timeout dopo ${timeout/1000}s`)), timeout)
                     )
@@ -2949,7 +3033,10 @@ window.UI = {
 
                 // Parse CameraUnlocked (boolean)
                 if (props.CameraUnlocked) {
-                    gatingConfig.cameraUnlocked = props.CameraUnlocked.toLowerCase() === 'true';
+                    // Rimuovi commenti inline con # (come per CameraLimits)
+                    const cleanValue = props.CameraUnlocked.split('#')[0].trim().toLowerCase();
+                    gatingConfig.cameraUnlocked = cleanValue === 'true';
+                    console.log(`📷 [Gating] Step ${index} CameraUnlocked raw="${props.CameraUnlocked}" clean="${cleanValue}" → ${gatingConfig.cameraUnlocked}`);
                 }
 
                 // Parse CameraLimits (minPhi,maxPhi) o (minPhi,maxPhi,minTheta,maxTheta)
@@ -4262,6 +4349,28 @@ window.UI = {
             if (assemblySystem && assemblySystem.disableAssemblyMode) {
                 assemblySystem.disableAssemblyMode();
                 AppConfig.log(2, `🚫 ASSEMBLY: Sistema assemblaggio disabilitato per step "${step.title}"`);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // ANIMATED WINDOW SYSTEM: Finestra 2D con animazione a trigger alternato
+        // ═══════════════════════════════════════════════════════════════════════
+        // Supporta sia AnimatedImages (lista) che AnimatedImagesFolder (cartella)
+        if ((step.properties.AnimatedImages || step.properties.AnimatedImagesFolder) && window.AnimatedWindowSystem) {
+            const sourceType = step.properties.AnimatedImagesFolder ? 'AnimatedImagesFolder' : 'AnimatedImages';
+            console.log(`[UI] 🖼️ ${sourceType} rilevato per step: "${step.title}"`);
+
+            // Configura e mostra la finestra animata (async per supporto cartella)
+            const success = await window.AnimatedWindowSystem.showFromStepConfig(step.properties);
+
+            if (success) {
+                AppConfig.log(2, `✅ ANIMATED WINDOW: Finestra animata avviata per step "${step.title}"`);
+
+                // Lo step è bloccante - la finestra gestisce il proprio avanzamento
+                // tramite il callback onComplete che chiama UI.nextStep()
+                return; // Esci da executeStep - il flusso continua quando finestra chiude
+            } else {
+                console.error(`[UI] ❌ AnimatedWindow: Errore configurazione finestra`);
             }
         }
 

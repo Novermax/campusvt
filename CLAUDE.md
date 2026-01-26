@@ -411,6 +411,130 @@ Quando un oggetto è definito come `Holdable=true` in una sezione `[Screen:]`:
 
 ---
 
+### 🖼️ Sistema AnimatedWindowSystem - Finestra 2D con Animazione a Trigger Alternato (Gennaio 2026)
+
+**Funzionalità**: Sistema per visualizzazione sequenziale di immagini 2D, controllato da trigger ripetuto sullo stesso oggetto con comportamento avanti/indietro alternato.
+
+#### Comportamento Funzionale
+
+**Inizializzazione**:
+- Alla creazione, la finestra 2D mostra la prima immagine fissa (image[0])
+- La finestra è visibile ma statica, in attesa del primo trigger
+
+**Trigger Alternato**:
+- **Dispari (1°, 3°, 5°...)**: Sequenza avanti (image[0] → image[n]), termina su ultima immagine
+- **Pari (2°, 4°, 6°...)**: Sequenza indietro (image[n] → image[0]), termina su prima immagine
+
+**Chiusura e Avanzamento**:
+- Alla n-esima attivazione completata (configurabile con `maxTriggers`)
+- La finestra scompare automaticamente
+- Il flusso passa allo step successivo del tutorial
+
+#### Core
+- **File**: `js/core/AnimatedWindowSystem.js` (600+ righe)
+- **API**: `window.AnimatedWindowSystem`
+- **Versione**: 1.0.0
+
+#### Sintassi Tutorial
+
+```ini
+[Step 5 - Procedura pompaggio]
+# Lista immagini separate da virgola (ordine sequenziale)
+AnimatedImages=screens/pump_01.png,screens/pump_02.png,screens/pump_03.png,screens/pump_04.png
+
+# Posizione finestra (opzionale, default: center)
+AnimatedPosition=center
+AnimatedPosition=top-left
+AnimatedPosition=top-right
+AnimatedPosition=bottom-left
+AnimatedPosition=bottom-right
+AnimatedPosition=(50%,30%)          # Coordinate percentuali
+AnimatedPosition=(400,200)          # Coordinate pixel
+
+# Anchor point (opzionale, default: center)
+AnimatedAnchor=center
+AnimatedAnchor=top-left
+
+# Dimensioni (opzionale)
+AnimatedScale=1.5                   # Scala (default 1.0)
+AnimatedWidth=600                   # Larghezza in pixel (override scale)
+AnimatedHeight=400                  # Altezza in pixel (override scale)
+
+# Numero cicli (avanti+indietro = 2 trigger)
+AnimatedMaxTriggers=4               # Default: 2 (1 avanti + 1 indietro)
+
+# Velocità animazione (ms tra frame)
+AnimatedFrameDelay=100              # Default: 100ms
+
+# Descrizione step
+Descrizione=Osserva la procedura di pompaggio
+```
+
+#### Proprietà Step
+
+| Proprietà | Obbligatorio | Formato | Descrizione |
+|-----------|--------------|---------|-------------|
+| `AnimatedImages=` | ✅ Sì | `img1,img2,img3` | Lista immagini separate da virgola |
+| `AnimatedPosition=` | No | `center` o `(x,y)` | Posizione finestra |
+| `AnimatedAnchor=` | No | `center`/`top-left`/etc. | Punto di ancoraggio |
+| `AnimatedScale=` | No | `float` | Scala immagine (default: 1.0) |
+| `AnimatedWidth=` | No | `int` | Larghezza in pixel |
+| `AnimatedHeight=` | No | `int` | Altezza in pixel |
+| `AnimatedMaxTriggers=` | No | `int` | Numero trigger per chiusura (default: 2) |
+| `AnimatedFrameDelay=` | No | `int` | Millisecondi tra frame (default: 100) |
+
+#### API Debug Console
+
+```javascript
+// Mostra finestra animata manualmente
+AnimatedWindowSystem.show({
+    images: ['img1.png', 'img2.png', 'img3.png'],
+    position: { x: '50%', y: '50%' },
+    anchor: 'center',
+    scale: 1.0,
+    maxTriggers: 2,
+    frameDelay: 100,
+    onComplete: () => console.log('Completato!')
+});
+
+// Nascondi finestra
+AnimatedWindowSystem.hide();
+
+// Trigger manuale (simula click)
+AnimatedWindowSystem.handleTrigger();
+
+// Test rapido con placeholder
+AnimatedWindowSystem.test(5);  // 5 frame colorati
+
+// Debug info
+AnimatedWindowSystem.debugInfo();
+```
+
+#### Stato Interno
+
+Il sistema mantiene internamente:
+- `currentIndex`: Indice immagine corrente
+- `direction`: `'forward'` o `'backward'`
+- `triggerCount`: Numero attivazioni eseguite
+- `maxTriggers`: Numero attivazioni per completamento
+
+#### Interazione Utente
+
+- **Click sulla finestra**: Avvia sequenza immagini
+- **Click sull'overlay**: Avvia sequenza immagini
+- **Tasto Spazio/Invio**: Avvia sequenza immagini
+
+#### Caratteristiche
+
+- ✅ **Zero Breaking Changes**: Tutorial senza `AnimatedImages` funzionano normalmente
+- ✅ **Posizionamento Flessibile**: Supporta keyword, percentuali e pixel
+- ✅ **Animazione Fluida**: Velocità configurabile con `frameDelay`
+- ✅ **Auto-Avanzamento**: Chiude e avanza allo step successivo automaticamente
+- ✅ **Bloccante**: Lo step aspetta completamento prima di procedere
+- ✅ **Responsive**: Finestra si adatta allo schermo con max-height 80vh
+
+---
+
 ### 🔀 Sistema StateGroup - Varianti Mutuamente Esclusive (Gennaio 2026)
 
 **Funzionalità**: Gestione di oggetti 3D che rappresentano stati visivi alternativi della stessa componente logica (es. schermo.001/002/003, chiave_on/off)
@@ -897,7 +1021,7 @@ Rotazione=modello:(rx,ry,rz)         # Ruota modello (gradi)
 
 ### Utensili e Azioni
 ```ini
-Utensile=Aria|ChiaveBrugola|ChiaveInglese|Mani
+Utensile=Aria|Spray|ChiaveBrugola|ChiaveInglese|Mani
 Azione1=traslazione:(x,y,z,durata)   # Traslazione animata
 Azione1=appoggia(durata)             # Appoggia al pavimento
 Azione1=svita                        # Svita con distanza default 0.5
@@ -925,6 +1049,13 @@ RequiredSequence=key_1,key_2,key_ok  # Sequenza hotspot obbligatoria
 HoldAction=pick                      # Prendi oggetto in mano
 HoldAction=release                   # Rilascia oggetto
 HoldState=held                       # Richiede oggetto già in mano
+AnimatedImages=img1.png,img2.png,img3.png  # Finestra 2D con animazione sequenziale
+AnimatedPosition=center              # Posizione: center, top-left, (x,y) in % o pixel
+AnimatedMaxTriggers=2                # Numero cicli avanti/indietro (default: 2)
+AnimatedFrameDelay=100               # Millisecondi tra frame (default: 100)
+AnimatedScale=1.0                    # Scala immagine (default: 1.0)
+AnimatedWidth=600                    # Larghezza in pixel (override scale)
+AnimatedHeight=400                   # Altezza in pixel (override scale)
 ```
 
 ### 🎯 Sistema TargetChild - Movimento Nodi Figli GLB (Gennaio 2026)
@@ -1180,9 +1311,11 @@ DragDropSystem.enableAssemblyMode(config)   // Modalità assemblaggio
 DragDropSystem.getAssemblyStatus()          // Stato assemblaggio
 DragDropSystem.undoAssembly()               // Undo operazione
 
-// Particelle (Tool Aria)
+// Particelle (Tool Aria e Spray)
 ParticleSystem.testAirJet()              // Test getto aria
+ParticleSystem.createSpray(pos, dir)     // Test spray nero
 ParticleSystem.clearAllEffects()         // Rimuovi effetti
+ParticleSystem.getStats()                // Statistiche sistema
 
 // Navigazione Tutorial
 jumpToStep(5)                            // Salta al 5° step del tutorial
@@ -1210,6 +1343,18 @@ HoldableSystem.releaseObject('name')     // Rilascia oggetto specifico
 HoldableSystem.releaseAll()              // Rilascia tutti gli oggetti
 HoldableSystem.getCurrentlyHeld()        // Lista oggetti in mano
 HoldableSystem.debugInfo()               // Debug completo sistema
+
+// Finestra Animata 2D (AnimatedWindowSystem)
+AnimatedWindowSystem.show({              // Mostra finestra con config
+    images: ['img1.png', 'img2.png'],
+    position: { x: '50%', y: '50%' },
+    maxTriggers: 2,
+    frameDelay: 100
+})
+AnimatedWindowSystem.hide()              // Nascondi finestra
+AnimatedWindowSystem.handleTrigger()     // Simula trigger manuale
+AnimatedWindowSystem.test(5)             // Test con 5 frame placeholder
+AnimatedWindowSystem.debugInfo()         // Debug completo sistema
 ```
 
 ## 🚀 Funzionalità Avanzate
@@ -1377,10 +1522,12 @@ DrivenObject=componente_secondario.glb,traslazione:(0.5,0,0,0.8)  # Stessa dista
 - **Formato Ready**: Download automatico con timestamp, conversione radianti→gradi
 - **Workflow Drag & Drop**: Export posizione → configura target → test assemblaggio
 
-### Sistema Cursore e Particelle (Dicembre 2025)
+### Sistema Cursore e Particelle (Dicembre 2025 - Gennaio 2026)
 - **Cursore Aria**: SVG personalizzato (pistola), stati normale/premuto, gestione hover intelligente
-- **File**: `cursors/pistola_*.svg`, `css/components.css`, `js/ui.js`
-- **Particelle**: Sistema getto aria compressa, configurabile, integrato con tool Aria
+- **Cursore Spray**: SVG personalizzato, stati normale/premuto, effetto particellare nero
+- **File**: `cursors/pistola_*.svg`, `cursors/spray_*.svg`, `css/components.css`, `js/ui.js`
+- **Particelle Aria**: Sistema getto aria compressa azzurro, configurabile, integrato con tool Aria
+- **Particelle Spray**: Sistema spray con particelle nere, gravità simulata per liquido
 - **Performance**: CSS-only cursore, particelle on-demand senza overhead
 
 ### Sistema Riferimenti _original (Novembre 2025)
@@ -1528,7 +1675,401 @@ SnapPoint=componente_custom:(1.5,0,0)
 
 ---
 
-**Ultimo aggiornamento**: 16 Gennaio 2026 - Sistema Distanza Configurabile per Comandi Movimento completato
+## 🛠️ Sistema Tools Config - Configurazione Strumenti per Scenario (Gennaio 2026)
+
+**Funzionalità**: Sistema di configurazione dichiarativa degli strumenti disponibili per ogni scenario tramite file `config.txt`
+
+### Problema Risolto
+- **Tool Hardcoded**: Precedentemente gli strumenti disponibili erano fissi (brugola, chiave_inglese, mano, aria)
+- **Nessuna Personalizzazione**: Impossibile aggiungere tool custom senza modificare codice
+- **Cursori Statici**: Nessun supporto per cursori animati su tool personalizzati
+- **Soluzione**: File config.txt per scenario con supporto completo animazioni cursore
+
+### Architettura Sistema
+
+```
+home_config.txt → Configuration=scenes/XXX/config.txt
+                          │
+                          ▼
+                  ┌─────────────────┐
+                  │  ToolRegistry   │  Parser config.txt
+                  │   .loadConfig() │  Validazione asset
+                  └────────┬────────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │ DynamicToolStyles.js   │  Genera CSS runtime
+              │  .generateToolStyles() │  Frame1/Frame2 animati
+              └────────┬───────────────┘
+                       │
+                       ▼
+              ┌────────────────────┐
+              │   ToolsManager     │  UI dinamica
+              │ .refreshToolsUI()  │  Icone + mapping
+              └────────────────────┘
+```
+
+### Sintassi home_config.txt
+
+```ini
+[Manutenzione_Elettromandrino]
+Scenario=scenes/Manutenzione_Elettromandrino
+Tutorial=scenes/Manutenzione_Elettromandrino/tutorial.txt
+Configuration=scenes/Manutenzione_Elettromandrino/config.txt
+```
+
+### Sintassi config.txt
+
+#### Formato Base
+
+```ini
+# ═══════════════════════════════════════════════════════════
+# SEZIONE OBBLIGATORIA - LISTA TOOL DISPONIBILI
+# ═══════════════════════════════════════════════════════════
+# L'ordine in questa sezione determina l'ordine di visualizzazione
+# nella legenda strumenti.
+
+[Tools]
+Tool=brugola
+Tool=chiave_inglese
+Tool=mano
+Tool=aria
+
+# ═══════════════════════════════════════════════════════════
+# DEFINIZIONI TOOL CON ANIMAZIONE CURSORE
+# ═══════════════════════════════════════════════════════════
+
+[Tool:brugola]
+# Nome visualizzato nella UI (opzionale, default: ID tool)
+Label=Chiave a Brugola
+
+# Path icona - DEVE essere in /utilimages/
+Icon=utilimages/brugola.png
+
+# Cursore normale (quando tool attivo, mouse non premuto)
+Cursor=cursors/brugola_normale.svg
+
+# Cursore pressed frame 1 (feedback visivo durante click)
+CursorPressed=cursors/brugola_premuto_frame1.svg
+
+# Cursore pressed frame 2 (alternato con frame1 ogni 250ms durante click)
+CursorPressedFrame2=cursors/brugola_premuto_frame2.svg
+
+# Hotspot cursore (punto click preciso) - coordinate X,Y in pixel
+CursorHotspotX=4
+CursorHotspotY=9
+
+# Tipo tool: 'tool' per strumenti normali, 'hand' per tool mano
+Type=tool
+
+# Nomi ammessi in tutorial.txt (Utensile=XXX) - lista separata da virgola
+TutorialNames=ChiaveBrugola,brugola
+
+[Tool:chiave_inglese]
+Label=Chiave Inglese
+Icon=utilimages/chiave_inglese.png
+Cursor=cursors/chiave_inglese_normale.svg
+CursorPressed=cursors/chiave_inglese_premuto_frame1.svg
+CursorPressedFrame2=cursors/chiave_inglese_premuto_frame2.svg
+CursorHotspotX=8
+CursorHotspotY=8
+Type=tool
+TutorialNames=ChiaveInglese,chiave_inglese
+
+[Tool:mano]
+Label=Mano
+Icon=utilimages/mano.png
+# Tool mano usa cursore nativo CSS (grab/grabbing)
+Cursor=grab
+# Nessun CursorPressed per tool mano - usa grab/grabbing CSS nativi
+Type=hand
+TutorialNames=Mani,Mano,mano
+
+[Tool:aria]
+Label=Aria Compressa
+Icon=utilimages/air.png
+Cursor=cursors/pistola_normale.svg
+CursorPressed=cursors/pistola_premuto.svg
+# Nessun frame2 per aria - usa solo frame1 (fallback automatico)
+CursorHotspotX=3
+CursorHotspotY=3
+Type=tool
+TutorialNames=Aria,AriaCompressa,aria
+```
+
+#### Esempio Tool Custom
+
+```ini
+[Tool:lubrificante]
+Label=Spray Lubrificante
+Icon=utilimages/lubrificante.png
+Cursor=cursors/lubrificante_normal.svg
+CursorPressed=cursors/lubrificante_frame1.svg
+CursorPressedFrame2=cursors/lubrificante_frame2.svg
+CursorHotspotX=5
+CursorHotspotY=10
+Type=tool
+TutorialNames=Lubrificante,Spray
+```
+
+### Proprietà Tool
+
+| Proprietà | Obbligatorio | Tipo | Descrizione |
+|-----------|--------------|------|-------------|
+| `Label` | No | String | Nome visualizzato (default: ID tool) |
+| `Icon` | Sì | Path | Percorso icona (deve essere in `utilimages/`) |
+| `Cursor` | Sì | Path/CSS | Cursore normale (path SVG o keyword CSS come `grab`) |
+| `CursorPressed` | No | Path | Cursore frame1 durante click (feedback visivo) |
+| `CursorPressedFrame2` | No | Path | Cursore frame2 alternato (opzionale, usa frame1 se assente) |
+| `CursorHotspotX` | No | Number | Coordinata X hotspot click in pixel (default: 0) |
+| `CursorHotspotY` | No | Number | Coordinata Y hotspot click in pixel (default: 0) |
+| `Type` | No | String | Tipo tool: `tool` o `hand` (default: `tool`) |
+| `TutorialNames` | No | String[] | Lista nomi ammessi in `Utensile=` separati da virgola (default: [ID]) |
+
+### Vincoli Asset
+
+- **Icone**: Devono risiedere in `/utilimages/`
+  - Formati supportati: PNG, JPG, SVG
+  - Warning console se path non valido
+
+- **Cursori**: Devono risiedere in `/cursor/` o `/cursors/`
+  - Formati supportati: SVG (raccomandato), PNG, CUR
+  - Warning console se path non valido
+
+- **Hotspot**: Coordinate X,Y in pixel relative all'immagine cursore
+  - Default: (0, 0) = angolo superiore sinistro
+  - Esempio: brugola con punta a (4, 9)
+
+### Sistema Animazione Cursore Frame1/Frame2
+
+**Funzionamento**:
+1. **Mouse Down**: Sistema applica immediatamente `CursorPressed` (frame1)
+2. **Loop Animazione**: Alterna `CursorPressed` ↔ `CursorPressedFrame2` ogni 250ms
+3. **Mouse Up**: Ripristina `Cursor` normale
+4. **Fallback**: Se `CursorPressedFrame2` mancante, usa `CursorPressed` per entrambi i frame
+
+**Implementazione**:
+- **CSS Dinamico**: `DynamicToolStyles.js` genera regole CSS runtime:
+  ```css
+  /* Cursore normale */
+  body.tool-brugola-active,
+  body.tool-brugola-active * {
+      cursor: url("cursors/brugola_normale.svg") 4 9, auto !important;
+  }
+
+  /* Frame 1 durante click */
+  body.tool-brugola-active.cursor-frame-1,
+  body.tool-brugola-active.cursor-frame-1 * {
+      cursor: url("cursors/brugola_premuto_frame1.svg") 4 9, auto !important;
+  }
+
+  /* Frame 2 durante click */
+  body.tool-brugola-active.cursor-frame-2,
+  body.tool-brugola-active.cursor-frame-2 * {
+      cursor: url("cursors/brugola_premuto_frame2.svg") 4 9, auto !important;
+  }
+  ```
+
+- **Body Classes**: `scene3d-modular.js` gestisce alternanza automatica:
+  - `startCursorAnimation()` → aggiunge/rimuove `cursor-frame-1` / `cursor-frame-2`
+  - `stopCursorAnimation()` → rimuove classi animazione
+  - **Zero modifiche necessarie** - sistema esistente compatibile con CSS dinamico
+
+### Fallback e Compatibilità
+
+**Scenario senza Configuration=**:
+```ini
+[Pompa_Becker]
+Scenario=scenes/Pompa_Becker
+Tutorial=scenes/Pompa_Becker/tutorial.txt
+# Nessun Configuration= → usa tool di default
+```
+→ **Risultato**: Carica `DEFAULT_TOOLS` (brugola, chiave_inglese, mano, aria) da ToolRegistry.js
+
+**Config.txt non trovato o invalido**:
+```javascript
+⚠️ Errore caricamento config: HTTP 404
+⚠️ Fallback a configurazione default
+✅ Inizializzato con 4 strumenti default
+```
+→ **Risultato**: Warning console + fallback a `DEFAULT_TOOLS`, tutorial funziona normalmente
+
+**Asset mancanti**:
+```javascript
+⚠️ Strumento "lubrificante": icona deve essere in /utilimages/
+⚠️ Strumento "lubrificante": cursor deve essere in /cursor/ o /cursors/
+```
+→ **Risultato**: Warning console, tool caricato comunque (icona/cursore potrebbe non funzionare)
+
+**Tutorial esistenti senza config.txt**:
+- ✅ Continuano a funzionare normalmente
+- ✅ Usano tool di default
+- ✅ Zero breaking changes
+
+### Integrazione Tutorial
+
+**Mapping Utensile= Dinamico**:
+```ini
+# tutorial.txt
+[Step 5 - Spruzza lubrificante]
+Elemento=models/giunto.glb
+Utensile=Lubrificante    # Cerca in TutorialNames di tutti i tool
+Azione1=traslazione:(0,0.1,0,1)
+```
+
+**Processo**:
+1. Sistema legge `Utensile=Lubrificante`
+2. `ToolsManager.mapToolName('Lubrificante')` chiama `ToolRegistry.getToolByTutorialName()`
+3. ToolRegistry cerca in tutti i tool: `if (config.tutorialNames.includes('Lubrificante'))`
+4. Trova tool con ID `lubrificante`
+5. Attiva tool con cursore custom e animazione frame1/frame2
+
+**Fallback**:
+```javascript
+⚠️ Tool non trovato per nome tutorial: "StrumentoInesistente"
+💡 Verifica che il tool sia definito in config.txt con TutorialNames=StrumentoInesistente
+```
+
+### API Console Debug
+
+```javascript
+// ═══════════════════════════════════════════════════════════
+// ToolRegistry - Gestione Tool
+// ═══════════════════════════════════════════════════════════
+
+// Info completa sistema
+ToolRegistry.debugInfo()
+/* Output:
+═══════════════════════════════════════
+📋 ToolRegistry - Debug Info
+═══════════════════════════════════════
+Inizializzato: true
+Config caricato: true
+Scenario path: scenes/Manutenzione_Elettromandrino/
+Strumenti registrati: 5
+───────────────────────────────────────
+1. brugola
+   Label: Chiave a Brugola
+   Icon: utilimages/brugola.png
+   Cursor: cursors/brugola_normale.svg
+   Type: tool
+   Tutorial Names: [ChiaveBrugola, brugola]
+...
+*/
+
+// Lista tool correnti
+ToolRegistry.getAllTools()
+// Ritorna: Array di oggetti tool
+
+// Ottieni singolo tool per ID
+ToolRegistry.getTool('brugola')
+/* Ritorna:
+{
+    id: 'brugola',
+    label: 'Chiave a Brugola',
+    icon: 'utilimages/brugola.png',
+    cursor: 'cursors/brugola_normale.svg',
+    cursorPressed: 'cursors/brugola_premuto_frame1.svg',
+    cursorPressedFrame2: 'cursors/brugola_premuto_frame2.svg',
+    cursorHotspotX: 4,
+    cursorHotspotY: 9,
+    type: 'tool',
+    tutorialNames: ['ChiaveBrugola', 'brugola']
+}
+*/
+
+// Cerca tool per nome tutorial
+ToolRegistry.getToolByTutorialName('Lubrificante')
+// Ritorna: oggetto tool o null
+
+// Verifica esistenza tool
+ToolRegistry.hasTool('lubrificante')  // true/false
+
+// Numero tool registrati
+ToolRegistry.getToolCount()  // 5
+
+// Reset a configurazione default
+ToolRegistry.reset()
+// ✅ Carica DEFAULT_TOOLS
+
+// ═══════════════════════════════════════════════════════════
+// DynamicToolStyles - CSS Runtime
+// ═══════════════════════════════════════════════════════════
+
+// Rigenera CSS per tutti i tool
+DynamicToolStyles.generateToolStyles()
+// ✅ CSS dinamico generato per 5 tool
+
+// Pulisci tutto il CSS dinamico
+DynamicToolStyles.clear()
+
+// Rigenera dopo cambio tool
+DynamicToolStyles.refresh()
+```
+
+### File Modificati/Creati
+
+**File Creati**:
+- `js/ui/DynamicToolStyles.js` (~300 linee) - Sistema generazione CSS runtime
+
+**File Modificati**:
+- `js/core/ToolRegistry.js:177-227` - Parsing CursorPressed, CursorPressedFrame2, CursorHotspotX/Y
+- `js/ui.js:501-503` - Parsing `Configuration=` in home_config.txt
+- `js/ui.js:728-763` - Caricamento config.txt + generazione CSS dinamico in loadScenario()
+- `js/ui/ToolsManager.js:62-108` - UI dinamica da ToolRegistry (initToolsLegend)
+- `js/ui/ToolsManager.js:110-127` - Nuovo metodo refreshToolsUI()
+- `js/ui/ToolsManager.js:260-287` - Mapping tool tutorial dinamico (mapToolName)
+- `index.html:620-622` - Caricamento script DynamicToolStyles.js
+
+**File di Esempio**:
+- `scenes/Test/config.txt` - File esempio con tutti i tool default configurati
+
+### Caratteristiche
+
+- ✅ **Zero Breaking Changes**: Tutorial senza config.txt funzionano normalmente
+- ✅ **Animazioni Cursore**: Frame1/Frame2 supportato su tutti i tool custom
+- ✅ **Hotspot Precisi**: Coordinate pixel per click detection accurato
+- ✅ **Fallback Robusto**: Sistema degrada gracefully con config mancanti/invalidi
+- ✅ **Validazione Asset**: Warning console per path non conformi
+- ✅ **UI Dinamica**: Legenda tool generata automaticamente da config
+- ✅ **Mapping Flessibile**: TutorialNames supporta alias multipli per ogni tool
+- ✅ **Debug Facile**: API console completa per troubleshooting
+
+### Workflow Sviluppo
+
+**Aggiungere Tool Custom**:
+1. Crea asset: icona in `utilimages/`, cursori in `cursors/`
+2. Crea/modifica `scenes/XXX/config.txt`:
+   ```ini
+   [Tools]
+   Tool=nuovo_tool
+
+   [Tool:nuovo_tool]
+   Label=Nuovo Tool
+   Icon=utilimages/nuovo_tool.png
+   Cursor=cursors/nuovo_tool_normal.svg
+   CursorPressed=cursors/nuovo_tool_frame1.svg
+   CursorPressedFrame2=cursors/nuovo_tool_frame2.svg
+   CursorHotspotX=10
+   CursorHotspotY=15
+   Type=tool
+   TutorialNames=NuovoTool,tool_custom
+   ```
+3. Aggiungi `Configuration=scenes/XXX/config.txt` in home_config.txt
+4. Usa in tutorial: `Utensile=NuovoTool`
+5. Sistema genera automaticamente CSS e attiva animazioni
+
+**Testing**:
+1. Carica scenario con config custom
+2. Verifica console: `ToolRegistry.debugInfo()`
+3. Verifica UI: icone visibili in legenda
+4. Attiva tool: cursore normale visibile
+5. Click mouse: animazione frame1 ↔ frame2 attiva
+6. Release mouse: cursore torna normale
+
+---
+
+**Ultimo aggiornamento**: 17 Gennaio 2026 - Sistema Tools Config con Animazione Cursori Dinamici completato
 
 ## 🎯 Sessione di Lavoro 13 Dicembre 2025
 
@@ -1596,6 +2137,24 @@ airJet: {
 }
 ```
 
+#### Preset Spray Nero (js/core/ParticleSystem.js:47-60)
+```javascript
+spray: {
+    particleCount: 400,              // Numero particelle
+    life: 2.0,                       // Durata vita (secondi)
+    speed: { min: 5, max: 15 },      // Velocità ridotta per liquido
+    size: { min: 0.002, max: 0.008 }, // Particelle più grandi
+    color: new THREE.Color(0, 0, 0), // Colore nero
+    opacity: { start: 0.8, end: 0.0 },
+    spread: { x: 0.1, y: 0.1, z: 0.1 }, // Getto concentrato
+    gravity: { x: 0, y: -2, z: 0 },  // Gravità per simulare liquido
+    turbulence: 0.5,                 // Turbolenza ridotta
+    burst: true,                     // Effetto burst
+    burstCount: 2,
+    burstDelay: 0.15
+}
+```
+
 #### Integrazione Tool Aria (scene3d-modular.js:741-748)
 ```javascript
 const airJetId = this.particleSystem.createAirJet(cursorPosition3D, jetDirection, {
@@ -1603,6 +2162,18 @@ const airJetId = this.particleSystem.createAirJet(cursorPosition3D, jetDirection
     life: 1.2,
     speed: { min: 20, max: 40 },
     spread: { x: 0.3, y: 0.3, z: 0.3 }
+});
+```
+
+#### Integrazione Tool Spray (scene3d-modular.js:1536-1543)
+```javascript
+const sprayId = this.particleSystem.createSpray(cursorPosition3D, sprayDirection, {
+    particleCount: 400,
+    life: 2.0,
+    speed: { min: 5, max: 15 },
+    size: { min: 0.002, max: 0.008 },
+    spread: { x: 0.1, y: 0.1, z: 0.1 },
+    opacity: { start: 0.8, end: 0.0 }
 });
 ```
 

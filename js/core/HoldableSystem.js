@@ -123,6 +123,10 @@ window.HoldableSystem = {
     registerHoldable: function(objectName, config = {}) {
         const cleanName = objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
 
+        console.log(`[HoldableSystem] 📝 registerHoldable chiamato per: "${cleanName}"`);
+        console.log(`[HoldableSystem] 📝 Config ricevuta:`, config);
+        console.log(`[HoldableSystem] 📝 Stato sistema: initialized=${this.initialized}, camera=${!!this.camera}`);
+
         const holdableConfig = {
             name: cleanName,
             holdPosition: this.parseVector3(config.HoldPosition) || this.config.defaultHoldPosition.clone(),
@@ -143,7 +147,8 @@ window.HoldableSystem = {
             });
         }
 
-        console.log(`[HoldableSystem] 🤚 Oggetto registrato come prendibile: "${cleanName}"`, holdableConfig);
+        console.log(`[HoldableSystem] ✅ Oggetto registrato come prendibile: "${cleanName}"`, holdableConfig);
+        console.log(`[HoldableSystem] 📊 Totale holdables: ${this.holdableConfigs.size}`, [...this.holdableConfigs.keys()]);
     },
 
     /**
@@ -177,9 +182,14 @@ window.HoldableSystem = {
     pickObject: function(objectName) {
         const cleanName = objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
 
+        console.log(`[HoldableSystem] 🤚 pickObject chiamato per: "${cleanName}"`);
+        console.log(`[HoldableSystem] 📊 Stato sistema: initialized=${this.initialized}, camera=${!!this.camera}`);
+        console.log(`[HoldableSystem] 📊 Holdables registrati: ${this.holdableConfigs.size}`, [...this.holdableConfigs.keys()]);
+
         // Verifica che l'oggetto sia registrato come prendibile
         if (!this.holdableConfigs.has(cleanName)) {
             console.warn(`[HoldableSystem] ⚠️ Oggetto "${cleanName}" non registrato come prendibile`);
+            console.warn(`[HoldableSystem] ⚠️ Holdables disponibili:`, [...this.holdableConfigs.keys()]);
             return false;
         }
 
@@ -196,6 +206,8 @@ window.HoldableSystem = {
             console.error(`[HoldableSystem] ❌ Modello "${cleanName}" non trovato in scena`);
             return false;
         }
+
+        console.log(`[HoldableSystem] ✅ Modello trovato:`, model.name);
 
         const config = this.holdableConfigs.get(cleanName);
 
@@ -576,13 +588,42 @@ window.HoldableSystem = {
 
     /**
      * Reset completo del sistema
+     * Rilascia tutti gli oggetti e pulisce i registri
+     * NOTA: NON resetta camera, scene, scene3D e initialized perché questi
+     * riferimenti rimangono validi per tutta la sessione di Scene3D
      */
     reset: function() {
-        this.releaseAll();
+        console.log('[HoldableSystem] 🔄 ═══════════════════════════════════════════');
+        console.log('[HoldableSystem] 🔄 Avvio reset stato oggetti...');
+        console.log(`[HoldableSystem] 🔄 Stato PRE-reset: initialized=${this.initialized}, camera=${!!this.camera}, holdables=${this.holdableConfigs.size}, held=${this.currentlyHeldList.length}`);
+
+        // Prima pulisci lo stato isBeingHeld dai modelli nella scena
+        // Questo è CRITICO per evitare che modelli ricaricati abbiano stato residuo
+        this.currentlyHeldList.forEach(objectName => {
+            const model = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
+            if (model) {
+                model.userData.isBeingHeld = false;
+                model.userData.holdOffset = null;
+                model.userData.holdRotation = null;
+                model.userData.pickAnimationProgress = 0;
+                console.log(`[HoldableSystem] 🧹 Pulito userData di "${objectName}"`);
+            } else {
+                console.log(`[HoldableSystem] 🧹 Modello "${objectName}" non trovato in scena (già rimosso)`);
+            }
+        });
+
+        // Pulisci registri
         this.holdableConfigs.clear();
         this.heldObjects.clear();
         this.currentlyHeldList = [];
-        console.log('[HoldableSystem] 🔄 Sistema resettato');
+
+        // NON resettare camera, scene, scene3D, initialized
+        // Questi riferimenti sono ancora validi e necessari per il funzionamento
+        // Scene3D non viene reinizializzato tra un tutorial e l'altro
+
+        console.log(`[HoldableSystem] 🔄 Stato POST-reset: initialized=${this.initialized}, camera=${!!this.camera}, holdables=${this.holdableConfigs.size}`);
+        console.log('[HoldableSystem] ✅ Reset stato completato - sistema pronto per nuovo tutorial');
+        console.log('[HoldableSystem] 🔄 ═══════════════════════════════════════════');
     },
 
     /**

@@ -42,6 +42,21 @@ window.ParticleSystem = {
             spread: { x: 0.5, y: 0.2, z: 0.5 },
             gravity: { x: 0, y: -0.5, z: 0 },
             turbulence: 0.3
+        },
+
+        spray: {
+            particleCount: 400,
+            life: 2.0,
+            speed: { min: 5, max: 15 },
+            size: { min: 0.002, max: 0.008 },
+            color: new THREE.Color(0, 0, 0), // Particelle nere
+            opacity: { start: 0.8, end: 0.0 },
+            spread: { x: 0.1, y: 0.1, z: 0.1 },
+            gravity: { x: 0, y: -2, z: 0 }, // Gravità per simulare liquido
+            turbulence: 0.5,
+            burst: true,
+            burstCount: 2,
+            burstDelay: 0.15
         }
     },
     
@@ -138,7 +153,7 @@ window.ParticleSystem = {
     createDustEffect: function(position, options = {}) {
         const config = { ...this.presets.dust, ...options };
         const effectId = `dust_${Date.now()}`;
-        
+
         // Direzioni casuali per dispersione polvere
         const directions = [];
         for (let i = 0; i < config.particleCount; i++) {
@@ -148,13 +163,31 @@ window.ParticleSystem = {
                 (Math.random() - 0.5) * 2
             ).normalize());
         }
-        
+
         return this.createAirJet(position, new THREE.Vector3(0, 1, 0), {
             ...config,
             customDirections: directions
         });
     },
-    
+
+    /**
+     * Crea effetto spray con particelle nere
+     */
+    createSpray: function(startPosition, direction, options = {}) {
+        const config = { ...this.presets.spray, ...options };
+        const effectId = this.createAirJet(startPosition, direction, config);
+
+        console.log(`[ParticleSystem] 🖤 Spray nero creato: ${effectId}`);
+        return effectId;
+    },
+
+    /**
+     * Alias per createDustEffect (compatibilità)
+     */
+    createDust: function(position, normal, options = {}) {
+        return this.createDustEffect(position, options);
+    },
+
     /**
      * Aggiorna tutti i sistemi particellari attivi
      */

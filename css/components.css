@@ -1089,8 +1089,10 @@ button:disabled, .button:disabled {
 /* ===== CURSORI PERSONALIZZATI PER TOOL ===== */
 /* Cursori custom per ogni strumento nel canvas 3D */
 
+/* NOTA: .cursor-mano è un fallback legacy per scenari senza config.txt.
+   Il sistema principale usa DynamicToolStyles.js che genera CSS per body.tool-mano-active */
 .cursor-mano { cursor: grab; }
-.cursor-mano:active { cursor: grabbing; }
+/* .cursor-mano:active { cursor: grabbing; }  -- RIMOSSO: :active causa problemi */
 
 /* Cursori SVG personalizzati con animazioni */
 .cursor-brugola { 
@@ -1154,23 +1156,15 @@ body.tool-aria-active [role="button"] {
 }
 
 /* === TOOL MANO CURSORE === */
-body.tool-mano-active,
-body.tool-mano-active *,
-.tool-mano-active {
-    cursor: grab !important;
-}
+/* NOTA: Il cursore per il tool mano è ora gestito dinamicamente da DynamicToolStyles.js
+   che genera CSS runtime basato sul config.txt dello scenario.
 
-body.tool-mano-active:active,
-body.tool-mano-active:active *,
-body.tool-mano-active.mouse-pressed,
-body.tool-mano-active.mouse-pressed * {
-    cursor: grabbing !important;
-}
+   Questo permette cursori SVG personalizzati per ogni scenario invece dei
+   cursori CSS nativi grab/grabbing.
 
-/* Applica cursore mano a tutti gli elementi eccetto pulsanti e link */
-body.tool-mano-active * {
-    cursor: inherit !important;
-}
+   Se uno scenario NON ha config.txt, il fallback usa cursori CSS nativi
+   definiti in ToolRegistry.js DEFAULT_TOOLS.
+*/
 
 /* Eccezioni: pulsanti e elementi interattivi mantengono cursore pointer */
 body.tool-mano-active button,

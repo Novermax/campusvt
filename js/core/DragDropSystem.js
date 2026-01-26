@@ -1028,9 +1028,15 @@ window.DragDropSystem = {
         // SEMPRE fare cleanup base prima di tutto
         console.log(`[DragDropSystem] 🧹 CLEANUP BASE: hiding snap indicators e reset cursore...`);
         this.hideAllSnapIndicators();
-        // NON impostare 'default' - lascia che ToolsManager gestisca il cursore
-        // this.canvas.style.cursor = 'default'; // RIMOSSO: conflitto con ToolsManager
-        console.log(`[DragDropSystem] 🖱️ Cursore canvas: gestione delegata a ToolsManager`);
+        // Reset stile inline cursor per permettere alle classi CSS di applicarsi
+        this.canvas.style.cursor = '';
+        console.log(`[DragDropSystem] 🖱️ Cursore canvas inline resettato, classi CSS attive`);
+
+        // CRITICO: Ferma animazione cursore di Scene3D
+        if (window.Scene3D && typeof window.Scene3D.stopCursorAnimation === 'function') {
+            window.Scene3D.stopCursorAnimation();
+            console.log(`[DragDropSystem] ⏹️ Animazione cursore Scene3D fermata`);
+        }
 
         // Riabilita sistema click esistente
         if (window.Scene3D && window.Scene3D.animationSystem) {

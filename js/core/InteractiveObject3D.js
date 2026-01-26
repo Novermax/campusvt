@@ -260,6 +260,16 @@ window.InteractiveObject3D = {
                     config.rotationAngles[state.trim()] = parseFloat(deg);
                 }
             }
+            // opacity:0.8 (valore 0.0-1.0, default 0.6)
+            else if (option.startsWith('opacity:')) {
+                const opacityValue = parseFloat(option.substring(8));
+                if (!isNaN(opacityValue) && opacityValue >= 0 && opacityValue <= 1) {
+                    config.opacity = opacityValue;
+                } else {
+                    console.warn(`[InteractiveObject3D] Valore opacity invalido: ${option}, uso default 0.6`);
+                    config.opacity = 0.6;
+                }
+            }
         }
 
         return { name, config };
@@ -286,9 +296,34 @@ window.InteractiveObject3D = {
         obj.model = model3D;
         obj.childMeshes.clear();
 
-        // Trova mesh/group figli interattivi per nome
+        // DEBUG: Lista tutti i child names del modello per troubleshooting
+        const allChildNames = [];
         model3D.traverse((child) => {
-            const childConfig = obj.config.interactiveChildren[child.name];
+            if (child.name && child.name !== '') {
+                allChildNames.push(`${child.name} (${child.type})`);
+            }
+        });
+        console.log(`🔍 [InteractiveObject3D] Child disponibili in "${modelName}":`, allChildNames);
+        console.log(`🔍 [InteractiveObject3D] InteractiveChildren registrati:`, Object.keys(obj.config.interactiveChildren));
+
+        // Trova mesh/group figli interattivi per nome (case-insensitive)
+        model3D.traverse((child) => {
+            // Prima prova match esatto, poi case-insensitive
+            let childConfig = obj.config.interactiveChildren[child.name];
+            let matchedName = child.name;
+
+            // Se non trovato, prova match case-insensitive
+            if (!childConfig && child.name) {
+                const childNameLower = child.name.toLowerCase();
+                for (const [configName, config] of Object.entries(obj.config.interactiveChildren)) {
+                    if (configName.toLowerCase() === childNameLower) {
+                        childConfig = config;
+                        matchedName = configName;
+                        console.log(`🔄 [InteractiveObject3D] Match case-insensitive: GLB="${child.name}" ↔ Config="${configName}"`);
+                        break;
+                    }
+                }
+            }
 
             if (childConfig) {
                 if (child.isMesh) {
@@ -1249,12 +1284,15 @@ window.InteractiveObject3D = {
             console.warn(`💡 [InteractiveObject3D] ⚠️ Material non ha proprietà emissive, evidenziazione potrebbe non essere visibile`);
         }
 
-        // IMPORTANTE: Rendi il materiale semi-trasparente per mostrare l'evidenziazione
-        // (i pulsanti sono normalmente invisibili con opacity=0)
-        mesh.material.opacity = 0.6;
-        mesh.material.transparent = true;
+        // IMPORTANTE: Imposta opacità del materiale durante evidenziazione
+        // Usa valore configurato da InteractiveChild (opacity:X) oppure default 0.6
+        const childConfig = mesh.userData.interactiveConfig || {};
+        const targetOpacity = childConfig.opacity !== undefined ? childConfig.opacity : 0.6;
+
+        mesh.material.opacity = targetOpacity;
+        mesh.material.transparent = targetOpacity < 1.0;
         mesh.material.needsUpdate = true;
-        console.log(`💡 [InteractiveObject3D] ✓ Opacity impostata a 0.4 per visibilità evidenziazione`);
+        console.log(`💡 [InteractiveObject3D] ✓ Opacity impostata a ${targetOpacity} (configurata: ${childConfig.opacity !== undefined})`);
 
         // Traccia pulsante evidenziato
         this.highlightedButtons.set(triggerId, mesh);

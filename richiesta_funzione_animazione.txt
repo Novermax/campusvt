@@ -1,0 +1,84 @@
+Nuova funzionalità: finestra 2D con animazione a trigger alternato
+
+Obiettivo
+Implementare una finestra 2D dedicata alla visualizzazione sequenziale di immagini, controllata da un trigger ripetuto sullo stesso oggetto.
+
+Comportamento funzionale
+
+Inizializzazione
+
+Alla creazione, la finestra 2D mostra una prima immagine fissa (image[0]).
+
+La finestra è visibile ma statica.
+
+Trigger – comportamento alternato
+
+Alla prima pressione del trigger:
+
+Parte una sequenza di immagini che va dalla prima all’ultima (image[0] → image[n]).
+
+La sequenza termina sull’ultima immagine, che resta fissa.
+
+Alla seconda pressione del trigger (stesso oggetto):
+
+Parte la sequenza inversa dall’ultima alla prima (image[n] → image[0]).
+
+La sequenza termina sulla prima immagine, che resta fissa.
+
+Questo comportamento si alterna ad ogni pressione del trigger:
+
+dispari → avanti
+
+pari → indietro
+
+Conteggio trigger
+
+Il sistema deve tenere traccia del numero di attivazioni (triggerCount).
+
+Il ciclo avanti/indietro continua fino alla n-esima pressione (n configurabile).
+
+Chiusura e avanzamento
+
+Alla n-esima attivazione completata:
+
+La finestra 2D scompare (hide/destroy).
+
+Il flusso passa automaticamente allo step successivo del tutorial/scenario.
+
+Requisiti tecnici
+
+La finestra di animazione deve essere:
+
+Posizionabile (x, y o anchor)
+
+Scalabile / ingrandibile (scale o width/height)
+
+Questi parametri devono essere passati al momento del richiamo della funzione, non hardcoded.
+
+La sequenza di immagini:
+
+È una lista ordinata
+
+deve essere dichiarata dentro una cartella con la funzione AnimatedImagesFolder=screens/mandrino
+le immagini sono in sequenza numerica dal più basso al più alto.
+
+Il tempo tra le immagini può essere fisso o parametrico (preferibile parametro).
+
+Stato interno richiesto:
+
+currentIndex
+
+direction (forward / backward)
+
+triggerCount
+
+maxTriggers
+
+Output atteso
+
+Una funzione o componente riutilizzabile del tipo:
+
+showAnimated2DWindow(images, position, scale, maxTriggers, onCompleteStep)
+
+Nessuna animazione continua automatica:
+solo avanzamento su trigger.

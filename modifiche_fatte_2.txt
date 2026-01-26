@@ -1,0 +1,58 @@
+● Perfetto! Ho implementato tutte e 3 le soluzioni. Ecco cosa è stato fatto:
+
+  ✅ Modifiche Implementate
+
+  1. Fix Cursore - CSS Generato all'Inizializzazione
+
+  - File: js/ui.js (linee 72-79)
+  - Soluzione: Il CSS dinamico viene ora generato subito dopo l'inizializzazione di ToolRegistry, garantendo che i cursori siano disponibili immediatamente al click
+  - Comportamento: Quando clicchi su un tool icon, il cursore cambia istantaneamente
+
+  2. Sistema 4 Slot Fissi
+
+  - File: js/core/ToolRegistry.js (linee 149-280)
+  - Nuova Sintassi:
+  [Tools]
+  Slot1=straccio
+  Slot2=brugola
+  Slot3=mano
+  Slot4=spray
+  - Logica:
+    a. Se specifichi un tool in uno slot, cerca prima nelle definizioni custom [Tool:nome]
+    b. Se non trova la definizione custom, cerca nei tool default (brugola, chiave_inglese, mano, aria)
+    c. Se non trova nemmeno quello, usa il tool default per quello slot
+    d. La UI mostra sempre esattamente 4 tool icon
+
+  3. Config Scenario Aggiornato
+
+  - File: scenes/Manutenzione_Elettromandrino/config.txt
+  - Contenuto:
+    - Slot1 = straccio (custom)
+    - Slot2 = brugola (default, non serve ridefinirlo)
+    - Slot3 = mano (default)
+    - Slot4 = spray (custom)
+  - Tool Custom Definiti: straccio e spray con icone, cursori animati e hotspot
+
+  📋 File Modificati
+
+  1. js/ui.js - Aggiunta generazione CSS all'inizializzazione
+  2. js/core/ToolRegistry.js - Sistema 4 slot fissi con merge custom+default
+  3. scenes/Manutenzione_Elettromandrino/config.txt - Nuovo formato con Slot1-4
+
+  🧪 Test
+
+  Per verificare che funzioni:
+
+  1. Ricarica la pagina (CTRL+F5)
+  2. Fai login
+  3. Seleziona "Manutenzione Elettromandrino"
+  4. Verifica:
+    - La legenda mostra esattamente 4 tool (straccio, brugola, mano, spray)
+    - Click su un tool → cursore cambia immediatamente
+    - I tool custom (straccio, spray) hanno le loro icone personalizzate
+
+  Apri la Console (F12) e verifica i log:
+  [ToolRegistry] 🔧 Slot1: straccio (Straccio) custom
+  [ToolRegistry] 🔧 Slot2: brugola (default)
+  [ToolRegistry] 🔧 Slot3: mano (default)
+  [ToolRegistry] 🔧 Slot4: spray (Spray Lubrificante) custom

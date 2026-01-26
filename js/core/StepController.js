@@ -368,7 +368,34 @@ window.StepController = {
         // Esegui azioni per questa sorgente
         this.executeActionsForSource(source, stepConfig);
 
-        // Auto-avanzamento SEMPRE dopo trigger accettato
+        // ═══════════════════════════════════════════════════════════════════════════
+        // INTEGRAZIONE ANIMATED WINDOW SYSTEM
+        // Se lo step ha AnimatedImages/AnimatedImagesFolder, inoltra il trigger
+        // ad AnimatedWindowSystem invece di fare auto-advance
+        // ═══════════════════════════════════════════════════════════════════════════
+        const stepProperties = this.currentStep?.properties || {};
+        const hasAnimatedWindow = stepProperties.AnimatedImages || stepProperties.AnimatedImagesFolder;
+
+        if (hasAnimatedWindow && window.AnimatedWindowSystem) {
+            console.log('[StepController] 🖼️ Step ha AnimatedWindow');
+            console.log('[StepController]    isVisible:', window.AnimatedWindowSystem.isVisible);
+            console.log('[StepController]    isAnimating:', window.AnimatedWindowSystem.isAnimating);
+            console.log('[StepController]    triggerCount:', window.AnimatedWindowSystem.state?.triggerCount);
+
+            // Se la finestra è visibile, inoltra il trigger
+            if (window.AnimatedWindowSystem.isVisible) {
+                console.log('[StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()');
+                window.AnimatedWindowSystem.handleTrigger();
+            } else {
+                // Se la finestra non è ancora visibile (race condition), ignora il trigger
+                // L'utente dovrà cliccare di nuovo quando la finestra è pronta
+                console.log('[StepController] ⏳ AnimatedWindow non ancora visibile - trigger ignorato, riprova');
+            }
+            // NON fare auto-advance - AnimatedWindowSystem avanzerà lo step quando completa
+            return true;
+        }
+
+        // Auto-avanzamento SEMPRE dopo trigger accettato (se non gestito da AnimatedWindowSystem)
         // (Il flag AutoAdvance serve solo per step con AutoExecute, non per trigger manuali)
         // Comportamento: trigger accettato → azioni eseguite → avanza automaticamente
         console.log('[StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni');

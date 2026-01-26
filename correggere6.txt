@@ -1,0 +1,16 @@
+in questo step:
+[Next Step - ingrassa con lo spray]
+utensile=spray
+Descrizione=Usa lo spray lubrificante per ingrassare il naso dell'elettromandrino.
+Message=Usa lo spray lubrificante per ingrassare il naso dell'elettromandrino.
+MessageTitle=⚠️ Importante
+MessageVideo=media/lubelett.mp4
+
+# Camera sbloccata per questo step
+CameraUnlocked=true
+CameraLimits=(-3.14, 3.14)                    # minPhi, maxPhi in radianti
+Elemento=models/a500.glb
+TargetChild=naso
+
+la camera non viene sbloccata.
+dovrebbe poter guardare "verso l'alto" ma solo in questo step.

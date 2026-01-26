@@ -1,0 +1,27 @@
+Segnalazione malfunzionamento – direzione svitamento viti
+
+Nel tutorial [Pulizia Filtro e ingrassaggio] dello scenario Pompa_Becker è presente un errore nella direzione di svitamento delle viti del coperchio.
+
+Comportamento osservato
+
+Tutte e quattro le viti del coperchio si svitano nella stessa direzione delle viti della culatta del tutorial [Sostituzione Palette – Smontaggio].
+
+Questo comportamento è errato dal punto di vista meccanico e incoerente con la configurazione dichiarata.
+
+Confronto tecnico
+
+Viti della culatta:
+
+direction = (0, 0, 1)
+
+Comportamento corretto.
+
+Viti del coperchio:
+
+direction = (-1, 0, 0)
+
+Comportamento errato: nonostante il valore diverso, lo svitamento avviene comunque nella stessa direzione delle viti della culatta.
+
+Conclusione
+Il vettore direction delle viti del coperchio non viene rispettato durante l’animazione/interazione di svitamento.
+Verificare la logica che applica la direzione di rotazione/traslazione delle viti, in particolare l’asse effettivamente utilizzato rispetto al valore direction configurato

@@ -286,6 +286,14 @@ window.App = {
                 console.warn('⚠️ InteractiveObject3D non caricato (opzionale):', error.message);
             }
 
+            // Carica AnimatedWindowSystem per finestre 2D con animazione a trigger alternato
+            try {
+                await this.loadModule('./js/core/AnimatedWindowSystem.js?v=1000001');
+                console.log('✅ Sistema finestra 2D animata caricato');
+            } catch (error) {
+                console.warn('⚠️ AnimatedWindowSystem non caricato (opzionale):', error.message);
+            }
+
             // Carica MovementParser per parsing comandi movimento tutorial
             await this.loadModule('./js/core/MovementParser.js?v=1000001');
             console.log('✅ Parser comandi movimento caricato');

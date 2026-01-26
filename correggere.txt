@@ -1,0 +1,36 @@
+Contesto
+Sto testando il sistema dei tool. La legenda degli strumenti di default viene visualizzata correttamente.
+
+Problemi da risolvere
+
+Cambio cursore sul tool selezionato
+Quando seleziono uno strumento, il cursore non cambia immediatamente.
+Il cursore cambia solo dopo la pressione del pulsante di attivazione, mentre dovrebbe aggiornarsi già alla selezione del tool.
+→ Verificare distinzione tra tool selected e tool activated e relativo evento di update del cursore.
+
+Tool non visualizzato nello scenario Manutenzione_Elettromandrino
+Esiste il file di configurazione:
+
+@scenes/Manutenzione_Elettromandrino/config.txt
+
+
+Questo file è correttamente richiamato da:
+
+@home_config.txt
+
+
+per lo scenario manutenzione_elettromandrino, ma il tool definito in questo config non compare nella lista dei tool.
+→ Verificare caricamento, parsing e merge della config di scena rispetto ai tool di default.
+
+Numero fisso di tool (sempre 4)
+Il sistema attuale sembra aggiungere singoli tool.
+Io invece voglio avere sempre 4 tool dichiarati esplicitamente, anche se alcuni sono disabilitati o non usati nello scenario.
+→ Serve un meccanismo di dichiarazione completa della toolset (4 slot fissi), non un sistema incrementale di aggiunta.
+
+Obiettivo
+
+Selezione tool → cambio cursore immediato
+
+Tool di scena correttamente visibili
+
+Toolset sempre composta da 4 tool definiti a priori

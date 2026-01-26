@@ -536,6 +536,11 @@ const Scene3D = {
         // Keyboard controls per pan camera (tasti freccia)
         document.addEventListener('keydown', this.onKeyDown.bind(this));
         console.log('[Scene3D] ⌨️ Controlli tastiera attivati (frecce = pan camera)');
+
+        // Listener globale per mouseup con CAPTURE per intercettare PRIMA di tutto
+        // Questo garantisce che il cursore venga resettato anche se l'evento viene bloccato da altri handler
+        document.addEventListener('mouseup', this.onGlobalMouseUp.bind(this), true);
+        document.addEventListener('pointerup', this.onGlobalMouseUp.bind(this), true);
     },
 
     initSubsystems: function() {
@@ -649,7 +654,7 @@ const Scene3D = {
         this.mouseControls.lastPosition.x = event.clientX;
         this.mouseControls.lastPosition.y = event.clientY;
 
-        // Avvia animazione cursore per tool brugola/chiave inglese
+        // Avvia animazione cursore per tool con cursori pressed configurati
         if (event.button === 0) {
             this.startCursorAnimation();
         }
@@ -723,13 +728,40 @@ const Scene3D = {
             }
         }
 
-        // Ferma animazione cursore
+        // Ferma animazione cursore e rimuovi classe mouse-pressed (per tool mano)
         if (event.button === 0) {
             this.stopCursorAnimation();
+            document.body.classList.remove('mouse-pressed');
         }
 
         this.mouseControls.isMouseDown = false;
         this.mouseControls.isPanning = false;
+    },
+
+    // Gestisce mouseup globale (anche quando mouse rilasciato fuori dal canvas)
+    onGlobalMouseUp: function(event) {
+        console.log('[Scene3D] 🎯 onGlobalMouseUp CAPTURE - button:', event.button, 'type:', event.type);
+
+        // Rimuovi sempre classi cursore al rilascio del pulsante sinistro
+        if (event.button === 0) {
+            console.log('[Scene3D] 🧹 Pulizia classi cursore...');
+
+            // Rimuovi classi animazione cursore (frame1/frame2) e mouse-pressed
+            document.body.classList.remove('cursor-frame-1', 'cursor-frame-2', 'mouse-pressed');
+
+            // Ferma animazione se attiva
+            if (this.cursorAnimation.intervalId) {
+                clearInterval(this.cursorAnimation.intervalId);
+                this.cursorAnimation.intervalId = null;
+                console.log('[Scene3D] ⏹️ Interval animazione fermato');
+            }
+            this.cursorAnimation.isAnimating = false;
+            this.cursorAnimation.currentFrame = 1;
+
+            this.mouseControls.isMouseDown = false;
+
+            console.log('[Scene3D] ✅ Classi dopo pulizia:', Array.from(document.body.classList).filter(c => c.includes('cursor') || c.includes('tool')));
+        }
     },
 
     onMouseWheel: function(event) {
@@ -740,15 +772,49 @@ const Scene3D = {
         event.preventDefault();
     },
 
-    // Avvia animazione cursore per tool (brugola/chiave inglese)
+    // Avvia animazione cursore per tool con cursori pressed configurati
     startCursorAnimation: function() {
+        console.log('[Scene3D] 🚀 startCursorAnimation() chiamato');
+
         // Verifica se ToolsManager è disponibile
-        if (!window.ToolsManager) return;
+        if (!window.ToolsManager) {
+            console.log('[Scene3D] ⚠️ ToolsManager non disponibile, esco');
+            return;
+        }
 
         const activeTool = window.ToolsManager.getActiveTool ? window.ToolsManager.getActiveTool() : null;
+        console.log('[Scene3D] 🔍 Tool attivo:', activeTool);
 
-        // Solo per brugola e chiave_inglese
-        if (activeTool !== 'brugola' && activeTool !== 'chiave_inglese') return;
+        if (!activeTool) {
+            console.log('[Scene3D] ⚠️ Nessun tool attivo, esco');
+            return;
+        }
+
+        // Verifica se il tool ha cursori pressed configurati (tramite ToolRegistry o fallback hardcoded)
+        let hasPressedCursor = false;
+        let toolConfig = null;
+
+        if (window.ToolRegistry && typeof window.ToolRegistry.getTool === 'function') {
+            // Sistema dinamico: verifica se il tool ha CursorPressed definito
+            toolConfig = window.ToolRegistry.getTool(activeTool);
+            hasPressedCursor = toolConfig && toolConfig.cursorPressed;
+            console.log('[Scene3D] 🔍 ToolRegistry config:', toolConfig ? {
+                id: toolConfig.id,
+                cursorPressed: toolConfig.cursorPressed,
+                cursorPressedFrame2: toolConfig.cursorPressedFrame2
+            } : 'null');
+        } else {
+            // Fallback hardcoded per scenari senza config.txt
+            hasPressedCursor = (activeTool === 'brugola' || activeTool === 'chiave_inglese');
+            console.log('[Scene3D] 🔍 Fallback hardcoded, hasPressedCursor:', hasPressedCursor);
+        }
+
+        console.log('[Scene3D] 🔍 hasPressedCursor:', hasPressedCursor);
+
+        if (!hasPressedCursor) {
+            console.log('[Scene3D] ⚠️ Tool senza cursore pressed, esco');
+            return;
+        }
 
         // Se già in animazione, non riavviare
         if (this.cursorAnimation.isAnimating) return;
@@ -774,20 +840,31 @@ const Scene3D = {
 
     // Ferma animazione cursore
     stopCursorAnimation: function() {
-        if (!this.cursorAnimation.isAnimating) return;
+        console.log('[Scene3D] 🛑 stopCursorAnimation() chiamato');
+        console.log('[Scene3D] 🔍 Stato PRIMA: isAnimating=', this.cursorAnimation.isAnimating,
+                    ', intervalId=', this.cursorAnimation.intervalId,
+                    ', body.classList=', Array.from(document.body.classList).filter(c => c.includes('cursor') || c.includes('tool')));
 
+        // Ferma interval se attivo
         if (this.cursorAnimation.intervalId) {
             clearInterval(this.cursorAnimation.intervalId);
             this.cursorAnimation.intervalId = null;
         }
 
+        // Reset stato
+        const wasAnimating = this.cursorAnimation.isAnimating;
         this.cursorAnimation.isAnimating = false;
         this.cursorAnimation.currentFrame = 1;
 
-        // Rimuovi classi frame per ripristinare cursore normale
+        // SEMPRE rimuovi classi frame per ripristinare cursore normale
+        // (anche se isAnimating era false, per sicurezza)
         document.body.classList.remove('cursor-frame-1', 'cursor-frame-2');
 
-        console.log('[Scene3D] ⏹️ Animazione cursore fermata');
+        console.log('[Scene3D] 🔍 Stato DOPO: body.classList=', Array.from(document.body.classList).filter(c => c.includes('cursor') || c.includes('tool')));
+
+        if (wasAnimating) {
+            console.log('[Scene3D] ⏹️ Animazione cursore fermata');
+        }
     },
 
     onTouchStart: function(event) {
@@ -1106,6 +1183,17 @@ const Scene3D = {
         
         if (modelConfig && modelConfig.direction) {
             this.animationSystem.modelDirections[modelFilename] = modelConfig.direction;
+
+            // CRITICAL FIX: Sincronizza anche con MovementParser per il parsing delle azioni
+            // MovementParser usa il suo storage interno per getModelDirection()
+            if (window.MovementParser) {
+                // Salva con nome completo
+                window.MovementParser.modelDirections[modelFilename] = modelConfig.direction;
+                // Salva anche con nome pulito (senza path e senza .glb) per matching flessibile
+                const cleanName = modelFilename.split('/').pop().replace('.glb', '');
+                window.MovementParser.modelDirections[cleanName] = modelConfig.direction;
+            }
+
             console.log(`🧭 Direction loaded for ${modelFilename}:`, modelConfig.direction);
         }
         
@@ -1128,6 +1216,11 @@ const Scene3D = {
         this.animationSystem.clickEnabled = true;
         if (this.animationSystem.multiStepAnimations) {
             this.animationSystem.multiStepAnimations.clear();
+        }
+
+        // Reset anche MovementParser.modelDirections (sincronizzato con addModel)
+        if (window.MovementParser) {
+            window.MovementParser.modelDirections = {};
         }
 
         // Reset mappe posizioni iniziali
@@ -1358,15 +1451,23 @@ const Scene3D = {
             const clickedObject = selectedIntersect.object;
             const targetModel = this.findRootModel(clickedObject);
             
-            // Verifica se il tool Aria è attivo per creare effetto particellare
+            // Verifica se il tool Aria o Spray è attivo per creare effetto particellare
             const activeTool = window.ToolsManager ? window.ToolsManager.getActiveTool() : 'none';
             const isAriaActiveByClass = document.body.classList.contains('tool-aria-active');
-            console.log(`[Scene3D] Click su modello - ToolsManager: ${activeTool}, Body class aria: ${isAriaActiveByClass}`);
-            
+            const isSprayActiveByClass = document.body.classList.contains('tool-spray-active');
+            console.log(`[Scene3D] Click su modello - ToolsManager: ${activeTool}, Body class aria: ${isAriaActiveByClass}, Body class spray: ${isSprayActiveByClass}`);
+
             // Usa la classe body come fonte affidabile per il tool aria
             if (isAriaActiveByClass) {
                 console.log(`[Scene3D] 💨 Attivazione effetto aria su click (rilevato da body class)!`);
                 this.handleAirToolEffect(intersects[0], event);
+                return; // Non proseguire con azione normale del modello
+            }
+
+            // Usa la classe body come fonte affidabile per il tool spray
+            if (isSprayActiveByClass) {
+                console.log(`[Scene3D] 🖤 Attivazione effetto spray su click (rilevato da body class)!`);
+                this.handleSprayToolEffect(intersects[0], event);
                 return; // Non proseguire con azione normale del modello
             }
             
@@ -1459,6 +1560,74 @@ const Scene3D = {
             window.ToolsManager.feedbackManager.updateStatus('💨 Aria compressa: cursore → oggetto');
         }
         
+        // Completa l'azione del tutorial se necessario
+        if (targetModel && this.isModelSelectable(targetModel)) {
+            setTimeout(() => {
+                this.handleModelAction(targetModel);
+            }, 500); // Delay per permettere la visualizzazione dell'effetto
+        }
+    },
+
+    handleSprayToolEffect: function(intersection, event) {
+        if (!this.particleSystem) {
+            console.warn('[Scene3D] Sistema particellare non disponibile per tool Spray - procedo senza effetti');
+
+            // Fallback: completa l'azione anche senza particelle
+            const intersectedObject = intersection.object;
+            let targetModel = intersectedObject;
+            while (targetModel.parent && !this.loadedModels.includes(targetModel)) {
+                targetModel = targetModel.parent;
+            }
+
+            if (targetModel && this.isModelSelectable(targetModel)) {
+                console.log('[Scene3D] 🖤 Azione spray completata (modalità fallback)');
+                this.handleModelAction(targetModel);
+            }
+            return;
+        }
+
+        const intersectPoint = intersection.point;
+        const normal = intersection.face ? intersection.face.normal.clone() : new THREE.Vector3(0, 1, 0);
+        const intersectedObject = intersection.object;
+
+        // Trova il modello root (parent del mesh intersettato)
+        let targetModel = intersectedObject;
+        while (targetModel.parent && !this.loadedModels.includes(targetModel)) {
+            targetModel = targetModel.parent;
+        }
+
+        // Calcola posizione cursore in coordinate 3D
+        const cursorPosition3D = this.getCursorPosition3D(event);
+
+        // Calcola centro del bounding box dell'oggetto
+        const objectCenter = this.getObjectBoundingBoxCenter(targetModel);
+
+        // Direzione dal cursore verso il centro dell'oggetto
+        const sprayDirection = new THREE.Vector3()
+            .subVectors(objectCenter, cursorPosition3D)
+            .normalize();
+
+        console.log('[Scene3D] 🖤 Spray nero dal cursore all\'oggetto', {
+            cursorPos: cursorPosition3D,
+            objectCenter: objectCenter,
+            direction: sprayDirection
+        });
+
+        // Crea spray dal cursore verso l'oggetto
+        const sprayId = this.particleSystem.createSpray(cursorPosition3D, sprayDirection, {
+            particleCount: 400,
+            life: 2.0,
+            speed: { min: 5, max: 15 },
+            size: { min: 0.002, max: 0.008 },
+            spread: { x: 0.1, y: 0.1, z: 0.1 },
+            opacity: { start: 0.8, end: 0.0 }
+        });
+
+        // Feedback visivo aggiuntivo
+        if (window.ToolsManager && window.ToolsManager.feedbackManager) {
+            window.ToolsManager.feedbackManager.updateStatus('🖤 Spray applicato: cursore → oggetto');
+        }
+
         // Completa l'azione del tutorial se necessario
         if (targetModel && this.isModelSelectable(targetModel)) {
             setTimeout(() => {
@@ -1599,22 +1768,6 @@ const Scene3D = {
         const currentStep = this.getCurrentTutorialStep();
         console.log(`[DEBUG] 📋 Current step:`, currentStep?.name || 'null');
 
-        const requiredTool = this.getRequiredToolForStep(currentStep);
-        const activeTool = window.ToolsManager ? window.ToolsManager.getActiveTool() : null;
-        console.log(`[DEBUG] 🔧 Tool required: "${requiredTool}", active: "${activeTool}"`);
-
-        if (this.highlightSystem.isHighlighting &&
-            this.highlightSystem.highlightedModel === model &&
-            requiredTool && activeTool === requiredTool) {
-
-            this.removeHighlight();
-        }
-
-        if (!requiredTool || activeTool !== requiredTool) {
-            console.log(`[DEBUG] ❌ Tool mismatch - USCITA EARLY`);
-            return;
-        }
-
         if (!currentStep) {
             console.log(`[DEBUG] ❌ No current step - USCITA EARLY`);
             return;
@@ -1622,7 +1775,7 @@ const Scene3D = {
 
         const modelFilename = model.userData?.originalFilename || model.name;
         const stepElement = currentStep.properties.Elemento;
-        const targetChildName = currentStep.properties.TargetChild; // NUOVO: Supporto TargetChild
+        const targetChildName = currentStep.properties.TargetChild;
         console.log(`[DEBUG] 🎯 Model filename: "${modelFilename}", Step element: "${stepElement}", TargetChild: "${targetChildName || 'none'}"`);
 
         // IMPORTANTE: Step DragDrop puri non hanno Elemento - esci subito
@@ -1676,14 +1829,16 @@ const Scene3D = {
 
         // ═══════════════════════════════════════════════════════════════════════
         // HOLDABLE SYSTEM: Gestione HoldAction=pick al click
+        // ⚠️ PRIORITA' ALTA: Esegui PRIMA del check del tool per evitare race condition
         // ═══════════════════════════════════════════════════════════════════════
         if (currentStep.properties.HoldAction) {
             const holdAction = currentStep.properties.HoldAction.toLowerCase();
 
             if (holdAction === 'pick' && window.HoldableSystem) {
                 console.log(`[DEBUG] 🤚 HoldAction=pick - Eseguo pickObject per: ${cleanModelName}`);
+                console.log(`[DEBUG] 🤚 HoldableSystem stato: initialized=${window.HoldableSystem.initialized}, holdables=${window.HoldableSystem.holdableConfigs.size}`);
 
-                // Esegui pick
+                // Esegui pick IMMEDIATAMENTE senza check del tool
                 const success = window.HoldableSystem.pickObject(cleanModelName);
 
                 if (success) {
@@ -1697,9 +1852,31 @@ const Scene3D = {
                             window.UI.nextStep();
                         }
                     }, 300);
+                } else {
+                    console.error(`[DEBUG] ❌ pickObject FALLITO per: ${cleanModelName}`);
+                    console.error(`[DEBUG] ❌ Verifica che l'oggetto sia registrato con Holdable=true nello step`);
                 }
                 return; // Non proseguire con animazione normale
             }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // CHECK TOOL: Solo per azioni normali (svita, avvita, traslazione, etc.)
+        // ═══════════════════════════════════════════════════════════════════════
+        const requiredTool = this.getRequiredToolForStep(currentStep);
+        const activeTool = window.ToolsManager ? window.ToolsManager.getActiveTool() : null;
+        console.log(`[DEBUG] 🔧 Tool required: "${requiredTool}", active: "${activeTool}"`);
+
+        if (this.highlightSystem.isHighlighting &&
+            this.highlightSystem.highlightedModel === model &&
+            requiredTool && activeTool === requiredTool) {
+
+            this.removeHighlight();
+        }
+
+        if (!requiredTool || activeTool !== requiredTool) {
+            console.log(`[DEBUG] ❌ Tool mismatch - USCITA EARLY`);
+            return;
         }
 
         console.log(`[DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation`);
@@ -2615,9 +2792,10 @@ const Scene3D = {
                 'ChiaveBrugola': 'brugola',
                 'ChiaveInglese': 'chiave_inglese',
                 'Mani': 'mano',
-                'Aria': 'aria'
+                'Aria': 'aria',
+                'Spray': 'spray'
             };
-            
+
             return toolMapping[step.properties.Utensile] || null;
         }
         

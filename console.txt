@@ -1,106 +1,253 @@
-ui.js?nocache=1000040:3220 🔥 CLICK TUTORIAL BUTTON: index=0, name="Manutenzione Elettromandrino"
-ui.js?nocache=1000040:3398 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
-scene3d-modular.js?nocache=1000032:2650 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
-scene3d-modular.js?nocache=1000032:2735 🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...
-scene3d-modular.js?nocache=1000032:2736 🏠 DEBUG: loadedModels count: 4
-scene3d-modular.js?nocache=1000032:2737 🏠 DEBUG: scenarioOriginalPositions size: 4
-scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: a500
-scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: a500 - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: a500
-scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: pulpito
-scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: pulpito - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: pulpito
-scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: pavimento
-scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: pavimento - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: pavimento
-scene3d-modular.js?nocache=1000032:2743 🏠 DEBUG: Tentativo reset SCENARIO modello: remote
-scene3d-modular.js?nocache=1000032:2839 🏠 Modello ripristinato SCENARIO: remote - Pos: (0.000, 0.000, 0.000)
-scene3d-modular.js?nocache=1000032:2746 🏠 DEBUG: Reset SCENARIO riuscito per: remote
-scene3d-modular.js?nocache=1000032:2752 🏠 RESET SCENARIO: 4 modelli ripristinati alle posizioni originali dello scenario
-ui.js?nocache=1000040:2881 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
-config.js?nocache=999999:242 [9:08:29 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
-config.js?nocache=999999:242 [9:08:29 PM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
-config.js?nocache=999999:242 [9:08:29 PM] INFO: Tutorial selezionato: Manutenzione Elettromandrino (12 step)
-StepGatingManager.js?v=1000001:64 [StepGating] 🔄 Reset sistema...
-StepGatingManager.js?v=1000001:69 [StepGating] ✅ Reset completato
-StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 0: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 1 - Vai alla schermata MDI'}
-StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 1: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: "Step 2 - Scarica l'utensile"}
-StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 3: {activeButtons: Array(1), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 4 - Premi il pulsante start'}
-StepGatingManager.js?v=1000001:99 [StepGating] 📝 Config registrata per step 10: {activeButtons: Array(2), enabledTools: Array(0), cameraUnlocked: false, cameraLimits: null, stepTitle: 'Step 11 - apri la porta'}
-config.js?nocache=999999:242 [9:08:29 PM] INFO: 🚦 Step Gating: 4 configurazioni registrate
-ui.js?nocache=1000040:3336 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=1
-ui.js?nocache=1000040:3345 🔥 Button 0 set to ACTIVE (green)
-config.js?nocache=999999:242 [9:08:29 PM] INFO: Tutorial 1 attivato (comportamento radio button)
-ui.js?nocache=1000040:3223 🔥 Tutorial button state updated for index: 0
-ui.js?nocache=1000040:2990 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
-ui.js?nocache=1000040:3117 📹 TUTORIAL: CameraPos globale = (0.94, 1.29, 4.07)
-ui.js?nocache=1000040:3123 📹 TUTORIAL: CameraTarget globale = (0.97, 1.15, 3.52)
-ui.js?nocache=1000040:3142 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino"
-scene3d-modular.js?nocache=1000032:3529 📹 CAMERA: Posizione assoluta (0.94, 1.29, 4.07)
-scene3d-modular.js?nocache=1000032:3550 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
-scene3d-modular.js?nocache=1000032:3584 📹 CAMERA: Durata transizione = 2s
-scene3d-modular.js?nocache=1000032:3607 📹 CAMERA: Avvio animazione camera (durata: 2s)
-scene3d-modular.js?nocache=1000032:1251 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
-scene3d-modular.js?nocache=1000032:1254 🔍 HIGHLIGHT: Nessun step o elemento corrente
-config.js?nocache=999999:242 [9:08:29 PM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
-ui.js?nocache=1000040:3437 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
-ui.js?nocache=1000040:3438 [DEBUG] 🚀 Step properties: {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.96, 1.2, 3.8)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
-config.js?nocache=999999:242 [9:08:29 PM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI {Descrizione: 'Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.', CameraPos: '(0.96, 1.2, 3.8)', CameraPos_parsed: {…}, CameraTarget: '(0.97, 1.15, 3.52)', CameraTarget_parsed: {…}, …}
-StepController.js?v=1000005:136 [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
-StepController.js?v=1000005:228 [StepController] 📋 Step 0 auto-configurato da proprietà:
-StepController.js?v=1000005:229 [StepController]    Triggers Physical: [pulpito.Pulsante_mdi]
-StepController.js?v=1000005:230 [StepController]    Actions Physical: 1 azioni
-StepController.js?v=1000005:233 [StepController]      1. setVariant: schermo=schermo002
-StepGatingManager.js?v=1000001:134 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
-StepGatingManager.js?v=1000001:137 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
-InteractiveObject3D.js?v=1000003:1116 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: ['pulpito.Pulsante_mdi']
-InteractiveObject3D.js?v=1000003:1127 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_mdi"
-InteractiveObject3D.js?v=1000003:1136 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 8
-InteractiveObject3D.js?v=1000003:1141 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
-InteractiveObject3D.js?v=1000003:1206 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
-InteractiveObject3D.js?v=1000003:1218 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_mdi
-InteractiveObject3D.js?v=1000003:1219 💡 [InteractiveObject3D] Mesh ha material: true
-InteractiveObject3D.js?v=1000003:1220 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
-InteractiveObject3D.js?v=1000003:1221 💡 [InteractiveObject3D] Material ha emissive: true
-InteractiveObject3D.js?v=1000003:1240 💡 [InteractiveObject3D] Valori originali salvati: emissive=0, intensity=1, opacity=0, transparent=false
-InteractiveObject3D.js?v=1000003:1247 💡 [InteractiveObject3D] ✓ Emissive applicata: 0xffff00, intensity=2.0
-InteractiveObject3D.js?v=1000003:1257 💡 [InteractiveObject3D] ✓ Opacity impostata a 0.4 per visibilità evidenziazione
-InteractiveObject3D.js?v=1000003:1262 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_mdi" evidenziato e aggiunto a highlightedButtons (totale: 1)
-ui.js?nocache=1000040:3466 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI"
-scene3d-modular.js?nocache=1000032:3529 📹 CAMERA: Posizione assoluta (0.96, 1.2, 3.8)
-scene3d-modular.js?nocache=1000032:3550 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
-scene3d-modular.js?nocache=1000032:3584 📹 CAMERA: Durata transizione = 2s
-scene3d-modular.js?nocache=1000032:3607 📹 CAMERA: Avvio animazione camera (durata: 2s)
-scene3d-modular.js?nocache=1000032:3856 📹 CAMERA: Animazione completata
-scene3d-modular.js?nocache=1000032:1329 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_mdi
-InteractiveObject3D.js?v=1000003:414 🖱️ [InteractiveObject3D] Click su "Pulsante_mdi" (parent: pulpito)
-InteractiveObject3D.js?v=1000003:450 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_mdi (mesh: Pulsante_mdi) → setVariant:schermo=schermo002
-InteractiveObject3D.js?v=1000003:473 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click (opacity ripristinata a 0)
-StepController.js?v=1000005:338 [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_mdi"
-StepController.js?v=1000005:339 [StepController] 🔍 currentStepIndex=0
-StepController.js?v=1000005:340 [StepController] 🔍 stepConfigs.size=1
-StepController.js?v=1000005:341 [StepController] 🔍 stepConfigs.keys=[0]
-StepController.js?v=1000005:352 [StepController] 🔍 Configurazione trovata: {triggers: {…}, actions: {…}, autoAdvance: false}
-StepController.js?v=1000005:366 [StepController] ✅ Trigger "pulpito.Pulsante_mdi" accettato da sorgente "physical"
-StepController.js?v=1000005:387 [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
-StepController.js?v=1000005:390 [StepController]    1. setVariant: {type: 'setVariant', group: 'schermo', variant: 'schermo002'}
-StepController.js?v=1000005:449 [StepController] 🔀 setVariant: schermo=schermo002
-InteractiveObject3D.js?v=1000003:910 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo001" → "schermo002"
-InteractiveObject3D.js?v=1000003:482    ✓ Gestito da StepController
-InteractiveObject3D.js?v=1000003:493    ⏭️ Azione locale "setVariant:schermo=schermo002" ignorata (già gestito da StepController)
-scene3d-modular.js?nocache=1000032:1332 [Scene3D] ✅ Click gestito da InteractiveObject3D
-scene3d-modular.js?nocache=1000032:1329 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_tool
-InteractiveObject3D.js?v=1000003:414 🖱️ [InteractiveObject3D] Click su "Pulsante_tool" (parent: pulpito)
-StepGatingManager.js?v=1000001:190 🚫 [StepGating] Pulsante "Pulsante_tool" NON attivo nello step 0
-InteractiveObject3D.js?v=1000003:444 🚫 [InteractiveObject3D] Pulsante "Pulsante_tool" bloccato dal gating - step 0
-scene3d-modular.js?nocache=1000032:1329 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_tool
-InteractiveObject3D.js?v=1000003:414 🖱️ [InteractiveObject3D] Click su "Pulsante_tool" (parent: pulpito)
-StepGatingManager.js?v=1000001:190 🚫 [StepGating] Pulsante "Pulsante_tool" NON attivo nello step 0
-InteractiveObject3D.js?v=1000003:444 🚫 [InteractiveObject3D] Pulsante "Pulsante_tool" bloccato dal gating - step 0
-scene3d-modular.js?nocache=1000032:1364 [Scene3D] Click su modello - ToolsManager: null, Body class aria: false
-scene3d-modular.js?nocache=1000032:1374 [Scene3D] 🎯 Click rilevato su modello: pulpito
-scene3d-modular.js?nocache=1000032:1381 [Scene3D] 📺 Uso sistema tutorial legacy per: pulpito
-scene3d-modular.js?nocache=1000032:1597 [DEBUG] 🎬 handleModelAction chiamato per: pulpito
-scene3d-modular.js?nocache=1000032:1600 [DEBUG] 📋 Current step: Step 1 - Vai alla schermata MDI
-scene3d-modular.js?nocache=1000032:1604 [DEBUG] 🔧 Tool required: "mano", active: "null"
-scene3d-modular.js?nocache=1000032:1614 [DEBUG] ❌ Tool mismatch - USCITA EARLY
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-mano-active']
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-mano-active']
+config.js?nocache=999999:242 [7:08:35 PM] INFO: [ToolsManager] Strumento attivato: spray
+scene3d-modular.js?nocache=1000032:777 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:786 [Scene3D] 🔍 Tool attivo: spray
+scene3d-modular.js?nocache=1000032:801 [Scene3D] 🔍 ToolRegistry config: {id: 'spray', cursorPressed: 'cursors/spray_premuto.svg', cursorPressedFrame2: 'cursors/spray_premuto.svg'}
+scene3d-modular.js?nocache=1000032:812 [Scene3D] 🔍 hasPressedCursor: cursors/spray_premuto.svg
+scene3d-modular.js?nocache=1000032:838 [Scene3D] 🎬 Animazione cursore avviata per: spray
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:756 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-spray-active']
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-spray-active']
+scene3d-modular.js?nocache=1000032:1458 [Scene3D] Click su modello - ToolsManager: spray, Body class aria: false, Body class spray: true
+scene3d-modular.js?nocache=1000032:1469 [Scene3D] 🖤 Attivazione effetto spray su click (rilevato da body class)!
+scene3d-modular.js?nocache=1000032:1610 [Scene3D] 🖤 Spray nero dal cursore all'oggetto {cursorPos: Vector3, objectCenter: Vector3, direction: Vector3}
+ParticleSystem.js?v=1000018:146 [ParticleSystem] Getto aria creato: airJet_1769364516914
+ParticleSystem.js?v=1000018:180 [ParticleSystem] 🖤 Spray nero creato: airJet_1769364516914
+scene3d-modular.js?nocache=1000032:843 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:844 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= ['tool-spray-active']
+scene3d-modular.js?nocache=1000032:863 [Scene3D] 🔍 Stato DOPO: body.classList= ['tool-spray-active']
+scene3d-modular.js?nocache=1000032:1766 [DEBUG] 🎬 handleModelAction chiamato per: a500
+scene3d-modular.js?nocache=1000032:1769 [DEBUG] 📋 Current step: Step 14 - ingrassa con lo spray
+scene3d-modular.js?nocache=1000032:1779 [DEBUG] 🎯 Model filename: "a500", Step element: "models/a500.glb", TargetChild: "naso"
+scene3d-modular.js?nocache=1000032:1789 [DEBUG] 🎯 Clean model: "a500", Clean step: "a500"
+scene3d-modular.js?nocache=1000032:1803 [DEBUG] 🔍 TARGETCHILD: Cercando child "naso" dentro "a500"
+scene3d-modular.js?nocache=1000032:1814 [DEBUG] ✅ TARGETCHILD: Trovato child "naso" (tipo: Mesh)
+scene3d-modular.js?nocache=1000032:1868 [DEBUG] 🔧 Tool required: "spray", active: "spray"
+scene3d-modular.js?nocache=1000032:1882 [DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation
+scene3d-modular.js?nocache=1000032:1944 [Scene3D] 🎬 startModelAnimation: Modello da animare: "naso"
+scene3d-modular.js?nocache=1000032:1946 [Scene3D] 🎬 startModelAnimation: Usando parent "a500" per home_config
+MovementParser.js?v=1000001:39 🔍 [PARSE_STEPS] Inizio parsing per modelFilename="a500"
+MovementParser.js?v=1000001:40 🔍 [PARSE_STEPS] Proprietà disponibili: (10) ['Utensile', 'Descrizione', 'Message', 'MessageTitle', 'MessageVideo', 'CameraUnlocked', 'CameraLimits', 'Elemento', 'TargetChild', 'Azione1']
+MovementParser.js?v=1000001:47 🔍 [PARSE_STEPS] Trovata Azione1: "traslazione:(0,0,0,0.5)"
+MovementParser.js?v=1000001:51 🔍 [PARSE_STEPS] Step 1 parsato con successo: {index: 1, rotazione: null, traslazione: {…}, appoggia: null, resetCenteredOriginal: null, …}
+MovementParser.js?v=1000001:60 🔍 [PARSE_STEPS] Risultato finale: 1 step trovati
+MultiStepAnimationSystem.js?v=1000001:46 🎬 startMultiStepMovement: MODELLO RICEVUTO: {name: 'naso', type: 'Mesh', uuid: 'aea22f3a-757c-44e5-857d-bdc4585e3b84', position: Vector3, isChild: true, …}
+MultiStepAnimationSystem.js?v=1000001:58 🔧 FIX GLB CHILD: Forzando matrixAutoUpdate e aggiornamento parent chain
+MultiStepAnimationSystem.js?v=1000001:72 🔧 FIX GLB CHILD: matrixAutoUpdate=true, parent chain aggiornata
+MultiStepAnimationSystem.js?v=1000001:121 🎬 executeCurrentMultiStep: ANIMANDO MODELLO: {name: 'naso', type: 'Mesh', initialPosition: Vector3, step: {…}}
+scene3d-modular.js?nocache=1000032:2087 📐 Bounding box per undefined:
+scene3d-modular.js?nocache=1000032:2088    Min: (2.794, 1.552, 1.911)
+scene3d-modular.js?nocache=1000032:2089    Max: (2.827, 1.585, 1.944)
+scene3d-modular.js?nocache=1000032:2090    Center: (2.811, 1.569, 1.928)
+scene3d-modular.js?nocache=1000032:2091    Size: (0.033, 0.033, 0.033)
+MultiStepAnimationSystem.js?v=1000001:385 ✅ [ANIM_ADDED] Animazione aggiunta a activeAnimations!
+MultiStepAnimationSystem.js?v=1000001:386    Model: naso
+MultiStepAnimationSystem.js?v=1000001:387    hasTranslation: true, hasRotation: false
+MultiStepAnimationSystem.js?v=1000001:388    Totale animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2504 🎯 ANIM LOOP [naso]: progress=0.00, pos=(0.000, -0.008, 0.000), hasParent=true
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2504 🎯 ANIM LOOP [naso]: progress=0.01, pos=(0.000, -0.008, 0.000), hasParent=true
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2504 🎯 ANIM LOOP [naso]: progress=0.27, pos=(0.000, -0.008, 0.000), hasParent=true
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2478 🔍 ANIM DEBUG [naso]: hasTranslation=true, hasRotation=false, modelCenter=false, hasSvita=false, hasAvvita=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+scene3d-modular.js?nocache=1000032:2453 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+scene3d-modular.js?nocache=1000032:2455    [0] model=naso, hasTranslation=true, hasRotation=false, finished=true
+ui.js?nocache=1000040:3454 [DEBUG] ⏭️ GOTO STEP chiamata con index: 14
+ui.js?nocache=1000040:3482 [DEBUG] ⏭️ Navigazione a step: "Step 15 - cambia schermata sul tecpad"
+config.js?nocache=999999:242 [7:08:38 PM] INFO: Navigazione a step 15: Step 15 - cambia schermata sul tecpad
+ui.js?nocache=1000040:3513 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ui.js?nocache=1000040:3518 [UI] 🧹 Rimossa evidenziazione modello corrente
+ui.js?nocache=1000040:3524 [UI] 🧹 Rimosse evidenziazioni pulsanti
+ui.js?nocache=1000040:3564 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 15 - cambia schermata sul tecpad"
+ui.js?nocache=1000040:3565 [DEBUG] 🚀 Step properties: {Descrizione: 'Premi il pulsante sul tecpad per cambiare schermata in status', Utensile: 'Mani', ActiveButtons: 'pulsante_r_status', AcceptTrigger_Physical: 'remote.pulsante_r_status', OnPhysicalTrigger: 'setVariant:schermo_remote=Schermo_R001', …}
+config.js?nocache=999999:242 [7:08:38 PM] INFO: Esecuzione step: Step 15 - cambia schermata sul tecpad {Descrizione: 'Premi il pulsante sul tecpad per cambiare schermata in status', Utensile: 'Mani', ActiveButtons: 'pulsante_r_status', AcceptTrigger_Physical: 'remote.pulsante_r_status', OnPhysicalTrigger: 'setVariant:schermo_remote=Schermo_R001', …}
+StepController.js?v=1000008:136 [StepController] 📍 Step corrente: 14 Step 15 - cambia schermata sul tecpad
+StepController.js?v=1000008:228 [StepController] 📋 Step 14 auto-configurato da proprietà:
+StepController.js?v=1000008:229 [StepController]    Triggers Physical: [remote.pulsante_r_status]
+StepController.js?v=1000008:230 [StepController]    Actions Physical: 1 azioni
+StepController.js?v=1000008:233 [StepController]      1. setVariant: schermo_remote=Schermo_R001
+StepGatingManager.js?v=1000001:140 🚦 [StepGating] Step 13 → 14 ("Step 15 - cambia schermata sul tecpad")
+StepGatingManager.js?v=1000001:143 🚦 [StepGating] Pulsanti attivi: [pulsante_r_status]
+InteractiveObject3D.js?v=1000003:1151 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: ['remote.pulsante_r_status']
+InteractiveObject3D.js?v=1000003:1162 💡 [InteractiveObject3D] Cercando pulsante: parent="remote", button="pulsante_r_status"
+InteractiveObject3D.js?v=1000003:1171 💡 [InteractiveObject3D] ✓ Oggetto "remote" trovato in registry, childMeshes: 2
+InteractiveObject3D.js?v=1000003:1181 💡 [InteractiveObject3D] Mesh non trovata in childMeshes, cercando in model.traverse...
+InteractiveObject3D.js?v=1000003:1201 💡 [InteractiveObject3D] Totale child nel model: 20
+InteractiveObject3D.js?v=1000003:1207 💡 [InteractiveObject3D] Oggetto non in registry, cercando modello "remote" nella scena...
+InteractiveObject3D.js?v=1000003:1212 💡 [InteractiveObject3D] ✓ Modello parent "remote" trovato nella scena, cercando child...
+InteractiveObject3D.js?v=1000003:1234  [InteractiveObject3D] ❌ Mesh pulsante "pulsante_r_status" non trovata in "remote"
+(anonymous) @ InteractiveObject3D.js?v=1000003:1234
+highlightRequiredButtons @ InteractiveObject3D.js?v=1000003:1153
+executeStep @ ui.js?nocache=1000040:3592
+goToStep @ ui.js?nocache=1000040:3500
+(anonymous) @ scene3d-modular.js?nocache=1000032:3041
+setTimeout
+advanceToNextTutorialStep @ scene3d-modular.js?nocache=1000032:3039
+finishMultiStepMovement @ MultiStepAnimationSystem.js?v=1000001:485
+executeCurrentMultiStep @ MultiStepAnimationSystem.js?v=1000001:112
+(anonymous) @ MultiStepAnimationSystem.js?v=1000001:468
+setTimeout
+onMultiStepCompleted @ MultiStepAnimationSystem.js?v=1000001:464
+updateAnimations @ scene3d-modular.js?nocache=1000032:2642
+render @ scene3d-modular.js?nocache=1000032:3643
+animate @ scene3d-modular.js?nocache=1000032:3630
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+requestAnimationFrame
+animate @ scene3d-modular.js?nocache=1000032:3629
+InteractiveObject3D.js?v=1000003:1236 💡 [InteractiveObject3D] childMeshes disponibili: (2) ['pulsante_r_play', 'Pulsante_r_status']
+ui.js?nocache=1000040:3593 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 15 - cambia schermata sul tecpad"
+scene3d-modular.js?nocache=1000032:3670 📹 CAMERA: Nessun parametro camera nello step, camera rimane ferma
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+ParticleSystem.js?v=1000018:327 [ParticleSystem] Effetto rimosso: airJet_1769364516914
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-spray-active']
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-spray-active']
+config.js?nocache=999999:242 [7:08:41 PM] INFO: [ToolsManager] Strumento attivato: mano
+scene3d-modular.js?nocache=1000032:777 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:786 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:801 [Scene3D] 🔍 ToolRegistry config: {id: 'mano', cursorPressed: 'cursors/mano_premuto_frame1.svg', cursorPressedFrame2: 'cursors/mano_premuto_frame2.svg'}
+scene3d-modular.js?nocache=1000032:812 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:838 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:756 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-mano-active']
+scene3d-modular.js?nocache=1000032:743 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:747 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:763 [Scene3D] ✅ Classi dopo pulizia: ['tool-mano-active']
+scene3d-modular.js?nocache=1000032:1422 [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_status
+InteractiveObject3D.js?v=1000003:449 🖱️ [InteractiveObject3D] Click su "Pulsante_r_status" (parent: remote)
+InteractiveObject3D.js?v=1000003:485 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_status (mesh: Pulsante_r_status) → setVariant:schermo_remote=Schermo_R001
+StepController.js?v=1000008:338 [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_status"
+StepController.js?v=1000008:339 [StepController] 🔍 currentStepIndex=14
+StepController.js?v=1000008:340 [StepController] 🔍 stepConfigs.size=6
+StepController.js?v=1000008:341 [StepController] 🔍 stepConfigs.keys=[0, 1, 3, 10, 11, 14]
+StepController.js?v=1000008:352 [StepController] 🔍 Configurazione trovata: {triggers: {…}, actions: {…}, autoAdvance: true}
+StepController.js?v=1000008:361 [StepController] ❌ Trigger "remote.Pulsante_r_status" non accettato per sorgente "physical"
+StepController.js?v=1000008:362 [StepController]    Trigger accettati: [remote.pulsante_r_status]
+InteractiveObject3D.js?v=1000003:525    ⚡ Esecuzione azione locale (non gestito da StepController)
+InteractiveObject3D.js?v=1000003:1353 ⚡ [InteractiveObject3D] Eseguo azione: setVariant(schermo_remote=Schermo_R001)
+InteractiveObject3D.js?v=1000003:945 🔀 [InteractiveObject3D] StateGroup "schermo_remote": "Schermo_R000" → "Schermo_R001"
+scene3d-modular.js?nocache=1000032:1425 [Scene3D] ✅ Click gestito da InteractiveObject3D
+scene3d-modular.js?nocache=1000032:843 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:844 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= ['tool-mano-active']
+scene3d-modular.js?nocache=1000032:863 [Scene3D] 🔍 Stato DOPO: body.classList= ['tool-mano-active']

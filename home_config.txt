@@ -18,6 +18,7 @@ description=Controllo e manutenzione elettromandrino con coni HSK: pulizia pinza
 description_key=scenario_spindle_maintenance_description   // i18n key for description
 image=menuimages/1.png                                    // Scenario preview image
 tutorial=scenes/Manutenzione_Elettromandrino/tutorial.txt
+Configuration=scenes/Manutenzione_Elettromandrino/config.txt
 // === 3D MODELS AND MOVEMENT DIRECTIONS ===
 model=models/pulpito.glb                                  // Breech 3D model
 direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
@@ -41,6 +42,7 @@ description=Smontaggio e manutenzione completa della pompa del vuoto Becker con 
 description_key=scenario_pump_maintenance_description      // i18n key for technical operation description
 image=menuimages/pompavuoto.png                           // Vacuum pump specific image
 tutorial=scenes/Pompa_Becker/tutorial.txt                // Tutorial file with guided steps
+Configuration=scenes/Pompa_Becker/config.txt
 // === 3D MODELS AND MOVEMENT DIRECTIONS ===
 model=models/culatta.glb                                  // Breech 3D model
 direction=0,0,1                                           // Movement direction: towards Z+ (vertical extraction)

@@ -1,0 +1,54 @@
+nello step [Next Step - apri e chiudi] non è attivo il pulsante remote.Pulsante_r_unlock e non si vede l'animazione con i vari png della         
+  cartella  AnimatedImagesFolder=screens/mandrino                                                                                                  
+  ⎿  ⧉ Selected 1 lines from scenes\Manutenzione_Elettromandrino\tutorial.txt in Visual Studio Code
+
+● Verifico lo step - probabilmente mancano ActiveButtons e la configurazione del trigger:
+
+● Read(scenes\Manutenzione_Elettromandrino\tutorial.txt)
+  ⎿  Read 12 lines
+
+● Vedo due problemi:
+
+  1. Manca ActiveButtons - Il pulsante è bloccato
+  2. TargetChild ha formato sbagliato - Non deve avere il prefisso remote.
+
+  Verifico anche se il pulsante è definito nell'InteractiveObject:
+
+● Search(pattern: "Pulsante_r_unlock|pulsante_r_unlock", path: "scenes\Manutenzione_Elettromandrino\tutorial.txt", output_mode: "content")
+  ⎿  Found 1 line (ctrl+o to expand)
+
+● Il pulsante non è definito come InteractiveChild. Leggo la definizione del remote:
+
+● Read(scenes\Manutenzione_Elettromandrino\tutorial.txt)
+  ⎿  Read 15 lines
+
+● Devo fare tre correzioni:
+
+  1. Aggiungere il pulsante all'InteractiveObject remote
+  2. Aggiungere ActiveButtons allo step
+  3. Correggere TargetChild (rimuovere prefisso remote.)
+
+● Update(scenes\Manutenzione_Elettromandrino\tutorial.txt)
+  ⎿  Added 3 lines
+      83  # Pulsante status sul telecomando                                                                                                        
+      84  InteractiveChild=Pulsante_r_status,button,onClick:setVariant:schermo_remote=Schermo_R001                                                 
+      85                                                                                                                                           
+      86 +# Pulsante unlock sul telecomando (per animazione apri/chiudi)                                                                           
+      87 +InteractiveChild=Pulsante_r_unlock,button                                                                                                
+      88 +                                                                                                                                         
+      89  # ═══════════════════════════════════════════════════════════════════════════                                                            
+      90  # DEFINIZIONE OGGETTO INTERATTIVO: MACCHINA A500                                                                                         
+      91  # ═══════════════════════════════════════════════════════════════════════════                                                            
+
+● Update(scenes\Manutenzione_Elettromandrino\tutorial.txt)
+  ⎿  Added 4 lines, removed 3 lines
+      314  AutoAdvance=true                                                                                                                        
+      315                                                                                                                                          
+      316  [Next Step - apri e chiudi]                                                                                                             
+      317 -Elemento=models/remote.glb       # Oggetto 3D che funge da trigger                                                                      
+      318 -TargetChild=remote.Pulsante_r_unlock                                                                                                    
+      317 +Elemento=models/remote.glb                                                                                                              
+      318  Utensile=Mani                                                                                                    
+
+● Continuo con l'integrazione tra InteractiveObject3D e AnimatedWindowSystem. Devo fare in modo che quando l'utente clicca sul pulsante 3D
+  Pulsante_r_unlock, il click venga inoltrato ad AnimatedWindowSystem per far avanzare l'animazione.

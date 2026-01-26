@@ -42,15 +42,21 @@ window.StepGatingManager = {
 
         console.log('[StepGating] 🚦 Inizializzazione sistema Step Gating...');
 
-        // Salva limiti camera di default
-        if (window.Scene3D && window.Scene3D.mouseControls) {
+        // Salva limiti camera di default (da mouseControls.limits, non mouseControls!)
+        if (window.Scene3D && window.Scene3D.mouseControls && window.Scene3D.mouseControls.limits) {
+            const limits = window.Scene3D.mouseControls.limits;
             this.defaultCameraLimits = {
-                minPhi: window.Scene3D.mouseControls.minPhi || 0.1,
-                maxPhi: window.Scene3D.mouseControls.maxPhi || Math.PI * 0.85,
-                minTheta: window.Scene3D.mouseControls.minTheta || -Infinity,
-                maxTheta: window.Scene3D.mouseControls.maxTheta || Infinity
+                minPhi: limits.minPhi || 0.2,
+                maxPhi: limits.maxPhi || Math.PI * 0.45
             };
             console.log('[StepGating] 📷 Limiti camera default salvati:', this.defaultCameraLimits);
+        } else {
+            // Fallback se Scene3D non ancora pronto
+            this.defaultCameraLimits = {
+                minPhi: 0.2,
+                maxPhi: Math.PI * 0.45
+            };
+            console.log('[StepGating] ⚠️ Scene3D non pronto, usando limiti fallback:', this.defaultCameraLimits);
         }
 
         this.initialized = true;
@@ -243,29 +249,30 @@ window.StepGatingManager = {
 
         const controls = window.Scene3D.mouseControls;
 
+        // IMPORTANTE: rotateCamera usa mouseControls.limits, non mouseControls direttamente!
+        const limits = controls.limits;
+        if (!limits) {
+            console.warn('[StepGating] mouseControls.limits non disponibile');
+            return;
+        }
+
         if (config.cameraUnlocked) {
-            // Sblocca rotazione completa
-            controls.minPhi = 0;
-            controls.maxPhi = Math.PI;
-            controls.minTheta = -Infinity;
-            controls.maxTheta = Infinity;
-            console.log('📷 [StepGating] Camera SBLOCCATA - rotazione libera');
+            // Sblocca rotazione completa (phi da 0 a PI = da sopra a sotto)
+            limits.minPhi = 0.01;  // Quasi 0, evita gimbal lock
+            limits.maxPhi = Math.PI - 0.01;  // Quasi PI
+            console.log('📷 [StepGating] Camera SBLOCCATA - rotazione libera (minPhi=0.01, maxPhi=3.13)');
 
         } else if (config.cameraLimits) {
             // Applica limiti specifici dello step
-            controls.minPhi = config.cameraLimits.minPhi ?? this.defaultCameraLimits.minPhi;
-            controls.maxPhi = config.cameraLimits.maxPhi ?? this.defaultCameraLimits.maxPhi;
-            controls.minTheta = config.cameraLimits.minTheta ?? this.defaultCameraLimits.minTheta;
-            controls.maxTheta = config.cameraLimits.maxTheta ?? this.defaultCameraLimits.maxTheta;
+            limits.minPhi = config.cameraLimits.minPhi ?? this.defaultCameraLimits.minPhi;
+            limits.maxPhi = config.cameraLimits.maxPhi ?? this.defaultCameraLimits.maxPhi;
             console.log('📷 [StepGating] Camera con limiti specifici:', config.cameraLimits);
 
         } else {
             // Ripristina limiti default
             if (this.defaultCameraLimits) {
-                controls.minPhi = this.defaultCameraLimits.minPhi;
-                controls.maxPhi = this.defaultCameraLimits.maxPhi;
-                controls.minTheta = this.defaultCameraLimits.minTheta;
-                controls.maxTheta = this.defaultCameraLimits.maxTheta;
+                limits.minPhi = this.defaultCameraLimits.minPhi;
+                limits.maxPhi = this.defaultCameraLimits.maxPhi;
             }
             // Non logga per evitare spam - è il caso normale
         }

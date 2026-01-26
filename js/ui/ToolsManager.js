@@ -69,31 +69,61 @@ class ToolsManager {
         // Pulisce il container
         toolsContainer.innerHTML = '';
 
+        // Ottieni tool dinamici da ToolRegistry (se disponibile) o fallback a array hardcoded
+        let tools;
+        if (window.ToolRegistry && typeof window.ToolRegistry.getAllTools === 'function') {
+            tools = window.ToolRegistry.getAllTools();
+            this.safeLog(2, `[ToolsManager] Caricati ${tools.length} tool da ToolRegistry`);
+        } else {
+            // Fallback a tool hardcoded
+            tools = this.availableTools;
+            this.safeLog(1, '[ToolsManager] ToolRegistry non disponibile, uso tool di default');
+        }
+
         // Crea le icone degli strumenti
-        this.availableTools.forEach(tool => {
+        tools.forEach(tool => {
             const toolElement = document.createElement('div');
             toolElement.className = 'tool-icon';
-            toolElement.dataset.tool = tool.name;
-            toolElement.title = tool.name.replace('_', ' ');
+            toolElement.dataset.tool = tool.id || tool.name; // Usa id da ToolRegistry, fallback a name
+            toolElement.title = tool.label || tool.name.replace('_', ' ');
 
             const img = document.createElement('img');
             img.src = tool.icon;
-            img.alt = tool.name;
+            img.alt = tool.label || tool.name;
             img.onerror = () => {
                 this.safeLog(1, `[ToolsManager] Icona non trovata: ${tool.icon}`);
                 img.style.display = 'none';
             };
 
             toolElement.appendChild(img);
-            toolElement.addEventListener('click', () => this.toggleTool(tool.name));
+            toolElement.addEventListener('click', () => this.toggleTool(tool.id || tool.name));
 
             toolsContainer.appendChild(toolElement);
 
             // Inizializza lo stato dello strumento
-            this.toolsState[tool.name] = false;
+            this.toolsState[tool.id || tool.name] = false;
         });
 
         this.safeLog(2, '[ToolsManager] Legenda strumenti inizializzata');
+    }
+
+    /**
+     * Aggiorna la UI degli strumenti ricaricando da ToolRegistry
+     * Usato dopo caricamento configurazione scenario
+     */
+    refreshToolsUI() {
+        this.safeLog(2, '[ToolsManager] Refresh UI strumenti...');
+
+        // Disattiva tutti i tool correnti
+        this.deactivateAllTools();
+
+        // Reset stato
+        this.toolsState = {};
+
+        // Ricrea la legenda
+        this.initToolsLegend();
+
+        this.safeLog(2, '[ToolsManager] UI strumenti aggiornata');
     }
 
     /**
@@ -155,17 +185,16 @@ class ToolsManager {
             this.deactivateTool(toolName);
         });
 
-        // IMPORTANTE: Rimuovi esplicitamente TUTTE le classi cursori dal body
-        // Questo garantisce pulizia completa anche in caso di stato inconsistente
-        document.body.classList.remove(
-            'tool-aria-active',
-            'tool-chiave_inglese-active',
-            'tool-brugola-active',
-            'tool-mano-active',
-            'cursor-frame-1',
-            'cursor-frame-2',
-            'mouse-pressed'
-        );
+        // IMPORTANTE: Rimuovi TUTTE le classi tool-*-active dal body (sia hardcoded che dinamiche)
+        const bodyClasses = Array.from(document.body.classList);
+        bodyClasses.forEach(cls => {
+            if (cls.startsWith('tool-') && cls.endsWith('-active')) {
+                document.body.classList.remove(cls);
+            }
+        });
+
+        // Rimuovi anche classi animazione cursore
+        document.body.classList.remove('cursor-frame-1', 'cursor-frame-2', 'mouse-pressed');
 
         // Reset inline style cursor su body
         document.body.style.cursor = '';
@@ -228,6 +257,15 @@ class ToolsManager {
      * @returns {string|null} Nome interno o null se non trovato
      */
     mapToolName(tutorialToolName) {
+        // Usa ToolRegistry per mapping dinamico se disponibile
+        if (window.ToolRegistry && typeof window.ToolRegistry.getToolByTutorialName === 'function') {
+            const toolConfig = window.ToolRegistry.getToolByTutorialName(tutorialToolName);
+            if (toolConfig) {
+                return toolConfig.id;
+            }
+        }
+
+        // Fallback a mapping hardcoded per compatibilità
         const mapping = {
             'ChiaveBrugola': 'brugola',
             'ChiaveInglese': 'chiave_inglese',
@@ -235,7 +273,16 @@ class ToolsManager {
             'Aria': 'aria'
         };
 
-        return mapping[tutorialToolName] || null;
+        const mapped = mapping[tutorialToolName];
+        if (mapped) {
+            return mapped;
+        }
+
+        // Warning se tool non trovato
+        this.safeLog(1, `[ToolsManager] ⚠️ Tool non trovato per nome tutorial: ${tutorialToolName}`);
+        this.safeLog(1, `💡 Verifica che il tool sia definito in config.txt con TutorialNames=${tutorialToolName}`);
+
+        return null;
     }
 
     /**
@@ -305,6 +352,7 @@ class ToolsManager {
 
     /**
      * Aggiorna il cursore del canvas 3D basato sullo strumento attivo
+     * Supporta sia tool hardcoded che tool dinamici da ToolRegistry
      */
     updateCanvasCursor() {
         const canvas = document.querySelector('#canvas3d, canvas');
@@ -315,55 +363,61 @@ class ToolsManager {
 
         const activeTool = this.getActiveTool();
 
-        // Rimuovi tutte le classi body tool prima di applicare la nuova
-        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active', 'tool-mano-active');
-
-        // Gestione cursori personalizzati via body class per tool specifici
-        if (activeTool === 'aria' || activeTool === 'Aria') {
-            // Rimuovi classi cursore canvas
-            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-            // Applica cursore aria direttamente al body
-            document.body.classList.remove('tool-aria-active');
-            document.body.classList.add('tool-aria-active');
-            this.safeLog(3, `[ToolsManager] Cursore aria applicato direttamente al body`);
-            return;
-        }
-
-        if (activeTool === 'chiave_inglese' || activeTool === 'ChiaveInglese') {
-            // Rimuovi classi cursore canvas
-            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-            // Applica cursore chiave inglese direttamente al body
-            document.body.classList.add('tool-chiave_inglese-active');
-            this.safeLog(3, `[ToolsManager] Cursore chiave inglese applicato direttamente al body`);
-            return;
-        }
-
-        if (activeTool === 'brugola' || activeTool === 'ChiaveBrugola') {
-            // Rimuovi classi cursore canvas
-            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-            // Applica cursore brugola direttamente al body
-            document.body.classList.add('tool-brugola-active');
-            this.safeLog(3, `[ToolsManager] Cursore brugola applicato direttamente al body`);
-            return;
-        }
-
-        if (activeTool === 'mano' || activeTool === 'Mani') {
-            // Rimuovi classi cursore canvas
-            canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-            // Applica cursore mano direttamente al body (sistema unificato)
-            document.body.classList.add('tool-mano-active');
-            this.safeLog(3, `[ToolsManager] Cursore mano applicato direttamente al body`);
-            return;
-        }
-
-        // Per tool rimanenti o default, usa il sistema canvas
+        // Rimuovi classi cursore canvas
         canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
+
+        // Rimuovi TUTTE le classi tool-*-active dal body (sia hardcoded che dinamiche)
+        const bodyClasses = Array.from(document.body.classList);
+        bodyClasses.forEach(cls => {
+            if (cls.startsWith('tool-') && cls.endsWith('-active')) {
+                document.body.classList.remove(cls);
+            }
+        });
+
+        // Se nessun tool attivo, applica default
+        if (!activeTool) {
+            canvas.classList.add('cursor-default');
+            this.safeLog(3, '[ToolsManager] Nessun tool attivo, cursore default');
+            return;
+        }
+
+        // Sistema dinamico: usa ToolRegistry se disponibile
+        if (window.ToolRegistry && typeof window.ToolRegistry.getTool === 'function') {
+            const toolConfig = window.ToolRegistry.getTool(activeTool);
+            if (toolConfig && toolConfig.cursor) {
+                // Applica classe body dinamica per questo tool
+                document.body.classList.add(`tool-${activeTool}-active`);
+                this.safeLog(3, `[ToolsManager] Cursore dinamico applicato: tool-${activeTool}-active`);
+                return;
+            }
+        }
+
+        // Fallback hardcoded per scenari senza config.txt
+        const hardcodedTools = ['aria', 'chiave_inglese', 'brugola', 'mano'];
+        const normalizedTool = activeTool.toLowerCase();
+
+        // Mappa nomi alternativi
+        const toolMap = {
+            'aria': 'aria',
+            'chiaveinglese': 'chiave_inglese',
+            'chiave_inglese': 'chiave_inglese',
+            'brugola': 'brugola',
+            'chiavebrugola': 'brugola',
+            'mano': 'mano',
+            'mani': 'mano'
+        };
+
+        const mappedTool = toolMap[normalizedTool] || normalizedTool;
+
+        if (hardcodedTools.includes(mappedTool)) {
+            document.body.classList.add(`tool-${mappedTool}-active`);
+            this.safeLog(3, `[ToolsManager] Cursore hardcoded applicato: tool-${mappedTool}-active`);
+            return;
+        }
+
+        // Tool non riconosciuto - usa default
         canvas.classList.add('cursor-default');
-
-        // IMPORTANTE: Rimuovi anche tutte le classi body per evitare cursori persistenti
-        document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active', 'tool-mano-active');
-
-        this.safeLog(3, `[ToolsManager] Cursore default applicato: ${activeTool || 'nessuno'}`);
+        this.safeLog(2, `[ToolsManager] Tool "${activeTool}" non riconosciuto, cursore default`);
     }
 
     /**
