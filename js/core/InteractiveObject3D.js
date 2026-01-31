@@ -506,6 +506,16 @@ window.InteractiveObject3D = {
             }
             this.highlightedButtons.delete(triggerId);
             console.log(`💡 [InteractiveObject3D] Evidenziazione rimossa da "${buttonId}" dopo click (opacity ripristinata a ${highlightedMesh.userData.originalOpacity})`);
+
+            // NUOVO: Rimuovi cerchio pulsante dopo click
+            if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+                try {
+                    window.Scene3D.highlightCircleManager.removeCircle(triggerId);
+                    console.log(`🔵 [InteractiveObject3D] Cerchio rimosso per "${triggerId}" dopo click`);
+                } catch (error) {
+                    console.warn(`🔵 [InteractiveObject3D] Errore rimozione cerchio per "${triggerId}":`, error);
+                }
+            }
         }
 
         // Emetti evento per StepController - usa buttonId (nome Group) per trigger
@@ -1287,7 +1297,7 @@ window.InteractiveObject3D = {
         // IMPORTANTE: Imposta opacità del materiale durante evidenziazione
         // Usa valore configurato da InteractiveChild (opacity:X) oppure default 0.6
         const childConfig = mesh.userData.interactiveConfig || {};
-        const targetOpacity = childConfig.opacity !== undefined ? childConfig.opacity : 0.6;
+        const targetOpacity = childConfig.opacity !== undefined ? childConfig.opacity : 0.0;
 
         mesh.material.opacity = targetOpacity;
         mesh.material.transparent = targetOpacity < 1.0;
@@ -1298,6 +1308,18 @@ window.InteractiveObject3D = {
         this.highlightedButtons.set(triggerId, mesh);
 
         console.log(`💡 [InteractiveObject3D] ✓ Pulsante "${mesh.name}" evidenziato e aggiunto a highlightedButtons (totale: ${this.highlightedButtons.size})`);
+
+        // NUOVO: Crea cerchio pulsante giallo sovrapposto
+        if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+            try {
+                // Usa dimensione configurata o default 80px
+                const circleSize = childConfig.highlightCircleSize || 80;
+                window.Scene3D.highlightCircleManager.createCircle(triggerId, mesh, circleSize);
+                console.log(`🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "${triggerId}" (size: ${circleSize}px)`);
+            } catch (error) {
+                console.warn(`🔵 [InteractiveObject3D] Errore creazione cerchio per "${triggerId}":`, error);
+            }
+        }
     },
 
     /**
@@ -1328,6 +1350,16 @@ window.InteractiveObject3D = {
                 mesh.material.needsUpdate = true;
 
                 console.log(`💡 [InteractiveObject3D] ✓ Evidenziazione rimossa da "${mesh.name}" (opacity ripristinata a ${mesh.userData.originalOpacity})`);
+            }
+
+            // NUOVO: Rimuovi cerchio pulsante corrispondente
+            if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+                try {
+                    window.Scene3D.highlightCircleManager.removeCircle(triggerId);
+                    console.log(`🔵 [InteractiveObject3D] Cerchio rimosso per "${triggerId}"`);
+                } catch (error) {
+                    console.warn(`🔵 [InteractiveObject3D] Errore rimozione cerchio per "${triggerId}":`, error);
+                }
             }
         }
 

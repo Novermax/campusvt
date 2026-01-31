@@ -1155,6 +1155,39 @@ body.tool-aria-active [role="button"] {
     cursor: pointer !important;
 }
 
+/* === TOOL SPRAY CURSORE === */
+/* Supporto per sistema tool spray con body class - ALTA PRIORITA */
+body.tool-spray-active,
+body.tool-spray-active *,
+.tool-spray-active {
+    cursor: url("../cursors/spray_normal.svg") 5 5, auto !important;
+}
+
+body.tool-spray-active:active,
+body.tool-spray-active:active *,
+body.tool-spray-active.mouse-pressed,
+body.tool-spray-active.mouse-pressed * {
+    cursor: url("../cursors/spray_premuto.svg") 5 5, auto !important;
+}
+
+/* Applica cursore spray a tutti gli elementi eccetto pulsanti e link */
+body.tool-spray-active * {
+    cursor: inherit !important;
+}
+
+/* Eccezioni: pulsanti e elementi interattivi mantengono cursore pointer */
+body.tool-spray-active button,
+body.tool-spray-active .tool-icon,
+body.tool-spray-active a,
+body.tool-spray-active input,
+body.tool-spray-active select,
+body.tool-spray-active textarea,
+body.tool-spray-active .btn,
+body.tool-spray-active .button,
+body.tool-spray-active [role="button"] {
+    cursor: pointer !important;
+}
+
 /* === TOOL MANO CURSORE === */
 /* NOTA: Il cursore per il tool mano è ora gestito dinamicamente da DynamicToolStyles.js
    che genera CSS runtime basato sul config.txt dello scenario.
@@ -1647,5 +1680,188 @@ body.tool-brugola-active [role="button"] {
 
     .toast-notification.hide {
         transform: translateX(0) translateY(-100px);
+    }
+}
+
+/* ===== CERCHI EVIDENZIAZIONE TRIGGER ===== */
+.highlight-circle {
+    /* Cerchio pulsante giallo per evidenziare pulsanti 3D */
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+}
+
+/* Animazione pulse per cerchi evidenziazione */
+@keyframes pulseCircle {
+    0% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.7;
+        border-color: rgba(255, 255, 0, 0.8);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.95;
+        border-color: rgba(255, 255, 0, 1);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.7;
+        border-color: rgba(255, 255, 0, 0.8);
+    }
+}
+
+/* ===== ANIMAZIONE DRAMMATICA FUMETTO DESCRIZIONE ===== */
+/* Animazione: centro schermo grande pulsante → posizione normale piccolo */
+.step-speech-bubble.dramatic-intro {
+    animation: dramaticIntro 3s ease-out forwards;
+}
+
+@keyframes dramaticIntro {
+    /* Fase 1: Appare al centro grande (0-20%) */
+    0% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        z-index: 9999;
+    }
+    10% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 1;
+        z-index: 9999;
+    }
+
+    /* Fase 2: Pulse al centro (20-60%) */
+    20%, 25% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(2.3);
+        opacity: 1;
+        z-index: 9999;
+    }
+    30%, 35% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 1;
+        z-index: 9999;
+    }
+    40%, 45% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(2.3);
+        opacity: 1;
+        z-index: 9999;
+    }
+    50%, 55% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 1;
+        z-index: 9999;
+    }
+    60% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(2.3);
+        opacity: 1;
+        z-index: 9999;
+    }
+
+    /* Fase 3: Transizione verso posizione finale (60-100%) */
+    70% {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1.8);
+        opacity: 1;
+        z-index: 9999;
+    }
+    85% {
+        left: 20px;
+        top: 20%;
+        transform: translateY(-50%) scale(1.1);
+        opacity: 1;
+        z-index: 150;
+    }
+    100% {
+        left: 20px;
+        top: 20%;
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+        z-index: 150;
+    }
+}
+
+/* Responsive: adatta animazione per mobile */
+@media (max-width: 768px) {
+    @keyframes dramaticIntro {
+        /* Fase 1: Centro più piccolo su mobile */
+        0% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 9999;
+        }
+        10% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.8);
+            opacity: 1;
+            z-index: 9999;
+        }
+
+        /* Fase 2: Pulse */
+        20%, 25% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.6);
+            z-index: 9999;
+        }
+        30%, 35% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.8);
+            z-index: 9999;
+        }
+        40%, 45% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.6);
+            z-index: 9999;
+        }
+        50%, 55% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.8);
+            z-index: 9999;
+        }
+        60% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.6);
+            z-index: 9999;
+        }
+
+        /* Fase 3: Transizione verso mobile (top 30%) */
+        70% {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.2);
+            z-index: 9999;
+        }
+        85% {
+            left: 10px;
+            top: 30%;
+            transform: translateY(-50%) scale(1.05);
+            z-index: 150;
+        }
+        100% {
+            left: 10px;
+            top: 30%;
+            transform: translateY(-50%) scale(1);
+            z-index: 150;
+        }
     }
 }

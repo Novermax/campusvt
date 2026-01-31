@@ -10,7 +10,7 @@ CameraPos=(1.01, 1.22, 3.87)
 CameraTarget=(0,0,0)
 CameraRotation=(-0.26, -0.01, 0)
 CameraPivot=(1.02, 1.1, 3.4)
-CameraDistance=0.48
+CameraDistance=1.24
 CameraFOV=75.0
 CameraTransitionTime=2.0
 
@@ -118,18 +118,19 @@ CameraPos=(0.97,1.22,3.8)
 CameraTarget=(0.97,1.15,3.52)
 CameraRotation=(-0.25, -0.01, 0)
 CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.28
+CameraDistance=1.24
 CameraFOV=75.0
 CameraTransitionTime=2.0
 
 
 [Step 1 - Vai alla schermata MDI]
+HighlightDescription=true
 Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
 CameraPos=(0.97,1.22,3.8)
 CameraTarget=(0.97,1.15,3.52)
 CameraRotation=(-0.25, -0.01, 0)
 CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.23
+CameraDistance=1.24
 CameraFOV=55.0
 
   Position: (0.96, 1.2, 3.8)
@@ -143,12 +144,13 @@ AcceptTrigger_Physical=pulpito.Pulsante_mdi
 OnPhysicalTrigger=setVariant:schermo=schermo002
 
 [Next Step - Scarica l'utensile]
+HighlightDescription=true
 Descrizione=Premi il pulsante a video per eseguire lo scarico dell'utensile T=1000.
 CameraPos=(0.97,1.22,3.8)
 CameraTarget=(0.97,1.15,3.52)
 CameraRotation=(-0.25, -0.01, 0)
 CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.23
+CameraDistance=1.24
 CameraFOV=55.0
 CameraTransitionTime=2.0
 
@@ -158,6 +160,7 @@ AcceptTrigger_Physical=pulpito.Pulsante_tool
 OnPhysicalTrigger=setVariant:schermo=schermo003
 
 [Next Step - Prendi il telecomando Tecpad]
+HighlightDescription=true
 Descrizione=Prendi il telecomando Tecpad
 CameraPos=(0.94, 1.29, 4.07)
 CameraTarget=(0.97, 1.15, 3.52)
@@ -176,6 +179,7 @@ DefaultView=main
 CameraDistance=0.5
 
 [Next Step - Premi il pulsante start]
+HighlightDescription=true
 CameraPos=(2.52, 1.3, 4.55)
 CameraTarget=(2.37, 1.15, 3.6)
 CameraRotation=(-0.16, 0.15, 0.02)
@@ -247,6 +251,7 @@ AutoSetVariant=schermo=schermo002
 
 
 [Next Step - gira la chiave]
+HighlightDescription=true
 Descrizione=Gira la chiave per aprire la porta di accesso all'elettromandrino.
 Utensile=Mani
 CameraPos=(0.94, 1.29, 4.07)
@@ -262,6 +267,7 @@ AcceptTrigger_Physical=pulpito.chiave0,pulpito.chiave1
 OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo005;setVariant:start=pstart0
 
 [Next Step - apri la porta fisicamente]
+HighlightDescription=true
 Descrizione=Apri la porta della cabina per l'accesso all'elettromandrino.
 Utensile=Mani
 CameraPos=(2.52, 1.3, 4.55)
@@ -278,7 +284,7 @@ AcceptTrigger_Physical=a500.porta
 Azione1=centro:(0.615,0,0);rotazione:(0,90,0,1.0)
 
 [Next Step - guarda verso il naso dell'elettromandrino]
-
+HighlightDescription=true
 descrizione=Posizionati per guardare verso il naso dell'elettromandrino, se necessario prima sposta manualmente l'asse Y verso di te
 CameraPos=(2.74, 1.34, 2.45)
 CameraTarget=(2.79, 1.27, 1.99)
@@ -291,6 +297,7 @@ AutoExecute=true
 AutoAdvance=true  
 
 [Next Step - ingrassa con lo spray]
+HighlightDescription=true
 Utensile=Spray
 Descrizione=Usa lo spray lubrificante per ingrassare il naso dell'elettromandrino.
 Message=Usa lo spray lubrificante per ingrassare il naso dell'elettromandrino.
@@ -299,12 +306,21 @@ MessageVideo=media/lubelett.mp4
 
 # Camera sbloccata per questo step
 CameraUnlocked=true
+
+
 CameraLimits=(-3.14, 3.14)                    # minPhi, maxPhi in radianti
+CameraPos=(2.78, 0.91, 2.29)
+CameraTarget=(2.79, 1.27, 1.99)
+CameraRotation= (0.87, -0.03, 0.04)
+CameraPivot=(2.79, 1.27, 1.99)
+CameraDistance=0.47
+CameraFOV=75.0
 Elemento=models/a500.glb
 TargetChild=naso
 Azione1=traslazione:(0,0,0,0.5)
 
 [Next Step - cambia schermata sul tecpad]
+HighlightDescription=true
 Descrizione=Premi il pulsante sul tecpad per cambiare schermata in status
 Utensile=Mani
 # Trigger: click sul pulsante pulsante_r_status
@@ -314,13 +330,14 @@ OnPhysicalTrigger=setVariant:schermo_remote=Schermo_R001
 AutoAdvance=true
 
 [Next Step - apri e chiudi]
+HighlightDescription=true
 Elemento=models/remote.glb
 Utensile=Mani
 Descrizione=Apri e chiudi più volte premendo il pulsante unlock (4 cicli)
 ActiveButtons=Pulsante_r_unlock
 AcceptTrigger_Physical=remote.Pulsante_r_unlock
 AnimatedImagesFolder=screens/mandrino
-AnimatedPosition=center
+AnimatedPosition=(60%,60%)
 AnimatedMaxTriggers=8
 AnimatedFrameDelay=20
 
@@ -328,6 +345,7 @@ AnimatedFrameDelay=20
 
 
 [Next Step - chiudi la porta fisicamente]
+HighlightDescription=true
 Descrizione=Richiudi la porta della cabina per l'accesso all'elettromandrino.
 Utensile=Mani
 CameraPos=(2.52, 1.3, 4.55)
@@ -344,6 +362,7 @@ AcceptTrigger_Physical=a500.porta
 Azione1=centro:(0,0,-0.615);rotazione:(0,-90,0,1.0)
 
 [Next Step - Vai sul pulpito e ruota la chiave in chiusura]
+HighlightDescription=true
 Descrizione=Sul pulpito e ruota la chiave in chius.
 Utensile=Mani
 CameraPos=(0.94, 1.29, 4.07)
@@ -361,7 +380,8 @@ OnPhysicalTrigger=setVariant:chiave=chiave0
 
 
 [Next Step - Riaccendi la macchina]
-Descrizione=SPremi il pulsante di accensione per riaccendere la macchina.
+HighlightDescription=true
+Descrizione=Premi il pulsante di accensione per riaccendere la macchina.
 Utensile=Mani
 CameraPos=(0.94, 1.29, 4.07)
 CameraTarget=(0.97, 1.15, 3.52)

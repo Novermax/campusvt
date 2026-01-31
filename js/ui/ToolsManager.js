@@ -20,7 +20,8 @@ class ToolsManager {
             { name: 'brugola', icon: 'utilimages/brugola.png' },
             { name: 'chiave_inglese', icon: 'utilimages/chiave_inglese.png' },
             { name: 'mano', icon: 'utilimages/mano.png' },
-            { name: 'aria', icon: 'utilimages/air.png' }
+            { name: 'aria', icon: 'utilimages/air.png' },
+            { name: 'spray', icon: 'utilimages/spray.png' }
         ];
         this.isInitialized = false;
     }
@@ -152,6 +153,10 @@ class ToolsManager {
 
         if (element) {
             element.classList.add('active');
+
+            // Rimuovi evidenziazione gialla quando il tool viene cliccato/attivato
+            element.classList.remove('required', 'tool-highlight');
+            this.safeLog(3, `[ToolsManager] Evidenziazione rimossa da tool attivato: ${toolName}`);
         }
 
         // Aggiorna interfaccia e notifica cambio stato
@@ -270,7 +275,8 @@ class ToolsManager {
             'ChiaveBrugola': 'brugola',
             'ChiaveInglese': 'chiave_inglese',
             'Mani': 'mano',
-            'Aria': 'aria'
+            'Aria': 'aria',
+            'Spray': 'spray'
         };
 
         const mapped = mapping[tutorialToolName];
@@ -290,14 +296,27 @@ class ToolsManager {
      * @param {string} toolName - Nome dello strumento
      */
     highlightRequiredTool(toolName) {
-        if (!toolName) return;
+        if (!toolName) {
+            console.warn('🟡 [ToolsManager] highlightRequiredTool chiamato senza toolName');
+            return;
+        }
+
+        console.log(`🟡 [ToolsManager] highlightRequiredTool chiamato per: "${toolName}"`);
+
+        // Debug: lista tutti i tool disponibili nel DOM
+        const allTools = document.querySelectorAll('.tool-icon');
+        console.log(`🟡 [ToolsManager] Tool disponibili nel DOM (${allTools.length}):`,
+            Array.from(allTools).map(el => el.dataset.tool));
 
         // Trova elemento DOM del tool
         const toolElement = document.querySelector(`[data-tool="${toolName}"]`);
         if (!toolElement) {
-            this.safeLog(1, `[ToolsManager] Elemento tool non trovato: ${toolName}`);
+            console.error(`🟡 [ToolsManager] ❌ Elemento tool NON TROVATO per: "${toolName}"`);
+            console.log(`🟡 [ToolsManager] Query selector usato: [data-tool="${toolName}"]`);
             return;
         }
+
+        console.log(`🟡 [ToolsManager] ✓ Elemento tool trovato:`, toolElement);
 
         // Rimuovi evidenziazione precedente da tutti i tool
         document.querySelectorAll('.tool-icon').forEach(icon => {
@@ -306,15 +325,10 @@ class ToolsManager {
 
         // Aggiungi evidenziazione al tool richiesto
         toolElement.classList.add('required', 'tool-highlight');
+        console.log(`🟡 [ToolsManager] ✓ Tool evidenziato con classi:`, toolElement.className);
         this.safeLog(3, `[ToolsManager] Tool evidenziato come richiesto: ${toolName}`);
 
-        // Rimuovi evidenziazione dopo un timeout se non viene cliccato
-        setTimeout(() => {
-            if (toolElement && !this.toolsState[toolName]) {
-                toolElement.classList.remove('required', 'tool-highlight');
-                this.safeLog(3, `[ToolsManager] Evidenziazione tool rimossa: ${toolName}`);
-            }
-        }, 10000); // 10 secondi
+        // L'evidenziazione verrà rimossa automaticamente quando il tool viene cliccato (vedi toggleTool)
     }
 
     /**

@@ -3594,6 +3594,13 @@ window.UI = {
             }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // TOOLS MANAGER: Pulizia evidenziazioni tool precedenti
+        // ═══════════════════════════════════════════════════════════════
+        if (window.ToolsManager && typeof window.ToolsManager.clearToolHighlights === 'function') {
+            window.ToolsManager.clearToolHighlights();
+        }
+
         // NUOVO: Mostra modal informativo se presente parametro Message
         if (step.properties.Message) {
             const messageTitle = step.properties.MessageTitle || step.title || 'Informazione';
@@ -3760,11 +3767,17 @@ window.UI = {
         }
 
         if (step.properties.Utensile) {
-            // NON evidenziare automaticamente il tool - lascia che l'utente impari a scegliere
+            // Evidenzia automaticamente il tool richiesto nella legenda
             const toolName = this.mapToolName(step.properties.Utensile);
             if (toolName) {
-                AppConfig.log(3, `Strumento richiesto per step: ${toolName} (senza evidenziazione automatica)`);
-                // this.highlightRequiredTool(toolName); // RIMOSSO: non dare troppi aiuti all'utente
+                AppConfig.log(3, `Strumento richiesto per step: ${toolName} - evidenziazione attiva`);
+
+                // Evidenzia tool nella legenda con animazione pulse
+                if (window.ToolsManager && typeof window.ToolsManager.highlightRequiredTool === 'function') {
+                    window.ToolsManager.highlightRequiredTool(toolName);
+                } else {
+                    this.highlightRequiredTool(toolName); // Fallback a metodo UI locale
+                }
             }
         }
 
@@ -4625,13 +4638,21 @@ window.UI = {
      * Mappa i nomi degli strumenti dal tutorial ai nomi interni
      */
     mapToolName: function(tutorialToolName) {
+        // Delega a ToolsManager se disponibile (supporta ToolRegistry dinamico)
+        if (window.ToolsManager && typeof window.ToolsManager.mapToolName === 'function') {
+            return window.ToolsManager.mapToolName(tutorialToolName);
+        }
+
+        // Fallback a mapping hardcoded
         const mapping = {
             'ChiaveBrugola': 'brugola',
             'ChiaveInglese': 'chiave_inglese',
             'Mani': 'mano',
-            'Aria': 'aria'
+            'Aria': 'aria',
+            'Spray': 'spray',
+            'Straccio': 'straccio'
         };
-        
+
         return mapping[tutorialToolName] || null;
     },
     
@@ -4834,9 +4855,36 @@ window.UI = {
 
         // Mostra il fumetto (sequenza controllata solo dal sistema)
         this.showStepSpeechBubble();
-        
-        // Attiva l'effetto flash per attirare l'attenzione
-        this.flashStepBubble();
+
+        // ═══════════════════════════════════════════════════════════════
+        // ANIMAZIONE DRAMMATICA: Parametro HighlightDescription=true
+        // ═══════════════════════════════════════════════════════════════
+        // Se lo step ha HighlightDescription=true, mostra animazione drammatica:
+        // - Appare al centro schermo grande (scale 2.5)
+        // - Pulse pulsante per 2 secondi
+        // - Si sposta e rimpicciolisce alla posizione normale
+        if (currentStep && currentStep.properties && currentStep.properties.HighlightDescription === 'true') {
+            console.log('🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto');
+
+            // Rimuovi animazioni precedenti
+            bubble.classList.remove('dramatic-intro', 'flash', 'pulse');
+
+            // Force reflow per riavviare animazione se già presente
+            void bubble.offsetWidth;
+
+            // Applica animazione drammatica
+            bubble.classList.add('dramatic-intro');
+
+            // Rimuovi classe dopo 3s (durata animazione)
+            setTimeout(() => {
+                bubble.classList.remove('dramatic-intro');
+                console.log('🎬 [UI] Animazione drammatica completata');
+            }, 3000);
+
+        } else {
+            // Comportamento normale: flash sottile per attirare attenzione
+            this.flashStepBubble();
+        }
     },
 
     /**

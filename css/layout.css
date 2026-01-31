@@ -397,24 +397,24 @@
 /* Tool richiesto dal tutorial (evidenziato ma non attivo) */
 .tool-icon.required,
 .tool-icon.tool-highlight {
-    border-color: #ff9800;
-    background: rgba(255, 152, 0, 0.15);
-    box-shadow: 0 0 15px rgba(255, 152, 0, 0.4);
+    border-color: #ffff00;
+    background: rgba(255, 255, 0, 0.15);
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.4);
     animation: pulseRequired 2s infinite;
 }
 
 /* Animazione pulsante per tool richiesto */
 @keyframes pulseRequired {
     0% {
-        box-shadow: 0 0 15px rgba(255, 152, 0, 0.4);
+        box-shadow: 0 0 15px rgba(255, 255, 0, 0.4);
         transform: scale(1);
     }
     50% {
-        box-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
+        box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
         transform: scale(1.03);
     }
     100% {
-        box-shadow: 0 0 15px rgba(255, 152, 0, 0.4);
+        box-shadow: 0 0 15px rgba(255, 255, 0, 0.4);
         transform: scale(1);
     }
 }

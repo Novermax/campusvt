@@ -636,6 +636,27 @@ const Scene3D = {
             console.log('[Scene3D] ℹ️ HoldableSystem non disponibile (opzionale)');
         }
 
+        // Inizializza sistema cerchi evidenziazione se disponibile
+        this.highlightCircleManager = null;
+        if (window.HighlightCircleManager) {
+            try {
+                console.log('[Scene3D] 🔵 Inizializzazione HighlightCircleManager...');
+                this.highlightCircleManager = new window.HighlightCircleManager();
+                const success = this.highlightCircleManager.init(this.camera, this.renderer);
+                if (success) {
+                    console.log('[Scene3D] ✅ HighlightCircleManager inizializzato con successo!');
+                } else {
+                    console.warn('[Scene3D] ⚠️ HighlightCircleManager inizializzazione fallita');
+                    this.highlightCircleManager = null;
+                }
+            } catch (error) {
+                console.error('[Scene3D] ❌ Errore inizializzazione HighlightCircleManager:', error);
+                this.highlightCircleManager = null;
+            }
+        } else {
+            console.log('[Scene3D] ℹ️ HighlightCircleManager non disponibile (opzionale)');
+        }
+
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
             color: 0xcccc00,
             transparent: true,
