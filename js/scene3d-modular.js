@@ -1701,20 +1701,26 @@ const Scene3D = {
             .subVectors(objectCenter, cursorPosition3D)
             .normalize();
 
+        // Distanza dal cursore al target - le particelle si fermano qui
+        const distanceToTarget = cursorPosition3D.distanceTo(objectCenter);
+
         console.log('[Scene3D] 🖤 Spray nero dal cursore all\'oggetto', {
             cursorPos: cursorPosition3D,
             objectCenter: objectCenter,
-            direction: sprayDirection
+            direction: sprayDirection,
+            distanceToTarget: distanceToTarget.toFixed(3)
         });
 
-        // Crea spray dal cursore verso l'oggetto
+        // Crea spray dal cursore verso l'oggetto con distanza limitata
         const sprayId = this.particleSystem.createSpray(cursorPosition3D, sprayDirection, {
             particleCount: 400,
             life: 2.0,
             speed: { min: 5, max: 15 },
             size: { min: 0.002, max: 0.008 },
-            spread: { x: 0.1, y: 0.1, z: 0.1 },
-            opacity: { start: 0.8, end: 0.0 }
+            spread: { x: 0.05, y: 0.05, z: 0.05 },
+            opacity: { start: 0.8, end: 0.0 },
+            maxDistance: distanceToTarget,
+            gravity: { x: 0, y: -0.3, z: 0 }
         });
 
         // Feedback visivo aggiuntivo

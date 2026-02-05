@@ -230,34 +230,65 @@ window.ParticleSystem = {
             
             // Reset particella se morta
             if (lifetimes[i] <= 0) {
-                // Rispawn dalla posizione iniziale
-                positions[i3] = startPosition.x + (Math.random() - 0.5) * config.spread.x;
-                positions[i3 + 1] = startPosition.y + (Math.random() - 0.5) * config.spread.y;
-                positions[i3 + 2] = startPosition.z + (Math.random() - 0.5) * config.spread.z;
-                
-                // Reset velocità
-                const speed = config.speed.min + Math.random() * (config.speed.max - config.speed.min);
-                velocities[i3] = direction.x * speed + (Math.random() - 0.5) * config.turbulence;
-                velocities[i3 + 1] = direction.y * speed + (Math.random() - 0.5) * config.turbulence;
-                velocities[i3 + 2] = direction.z * speed + (Math.random() - 0.5) * config.turbulence;
-                
-                // Reset vita
-                lifetimes[i] = config.life;
+                if (config.maxDistance) {
+                    // Con maxDistance: non respawnare, nascondi particella all'origine
+                    positions[i3] = startPosition.x;
+                    positions[i3 + 1] = startPosition.y;
+                    positions[i3 + 2] = startPosition.z;
+                    velocities[i3] = 0;
+                    velocities[i3 + 1] = 0;
+                    velocities[i3 + 2] = 0;
+                    lifetimes[i] = 0.001; // Quasi morta, non respawna
+                } else {
+                    // Senza maxDistance: comportamento originale (respawn)
+                    positions[i3] = startPosition.x + (Math.random() - 0.5) * config.spread.x;
+                    positions[i3 + 1] = startPosition.y + (Math.random() - 0.5) * config.spread.y;
+                    positions[i3 + 2] = startPosition.z + (Math.random() - 0.5) * config.spread.z;
+
+                    // Reset velocità
+                    const speed = config.speed.min + Math.random() * (config.speed.max - config.speed.min);
+                    velocities[i3] = direction.x * speed + (Math.random() - 0.5) * config.turbulence;
+                    velocities[i3 + 1] = direction.y * speed + (Math.random() - 0.5) * config.turbulence;
+                    velocities[i3 + 2] = direction.z * speed + (Math.random() - 0.5) * config.turbulence;
+
+                    // Reset vita
+                    lifetimes[i] = config.life;
+                }
             } else {
                 // Aggiorna posizione con fisica
                 positions[i3] += velocities[i3] * deltaTime;
                 positions[i3 + 1] += velocities[i3 + 1] * deltaTime;
                 positions[i3 + 2] += velocities[i3 + 2] * deltaTime;
-                
+
                 // Applica gravità
                 velocities[i3] += config.gravity.x * deltaTime;
                 velocities[i3 + 1] += config.gravity.y * deltaTime;
                 velocities[i3 + 2] += config.gravity.z * deltaTime;
-                
+
                 // Turbolenza
                 const turbulence = Math.sin(currentTime * 0.01 + i) * config.turbulence * deltaTime;
                 velocities[i3] += turbulence;
                 velocities[i3 + 2] += turbulence;
+
+                // Check distanza massima - ferma particelle al target
+                if (config.maxDistance) {
+                    const dx = positions[i3] - startPosition.x;
+                    const dy = positions[i3 + 1] - startPosition.y;
+                    const dz = positions[i3 + 2] - startPosition.z;
+                    const distSq = dx * dx + dy * dy + dz * dz;
+                    const maxDistSq = config.maxDistance * config.maxDistance;
+                    if (distSq >= maxDistSq) {
+                        // Ferma la particella alla distanza massima
+                        velocities[i3] = 0;
+                        velocities[i3 + 1] = 0;
+                        velocities[i3 + 2] = 0;
+                        // Clamp alla posizione esatta del target
+                        const ratio = config.maxDistance / Math.sqrt(distSq);
+                        positions[i3] = startPosition.x + dx * ratio;
+                        positions[i3 + 1] = startPosition.y + dy * ratio;
+                        positions[i3 + 2] = startPosition.z + dz * ratio;
+                    }
+                }
             }
         }
         
