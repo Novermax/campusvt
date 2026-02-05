@@ -59,16 +59,16 @@ InteractiveChild=chiave0,button,onClick:cycleVariant:chiave,opacity:1.0
 InteractiveChild=chiave1,button,onClick:cycleVariant:chiave,opacity:1.0
 
 # Pulsanti navigazione schermi - cambiano variante StateGroup "schermo"
-InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo002
-InteractiveChild=Pulsante_tool,button,onClick:setVariant:schermo=schermo003
+InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo002,opacity:1.0
+InteractiveChild=Pulsante_tool,button,onClick:setVariant:schermo=schermo003,opacity:1.0
 
 # Fungo di emergenza - cambia variante StateGroup "emergenza"
-InteractiveChild=emergenza_off,button,onClick:setVariant:emergenza=emergenza_on
-InteractiveChild=emergenza_on,button,onClick:setVariant:emergenza=emergenza_off
+InteractiveChild=emergenza_off,button,onClick:setVariant:emergenza=emergenza_on,opacity:1.0
+InteractiveChild=emergenza_on,button,onClick:setVariant:emergenza=emergenza_off,opacity:1.0
 
 # Pulsante Start - cambia variante StateGroup "start"
-InteractiveChild=pstart0,button,onClick:cycleVariant:start
-InteractiveChild=pstart1,button,onClick:cycleVariant:start
+InteractiveChild=pstart0,button,onClick:cycleVariant:start,opacity:1.0
+InteractiveChild=pstart1,button,onClick:cycleVariant:start,opacity:1.0
 
 # ═══════════════════════════════════════════════════════════════════════════
 # DEFINIZIONE OGGETTO INTERATTIVO: REMOTE (TELECOMANDO)
@@ -78,13 +78,13 @@ InteractiveChild=pstart1,button,onClick:cycleVariant:start
 Model=models/remote.glb
 
 # Pulsante play sul telecomando
-InteractiveChild=pulsante_r_play,button,onClick:setVariant:start=pstart1
+InteractiveChild=pulsante_r_play,button,onClick:setVariant:start=pstart1,opacity:1.0
 
 # Pulsante status sul telecomando
-InteractiveChild=Pulsante_r_status,button,onClick:setVariant:schermo_remote=Schermo_R001
+InteractiveChild=Pulsante_r_status,button,onClick:setVariant:schermo_remote=Schermo_R001,opacity:1.0
 
 # Pulsante unlock sul telecomando (per animazione apri/chiudi)
-InteractiveChild=Pulsante_r_unlock,button
+InteractiveChild=Pulsante_r_unlock,button,opacity:1.0
 
 # ═══════════════════════════════════════════════════════════════════════════
 # DEFINIZIONE OGGETTO INTERATTIVO: MACCHINA A500
@@ -113,7 +113,7 @@ Rotazione=utensile:(0, 0, 0)
 # TUTORIAL
 # ═══════════════════════════════════════════════════════════════════════════
 
-[Manutenzione Elettromandrino]
+[Manutenzione Elettromandrino - lubrificazione]
 CameraPos=(0.97,1.22,3.8)
 CameraTarget=(0.97,1.15,3.52)
 CameraRotation=(-0.25, -0.01, 0)
@@ -137,7 +137,7 @@ CameraFOV=55.0
 
 
 CameraTransitionTime=2.0
-
+HighlightOpacity=0.5  # Leggera, quasi impercettibile
 # Trigger: click sul pulsante MDI
 ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
@@ -153,7 +153,7 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=1.24
 CameraFOV=55.0
 CameraTransitionTime=2.0
-
+HighlightOpacity=0.5  # Leggera, quasi impercettibile
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_tool
 AcceptTrigger_Physical=pulpito.Pulsante_tool
@@ -191,6 +191,7 @@ Descrizione=Premi il pulsante Start sul telecomando per avviare lo scarico utens
 Utensile=Mani
 # Trigger: click sul pulsante play del telecomando
 ActiveButtons=pulsante_r_play
+HighlightOpacity=0.5  # Leggera, quasi impercettibile
 AcceptTrigger_Physical=remote.pulsante_r_play
 OnPhysicalTrigger=setVariant:schermo=schermo004
 AutoAdvance=true
@@ -203,7 +204,7 @@ AutoAdvance=true
 # ───────────────────────────────────────────────────────────────────────────
 
 [Next Step - Movimento CarroY]
-Descrizione=Il carro Y si sposta verso la posizione di cambio utensile...
+#Descrizione=Il carro Y si sposta verso la posizione di cambio utensile...
 Elemento=models/a500.glb
 TargetChild=Basamento_Portale_CarroY
 Azione1=traslazione:(0,0,2.623,1.5)
@@ -211,7 +212,7 @@ AutoExecute=true
 AutoAdvance=true
 
 [Next Step - Discesa Prisma]
-Descrizione=Il prisma scende verso il magazzino utensili...
+#Descrizione=Il prisma scende verso il magazzino utensili...
 Elemento=models/a500.glb
 TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
 Azione1=traslazione:(0,-0.085,0,1.0)
@@ -219,7 +220,7 @@ AutoExecute=true
 AutoAdvance=true
 
 [Next Step - Apertura Magazzino]
-Descrizione=Il magazzino utensili si apre...
+#Descrizione=Il magazzino utensili si apre...
 Elemento=models/a500.glb
 TargetChild=Basamento_Portale_MagazzinoInternoX1
 Azione1=traslazione:(0.565,0,0,1.0)
@@ -227,13 +228,13 @@ AutoExecute=true
 AutoAdvance=true
 
 [Next Step - Scambio Utensile]
-Descrizione=L'utensile viene scaricato nel magazzino...
+#Descrizione=L'utensile viene scaricato nel magazzino...
 AutoSetVariant=tool=tool0
 AutoExecute=true
 AutoAdvance=true
 
 [Next Step - Risalita Prisma]
-Descrizione=Il prisma risale leggermente...
+#Descrizione=Il prisma risale leggermente...
 Elemento=models/a500.glb
 TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
 Azione1=traslazione:(0,0.085,0,1.0)
@@ -241,7 +242,7 @@ AutoExecute=true
 AutoAdvance=true
 
 [Next Step - Chiusura Magazzino]
-Descrizione=Il magazzino utensili si chiude...
+#Descrizione=Il magazzino utensili si chiude...
 Elemento=models/a500.glb
 TargetChild=Basamento_Portale_MagazzinoInternoX1
 Azione1=traslazione:(-0.565,0,0,1.0)
@@ -261,9 +262,9 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=0.56
 CameraFOV=75.0
 CameraTransitionTime=2.0
-# Trigger: click sulla chiave del pulpito (accetta entrambe le varianti chiave0/chiave1)
-ActiveButtons=chiave0,chiave1
-AcceptTrigger_Physical=pulpito.chiave0,pulpito.chiave1
+# Trigger: click sulla chiave del pulpito (solo chiave0 perché è quella visibile all'inizio)
+ActiveButtons=chiave0
+AcceptTrigger_Physical=pulpito.chiave0
 OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo005;setVariant:start=pstart0
 
 [Next Step - apri la porta fisicamente]
@@ -326,6 +327,7 @@ Utensile=Mani
 # Trigger: click sul pulsante pulsante_r_status
 ActiveButtons=Pulsante_r_status
 AcceptTrigger_Physical=remote.Pulsante_r_status
+HighlightOpacity=0.5  # Leggera, quasi impercettibile
 OnPhysicalTrigger=setVariant:schermo_remote=Schermo_R001
 AutoAdvance=true
 
@@ -336,6 +338,7 @@ Utensile=Mani
 Descrizione=Apri e chiudi più volte premendo il pulsante unlock (4 cicli)
 ActiveButtons=Pulsante_r_unlock
 AcceptTrigger_Physical=remote.Pulsante_r_unlock
+HighlightOpacity=0.5  # Leggera, quasi impercettibile
 AnimatedImagesFolder=screens/mandrino
 AnimatedPosition=(60%,60%)
 AnimatedMaxTriggers=8
@@ -372,9 +375,9 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=0.56
 CameraFOV=75.0
 CameraTransitionTime=2.0
-# Trigger: click sulla chiave del pulpito (accetta entrambe le varianti chiave0/chiave1)
-ActiveButtons=chiave0,chiave1
-AcceptTrigger_Physical=pulpito.chiave0,pulpito.chiave1
+# Trigger: click sulla chiave del pulpito (solo chiave1 perché è quella visibile dopo averla aperta)
+ActiveButtons=chiave1
+AcceptTrigger_Physical=pulpito.chiave1
 OnPhysicalTrigger=setVariant:chiave=chiave0
 
 
@@ -390,10 +393,9 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=0.56
 CameraFOV=75.0
 CameraTransitionTime=2.0
-# Trigger: click sul pulsante di start
-ActiveButtons=pstart0,pstart1
-AcceptTrigger_Physical=pulpito.pstart0,pulpito.pstart1
+# Trigger: click sul pulsante di start (solo pstart0 perché è quello visibile dopo aver girato la chiave)
+ActiveButtons=pstart0
+HighlightOpacity=0.5  # Leggera, quasi impercettibile
+AcceptTrigger_Physical=pulpito.pstart0
 OnPhysicalTrigger=setVariant:start=pstart1;setVariant:schermo=schermo002
 
-[Next Step - Test Step]
-Descrizione=Step di test - questo è un placeholder

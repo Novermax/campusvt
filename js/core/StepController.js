@@ -22,7 +22,30 @@
  * - 'auto'     : AutoMode mobile
  */
 
-console.log('[StepController] Modulo caricato v1.0.0');
+console.log('[StepController] Modulo caricato v1.0.1 REFACTORING');
+
+// FASE 5 REFACTORING: Helper per chiamate sicure a dipendenze esterne
+const _sc_safeCall = function(obj, method, args = [], fallback = null, context = 'StepController') {
+    try {
+        if (obj && typeof obj[method] === 'function') {
+            return obj[method].apply(obj, args);
+        }
+        return fallback;
+    } catch (error) {
+        console.warn(`[${context}] Errore chiamata ${method}:`, error.message);
+        return fallback;
+    }
+};
+
+// Helper specifico per UI
+const _sc_safeUICall = function(method, args = [], fallback = null) {
+    return _sc_safeCall(window.UI, method, args, fallback, 'StepController→UI');
+};
+
+// Helper specifico per Scene3D
+const _sc_safeScene3DCall = function(method, args = [], fallback = null) {
+    return _sc_safeCall(window.Scene3D, method, args, fallback, 'StepController→Scene3D');
+};
 
 window.StepController = {
     // ═══════════════════════════════════════════════════════════════════
@@ -591,13 +614,28 @@ window.StepController = {
 
     /**
      * Schedula auto-avanzamento allo step successivo
+     * FIX: Aggiunta protezione per verificare se lo step è cambiato prima di avanzare
      */
     scheduleAutoAdvance: function() {
-        console.log('[StepController] ⏭️ Auto-avanzamento schedulato...');
+        const expectedStepIndex = this.currentStepIndex;
+
+        console.log('[StepController] ⏭️ Auto-avanzamento schedulato per step', expectedStepIndex);
+
+        // Cancella eventuale timeout precedente
+        if (window.UI && window.UI.autoAdvanceTimeoutId) {
+            clearTimeout(window.UI.autoAdvanceTimeoutId);
+        }
 
         // Salva ID timeout in UI per permettere cancellazione se step cambia
         if (window.UI) {
             window.UI.autoAdvanceTimeoutId = setTimeout(() => {
+                // PROTEZIONE: Verifica che lo step non sia cambiato nel frattempo
+                if (this.currentStepIndex !== expectedStepIndex) {
+                    console.log('[StepController] ⏸️ Step cambiato durante attesa, auto-advance annullato');
+                    console.log(`[StepController]    Atteso: ${expectedStepIndex}, Corrente: ${this.currentStepIndex}`);
+                    return;
+                }
+
                 if (window.UI && typeof window.UI.nextStep === 'function') {
                     console.log('[StepController] ⏭️ Avanzamento allo step successivo');
                     window.UI.nextStep();

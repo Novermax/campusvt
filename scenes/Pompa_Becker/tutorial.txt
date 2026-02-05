@@ -16,7 +16,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
   Azione1=resetCenteredOriginal
-  [Step 1 - Prima vite]                                    // Primo step: rimozione prima vite
+  [Step 1 - Prima vite]   
+  HighlightDescription=true                                 // Primo step: rimozione prima vite
   Elemento=models/vite_coperchio_1.glb                         // Modello 3D della prima vite da animare
   Utensile=Mani                                            // Strumento richiesto: lavoro manuale
   Descrizione=Seleziona il tool "Mano" e rimuovi la prima vite del coperchio          // Testo mostrato nel fumetto laterale
@@ -25,6 +26,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
     
 
   [Next Step - Seconda vite]                                  // Secondo step: vite angolo superiore destro
+  HighlightDescription=true                                 // Evidenzia la descrizione per il secondo step
   Elemento=models/vite_coperchio_2.glb                            // Modello della seconda vite
   Utensile=Mani                                            // Strumento: sempre manuale per le viti
   Descrizione=Rimuovi la seconda vite del coperchio        // Descrizione per l'utente
@@ -32,6 +34,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione2=appoggia(0.2)
 
   [Next Step - Terza vite]                                    // Terzo step: vite angolo inferiore sinistro
+  HighlightDescription=true
   Elemento=models/vite_coperchio_3.glb                            // Modello della terza vite
   Utensile=Mani                                            // Utensile: operazione manuale
   Descrizione=Rimuovi la terza vite del coperchio          // Istruzione per l'operatore
@@ -40,6 +43,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione3=appoggia(0.2)
 
   [Next Step - Quarta vite]                                   // Quarto step: ultima vite angolo inferiore destro
+  HighlightDescription=true
   Elemento=models/vite_coperchio_4.glb                            // Modello dell'ultima vite del coperchio
   Utensile=Mani                                            // Strumento: operazione manuale
   Descrizione=Rimuovi la quarta vite del coperchio         // Istruzione finale per le viti
@@ -48,6 +52,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione3=appoggia(0.2)
 
   [Next Step- Coperchio]                                     // Quinto step: rimozione coperchio completo
+  HighlightDescription=true
   Elemento=models/coperchio.glb                                   // Modello del coperchio della pompa
   Utensile=Mani                                            // Strumento: sollevamento manuale
   Descrizione=Rimuovi il coperchio del filtro              // Istruzione per rimozione coperchio
@@ -58,7 +63,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
 
 
 [Next Step - Filtro]                                        // Sesto step: estrazione filtro usurato
-  Elemento=models/filtro.glb                                     // Modello 3D del filtro da sostituire
+HighlightDescription=true  
+Elemento=models/filtro.glb                                     // Modello 3D del filtro da sostituire
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Rimuovi il filtro                           // Istruzione per rimozione filtro
   Azione1=traslazione:(-0.3,0,0,1.5) 
@@ -69,7 +75,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   //Durata=1.5                                              // Durata personalizzata: estrazione rapida
 
  [Next Step - Aria compressa]
-  Elemento=models/filtro.glb
+ HighlightDescription=true 
+ Elemento=models/filtro.glb
   Descrizione=Pulisci il filtro con l'aria compressa
   CameraPos=(-0.2,0.33,0.74)                                      // Posizione assoluta per test
   CameraTarget=filtro                                  // Focus su centro scena leggermente rialzato
@@ -80,7 +87,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione2=appoggia(0.5)
 
 [Next Step- Tappodx]                                        // Sesto step: estrazione filtro usurato
-  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+HighlightDescription=true  
+CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=tappino_grasso_dx                                    // Focus su centro scena leggermente rialzato
   CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
@@ -93,7 +101,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
 
 
 [Next Step - Tapposx]                                        // Sesto step: estrazione filtro usurato
- CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
+HighlightDescription=true 
+CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=tappino_grasso_sx                                    // Focus su centro scena leggermente rialzato
   CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
@@ -105,7 +114,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
 
 
 [Next Step - Ingrassatore]                                        // Nono step: movimento ingrassatore
-  Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
+HighlightDescription=true  
+Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Prendi la pompetta del grasso        // Istruzione per movimento
   Azione1=traslazione:(0,0.1,0,0.8)
@@ -118,7 +128,8 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   //CameraTransitionTime=1.2                                // Transizione con easing dolce
 
 [Next Step - Ingrassatore2]                                        // Decimo step: movimento ingrassatore
-  CameraPos=(-0.42, 0.33,  0.3 )
+HighlightDescription=true  
+CameraPos=(-0.42, 0.33,  0.3 )
   CameraTarget=(-0.28, 0.25,-0.16)                                       // Posizione assoluta per test
   CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
   CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
@@ -155,7 +166,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione22=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
 
 [Next Step - Ingrassatore3]                                        // Decimo step: movimento ingrassatore
-
+HighlightDescription=true
 
   Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
   Utensile=Mani                                           // Strumento: estrazione manuale
@@ -187,6 +198,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione24=appoggia(0.5)
 
 [Riassemblaggio]
+HighlightDescription=true
 # Tutorial inverso - sequenza di rimontaggio
 # Sequenza per rimontare il filtro e richiudere la pompa
 
@@ -245,6 +257,7 @@ Rotazione=ingrassatore:(0.0,0.0,90.0)
 
 
 [Step 1 - Tappini Ingrassatori]
+HighlightDescription=true
 Descrizione=Monta i tappini degli ingrassatori in qualsiasi ordine. Puoi iniziare dal destro o dal sinistro.
 Utensile=Mani
 
@@ -257,6 +270,7 @@ DragDropDistance=0.2
 
 
 [Next Step - Filtro]
+HighlightDescription=true
 Descrizione=Inserisci il filtro nella sua sede. Richiede che i tappini siano già stati montati.
 Utensile=Mani
 
@@ -269,6 +283,7 @@ DragDropDistance=0.3
 
 
 [Next Step - Coperchio]
+HighlightDescription=true
 
 Descrizione=Posiziona il coperchio sopra il filtro. Richiede che il filtro sia già montato.
 Utensile=Mani
@@ -284,6 +299,7 @@ DragDropDistance=0.3
 
 
 [Next Step - Gruppo Viti Coperchio]
+HighlightDescription=true
 
 Descrizione=Monta le 4 viti del coperchio in qualsiasi ordine. Richiede che il coperchio sia già montato.
 Utensile=Mani
@@ -304,6 +320,7 @@ ValidateAssembly=true
 
 
 [Next Step - Ingrassatore Finale]
+HighlightDescription=true
 
 Descrizione=Infine, riponi l'ingrassatore nella posizione di riposo. Richiede che tutte le viti siano montate.
 Utensile=Mani
@@ -322,7 +339,8 @@ DragDropDistance=0.3
 
 
   
-[Sostituzione Palette Smontaggio]                                   // Tutorial futuro per sostituzione palette pompa
+[Sostituzione Palette Smontaggio] 
+HighlightDescription=true                                 // Tutorial futuro per sostituzione palette pompa
 CameraPos=(0, 0.5,1)                                       // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1.2                                                // Zoom leggero per visione d'insieme
@@ -331,6 +349,7 @@ CameraPos=(0, 0.5,1)                                       // Posizione assoluta
 
 
 [Step 1 - Rimuovi vite 1 culatta]
+HighlightDescription=true
 Elemento=models/vite_culatta_1.glb  
 Descrizione=Rimuovi la prima vite a brugola della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
@@ -338,6 +357,7 @@ Azione1=svita(0.3)
 Azione2=appoggia(0.2)
 
 [Next Step - Rimuovi vite 2 culatta]
+HighlightDescription=true
 Elemento=models/vite_culatta_2.glb
 Descrizione=Rimuovi la seconda vite a brugola della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
@@ -346,6 +366,7 @@ Azione2=appoggia(0.2)
 
 
 [Next Step - Rimuovi vite 3 culatta]
+HighlightDescription=true
 Elemento=models/vite_culatta_3.glb
 Descrizione=Rimuovi la terza vite a brugola della culatta con la chiave a brugola da 6mm. Nota che le viti più in basso sono più corte
 Utensile=ChiaveBrugola
@@ -354,6 +375,7 @@ Azione2=traslazione:( -0.1,0,0,0.2)
 Azione3=appoggia(0.2)
 
 [Next Step - Rimuovi vite 4 culatta]
+HighlightDescription=true
 Elemento=models/vite_culatta_4.glb
 Descrizione=Rimuovi la quarta vite a brugola della culatta con la chiave a brugola da 6mm. Nota che le viti più in basso sono più corte
 Utensile=ChiaveBrugola
@@ -362,6 +384,7 @@ Azione2=traslazione:( -0.1,0,0,0.2)
 Azione3=appoggia(0.2)
 
 [Next Step - Rimuovi la culatta]
+HighlightDescription=true
 Elemento=models/culatta.glb
 Descrizione=Rimuovi la culatta della pompa con lo strumento "Mano".
 Utensile=Mani
@@ -370,6 +393,7 @@ Azione2=rotazione:(-90,0,0,0.8)
 Azione3=appoggia(0.2)
 
 [Next Step - Rimuovi vite 1 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_1.glb
 Descrizione=Rimuovi la prima vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -377,6 +401,8 @@ Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 
 [Next Step - Rimuovi vite 2 flangia]
+HighlightDescription=true
+
 Elemento=models/vite_flangia_2.glb
 Descrizione=Rimuovi la seconda vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -384,6 +410,7 @@ Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 
 [Next Step - Rimuovi vite 3 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_3.glb
 Descrizione=Rimuovi la terza vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -391,6 +418,7 @@ Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 
 [Next Step - Rimuovi vite 4 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_4.glb
 Descrizione=Rimuovi la quarta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -398,6 +426,7 @@ Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 
 [Next Step - Rimuovi vite 5 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_5.glb
 Descrizione=Rimuovi la quinta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -406,6 +435,7 @@ Azione2=traslazione:( -0.1,0,0,0.2)
 Azione3=appoggia(0.2)
 
 [Next Step - Rimuovi vite 6 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_6.glb
 Descrizione=Rimuovi la sesta vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -415,6 +445,7 @@ Azione3=appoggia(0.2)
 
 
 [Next Step - Rimuovi vite 7 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_7.glb
 Descrizione=Rimuovi la settima vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -424,6 +455,7 @@ Azione3=appoggia(0.2)
 
 
 [Next Step - Rimuovi vite 8 flangia]
+HighlightDescription=true
 Elemento=models/vite_flangia_8.glb
 Descrizione=Rimuovi la ottava vite a testa esagonale con la chiave aperta da 10 mm
 Utensile=ChiaveInglese
@@ -432,6 +464,7 @@ Azione2=traslazione:( -0.1,0,0,0.2)
 Azione3=appoggia(0.2)
 
 [Next Step - Istruzioni smontaggio flangia]
+HighlightDescription=true
   Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
   MessageTitle=⚠️ Importante
   MessageVideo=media/estrattore.mp4
@@ -447,6 +480,7 @@ Azione3=appoggia(0.2)
 
 
 [Next Step - stringi viti estrattore]
+HighlightDescription=true
   DragDrop=false
 CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
@@ -458,18 +492,21 @@ CameraPos=(0, 0.37, 0.44)                                   // Posizione assolut
  Azione1=avvita(0.005)
  DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Entrambi si muovono in base all'avvitamento
 [Next Step - stringi viti estrattore]
+HighlightDescription=true
  Descrizione=Stringi la vite culatta 2 con la chiave a brugola
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_2.glb
  Azione1=avvita(0.005)
  DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Entrambi si muovono in base all'avvitamento
 [Next Step - Rimuovi vite_culatta_2]
+HighlightDescription=true
 Elemento=models/vite_culatta_2.glb
 Descrizione=Rimuovi la vite usata come estrattore con la chiave a brugola da 6mm
 Utensile=ChiaveBrugola
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 [Next Step - Rimuovi vite_culatta_1]
+HighlightDescription=true
 Elemento=models/vite_culatta_1.glb
 Descrizione=Rimuovi la vite usata come estrattore con la chiave a brugola da 6mm
 Utensile=ChiaveBrugola
@@ -477,6 +514,7 @@ Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 
 [Next Step - traslazione flangia]
+HighlightDescription=true
 CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
   CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
   CameraZoom=1                                               // Zoom leggero per visione d'insieme
@@ -488,12 +526,14 @@ SlaveObjects=tubograsso.glb  # Tubo segue con movimento slave
 Azione1=traslazione:(0,0,0.2,0.5)
 
 [Next Step - staccare il tubo del grasso]
+HighlightDescription=true
 Elemento=models/tubograsso.glb
 Descrizione=Stacca il tubo del grasso dalla flangia.
 Utensile=Mani
 Azione1=traslazione:( 0,0,-0.2,0.5)
 
 [Next Step - estrarre la flangia]
+HighlightDescription=true
 Elemento=models/flangia.glb
 Descrizione=Metti a terra la flangia con le Mani.
 Utensile=Mani
@@ -502,6 +542,7 @@ Azione2=rotazione:(90,0,0,0.5)
 Azione3=appoggia(0.2)
 
 [Next Step - estrarre la paletta1]
+HighlightDescription=true
 Elemento=models/paletta1.glb
 Descrizione=Metti a terra la paletta1 con le Mani.
 Utensile=Mani
@@ -510,6 +551,7 @@ Azione2=rotazione:(0,0,-32,0.5)
 Azione3=traslazione:(-0.5,0,0.2,0.5)
 Azione4=appoggia(0.2)
 [Next Step - estrarre la paletta2]
+HighlightDescription=true
 Elemento=models/paletta2.glb
 Descrizione=Metti a terra la paletta2 con le Mani.
 Azione1=traslazione:( 0,0,0.5,0.5)
@@ -517,6 +559,7 @@ Azione2=rotazione:(0,0,-108,0.5)
 Azione3=traslazione:(-0.7,0,0.2,0.5)
 Azione4=appoggia(0.2)
 [Next Step - estrarre la paletta3]
+HighlightDescription=true
 Elemento=models/paletta3.glb
 Descrizione=Metti a terra la paletta3 con le Mani.
 Utensile=Mani
@@ -527,6 +570,7 @@ Azione2=rotazione:(0,0,0,0.5)
 Azione3=traslazione:(-0.9,0,0.2,0.5)
 Azione4=appoggia(0.2)
 [Next Step - estrarre la paletta4]
+HighlightDescription=true
 Elemento=models/paletta4.glb
 Descrizione=Metti a terra la paletta4 con le Mani.
 Utensile=Mani
@@ -535,6 +579,7 @@ Azione2=rotazione:(0,0,-72,0.5)
 Azione3=traslazione:(-1.1,0,0.2,0.5)
 Azione4=appoggia(0.2)
 [Next Step - estrarre la paletta5]
+HighlightDescription=true
 Elemento=models/paletta5.glb
 Descrizione=Metti a terra la paletta5 con le Mani.
 Utensile=Mani
@@ -543,7 +588,8 @@ Azione2=rotazione:(0,0,32,0.5)
 Azione3=traslazione:(-1.3,0,0.2,0.5)
 Azione4=appoggia(0.2)
 
-[Sostituzione Palette Reverse]                           // Tutorial inverso palette
+[Sostituzione Palette Reverse]  
+                         // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette
 CameraPos=(0.06,0.8, 1.19)
 CameraTarget=(0, 0, 0)
@@ -695,6 +741,7 @@ Rotazione=corpo:(0.0,0.0,0.0)
 TutorialSteps=23
 
 [Step 1 - Rimonta paletta 1]
+HighlightDescription=true
 Descrizione=Prendi la paletta 1 e rimontala nella sua sede originale. La paletta verrà ruotata e posizionata automaticamente.
 Utensile=Mani
 Elemento=models/paletta1.glb
@@ -703,6 +750,7 @@ Azione1=traslazione:(0.625,0.156,-0.300,1.2)
 Azione2=traslazione:(0,0,-0.4,1.2)
 
 [Next Step - Rimonta paletta 2]
+HighlightDescription=true
 CameraPos=(1, 0.64, 0.77)
 CameraTarget=(0, 0, 0)
 CameraZoom=1
@@ -715,6 +763,7 @@ Azione1=traslazione:(0.958,-0.124,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 
 [Next Step - Rimonta paletta 3]
+HighlightDescription=true
 Descrizione=Prendi la paletta 3 e rimontala nella sua sede originale. La paletta verrà posizionata automaticamente.
 Utensile=Mani
 Elemento=models/paletta3.glb
@@ -722,6 +771,7 @@ Azione1=traslazione:(0.900,0.273,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 
 [Next Step - Rimonta paletta 4]
+HighlightDescription=true
 Descrizione=Prendi la paletta 4 e rimontala nella sua sede originale. La paletta verrà ruotata e posizionata automaticamente.
 Utensile=Mani
 Elemento=models/paletta4.glb
@@ -730,6 +780,7 @@ Azione1=traslazione:(1.337,0.082,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 
 [Next Step - Rimonta paletta 5]
+HighlightDescription=true
 Descrizione=Prendi la paletta 5 e rimontala nella sua sede originale. La paletta verrà ruotata e posizionata automaticamente.
 Utensile=Mani
 Elemento=models/paletta5.glb
@@ -738,6 +789,7 @@ Azione1=traslazione:(1.188,0.151,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 
 [Next Step - Posiziona la flangia]
+HighlightDescription=true
 Descrizione=Trascina la flangia e posizionala sopra la sua sede (si aggancerà automaticamente sollevata di 0.3m).
 Utensile=Mani
 CameraPos=(0, 0.45, 0.89)
@@ -751,6 +803,7 @@ DragDropDistance=0.3
 ShowSnapIndicators=false
 
 [Next Step - Abbassa la flangia]
+HighlightDescription=true
 Descrizione=La flangia verrà ora avvicinata automaticamente nella sua sede finale.
 Utensile=Mani
 Elemento=models/flangia.glb
@@ -761,6 +814,7 @@ Azione1=traslazione:(0.0,0.0,-0.3,0.8)
 
 
 [Next Step - Posiziona Viti Flangia]
+HighlightDescription=true
 Descrizione=Posiziona le 8 viti della flangia nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
 Utensile=Mani
 CameraPos=(0, 0.5, 1)
@@ -777,54 +831,63 @@ SnapOffset=(0,0,0.02)
 
 
 [Next Step - Avvita vite flangia 1]
+HighlightDescription=true
 Elemento=models/vite_flangia_1.glb
 Descrizione=Stringi la prima vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 2]
+HighlightDescription=true
 Elemento=models/vite_flangia_2.glb
 Descrizione=Stringi la seconda vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 3]
+HighlightDescription=true
 Elemento=models/vite_flangia_3.glb
 Descrizione=Stringi la terza vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 4]
+HighlightDescription=true
 Elemento=models/vite_flangia_4.glb
 Descrizione=Stringi la quarta vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 5]
+HighlightDescription=true
 Elemento=models/vite_flangia_5.glb
 Descrizione=Stringi la quinta vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 6]
+HighlightDescription=true
 Elemento=models/vite_flangia_6.glb
 Descrizione=Stringi la sesta vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 7]
+HighlightDescription=true
 Elemento=models/vite_flangia_7.glb
 Descrizione=Stringi la settima vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite flangia 8]
+HighlightDescription=true
 Elemento=models/vite_flangia_8.glb
 Descrizione=Stringi l'ottava vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
 
 [Next Step - Riattacca il tubo del grasso]
+HighlightDescription=true
 Descrizione=Collega il tubo del grasso alla flangia. Richiede che la flangia sia già montata.
 Utensile=Mani
 
@@ -836,6 +899,7 @@ DragDropDistance=0.3
 ShowSnapIndicators=false
 
 [Next Step - Rimonta la culatta]
+HighlightDescription=true
 Descrizione=Posiziona la culatta sul corpo pompa. Richiede che tutte le viti della flangia siano state avvitate.
 Utensile=Mani
 
@@ -848,6 +912,7 @@ ShowSnapIndicators=false
 
 
 [Next Step - Posiziona Viti Culatta lunghe]
+HighlightDescription=true
 Descrizione=Posiziona le 2 viti della culatta lunghe nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
 Utensile=Mani
 
@@ -862,6 +927,7 @@ ShowSnapIndicators=false
 SnapOffset=(0,0,0.02)
 
 [Next Step - Posiziona Viti Culatta corte]
+HighlightDescription=true
 Descrizione=Posiziona le 2 viti della culatta corte nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
 Utensile=Mani
 
@@ -876,24 +942,28 @@ ShowSnapIndicators=false
 SnapOffset=(0,0,0.02)
 
 [Next Step - Avvita vite culatta 1]
+HighlightDescription=true
 Elemento=models/vite_culatta_1.glb
 Descrizione=Stringi la prima vite della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite culatta 2]
+HighlightDescription=true
 Elemento=models/vite_culatta_2.glb
 Descrizione=Stringi la seconda vite della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite culatta 3]
+HighlightDescription=true
 Elemento=models/vite_culatta_3.glb
 Descrizione=Stringi la terza vite della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 
 [Next Step - Avvita vite culatta 4]
+HighlightDescription=true
 Elemento=models/vite_culatta_4.glb
 Descrizione=Stringi la quarta vite della culatta con la chiave a brugola da 6mm. Questo completa il rimontaggio della pompa.
 Utensile=ChiaveBrugola

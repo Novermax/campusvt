@@ -921,16 +921,38 @@ InteractiveObject3D.on('state_change', (data) => console.log(data))
 ```ini
 [Step 1 - Vai alla schermata MDI]
 Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
-# Pulsante viene evidenziato automaticamente
+# Pulsante evidenziato completamente opaco (default)
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
 OnPhysicalTrigger=setVariant:schermo=schermo002
 
-[Step 4 - Premi il pulsante start]
-Descrizione=Premi il pulsante Start sul telecomando per avviare lo scarico utensile.
-# Pulsante sul remote evidenziato automaticamente
+[Step 2 - Evidenziazione semi-trasparente]
+Descrizione=Pulsante con evidenziazione semi-trasparente (si vede attraverso).
+AcceptTrigger_Physical=pulpito.Pulsante_tool
+OnPhysicalTrigger=setVariant:schermo=schermo003
+HighlightOpacity=0.5  # ← NUOVO: 50% trasparenza (si vede attraverso)
+
+[Step 3 - Evidenziazione quasi trasparente]
+Descrizione=Pulsante con evidenziazione molto trasparente.
 AcceptTrigger_Physical=remote.pulsante_r_play
 OnPhysicalTrigger=setVariant:schermo=schermo004
+HighlightOpacity=0.2  # ← Solo 20% opaco (molto trasparente)
 ```
+
+### Parametro HighlightOpacity
+
+| Proprietà | Formato | Descrizione |
+|-----------|---------|-------------|
+| `HighlightOpacity=` | `float` | Opacità del pulsante evidenziato (range: 0.0-1.0, default: 1.0) |
+
+**Valori**:
+- `0.0` - Completamente invisibile
+- `0.2` - Molto trasparente (si vede quasi tutto attraverso)
+- `0.3` - Trasparente (si vede bene attraverso)
+- `0.5` - Semi-trasparente
+- `0.7` - Leggermente trasparente
+- `1.0` - **Completamente opaco (default)** - comportamento originale
+
+**Nota**: Il glow giallo emissivo (emissiveIntensity=2.0) rimane fisso. `HighlightOpacity` controlla la trasparenza reale del materiale (`material.opacity` + `material.transparent`), permettendo di vedere gli oggetti dietro il pulsante.
 
 ### Comportamento Step
 
@@ -959,8 +981,12 @@ OnPhysicalTrigger=setVariant:schermo=schermo004
 ### API Debug Console
 
 ```javascript
-// Evidenziazione manuale
+// Evidenziazione manuale con intensità default (2.0)
 InteractiveObject3D.highlightRequiredButtons(['pulpito.Pulsante_mdi', 'remote.pulsante_r_play'])
+
+// Evidenziazione manuale con intensità personalizzata
+InteractiveObject3D.highlightRequiredButtons(['pulpito.Pulsante_mdi'], 0.5)  // Semi-trasparente
+InteractiveObject3D.highlightRequiredButtons(['remote.pulsante_r_play'], 4.0)  // Molto forte
 
 // Rimozione manuale
 InteractiveObject3D.clearButtonHighlights()
@@ -972,18 +998,29 @@ InteractiveObject3D.highlightedButtons  // Map dei pulsanti evidenziati
 ### Caratteristiche
 
 - ✅ **Automatico**: Zero configurazione aggiuntiva, usa AcceptTrigger_Physical esistente
-- ✅ **Visibile**: Emissione gialla (0xffff00) con intensità 2.0 - molto visibile
+- ✅ **Intensità Personalizzabile**: Parametro `HighlightIntensity` per controllo granulare (0.0-5.0)
+- ✅ **Visibile**: Emissione gialla (0xffff00) con intensità configurabile (default: 2.0)
 - ✅ **Smart**: Cerca mesh sia come child diretto che in Group (supporto export Blender)
 - ✅ **Cleanup**: Evidenziazioni pulite ad ogni cambio step
 - ✅ **Non Invasivo**: Ripristina sempre valori originali dopo rimozione
 - ✅ **Multi-Pulsante**: Supporta multipli pulsanti evidenziati contemporaneamente
+- ✅ **Backward Compatible**: Tutorial senza HighlightIntensity usano default 2.0
 
 ### Log Console
 
 ```javascript
+// Con intensità default (2.0)
+💡 [UI] HighlightIntensity non specificata, uso default 2.0
 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: ["pulpito.Pulsante_mdi"]
-💡 [InteractiveObject3D] Pulsante "Pulsante_mdi" evidenziato (giallo)
-💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI"
+💡 [InteractiveObject3D] Intensità evidenziazione: 2
+💡 [InteractiveObject3D] ✓ Emissive applicata: 0xffff00, intensity=2
+💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1" con intensità 2
+
+// Con intensità personalizzata (0.5)
+💡 [UI] HighlightIntensity personalizzata: 0.5
+💡 [InteractiveObject3D] Intensità evidenziazione: 0.5
+💡 [InteractiveObject3D] ✓ Emissive applicata: 0xffff00, intensity=0.5
+💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 2" con intensità 0.5
 
 // Dopo click
 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click
@@ -991,13 +1028,13 @@ InteractiveObject3D.highlightedButtons  // Map dei pulsanti evidenziati
 
 ### File Modificati
 
-- `js/core/InteractiveObject3D.js:1055-1165` - Sistema evidenziazione pulsanti
+- `js/core/InteractiveObject3D.js:1181-1289` - Sistema evidenziazione pulsanti (aggiornato Febbraio 2026)
   - `highlightedButtons: Map()` - Tracking pulsanti evidenziati
-  - `highlightRequiredButtons(triggers)` - Applica evidenziazioni
-  - `applyButtonHighlight(mesh, triggerId)` - Emissive gialla 2.0
+  - `highlightRequiredButtons(triggers, intensity)` - Applica evidenziazioni con intensità personalizzabile
+  - `applyButtonHighlight(mesh, triggerId, intensity)` - Emissive gialla con intensità parametrica
   - `clearButtonHighlights()` - Rimuove tutte le evidenziazioni
 - `js/core/InteractiveObject3D.js:452-463` - Rimozione evidenziazione dopo click
-- `js/ui.js:3455-3468` - Integrazione automatica in executeStep()
+- `js/ui.js:3606-3627` - Parsing HighlightIntensity e integrazione in executeStep()
 
 ### Esempi Visivi
 
@@ -1006,6 +1043,10 @@ InteractiveObject3D.highlightedButtons  // Map dei pulsanti evidenziati
 
 **Dopo** (con evidenziazione):
 - Solo `Pulsante_mdi` brilla in giallo → chiaro quale premere!
+
+---
+
+**Ultimo aggiornamento**: 5 Febbraio 2026 - Aggiunto parametro `HighlightIntensity` per controllo intensità evidenziazione (0.0-5.0)
 
 ---
 
@@ -4400,3 +4441,189 @@ StepController.simulateTrigger('physical', 'pulpito.Pulsante_mdi') // Test
 ---
 
 **Ultimo aggiornamento**: 4 Gennaio 2026 - Fix StepController auto-avanzamento (goToNextStep → nextStep)
+
+---
+
+## 📱 Sistema TouchSystem - Gesture Touch per Dispositivi Mobile (Febbraio 2026)
+
+**Funzionalità**: Sistema completo di gestione gesture touch per dispositivi mobile/tablet, con riconoscimento gesture, routing prioritizzato e integrazione con tutti i sistemi esistenti.
+
+### Problema Risolto
+- **Controlli Mouse Non Funzionanti su Touch**: Eventi mouse non emulati correttamente su touchscreen
+- **Gesture Browser Native**: Pinch-to-zoom e scroll del browser interferivano con controlli 3D
+- **Drag & Drop Touch**: Nessun supporto per trascinamento oggetti via touch
+- **Pulsanti 3D Touch**: Click su elementi interattivi 3D non funzionava via touch
+- **Soluzione**: Sistema touch modulare con riconoscimento gesture e routing a priorita'
+
+### Architettura
+
+```
+TouchEventDispatcher (cattura eventi raw dal canvas)
+        |
+        v
+GestureRecognizer (state machine: tap, drag, pinch, rotate, etc.)
+        |
+        v
+TouchInputRouter (priorita': UI > Interactive3D > Object3D > Camera)
+        |
+        v
+Handler specifici (Camera, Drag, UI, Interactive3D)
+```
+
+### Moduli
+
+| Modulo | File | Righe | Responsabilita' |
+|--------|------|-------|-----------------|
+| TouchEventDispatcher | `js/touch/TouchEventDispatcher.js` | ~210 | Cattura eventi touch raw, normalizza coordinate |
+| GestureRecognizer | `js/touch/GestureRecognizer.js` | ~540 | State machine riconoscimento gesture |
+| TouchInputRouter | `js/touch/TouchInputRouter.js` | ~510 | Routing gesture ai handler per priorita' |
+| TouchCameraHandler | `js/touch/TouchCameraHandler.js` | ~200 | Zoom (pinch), rotazione (2 dita), pivot |
+| TouchDragHandler | `js/touch/TouchDragHandler.js` | ~350 | Drag & drop oggetti 3D, tool actions |
+| TouchUIHandler | `js/touch/TouchUIHandler.js` | ~215 | Interazioni elementi HTML UI |
+| TouchInteractive3DHandler | `js/touch/TouchInteractive3DHandler.js` | ~340 | Pulsanti 3D interattivi (InteractiveObject3D) |
+| TouchSystem (index) | `js/touch/index.js` | ~310 | Entry point, inizializzazione, coordinamento |
+
+### Gesture Supportate
+
+| Gesture | Dita | Azione |
+|---------|------|--------|
+| Tap | 1 | Selezione oggetto + pivot camera su centro BB |
+| Double Tap | 1 | Esegui azione tool corrente sull'oggetto |
+| Drag | 1 | Drag & drop oggetto (con tool Mano attivo) |
+| Pinch | 2 | Zoom camera (avanti/indietro) |
+| Drag 2 dita | 2 | Rotazione camera orbitale |
+| Tap 2 dita | 2 | Set pivot camera su punto medio |
+| Double Tap 2 dita | 2 | Set pivot camera su punto medio (alternativo) |
+
+### Priorita' Layer Routing
+
+```
+3 = UI (elementi HTML: pulsanti, menu, overlay)
+2 = INTERACTIVE_3D (pulsanti 3D: InteractiveObject3D)
+1 = OBJECT_3D (modelli 3D draggabili: DragDropSystem)
+0 = CAMERA (controlli camera: zoom, rotazione, pan)
+```
+
+Il router verifica dalla priorita' piu' alta alla piu' bassa quale handler puo' gestire l'evento.
+
+### Threshold Configurati
+
+| Parametro | Valore | Descrizione |
+|-----------|--------|-------------|
+| `TAP_MAX_DURATION` | 250ms | Durata massima per riconoscere un tap |
+| `TAP_MAX_MOVEMENT` | 15px | Movimento massimo ammesso per un tap |
+| `DOUBLE_TAP_MAX_INTERVAL` | 300ms | Intervallo massimo tra due tap per double tap |
+| `DRAG_MIN_MOVEMENT` | 10px | Movimento minimo per iniziare un drag |
+| `PINCH_MIN_DELTA` | 20px | Delta minimo tra dita per riconoscere pinch |
+| `ROTATION_MIN_MOVEMENT` | 15px | Movimento minimo per rotazione 2 dita |
+
+### Integrazione DragDropSystem
+
+Il TouchDragHandler si integra con DragDropSystem tramite:
+- `DragDropSystem.startDrag(model, hitPoint, { isTouch: true })` - Avvia drag con flag touch
+- `DragDropSystem.updateDragPositionFromTouch(normalizedX, normalizedY)` - Aggiorna posizione da coordinate normalizzate
+- `DragDropSystem.endDrag()` - Termina drag (flag `isTouchDrag` gia' settato internamente)
+
+Flag `isTouchDrag` nel DragDropSystem:
+- **Skip cursor changes** durante drag touch (cursori irrilevanti su touchscreen)
+- **Skip camera controls disable/enable** (gestito da TouchSystem separatamente)
+- **Reset automatico** alla fine del drag
+
+### File Modificati per Integrazione
+
+| File | Modifica |
+|------|----------|
+| `js/scene3d-modular.js:594-603` | Handler touch legacy condizionati via `!TouchSystem.initialized` |
+| `js/ui.js:366-394` | `initTouchSystem()` chiamato dopo `Scene3D.init()` |
+| `js/ui/UICore.js:182-195` | Init TouchSystem in UICore |
+| `js/ui/PageManager.js:133-154` | Init TouchSystem in PageManager |
+| `index.html:627-635` | Script tags moduli touch in ordine dipendenza |
+| `css/layout.css:32-48` | `touch-action:none` sul canvas, prefissi webkit |
+| `css/components.css:1869-1946` | Stili feedback touch (indicatori, animazioni, media queries) |
+| `js/core/DragDropSystem.js:47` | Flag `isTouchDrag` |
+| `js/core/DragDropSystem.js:805` | `startDrag()` con parametro `options.isTouch` |
+| `js/core/DragDropSystem.js:968-1030` | Nuovo metodo `updateDragPositionFromTouch()` |
+| `js/core/DragDropSystem.js:1118-1144` | `endDrag()` condizionato per touch |
+
+### CSS Touch
+
+```css
+/* Canvas - disabilita gesture browser native */
+#canvas3d {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Media query per dispositivi touch */
+@media (pointer: coarse) {
+    /* Pulsanti piu' grandi su touchscreen */
+}
+```
+
+### Inizializzazione
+
+Il TouchSystem si inizializza automaticamente quando la pagina scenario viene mostrata:
+
+```javascript
+// In ui.js, UICore.js, o PageManager.js (ridondanza per sicurezza)
+if (window.TouchSystem && !window.TouchSystem.initialized) {
+    const canvas = document.getElementById('canvas3d');
+    window.TouchSystem.init(canvas);
+}
+```
+
+Guard clause `!window.TouchSystem.initialized` previene inizializzazione multipla.
+
+### API Debug Console
+
+```javascript
+// Stato sistema
+TouchSystem.debugInfo()              // Debug completo tutti i componenti
+TouchSystem.setEnabled(true/false)   // Abilita/disabilita sistema
+TouchSystem.isTouchDevice()          // true se dispositivo supporta touch
+TouchSystem.isMobileDevice()         // true se dispositivo mobile
+
+// Configurazione
+TouchSystem.setGestureConfig({       // Aggiorna soglie gesture
+    TAP_MAX_DURATION: 300,
+    DRAG_MIN_MOVEMENT: 15
+})
+TouchSystem.setCameraConfig({        // Aggiorna config camera
+    zoomSpeed: 0.5,
+    rotationSpeed: 1.0
+})
+
+// Cleanup
+TouchSystem.destroy()                // Rimuove tutti i listener
+```
+
+### Compatibilita'
+
+- **Desktop Inalterato**: TouchSystem attivo solo su dispositivi touch, handler mouse legacy funzionano normalmente
+- **AutoMode Compatible**: TouchDragHandler verifica e rispetta `AutoMode.enabled`
+- **DragDropSystem Compatible**: Flag `isTouchDrag` gestisce differenze mouse/touch
+- **InteractiveObject3D Compatible**: TouchInteractive3DHandler usa le stesse API di click
+- **StepGatingManager Compatible**: Gating step applicato anche a interazioni touch
+- **Zero Breaking Changes**: Tutorial e scenari esistenti funzionano senza modifiche
+
+### Log Console
+
+```javascript
+[TouchSystem] Modulo caricato
+[TouchSystem] Inizializzazione sistema touch...
+[TouchCameraHandler] Inizializzato
+[TouchDragHandler] Inizializzato
+[TouchUIHandler] Inizializzato
+[TouchInteractive3DHandler] Inizializzato
+[TouchInputRouter] Inizializzato
+[GestureRecognizer] Inizializzato
+[TouchEventDispatcher] Inizializzato su canvas
+[TouchSystem] CSS touch applicato al canvas
+[TouchSystem] Sistema touch inizializzato
+[Scene3D] TouchSystem attivo - handler touch legacy disabilitati
+```
+
+---
+
+**Ultimo aggiornamento**: 5 Febbraio 2026 - Sistema TouchSystem con integrazione DragDropSystem completato

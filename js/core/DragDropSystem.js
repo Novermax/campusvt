@@ -12,7 +12,30 @@
  * Data: Dicembre 2025 - Risoluzione problemi snap
  */
 
-console.log('🔥🔥🔥 [DragDropSystem] Versione 1.3.8 SNAPPOINTPIVOT-FIX caricata - 2025-12-04 🔥🔥🔥');
+console.log('🔥🔥🔥 [DragDropSystem] Versione 1.3.9 REFACTORING caricata - 2026-01-31 🔥🔥🔥');
+
+// FASE 5 REFACTORING: Helper per chiamate sicure a dipendenze esterne
+const _dds_safeCall = function(obj, method, args = [], fallback = null, context = 'DragDropSystem') {
+    try {
+        if (obj && typeof obj[method] === 'function') {
+            return obj[method].apply(obj, args);
+        }
+        return fallback;
+    } catch (error) {
+        console.warn(`[${context}] Errore chiamata ${method}:`, error.message);
+        return fallback;
+    }
+};
+
+// Helper specifico per UI
+const _dds_safeUICall = function(method, args = [], fallback = null) {
+    return _dds_safeCall(window.UI, method, args, fallback, 'DragDropSystem→UI');
+};
+
+// Helper specifico per Scene3D
+const _dds_safeScene3DCall = function(method, args = [], fallback = null) {
+    return _dds_safeCall(window.Scene3D, method, args, fallback, 'DragDropSystem→Scene3D');
+};
 
 window.DragDropSystem = {
     // Stato sistema
@@ -21,6 +44,7 @@ window.DragDropSystem = {
     isStepSyncing: false, // Flag per bypassare AssemblySystem durante sincronizzazione
     debugMode: false, // Flag per bypass temporaneo durante debug
     showSnapIndicators: false, // Flag per mostrare/nascondere sfere verdi snap
+    isTouchDrag: false, // Flag per drag originato da touch (skip cursor changes)
 
     // Oggetti e configurazioni
     draggableObjects: [],
@@ -62,6 +86,7 @@ window.DragDropSystem = {
     // Tutorial Manager timing fix
     tutorialAdvanceRetries: 3,
     tutorialAdvanceRetryDelay: 150,
+    advanceRetryTimeoutId: null, // FIX: Tracking timeout retry per cancellazione
     
     // Riferimenti ai sistemi esistenti
     scene: null,
@@ -777,10 +802,12 @@ window.DragDropSystem = {
      * @param {THREE.Object3D} object - Oggetto da trascinare
      * @param {THREE.Vector3} intersectionPoint - Punto di intersezione iniziale
      */
-    startDrag: function(object, intersectionPoint) {
-        console.log(`[DragDropSystem] 🎯 Inizio drag di: ${object.name}`);
+    startDrag: function(object, intersectionPoint, options) {
+        const isTouch = options && options.isTouch;
+        console.log(`[DragDropSystem] 🎯 Inizio drag di: ${object.name}${isTouch ? ' (TOUCH)' : ''}`);
 
         this.isDragging = true;
+        this.isTouchDrag = !!isTouch;
         this.draggedObject = object;
 
         // Memorizza posizione iniziale del drag
@@ -791,14 +818,6 @@ window.DragDropSystem = {
 
         // IMPORTANTE: Manteniamo l'highlight giallo durante il drag per coerenza visiva
         // Gli oggetti draggabili rimangono evidenziati finché non fanno snap con successo
-        // (commentato per supportare multipli oggetti draggabili con highlight simultaneo)
-        /*
-        if (window.Scene3D && typeof window.Scene3D.removeHighlight === 'function') {
-            window.Scene3D.removeHighlight();
-            this.silhouetteBlocked.add(object.name);
-            console.log(`[DragDropSystem] 🎨 Rimosso highlight da ${object.name} durante drag`);
-        }
-        */
         console.log(`[DragDropSystem] 🎨 Mantengo highlight su ${object.name} durante drag`);
 
         // NUOVO: Crea piano di drag perpendicolare alla camera, passando per il punto cliccato
@@ -809,16 +828,18 @@ window.DragDropSystem = {
             this.snapSystem.updateSnapIndicators(this.draggedObject);
         }
 
-        // Cambia cursore
-        this.canvas.style.cursor = 'grabbing';
+        // Cambia cursore (solo per mouse, non per touch)
+        if (!isTouch) {
+            this.canvas.style.cursor = 'grabbing';
+        }
 
         // Disabilita sistema click esistente durante drag
         if (window.Scene3D && window.Scene3D.animationSystem) {
             window.Scene3D.animationSystem.clickEnabled = false;
         }
 
-        // NUOVO: Disabilita controlli camera durante drag
-        if (window.Scene3D && window.Scene3D.mouseControls) {
+        // Disabilita controlli camera durante drag (solo per mouse, touch gestito da TouchSystem)
+        if (!isTouch && window.Scene3D && window.Scene3D.mouseControls) {
             this.cameraControlsWereEnabled = window.Scene3D.mouseControls.enabled;
             window.Scene3D.mouseControls.enabled = false;
             console.log(`[DragDropSystem] 🚫 Controlli camera disabilitati durante drag`);
@@ -945,6 +966,75 @@ window.DragDropSystem = {
     },
     
     /**
+     * Aggiorna posizione drag da coordinate touch normalizzate (-1..1)
+     * Usa la stessa logica di updateDragPosition ma senza bisogno di un MouseEvent
+     * @param {number} normalizedX - Coordinata X normalizzata (-1..1)
+     * @param {number} normalizedY - Coordinata Y normalizzata (-1..1)
+     */
+    updateDragPositionFromTouch: function(normalizedX, normalizedY) {
+        if (!this.draggedObject) return;
+
+        // Usa coordinate normalizzate direttamente
+        this.mouse.x = normalizedX;
+        this.mouse.y = normalizedY;
+
+        // Raycast intelligente (stessa logica di updateDragPosition)
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+
+        const isNearSnapZone = this.isNearAnySnapZone(this.draggedObject);
+        let raycastTargets = [];
+
+        if (isNearSnapZone) {
+            const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
+            if (corpoModel) raycastTargets.push(corpoModel);
+            const coperchioModel = this.scene.children.find(obj => obj.name === 'coperchio');
+            if (coperchioModel) raycastTargets.push(coperchioModel);
+        } else {
+            raycastTargets = this.scene.children.filter(obj =>
+                obj !== this.draggedObject &&
+                obj.type !== 'DirectionalLight' &&
+                obj.type !== 'AmbientLight' &&
+                !obj.name.startsWith('SnapIndicator') &&
+                !obj.name.includes('vite') &&
+                !obj.name.includes('tappino')
+            );
+        }
+
+        const sceneIntersects = this.raycaster.intersectObjects(raycastTargets, true);
+
+        if (sceneIntersects.length > 0) {
+            const intersectionPoint = sceneIntersects[0].point;
+            if (!this.lastPlanePoint || this.lastPlanePoint.distanceTo(intersectionPoint) > 0.01) {
+                this.updateDragPlaneToCamera(intersectionPoint);
+                this.lastPlanePoint = intersectionPoint.clone();
+            }
+        } else if (!this.lastPlanePoint) {
+            const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
+            if (corpoModel) {
+                const box = new THREE.Box3().setFromObject(corpoModel);
+                const center = box.getCenter(new THREE.Vector3());
+                this.updateDragPlaneToCamera(center);
+                this.lastPlanePoint = center.clone();
+            } else {
+                const currentPos = this.draggedObject.position.clone();
+                this.updateDragPlaneToCamera(currentPos);
+                this.lastPlanePoint = currentPos.clone();
+            }
+        }
+
+        // Proietta su piano di drag
+        const planeIntersects = this.raycaster.intersectObjects([this.dragPlane], false);
+        if (planeIntersects.length > 0) {
+            const newPosition = planeIntersects[0].point.sub(this.dragOffset);
+            this.draggedObject.position.copy(newPosition);
+
+            if (this.snapSystem) {
+                this.snapSystem.checkSnapZones(this.draggedObject);
+            }
+        }
+    },
+
+    /**
      * Termina il drag e controlla se eseguire snap
      */
     endDrag: function() {
@@ -1026,16 +1116,20 @@ window.DragDropSystem = {
         console.log(`[DragDropSystem] 🎯 findSnapTarget finale:`, snapTarget ? `Posizione (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})` : 'null');
 
         // SEMPRE fare cleanup base prima di tutto
-        console.log(`[DragDropSystem] 🧹 CLEANUP BASE: hiding snap indicators e reset cursore...`);
+        const wasTouchDrag = this.isTouchDrag;
+        console.log(`[DragDropSystem] 🧹 CLEANUP BASE: hiding snap indicators e reset cursore...${wasTouchDrag ? ' (TOUCH)' : ''}`);
         this.hideAllSnapIndicators();
-        // Reset stile inline cursor per permettere alle classi CSS di applicarsi
-        this.canvas.style.cursor = '';
-        console.log(`[DragDropSystem] 🖱️ Cursore canvas inline resettato, classi CSS attive`);
 
-        // CRITICO: Ferma animazione cursore di Scene3D
-        if (window.Scene3D && typeof window.Scene3D.stopCursorAnimation === 'function') {
-            window.Scene3D.stopCursorAnimation();
-            console.log(`[DragDropSystem] ⏹️ Animazione cursore Scene3D fermata`);
+        // Reset cursore (solo per mouse, non per touch)
+        if (!wasTouchDrag) {
+            this.canvas.style.cursor = '';
+            console.log(`[DragDropSystem] 🖱️ Cursore canvas inline resettato, classi CSS attive`);
+
+            // Ferma animazione cursore di Scene3D
+            if (window.Scene3D && typeof window.Scene3D.stopCursorAnimation === 'function') {
+                window.Scene3D.stopCursorAnimation();
+                console.log(`[DragDropSystem] ⏹️ Animazione cursore Scene3D fermata`);
+            }
         }
 
         // Riabilita sistema click esistente
@@ -1044,8 +1138,8 @@ window.DragDropSystem = {
             console.log(`[DragDropSystem] 🎯 Click animation system riabilitato`);
         }
 
-        // NUOVO: Riabilita controlli camera
-        if (window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
+        // Riabilita controlli camera (solo per mouse, touch gestito da TouchSystem)
+        if (!wasTouchDrag && window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
             window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
             console.log(`[DragDropSystem] ✅ Controlli camera riabilitati: ${this.cameraControlsWereEnabled}`);
             this.cameraControlsWereEnabled = undefined;
@@ -1154,6 +1248,7 @@ window.DragDropSystem = {
 
         // Reset stato SEMPRE (anche con snap riuscito)
         this.isDragging = false;
+        this.isTouchDrag = false;
         this.draggedObject = null;
         this.dragOffset.set(0, 0, 0);
         this.dragStartPosition.set(0, 0, 0);
@@ -1164,12 +1259,26 @@ window.DragDropSystem = {
 
     /**
      * Forza il reset dello stato di drag (per situazioni di emergenza)
+     * FIX: Aggiunto reset tracking occupazioni e cancellazione retry pendenti
      */
     forceResetDragState: function() {
         console.log(`[DragDropSystem] 🚨 FORCE RESET DRAG STATE`);
 
+        // FIX: Cancella retry pendenti per avanzamento tutorial
+        if (this.advanceRetryTimeoutId) {
+            clearTimeout(this.advanceRetryTimeoutId);
+            this.advanceRetryTimeoutId = null;
+            console.log(`[DragDropSystem] 🔄 Retry avanzamento cancellato`);
+        }
+
+        // FIX: Reset tracking occupazioni snap
+        this.occupiedSnapPositions.clear();
+        this.objectSnapPosition.clear();
+        console.log(`[DragDropSystem] 🔄 Tracking occupazioni snap resettato`);
+
         // Reset completo stato
         this.isDragging = false;
+        this.isTouchDrag = false;
         this.draggedObject = null;
         this.dragOffset.set(0, 0, 0);
         this.dragStartPosition.set(0, 0, 0);
@@ -2236,7 +2345,13 @@ window.DragDropSystem = {
         // Retry se non abbiamo raggiunto il limite
         if (attempt < maxRetries) {
             console.log(`[DragDropSystem] ⏳ Retry ${attempt + 1} tra ${retryDelay}ms (${context})`);
-            setTimeout(() => {
+
+            // FIX: Cancella eventuale retry precedente e salva ID per cancellazione futura
+            if (this.advanceRetryTimeoutId) {
+                clearTimeout(this.advanceRetryTimeoutId);
+            }
+            this.advanceRetryTimeoutId = setTimeout(() => {
+                this.advanceRetryTimeoutId = null;
                 this.tryAdvanceTutorialStep(context, attempt + 1);
             }, retryDelay);
         } else {

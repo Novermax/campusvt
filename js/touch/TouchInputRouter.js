@@ -1,0 +1,506 @@
+/**
+ * TouchInputRouter - Sistema di routing eventi touch con priorità
+ *
+ * Responsabilità:
+ * - Determina il layer dell'elemento toccato (UI, Interactive3D, Object3D, Camera)
+ * - Distribuisce gesture ai handler appropriati
+ * - Gestisce priorità: UI (3) > Interactive3D (2) > Object3D (1) > Camera (0)
+ *
+ * @version 1.0.0
+ * @date Febbraio 2026
+ */
+
+window.TouchInputRouter = {
+
+    // ═══════════════════════════════════════════════════════════
+    // PRIORITÀ LAYER
+    // ═══════════════════════════════════════════════════════════
+    LAYERS: {
+        UI: 3,              // Elementi HTML UI (legenda, pulsanti, fumetto)
+        INTERACTIVE_3D: 2,  // Pulsanti 3D interattivi (button, rotary)
+        OBJECT_3D: 1,       // Modelli 3D draggabili
+        CAMERA: 0           // Nessun elemento - controllo camera
+    },
+
+    // Riferimenti handler
+    uiHandler: null,
+    dragHandler: null,
+    cameraHandler: null,
+    interactive3DHandler: null,
+
+    // Stato
+    initialized: false,
+    currentLayer: null,
+    currentTarget: null,
+
+    // Raycaster Three.js
+    raycaster: null,
+    mouse: null,
+
+    // ═══════════════════════════════════════════════════════════
+    // INIZIALIZZAZIONE
+    // ═══════════════════════════════════════════════════════════
+
+    init: function() {
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+        this.initialized = true;
+        console.log('[TouchInputRouter] Inizializzato');
+    },
+
+    /**
+     * Registra handler
+     */
+    registerHandlers: function(handlers) {
+        this.uiHandler = handlers.ui || null;
+        this.dragHandler = handlers.drag || null;
+        this.cameraHandler = handlers.camera || null;
+        this.interactive3DHandler = handlers.interactive3D || null;
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // DETERMINAZIONE LAYER
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Determina il layer dell'elemento toccato
+     * @param {Object} touchEvent - Evento touch normalizzato
+     * @returns {Object} { layer, target, hitPoint }
+     */
+    determineLayer: function(touchEvent) {
+        const touch = touchEvent.touch || touchEvent.touches[0];
+        if (!touch) return { layer: this.LAYERS.CAMERA, target: null, hitPoint: null };
+
+        // 1. Controlla elementi UI HTML
+        const uiTarget = this.checkUIElements(touch.clientX, touch.clientY);
+        if (uiTarget) {
+            return { layer: this.LAYERS.UI, target: uiTarget, hitPoint: null };
+        }
+
+        // 2. Controlla elementi 3D con raycast
+        const raycastResult = this.performRaycast(touch.normalizedX, touch.normalizedY);
+
+        if (raycastResult) {
+            // 2a. È un elemento interattivo (pulsante 3D)?
+            if (this.isInteractive3DElement(raycastResult.object)) {
+                return {
+                    layer: this.LAYERS.INTERACTIVE_3D,
+                    target: raycastResult.object,
+                    hitPoint: raycastResult.point
+                };
+            }
+
+            // 2b. È un oggetto 3D draggabile?
+            if (this.isDraggableObject(raycastResult.object)) {
+                return {
+                    layer: this.LAYERS.OBJECT_3D,
+                    target: raycastResult.object,
+                    hitPoint: raycastResult.point
+                };
+            }
+
+            // 2c. È un oggetto 3D qualsiasi (per selezione/pivot)
+            const rootModel = this.findRootModel(raycastResult.object);
+            if (rootModel) {
+                return {
+                    layer: this.LAYERS.OBJECT_3D,
+                    target: rootModel,
+                    hitPoint: raycastResult.point
+                };
+            }
+        }
+
+        // 3. Nessun elemento - camera control
+        return { layer: this.LAYERS.CAMERA, target: null, hitPoint: null };
+    },
+
+    /**
+     * Verifica se ci sono elementi UI HTML alle coordinate
+     */
+    checkUIElements: function(clientX, clientY) {
+        const elements = document.elementsFromPoint(clientX, clientY);
+
+        for (const element of elements) {
+            // Skip canvas
+            if (element.tagName === 'CANVAS') continue;
+
+            // Controlla se è un elemento UI interattivo
+            if (this.isUIElement(element)) {
+                return element;
+            }
+        }
+
+        return null;
+    },
+
+    /**
+     * Verifica se un elemento HTML è UI interattiva
+     */
+    isUIElement: function(element) {
+        // Pulsanti e link
+        if (element.tagName === 'BUTTON' || element.tagName === 'A') return true;
+
+        // Elementi con onclick
+        if (element.onclick) return true;
+
+        // Classi specifiche UI
+        const uiClasses = [
+            'strumento-item',      // Legenda strumenti
+            'navigation-btn',      // Pulsanti navigazione
+            'fumetto',             // Fumetto tutorial
+            'step-indicator',      // Indicatori step
+            'auto-mode-toggle',    // Pulsante AutoMode
+            'info-modal',          // Modal informativi
+            'btn',                 // Pulsanti generici
+            'clickable'            // Elementi cliccabili
+        ];
+
+        for (const cls of uiClasses) {
+            if (element.classList.contains(cls)) return true;
+        }
+
+        // Elementi all'interno di contenitori UI
+        const uiContainers = [
+            '#strumenti-legenda',
+            '#navigation-controls',
+            '#fumetto-container',
+            '#infoModal',
+            '.modal'
+        ];
+
+        for (const selector of uiContainers) {
+            if (element.closest(selector)) return true;
+        }
+
+        return false;
+    },
+
+    /**
+     * Esegue raycast 3D
+     */
+    performRaycast: function(normalizedX, normalizedY) {
+        if (!window.Scene3D || !window.Scene3D.camera || !window.Scene3D.scene) {
+            return null;
+        }
+
+        this.mouse.set(normalizedX, normalizedY);
+        this.raycaster.setFromCamera(this.mouse, window.Scene3D.camera);
+
+        const intersects = this.raycaster.intersectObjects(window.Scene3D.scene.children, true);
+
+        // Filtra oggetti validi (escludi helper, griglie, ecc.)
+        for (const intersect of intersects) {
+            const object = intersect.object;
+
+            // Salta oggetti invisibili o helper
+            if (!object.visible) continue;
+            if (object.name && object.name.includes('Helper')) continue;
+            if (object.name && object.name.includes('Grid')) continue;
+
+            // Salta il pavimento per tap/selezione (ma non per pivot 2 dita)
+            if (object.name === 'floor' || object.name === 'ground' || object.name === 'piano') {
+                continue;
+            }
+
+            return {
+                object: object,
+                point: intersect.point.clone(),
+                distance: intersect.distance
+            };
+        }
+
+        return null;
+    },
+
+    /**
+     * Raycast includendo il pavimento (per pivot 2 dita)
+     */
+    performRaycastIncludeFloor: function(normalizedX, normalizedY) {
+        if (!window.Scene3D || !window.Scene3D.camera || !window.Scene3D.scene) {
+            return null;
+        }
+
+        this.mouse.set(normalizedX, normalizedY);
+        this.raycaster.setFromCamera(this.mouse, window.Scene3D.camera);
+
+        const intersects = this.raycaster.intersectObjects(window.Scene3D.scene.children, true);
+
+        for (const intersect of intersects) {
+            const object = intersect.object;
+            if (!object.visible) continue;
+            if (object.name && object.name.includes('Helper')) continue;
+            if (object.name && object.name.includes('Grid')) continue;
+
+            return {
+                object: object,
+                point: intersect.point.clone(),
+                distance: intersect.distance
+            };
+        }
+
+        return null;
+    },
+
+    /**
+     * Verifica se è un elemento interattivo 3D (pulsante)
+     */
+    isInteractive3DElement: function(object) {
+        if (!object) return false;
+
+        // Controlla userData
+        if (object.userData && object.userData.interactive) return true;
+        if (object.userData && object.userData.interactiveConfig) return true;
+
+        // Controlla parent
+        let parent = object.parent;
+        while (parent) {
+            if (parent.userData && parent.userData.interactive) return true;
+            if (parent.userData && parent.userData.interactiveConfig) return true;
+            parent = parent.parent;
+        }
+
+        return false;
+    },
+
+    /**
+     * Verifica se è un oggetto draggabile
+     */
+    isDraggableObject: function(object) {
+        if (!window.DragDropSystem) return false;
+
+        const rootModel = this.findRootModel(object);
+        if (!rootModel) return false;
+
+        return window.DragDropSystem.isDraggableObject(rootModel);
+    },
+
+    /**
+     * Trova il modello root di un oggetto
+     */
+    findRootModel: function(object) {
+        if (!object) return null;
+
+        // Se Scene3D ha il metodo, usalo
+        if (window.Scene3D && window.Scene3D.findRootModel) {
+            return window.Scene3D.findRootModel(object);
+        }
+
+        // Fallback: risali la gerarchia
+        let current = object;
+        while (current.parent && current.parent !== window.Scene3D.scene) {
+            current = current.parent;
+        }
+        return current;
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // ROUTING GESTURE
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Router principale per TAP
+     */
+    routeTap: function(event) {
+        const layerInfo = this.determineLayer(event);
+        this.currentLayer = layerInfo.layer;
+        this.currentTarget = layerInfo.target;
+
+        console.log(`[TouchInputRouter] TAP → Layer: ${this.getLayerName(layerInfo.layer)}, Target:`, layerInfo.target?.name || layerInfo.target?.className || 'none');
+
+        switch (layerInfo.layer) {
+            case this.LAYERS.UI:
+                if (this.uiHandler) {
+                    this.uiHandler.handleTap(event, layerInfo.target);
+                }
+                break;
+
+            case this.LAYERS.INTERACTIVE_3D:
+                if (this.interactive3DHandler) {
+                    this.interactive3DHandler.handleTap(event, layerInfo.target, layerInfo.hitPoint);
+                }
+                break;
+
+            case this.LAYERS.OBJECT_3D:
+                if (this.dragHandler) {
+                    this.dragHandler.handleTap(event, layerInfo.target, layerInfo.hitPoint);
+                }
+                break;
+
+            case this.LAYERS.CAMERA:
+                // Tap sul vuoto - nessuna azione
+                break;
+        }
+    },
+
+    /**
+     * Router per DOUBLE TAP
+     */
+    routeDoubleTap: function(event) {
+        const layerInfo = this.determineLayer(event);
+
+        console.log(`[TouchInputRouter] DOUBLE TAP → Layer: ${this.getLayerName(layerInfo.layer)}`);
+
+        switch (layerInfo.layer) {
+            case this.LAYERS.UI:
+                if (this.uiHandler) {
+                    this.uiHandler.handleDoubleTap(event, layerInfo.target);
+                }
+                break;
+
+            case this.LAYERS.INTERACTIVE_3D:
+                if (this.interactive3DHandler) {
+                    this.interactive3DHandler.handleDoubleTap(event, layerInfo.target, layerInfo.hitPoint);
+                }
+                break;
+
+            case this.LAYERS.OBJECT_3D:
+                if (this.dragHandler) {
+                    this.dragHandler.handleDoubleTap(event, layerInfo.target, layerInfo.hitPoint);
+                }
+                break;
+
+            case this.LAYERS.CAMERA:
+                // Double tap sul vuoto - reset camera?
+                break;
+        }
+    },
+
+    /**
+     * Router per DRAG START
+     */
+    routeDragStart: function(event) {
+        const layerInfo = this.determineLayer(event);
+        this.currentLayer = layerInfo.layer;
+        this.currentTarget = layerInfo.target;
+
+        console.log(`[TouchInputRouter] DRAG START → Layer: ${this.getLayerName(layerInfo.layer)}`);
+
+        switch (layerInfo.layer) {
+            case this.LAYERS.OBJECT_3D:
+                if (this.dragHandler && this.isDraggableObject(layerInfo.target)) {
+                    this.dragHandler.handleDragStart(event, layerInfo.target, layerInfo.hitPoint);
+                }
+                break;
+
+            case this.LAYERS.CAMERA:
+                // Drag su vuoto - potrebbe essere pan camera con 1 dito?
+                break;
+        }
+    },
+
+    /**
+     * Router per DRAG MOVE
+     */
+    routeDragMove: function(event) {
+        // Usa il layer determinato al dragstart
+        if (this.currentLayer === this.LAYERS.OBJECT_3D && this.dragHandler) {
+            this.dragHandler.handleDragMove(event, this.currentTarget);
+        }
+    },
+
+    /**
+     * Router per DRAG END
+     */
+    routeDragEnd: function(event) {
+        if (this.currentLayer === this.LAYERS.OBJECT_3D && this.dragHandler) {
+            this.dragHandler.handleDragEnd(event, this.currentTarget);
+        }
+
+        this.currentLayer = null;
+        this.currentTarget = null;
+    },
+
+    /**
+     * Router per PINCH (zoom)
+     */
+    routePinch: function(event) {
+        if (this.cameraHandler) {
+            this.cameraHandler.handlePinch(event);
+        }
+    },
+
+    routePinchStart: function(event) {
+        if (this.cameraHandler) {
+            this.cameraHandler.handlePinchStart(event);
+        }
+    },
+
+    routePinchEnd: function(event) {
+        if (this.cameraHandler) {
+            this.cameraHandler.handlePinchEnd(event);
+        }
+    },
+
+    /**
+     * Router per TWO-FINGER DRAG (rotazione camera)
+     */
+    routeTwoFingerDrag: function(event) {
+        if (this.cameraHandler) {
+            this.cameraHandler.handleTwoFingerDrag(event);
+        }
+    },
+
+    routeTwoFingerDragStart: function(event) {
+        if (this.cameraHandler) {
+            this.cameraHandler.handleTwoFingerDragStart(event);
+        }
+    },
+
+    routeTwoFingerDragEnd: function(event) {
+        if (this.cameraHandler) {
+            this.cameraHandler.handleTwoFingerDragEnd(event);
+        }
+    },
+
+    /**
+     * Router per TWO-FINGER TAP
+     */
+    routeTwoFingerTap: function(event) {
+        // Two-finger tap - potrebbe essere usato per azioni future
+        console.log('[TouchInputRouter] TWO FINGER TAP');
+    },
+
+    /**
+     * Router per TWO-FINGER DOUBLE TAP (pivot camera)
+     */
+    routeTwoFingerDoubleTap: function(event) {
+        console.log('[TouchInputRouter] TWO FINGER DOUBLE TAP → Set Pivot');
+
+        if (this.cameraHandler) {
+            // Usa centro dei due tocchi per raycast
+            const center = event.center;
+            const raycastResult = this.performRaycastIncludeFloor(center.normalizedX, center.normalizedY);
+
+            if (raycastResult && raycastResult.point) {
+                this.cameraHandler.handleTwoFingerDoubleTap(event, raycastResult.point);
+            }
+        }
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // UTILITY
+    // ═══════════════════════════════════════════════════════════
+
+    getLayerName: function(layer) {
+        switch (layer) {
+            case this.LAYERS.UI: return 'UI';
+            case this.LAYERS.INTERACTIVE_3D: return 'INTERACTIVE_3D';
+            case this.LAYERS.OBJECT_3D: return 'OBJECT_3D';
+            case this.LAYERS.CAMERA: return 'CAMERA';
+            default: return 'UNKNOWN';
+        }
+    },
+
+    debugInfo: function() {
+        console.log('═══════════════════════════════════════');
+        console.log('🔀 TouchInputRouter - Debug Info');
+        console.log('═══════════════════════════════════════');
+        console.log('Current Layer:', this.getLayerName(this.currentLayer));
+        console.log('Current Target:', this.currentTarget);
+        console.log('UI Handler:', this.uiHandler ? 'Registrato' : 'Non registrato');
+        console.log('Drag Handler:', this.dragHandler ? 'Registrato' : 'Non registrato');
+        console.log('Camera Handler:', this.cameraHandler ? 'Registrato' : 'Non registrato');
+        console.log('Interactive3D Handler:', this.interactive3DHandler ? 'Registrato' : 'Non registrato');
+        console.log('═══════════════════════════════════════');
+    }
+};

@@ -19,7 +19,30 @@
  * - Navigazione: hide modello corrente → show modello target
  */
 
-console.log('[ScreenSystem] Modulo caricato v2.0.0');
+console.log('[ScreenSystem] Modulo caricato v2.0.1 REFACTORING');
+
+// FASE 5 REFACTORING: Helper per chiamate sicure a dipendenze esterne
+const _ss_safeCall = function(obj, method, args = [], fallback = null, context = 'ScreenSystem') {
+    try {
+        if (obj && typeof obj[method] === 'function') {
+            return obj[method].apply(obj, args);
+        }
+        return fallback;
+    } catch (error) {
+        console.warn(`[${context}] Errore chiamata ${method}:`, error.message);
+        return fallback;
+    }
+};
+
+// Helper specifico per UI
+const _ss_safeUICall = function(method, args = [], fallback = null) {
+    return _ss_safeCall(window.UI, method, args, fallback, 'ScreenSystem→UI');
+};
+
+// Helper specifico per Scene3D
+const _ss_safeScene3DCall = function(method, args = [], fallback = null) {
+    return _ss_safeCall(window.Scene3D, method, args, fallback, 'ScreenSystem→Scene3D');
+};
 
 window.ScreenSystem = {
     // ═══════════════════════════════════════════════════════════════════
@@ -686,14 +709,25 @@ window.ScreenSystem = {
         this.animateCameraTo(cameraPosition, center, this.config.focusTransitionDuration);
     },
 
+    // FIX: ID animazione camera per cancellazione
+    cameraAnimationId: null,
+
     /**
      * Anima camera verso posizione target
+     * FIX: Aggiunta cancellazione animazioni precedenti
      */
     animateCameraTo: function(targetPosition, targetLookAt, duration) {
+        // FIX: Cancella animazione precedente se in corso
+        if (this.cameraAnimationId) {
+            cancelAnimationFrame(this.cameraAnimationId);
+            this.cameraAnimationId = null;
+        }
+
         const startPosition = this.camera.position.clone();
         const startLookAt = Scene3D.mouseControls.pivotPoint.clone();
 
         const startTime = performance.now();
+        const self = this;
 
         const animate = () => {
             const elapsed = performance.now() - startTime;
@@ -703,21 +737,23 @@ window.ScreenSystem = {
             const eased = 1 - Math.pow(1 - progress, 3);
 
             // Interpola posizione
-            this.camera.position.lerpVectors(startPosition, targetPosition, eased);
+            self.camera.position.lerpVectors(startPosition, targetPosition, eased);
 
             // Interpola lookAt
             const currentLookAt = new THREE.Vector3().lerpVectors(startLookAt, targetLookAt, eased);
-            this.camera.lookAt(currentLookAt);
+            self.camera.lookAt(currentLookAt);
 
             // Aggiorna pivot point di Scene3D
             Scene3D.mouseControls.pivotPoint.copy(currentLookAt);
 
             if (progress < 1) {
-                requestAnimationFrame(animate);
+                self.cameraAnimationId = requestAnimationFrame(animate);
+            } else {
+                self.cameraAnimationId = null;
             }
         };
 
-        requestAnimationFrame(animate);
+        this.cameraAnimationId = requestAnimationFrame(animate);
     },
 
     // ═══════════════════════════════════════════════════════════════════
@@ -754,8 +790,16 @@ window.ScreenSystem = {
         // Crea gruppo per contenere hotspot
         // Nota: se il gruppo esiste già ma è attaccato a un altro modello (vista precedente),
         // rimuovilo e ricrealo per il nuovo modello
+        // FIX: Aggiunto dispose completo delle mesh nel gruppo
         let group = this.hotspotGroups.get(screenId);
         if (group && group.parent !== parentModel) {
+            // FIX: Dispose completo di tutte le mesh figlie
+            group.children.forEach(child => {
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) child.material.dispose();
+            });
+            group.clear();
+
             // Rimuovi dal genitore precedente
             if (group.parent) {
                 group.parent.remove(group);
@@ -834,17 +878,25 @@ window.ScreenSystem = {
 
     /**
      * Evidenzia/de-evidenzia un hotspot
+     * FIX: Evita clone materiale ogni hover per prevenire memory leak
      */
     highlightHotspot: function(hotspotId, show) {
         const mesh = this.activeHotspotMeshes.get(hotspotId);
         if (!mesh) return;
 
         if (show) {
-            mesh.material = this.materials.hotspotHover.clone();
+            // FIX: Salva materiale originale SOLO la prima volta
+            if (!mesh.userData.originalMaterial) {
+                mesh.userData.originalMaterial = mesh.material;
+            }
+            // FIX: Riusa materiale hover condiviso invece di clonare
+            mesh.material = this.materials.hotspotHover;
             mesh.scale.setScalar(this.config.hoverScale);
         } else {
-            const hotspot = this.hotspots.get(hotspotId);
-            mesh.material = this.createHotspotMaterial(hotspot?.highlightColor);
+            // FIX: Ripristina materiale originale salvato invece di crearne uno nuovo
+            if (mesh.userData.originalMaterial) {
+                mesh.material = mesh.userData.originalMaterial;
+            }
             mesh.scale.setScalar(1);
         }
     },
@@ -1141,10 +1193,10 @@ window.ScreenSystem = {
             this.onStepComplete();
         }
 
-        // Notifica a UI se disponibile
-        if (window.UI && typeof window.UI.goToNextStep === 'function') {
+        // Notifica a UI se disponibile (FIX: goToNextStep → nextStep)
+        if (window.UI && typeof window.UI.nextStep === 'function') {
             setTimeout(() => {
-                window.UI.goToNextStep();
+                window.UI.nextStep();
             }, 500);
         }
     },

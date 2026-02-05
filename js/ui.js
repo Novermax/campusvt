@@ -368,8 +368,29 @@ window.UI = {
         if (window.Scene3D && !window.Scene3D.scene) {
             try {
                 window.Scene3D.init();
+
+                // Inizializza TouchSystem dopo Scene3D
+                this.initTouchSystem();
             } catch (error) {
                 this.showError('Errore inizializzazione scena 3D: ' + error.message);
+            }
+        }
+    },
+
+    /**
+     * Inizializza il sistema touch gesture
+     * Chiamato dopo Scene3D.init() per garantire che il canvas sia disponibile
+     */
+    initTouchSystem: function() {
+        if (window.TouchSystem && !window.TouchSystem.initialized) {
+            const canvas = document.getElementById('canvas3d');
+            if (canvas) {
+                try {
+                    window.TouchSystem.init(canvas);
+                    console.log('[UI] 📱 TouchSystem inizializzato');
+                } catch (error) {
+                    console.warn('[UI] ⚠️ Errore inizializzazione TouchSystem:', error.message);
+                }
             }
         }
     },
@@ -3589,8 +3610,21 @@ window.UI = {
             // Evidenzia pulsanti richiesti da questo step (se presenti)
             if (step.properties.AcceptTrigger_Physical) {
                 const triggers = step.properties.AcceptTrigger_Physical.split(',').map(t => t.trim());
-                window.InteractiveObject3D.highlightRequiredButtons(triggers);
-                console.log(`💡 [UI] Evidenziati ${triggers.length} pulsanti richiesti per step "${step.title}"`);
+
+                // Parsing HighlightOpacity (default: 1.0 = completamente opaco)
+                let highlightOpacity = 1.0;
+                if (step.properties.HighlightOpacity) {
+                    const parsed = parseFloat(step.properties.HighlightOpacity);
+                    if (!isNaN(parsed) && parsed >= 0 && parsed <= 1.0) {
+                        highlightOpacity = parsed;
+                        console.log(`💡 [UI] HighlightOpacity personalizzata: ${highlightOpacity}`);
+                    } else {
+                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default 1.0`);
+                    }
+                }
+
+                window.InteractiveObject3D.highlightRequiredButtons(triggers, highlightOpacity);
+                console.log(`💡 [UI] Evidenziati ${triggers.length} pulsanti richiesti per step "${step.title}" con opacità ${highlightOpacity}`);
             }
         }
 
@@ -4696,6 +4730,16 @@ window.UI = {
             await this.goToStep(this.currentStepIndex + 1);
         } else {
             AppConfig.log(2, `[UI] Ultimo step del tutorial raggiunto`);
+            // Mostra congratulazioni per completamento tutorial
+            if (window.Scene3D && window.Scene3D.showTutorialCompletionCongratulations) {
+                if (window.Scene3D.tutorialTracker) {
+                    window.Scene3D.tutorialTracker.interactionsBlocked = true;
+                }
+                console.log('🎉 [UI] Tutorial completato! Mostrando congratulazioni...');
+                setTimeout(() => {
+                    window.Scene3D.showTutorialCompletionCongratulations();
+                }, 500);
+            }
         }
     },
 

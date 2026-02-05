@@ -184,6 +184,15 @@ class UICore {
             try {
                 window.Scene3D.init();
                 this.safeLog(2, '[UICore] Scena 3D inizializzata da callback pagina scenario');
+
+                // Inizializza TouchSystem dopo Scene3D
+                if (window.TouchSystem && !window.TouchSystem.initialized) {
+                    const canvas = document.getElementById('canvas3d');
+                    if (canvas) {
+                        window.TouchSystem.init(canvas);
+                        this.safeLog(2, '[UICore] TouchSystem inizializzato');
+                    }
+                }
             } catch (error) {
                 this.safeLog(0, '[UICore] Errore inizializzazione scena 3D:', error);
             }

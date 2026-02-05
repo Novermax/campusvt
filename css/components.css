@@ -1865,3 +1865,83 @@ body.tool-brugola-active [role="button"] {
         }
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TOUCH GESTURE SYSTEM - Stili per feedback visivo touch
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Indicatore touch point (opzionale debug) */
+.touch-point-indicator {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(66, 133, 244, 0.3);
+    border: 2px solid rgba(66, 133, 244, 0.6);
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+}
+
+.touch-point-indicator.active {
+    background: rgba(66, 133, 244, 0.5);
+    border-color: rgba(66, 133, 244, 0.8);
+}
+
+/* Feedback tap su oggetti 3D */
+.touch-tap-feedback {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    background: transparent;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%) scale(0);
+    animation: touchTapPulse 0.4s ease-out forwards;
+}
+
+@keyframes touchTapPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Feedback pinch zoom */
+.touch-pinch-indicator {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, 0.5);
+    background: transparent;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+}
+
+/* Elementi UI touch-friendly - aree cliccabili più grandi */
+@media (pointer: coarse) {
+    .strumento-item {
+        min-height: 48px;
+        padding: 12px 16px;
+    }
+
+    .navigation-btn {
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    .auto-mode-toggle {
+        min-height: 44px;
+        padding: 10px 18px;
+    }
+}

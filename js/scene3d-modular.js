@@ -1,7 +1,25 @@
 /**
  * SCENE3D MODULAR LOADER
- * VERSION: 1000010 - Modular Architecture Compatibility Layer
+ * VERSION: 1000011 - Modular Architecture + REFACTORING
  */
+
+// FASE 5 REFACTORING: Helper per chiamate sicure a dipendenze esterne
+const _scene3d_safeCall = function(obj, method, args = [], fallback = null, context = 'Scene3D') {
+    try {
+        if (obj && typeof obj[method] === 'function') {
+            return obj[method].apply(obj, args);
+        }
+        return fallback;
+    } catch (error) {
+        console.warn(`[${context}] Errore chiamata ${method}:`, error.message);
+        return fallback;
+    }
+};
+
+// Helper specifico per UI
+const _scene3d_safeUICall = function(method, args = [], fallback = null) {
+    return _scene3d_safeCall(window.UI, method, args, fallback, 'Scene3D→UI');
+};
 
 const Scene3D = {
     scene: null,
@@ -91,6 +109,54 @@ const Scene3D = {
         intervalId: null,
         currentFrame: 1,
         isAnimating: false
+    },
+
+    // FASE 3 REFACTORING: Object pool per evitare allocazioni nel loop animazioni
+    animationPool: {
+        // Pool esteso per supportare applyRotationAroundCenter che usa molti vettori
+        vectors: [
+            new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
+            new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()
+        ],
+        quaternions: [new THREE.Quaternion(), new THREE.Quaternion(), new THREE.Quaternion()],
+        eulers: [new THREE.Euler(), new THREE.Euler(), new THREE.Euler(), new THREE.Euler()],
+        matrices: [new THREE.Matrix4(), new THREE.Matrix4(), new THREE.Matrix4(), new THREE.Matrix4()],
+        currentVectorIndex: 0,
+        currentQuaternionIndex: 0,
+        currentEulerIndex: 0,
+        currentMatrixIndex: 0,
+
+        getVector: function() {
+            const v = this.vectors[this.currentVectorIndex];
+            this.currentVectorIndex = (this.currentVectorIndex + 1) % this.vectors.length;
+            return v.set(0, 0, 0); // Reset prima dell'uso
+        },
+
+        getQuaternion: function() {
+            const q = this.quaternions[this.currentQuaternionIndex];
+            this.currentQuaternionIndex = (this.currentQuaternionIndex + 1) % this.quaternions.length;
+            return q.identity(); // Reset prima dell'uso
+        },
+
+        getEuler: function() {
+            const e = this.eulers[this.currentEulerIndex];
+            this.currentEulerIndex = (this.currentEulerIndex + 1) % this.eulers.length;
+            return e.set(0, 0, 0); // Reset prima dell'uso
+        },
+
+        getMatrix: function() {
+            const m = this.matrices[this.currentMatrixIndex];
+            this.currentMatrixIndex = (this.currentMatrixIndex + 1) % this.matrices.length;
+            return m.identity(); // Reset prima dell'uso
+        },
+
+        // Reset indici a fine frame (opzionale, per debug)
+        resetIndices: function() {
+            this.currentVectorIndex = 0;
+            this.currentQuaternionIndex = 0;
+            this.currentEulerIndex = 0;
+            this.currentMatrixIndex = 0;
+        }
     },
 
     init: function() {
@@ -525,9 +591,16 @@ const Scene3D = {
         canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
         canvas.addEventListener('wheel', this.onMouseWheel.bind(this));
 
-        canvas.addEventListener('touchstart', this.onTouchStart.bind(this));
-        canvas.addEventListener('touchmove', this.onTouchMove.bind(this));
-        canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
+        // Touch handlers legacy - disabilitati se TouchSystem è attivo
+        // Il nuovo TouchSystem gestisce tutte le interazioni touch
+        if (!window.TouchSystem || !window.TouchSystem.initialized) {
+            canvas.addEventListener('touchstart', this.onTouchStart.bind(this));
+            canvas.addEventListener('touchmove', this.onTouchMove.bind(this));
+            canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
+            console.log('[Scene3D] 📱 Touch handlers legacy attivi');
+        } else {
+            console.log('[Scene3D] 📱 Touch handlers legacy DISABILITATI - TouchSystem attivo');
+        }
 
         canvas.addEventListener('contextmenu', function(e) {
             e.preventDefault();
@@ -2505,8 +2578,9 @@ const Scene3D = {
                 this.applyRotationAroundCenter(anim, progress);
             } else if (anim.hasRotation && !anim.hasTranslation) {
                 // Solo rotazione senza centro personalizzato
-                const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
-                const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
+                // REFACTORING: Usa pool invece di new allocations
+                const tempQuaternion1 = this.animationPool.getQuaternion().setFromEuler(anim.initialRotation);
+                const tempQuaternion2 = this.animationPool.getQuaternion().setFromEuler(anim.targetRotation);
                 const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
                 anim.model.setRotationFromQuaternion(resultQuaternion);
 
@@ -2515,9 +2589,9 @@ const Scene3D = {
                 anim.model.updateMatrixWorld(true);
             } else if (anim.hasTranslation && !anim.hasRotation) {
                 // Solo movimento lineare (traslazione pura)
-                // CRITICO: Crea un NUOVO Vector3 invece di modificare in-place
-                // Three.js potrebbe non rilevare cambiamenti a Vector3 modificato in-place
-                const newPosition = new THREE.Vector3().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+                // REFACTORING: Usa pool invece di new allocations
+                // Il pool vector viene resettato automaticamente, poi populato da lerpVectors
+                const newPosition = this.animationPool.getVector().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
                 anim.model.position.copy(newPosition);
 
                 // DEBUG: Log ogni 20 frame circa per verificare che l'animazione giri
@@ -2557,7 +2631,8 @@ const Scene3D = {
                 // Applica stessa traslazione agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
                     try {
-                        const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                        // REFACTORING: Usa pool invece di new allocations
+                        const masterDelta = this.animationPool.getVector().subVectors(anim.model.position, anim.initialPosition);
                         anim.slaveModels.forEach(slave => {
                             if (slave && slave.model && slave.initialPosition) {
                                 slave.model.position.copy(slave.initialPosition).add(masterDelta);
@@ -2570,8 +2645,9 @@ const Scene3D = {
             } else if (anim.hasTranslation && anim.hasRotation) {
                 // Movimento combinato (traslazione + rotazione semplice)
                 anim.model.position.lerpVectors(anim.initialPosition, anim.targetPosition, progress);
-                const tempQuaternion1 = new THREE.Quaternion().setFromEuler(anim.initialRotation);
-                const tempQuaternion2 = new THREE.Quaternion().setFromEuler(anim.targetRotation);
+                // REFACTORING: Usa pool invece di new allocations
+                const tempQuaternion1 = this.animationPool.getQuaternion().setFromEuler(anim.initialRotation);
+                const tempQuaternion2 = this.animationPool.getQuaternion().setFromEuler(anim.targetRotation);
                 const resultQuaternion = tempQuaternion1.slerp(tempQuaternion2, progress);
                 anim.model.setRotationFromQuaternion(resultQuaternion);
 
@@ -2582,8 +2658,9 @@ const Scene3D = {
                 // Applica stessa traslazione e rotazione agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
                     try {
-                        const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
-                        const masterRotationDelta = new THREE.Euler(
+                        // REFACTORING: Usa pool invece di new allocations
+                        const masterDelta = this.animationPool.getVector().subVectors(anim.model.position, anim.initialPosition);
+                        const masterRotationDelta = this.animationPool.getEuler().set(
                             anim.model.rotation.x - anim.initialRotation.x,
                             anim.model.rotation.y - anim.initialRotation.y,
                             anim.model.rotation.z - anim.initialRotation.z
@@ -2624,13 +2701,15 @@ const Scene3D = {
                 // Applica posizioni finali anche agli slave
                 if (anim.slaveModels && anim.slaveModels.length > 0) {
                     try {
-                        const masterDelta = new THREE.Vector3().subVectors(anim.model.position, anim.initialPosition);
+                        // REFACTORING: Usa pool invece di new allocations
+                        const masterDelta = this.animationPool.getVector().subVectors(anim.model.position, anim.initialPosition);
                         anim.slaveModels.forEach(slave => {
                             if (slave && slave.model && slave.initialPosition) {
                                 slave.model.position.copy(slave.initialPosition).add(masterDelta);
 
                                 if (anim.targetRotation && slave.initialRotation) {
-                                    const masterRotationDelta = new THREE.Euler(
+                                    // REFACTORING: Usa pool invece di new allocations
+                                    const masterRotationDelta = this.animationPool.getEuler().set(
                                         anim.model.rotation.x - anim.initialRotation.x,
                                         anim.model.rotation.y - anim.initialRotation.y,
                                         anim.model.rotation.z - anim.initialRotation.z
@@ -2672,7 +2751,8 @@ const Scene3D = {
     },
 
     applyRotationAroundCenter: function(anim, progress) {
-        const currentRotation = new THREE.Euler(
+        // REFACTORING: Usa pool invece di new allocations (chiamato ogni frame)
+        const currentRotation = this.animationPool.getEuler().set(
             anim.initialRotation.x + (anim.targetRotation.x - anim.initialRotation.x) * progress,
             anim.initialRotation.y + (anim.targetRotation.y - anim.initialRotation.y) * progress,
             anim.initialRotation.z + (anim.targetRotation.z - anim.initialRotation.z) * progress
@@ -2681,7 +2761,8 @@ const Scene3D = {
         console.log(`🔄 ROTATE AROUND CENTER ${anim.model.name}: progress=${progress.toFixed(3)}, currentRotation=`, currentRotation, `modelCenter=`, anim.modelCenter);
         console.log(`🔍 DEBUG POSITIONS: initialPos=`, anim.initialPosition, `targetPos=`, anim.targetPosition);
 
-        const linearMovement = new THREE.Vector3().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
+        // REFACTORING: Usa pool invece di new allocations
+        const linearMovement = this.animationPool.getVector().lerpVectors(anim.initialPosition, anim.targetPosition, progress);
         console.log(`🔍 LINEAR MOVEMENT (progress=${progress.toFixed(3)}):`, linearMovement);
         
         if (anim.modelCenter && anim.modelCenter.length() > 0.001) {
@@ -2693,31 +2774,32 @@ const Scene3D = {
 
                 // Per svita/avvita: traslazione lineare del CENTRO BB + rotazione attorno al centro BB
                 if (anim.hasSvita || anim.hasAvvita) {
+                    // REFACTORING: Usa pool per tutte le allocazioni temporanee
                     // 1. Il centro del BB si muove linearmente
-                    const initialBBCenter = anim.modelCenter.clone();
-                    const traslazione = new THREE.Vector3(
+                    const initialBBCenter = this.animationPool.getVector().copy(anim.modelCenter);
+                    const traslazione = this.animationPool.getVector().set(
                         anim.targetPosition.x - anim.initialPosition.x,
                         anim.targetPosition.y - anim.initialPosition.y,
                         anim.targetPosition.z - anim.initialPosition.z
                     );
-                    const finalBBCenter = initialBBCenter.clone().add(traslazione);
-                    const currentBBCenter = new THREE.Vector3().lerpVectors(initialBBCenter, finalBBCenter, progress);
+                    const finalBBCenter = this.animationPool.getVector().copy(initialBBCenter).add(traslazione);
+                    const currentBBCenter = this.animationPool.getVector().lerpVectors(initialBBCenter, finalBBCenter, progress);
 
                     // 2. Offset tra model.position e BB center (all'inizio)
-                    const initialOffset = anim.initialPosition.clone().sub(initialBBCenter);
+                    const initialOffset = this.animationPool.getVector().copy(anim.initialPosition).sub(initialBBCenter);
 
                     // 3. Ruota l'offset attorno all'origine (per compensare che model.rotation ruota attorno al suo origin locale)
-                    const rotationDelta = new THREE.Euler(
+                    const rotationDelta = this.animationPool.getEuler().set(
                         currentRotation.x - anim.initialRotation.x,
                         currentRotation.y - anim.initialRotation.y,
                         currentRotation.z - anim.initialRotation.z
                     );
-                    const rotationMatrix = new THREE.Matrix4();
+                    const rotationMatrix = this.animationPool.getMatrix();
                     rotationMatrix.makeRotationFromEuler(rotationDelta);
-                    const rotatedOffset = initialOffset.clone().applyMatrix4(rotationMatrix);
+                    const rotatedOffset = this.animationPool.getVector().copy(initialOffset).applyMatrix4(rotationMatrix);
 
                     // 4. Nuova posizione = centro BB corrente + offset ruotato
-                    newPosition = currentBBCenter.clone().add(rotatedOffset);
+                    newPosition = this.animationPool.getVector().copy(currentBBCenter).add(rotatedOffset);
 
                     // 5. Applica rotazione al modello
                     anim.model.rotation.x = anim.initialRotation.x + rotationDelta.x;
@@ -2727,22 +2809,23 @@ const Scene3D = {
                     console.log(`🔩 SVITA: BBCenter ${currentBBCenter.x.toFixed(3)},${currentBBCenter.y.toFixed(3)},${currentBBCenter.z.toFixed(3)} | Pos ${newPosition.x.toFixed(3)},${newPosition.y.toFixed(3)},${newPosition.z.toFixed(3)} | Offset ${rotatedOffset.x.toFixed(3)},${rotatedOffset.y.toFixed(3)},${rotatedOffset.z.toFixed(3)} | Rot ${(rotationDelta.z * 180/Math.PI).toFixed(1)}°`);
                 } else {
                     // Per altre rotazioni: usa rotazione orbitale attorno al pivot
-                    const rotationDelta = new THREE.Euler(
+                    // REFACTORING: Usa pool per tutte le allocazioni temporanee
+                    const rotationDelta = this.animationPool.getEuler().set(
                         currentRotation.x - anim.initialRotation.x,
                         currentRotation.y - anim.initialRotation.y,
                         currentRotation.z - anim.initialRotation.z
                     );
 
-                    const rotationMatrix = new THREE.Matrix4();
+                    const rotationMatrix = this.animationPool.getMatrix();
                     rotationMatrix.makeRotationFromEuler(rotationDelta);
 
-                    const relativePosition = anim.initialPosition.clone().sub(pivot);
+                    const relativePosition = this.animationPool.getVector().copy(anim.initialPosition).sub(pivot);
                     relativePosition.applyMatrix4(rotationMatrix);
-                    newPosition = pivot.clone().add(relativePosition);
+                    newPosition = this.animationPool.getVector().copy(pivot).add(relativePosition);
 
                     // Aggiungi traslazione SOLO se è esplicitamente richiesta (non per rotazioni pure)
                     if (anim.hasTranslation) {
-                        const translationProgress = linearMovement.clone().sub(anim.initialPosition);
+                        const translationProgress = this.animationPool.getVector().copy(linearMovement).sub(anim.initialPosition);
                         newPosition.add(translationProgress);
                     }
 
@@ -2758,24 +2841,25 @@ const Scene3D = {
                 anim.model.position.copy(linearMovement);
             } else {
                 // Sistema di rotazione attorno al pivot per animazioni singole
-                const matrix = new THREE.Matrix4();
+                // REFACTORING: Usa pool per tutte le allocazioni temporanee
+                const matrix = this.animationPool.getMatrix();
                 matrix.makeTranslation(-pivot.x, -pivot.y, -pivot.z);
-                
-                const rotationMatrix = new THREE.Matrix4();
+
+                const rotationMatrix = this.animationPool.getMatrix();
                 rotationMatrix.makeRotationFromEuler(currentRotation);
                 matrix.premultiply(rotationMatrix);
-                
-                const translateBack = new THREE.Matrix4();
+
+                const translateBack = this.animationPool.getMatrix();
                 translateBack.makeTranslation(pivot.x, pivot.y, pivot.z);
                 matrix.premultiply(translateBack);
-                
-                const transformedPosition = anim.initialPosition.clone();
+
+                const transformedPosition = this.animationPool.getVector().copy(anim.initialPosition);
                 transformedPosition.applyMatrix4(matrix);
-                
-                const finalPosition = linearMovement.clone();
-                const offset = transformedPosition.clone().sub(anim.initialPosition);
+
+                const finalPosition = this.animationPool.getVector().copy(linearMovement);
+                const offset = this.animationPool.getVector().copy(transformedPosition).sub(anim.initialPosition);
                 finalPosition.add(offset);
-                
+
                 anim.model.position.copy(finalPosition);
                 anim.model.rotation.copy(currentRotation);
             }

@@ -33,14 +33,19 @@
     display: block;
     width: 100%;
     height: 100%;
-    
+
     /* Assicura che il canvas sia sempre visibile sotto gli altri elementi */
     position: relative;
     z-index: 1;
-    
+
     /* Previene la selezione del canvas */
     user-select: none;
     -webkit-user-select: none;
+
+    /* Touch: disabilita gesture browser native per permettere gestione custom */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ===== FUMETTO STEP TUTORIAL ===== */
@@ -50,7 +55,7 @@
     left: 20px;
     top: 20%;
     transform: translateY(-50%);
-    z-index: 150;
+    z-index: 9600; /* Sopra AnimatedImages overlay (9500) ma sotto modal (10000) */
     max-width: 350px;
     min-width: 280px;
     cursor: default; /* Default: non cliccabile su desktop */

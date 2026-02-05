@@ -623,7 +623,18 @@
     <script src="js/ui/ToolsManager.js?nocache=1000024"></script>
     <script src="js/MobileOptimizer.js?v=1000021"></script>
     <script src="js/AutoMode.js?v=1000020"></script>
-    <script type="module" src="js/app.js?v=1000010"></script>
+
+    <!-- Touch Gesture System - Moduli in ordine di dipendenza -->
+    <script src="js/touch/TouchEventDispatcher.js?v=1000001"></script>
+    <script src="js/touch/GestureRecognizer.js?v=1000001"></script>
+    <script src="js/touch/TouchInputRouter.js?v=1000001"></script>
+    <script src="js/touch/TouchCameraHandler.js?v=1000001"></script>
+    <script src="js/touch/TouchDragHandler.js?v=1000001"></script>
+    <script src="js/touch/TouchUIHandler.js?v=1000001"></script>
+    <script src="js/touch/TouchInteractive3DHandler.js?v=1000001"></script>
+    <script src="js/touch/index.js?v=1000001"></script>
+
+    <script type="module" src="js/app.js?v=1000011"></script>
     
     <!-- ===== SCRIPT ANALYTICS (opzionale) ===== -->
     <!-- Rimuovi o modifica secondo necessità -->

@@ -132,11 +132,20 @@ window.PageManager = {
      */
     onScenarioPageShown: function() {
         console.log('[PageManager] Scenario page mostrata');
-        
+
         // Inizializza la scena 3D se non già fatto
         if (window.Scene3D && !window.Scene3D.scene) {
             try {
                 window.Scene3D.init();
+
+                // Inizializza TouchSystem dopo Scene3D
+                if (window.TouchSystem && !window.TouchSystem.initialized) {
+                    const canvas = document.getElementById('canvas3d');
+                    if (canvas) {
+                        window.TouchSystem.init(canvas);
+                        console.log('[PageManager] 📱 TouchSystem inizializzato');
+                    }
+                }
             } catch (error) {
                 if (this.feedbackManager) {
                     this.feedbackManager.showError('Errore inizializzazione scena 3D: ' + error.message);
