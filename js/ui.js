@@ -43,6 +43,7 @@ window.UI = {
     homeConfig: null,              // Configurazione home page
     autoAdvanceTimeoutId: null,    // ID timeout auto-avanzamento (per cancellazione)
     autoExecuteIntervalId: null,   // ID interval polling AutoExecute (per cancellazione)
+    isNavigating: false,           // Guard contro chiamate concorrenti goToStep()
 
     /* ===== ELEMENTI DOM ===== */
     elements: {},                  // Cache elementi DOM
@@ -3478,6 +3479,15 @@ window.UI = {
             return;
         }
 
+        // Guard contro chiamate concorrenti: se stiamo già navigando,
+        // cancella la navigazione precedente e procedi con la nuova
+        if (this.isNavigating) {
+            console.log(`[UI] ⚠️ goToStep(${stepIndex}) interrompe navigazione precedente in corso`);
+            // Chiudi modal se aperto (potrebbe bloccare la navigazione precedente)
+            this.hideInfoModal();
+        }
+        this.isNavigating = true;
+
         // IMPORTANTE: Cancella timeout auto-avanzamento pendente dallo step precedente
         // Questo previene il bug dove step vengono saltati quando:
         // 1. Step N con AutoAdvance schedula nextStep() con 200ms delay
@@ -3518,10 +3528,15 @@ window.UI = {
         // Non c'è bisogno di aggiornarli per ogni step
 
         // Esegue l'azione del tutorial step (ora async per gestire modal)
-        await this.executeStep(step);
+        try {
+            await this.executeStep(step);
+        } catch (error) {
+            console.error(`[UI] ❌ Errore durante esecuzione step "${step.title}":`, error);
+        }
 
         // Aggiorna status
         this.updateStatus(`Step ${stepIndex + 1}/${this.tutorialSteps.length}: ${step.title}`);
+        this.isNavigating = false;
     },
 
     /**
@@ -3629,13 +3644,36 @@ window.UI = {
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // TOOLS MANAGER: Pulizia evidenziazioni tool precedenti
+        // TOOLS MANAGER: Pulizia + evidenziazione tool richiesto
+        // IMPORTANTE: Fatto PRIMA del modal per garantire visibilità immediata
         // ═══════════════════════════════════════════════════════════════
         if (window.ToolsManager && typeof window.ToolsManager.clearToolHighlights === 'function') {
             window.ToolsManager.clearToolHighlights();
         }
 
-        // NUOVO: Mostra modal informativo se presente parametro Message
+        if (step.properties.Utensile) {
+            // Evidenzia automaticamente il tool richiesto nella legenda
+            const toolName = this.mapToolName(step.properties.Utensile);
+            if (toolName) {
+                AppConfig.log(3, `Strumento richiesto per step: ${toolName} - evidenziazione attiva`);
+
+                // Evidenzia tool nella legenda con animazione pulse
+                if (window.ToolsManager && typeof window.ToolsManager.highlightRequiredTool === 'function') {
+                    window.ToolsManager.highlightRequiredTool(toolName);
+                } else {
+                    this.highlightRequiredTool(toolName); // Fallback a metodo UI locale
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // CAMERA SETTINGS: Applicazione PRIMA del modal per posizionamento immediato
+        // ═══════════════════════════════════════════════════════════════
+        if (window.Scene3D && window.Scene3D.applyCameraSettings) {
+            window.Scene3D.applyCameraSettings(step);
+        }
+
+        // Mostra modal informativo se presente parametro Message
         if (step.properties.Message) {
             const messageTitle = step.properties.MessageTitle || step.title || 'Informazione';
             AppConfig.log(2, `[UI] Mostrando modal informativo per step: ${step.title}`);
@@ -3676,14 +3714,7 @@ window.UI = {
         }
 
         // IMPORTANTE: Questo codice viene eseguito anche per step con Message + DragDrop/Elemento/AssemblyMode
-
-        // Qui si possono implementare le azioni specifiche basate sulle proprietà
-        // Per ora logga le informazioni dello step
-
-        // Esempio di utilizzo delle proprietà:
-        if (window.Scene3D && window.Scene3D.applyCameraSettings) {
-            window.Scene3D.applyCameraSettings(step);
-        }
+        // NOTA: Camera settings e tool highlight sono già stati applicati PRIMA del modal (vedi sopra)
         
         // Applica impostazioni modelli se presenti
         if (window.Scene3D && window.Scene3D.applyModelSettings) {
@@ -3800,20 +3831,7 @@ window.UI = {
             }
         }
 
-        if (step.properties.Utensile) {
-            // Evidenzia automaticamente il tool richiesto nella legenda
-            const toolName = this.mapToolName(step.properties.Utensile);
-            if (toolName) {
-                AppConfig.log(3, `Strumento richiesto per step: ${toolName} - evidenziazione attiva`);
-
-                // Evidenzia tool nella legenda con animazione pulse
-                if (window.ToolsManager && typeof window.ToolsManager.highlightRequiredTool === 'function') {
-                    window.ToolsManager.highlightRequiredTool(toolName);
-                } else {
-                    this.highlightRequiredTool(toolName); // Fallback a metodo UI locale
-                }
-            }
-        }
+        // NOTA: Tool highlighting per Utensile già applicato PRIMA del modal (vedi sopra)
 
         // NUOVO: Parsing slave objects (oggetti che seguono il master durante animazioni)
         // IMPORTANTE: Questo deve essere FUORI dal blocco DragDrop per funzionare anche con step normali
@@ -4434,8 +4452,8 @@ window.UI = {
             }
         }
 
-        // Aggiorna il fumetto con la descrizione dello step corrente
-        this.updateStepSpeechBubble();
+        // NOTA: updateStepSpeechBubble() NON chiamato qui - già chiamato da goToStep()
+        // Chiamarlo due volte causava doppia animazione (flickering "gonfiaggio")
 
         // Evento personalizzabile per altri moduli
         const event = new CustomEvent('tutorialStepChanged', {
@@ -4820,20 +4838,21 @@ window.UI = {
         if (!bubble || bubble.classList.contains('hidden')) {
             return;
         }
-        
+
         // Rimuovi eventuali classi di animazione precedenti
         bubble.classList.remove('flash', 'pulse');
-        
-        // Forza un reflow per assicurarsi che la rimozione sia effettuata
-        bubble.offsetHeight;
-        
-        // Aggiungi la classe flash per attivare l'animazione
-        bubble.classList.add('flash');
-        
+
+        // Usa requestAnimationFrame per riavviare l'animazione senza reflow forzato
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                bubble.classList.add('flash');
+            });
+        });
+
         // Rimuovi la classe dopo l'animazione per permettere flash futuri
         setTimeout(() => {
             bubble.classList.remove('flash');
-        }, 1200); // Durata dell'animazione CSS (1.2s)
+        }, 2000); // Durata aggiornata (2s per glowPulse più lungo)
     },
     
     /**
@@ -4868,66 +4887,96 @@ window.UI = {
             this.hideStepSpeechBubble();
             return;
         }
-        
+
         const bubble = document.getElementById('stepSpeechBubble');
         const stepCurrentNumber = document.getElementById('stepCurrentNumber');
         const stepTotalNumber = document.getElementById('stepTotalNumber');
         const stepDescription = document.getElementById('stepDescription');
-        
-        if (!bubble || !stepCurrentNumber || !stepTotalNumber || !stepDescription) {
+        const content = bubble ? bubble.querySelector('.speech-bubble-content') : null;
+
+        if (!bubble || !stepCurrentNumber || !stepTotalNumber || !stepDescription || !content) {
             return;
         }
-        
-        // Aggiorna i numeri
-        stepCurrentNumber.textContent = this.currentStepIndex + 1;
-        stepTotalNumber.textContent = this.tutorialSteps.length;
-        
-        // Aggiorna la descrizione
-        const currentStep = this.tutorialSteps[this.currentStepIndex];
-        if (currentStep && currentStep.properties && currentStep.properties.Descrizione) {
-            stepDescription.textContent = currentStep.properties.Descrizione;
-        } else {
-            stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
-        }
 
-        // Aggiungi/rimuovi classe per ultimo step (nasconde indicatore "Tocca per continuare" su mobile)
+        const currentStep = this.tutorialSteps[this.currentStepIndex];
+        const isFirstAppearance = bubble.classList.contains('hidden');
+
+        // Aggiungi/rimuovi classe per ultimo step
         if (this.currentStepIndex === this.tutorialSteps.length - 1) {
             bubble.classList.add('last-step');
         } else {
             bubble.classList.remove('last-step');
         }
 
-        // Mostra il fumetto (sequenza controllata solo dal sistema)
-        this.showStepSpeechBubble();
-
         // ═══════════════════════════════════════════════════════════════
         // ANIMAZIONE DRAMMATICA: Parametro HighlightDescription=true
         // ═══════════════════════════════════════════════════════════════
-        // Se lo step ha HighlightDescription=true, mostra animazione drammatica:
-        // - Appare al centro schermo grande (scale 2.5)
-        // - Pulse pulsante per 2 secondi
-        // - Si sposta e rimpicciolisce alla posizione normale
         if (currentStep && currentStep.properties && currentStep.properties.HighlightDescription === 'true') {
+            // Per dramatic-intro: aggiorna contenuto direttamente e avvia animazione
+            stepCurrentNumber.textContent = this.currentStepIndex + 1;
+            stepTotalNumber.textContent = this.tutorialSteps.length;
+            if (currentStep.properties.Descrizione) {
+                stepDescription.textContent = currentStep.properties.Descrizione;
+            } else {
+                stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
+            }
+
+            content.classList.remove('entering');
+            this.showStepSpeechBubble();
+
             console.log('🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto');
-
-            // Rimuovi animazioni precedenti
             bubble.classList.remove('dramatic-intro', 'flash', 'pulse');
-
-            // Force reflow per riavviare animazione se già presente
-            void bubble.offsetWidth;
-
-            // Applica animazione drammatica
-            bubble.classList.add('dramatic-intro');
-
-            // Rimuovi classe dopo 3s (durata animazione)
+            requestAnimationFrame(() => {
+                bubble.classList.add('dramatic-intro');
+            });
             setTimeout(() => {
                 bubble.classList.remove('dramatic-intro');
                 console.log('🎬 [UI] Animazione drammatica completata');
-            }, 3000);
+            }, 5000);
+            return;
+        }
 
+        // ═══════════════════════════════════════════════════════════════
+        // TRANSIZIONE SMOOTH: fade-out → aggiorna testo → fade-in
+        // ═══════════════════════════════════════════════════════════════
+        if (isFirstAppearance) {
+            // Prima apparizione: parte nascosto, poi entra smooth
+            content.classList.add('entering');
+            stepCurrentNumber.textContent = this.currentStepIndex + 1;
+            stepTotalNumber.textContent = this.tutorialSteps.length;
+            if (currentStep && currentStep.properties && currentStep.properties.Descrizione) {
+                stepDescription.textContent = currentStep.properties.Descrizione;
+            } else {
+                stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
+            }
+            this.showStepSpeechBubble();
+            // Attende un frame per applicare lo stato "entering", poi rimuove per animare l'ingresso
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    content.classList.remove('entering');
+                    // Flash glow dopo che il contenuto è apparso
+                    setTimeout(() => this.flashStepBubble(), 400);
+                });
+            });
         } else {
-            // Comportamento normale: flash sottile per attirare attenzione
-            this.flashStepBubble();
+            // Step successivi: fade-out → aggiorna → fade-in
+            content.classList.add('entering');
+            setTimeout(() => {
+                // Aggiorna contenuto mentre è nascosto
+                stepCurrentNumber.textContent = this.currentStepIndex + 1;
+                stepTotalNumber.textContent = this.tutorialSteps.length;
+                if (currentStep && currentStep.properties && currentStep.properties.Descrizione) {
+                    stepDescription.textContent = currentStep.properties.Descrizione;
+                } else {
+                    stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
+                }
+                // Fade-in con nuovo contenuto
+                requestAnimationFrame(() => {
+                    content.classList.remove('entering');
+                    // Flash glow dopo che il contenuto è apparso
+                    setTimeout(() => this.flashStepBubble(), 400);
+                });
+            }, 350); // Durata fade-out prima di aggiornare
         }
     },
 

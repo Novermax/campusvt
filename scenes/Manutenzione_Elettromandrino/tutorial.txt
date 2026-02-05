@@ -366,7 +366,7 @@ Azione1=centro:(0,0,-0.615);rotazione:(0,-90,0,1.0)
 
 [Next Step - Vai sul pulpito e ruota la chiave in chiusura]
 HighlightDescription=true
-Descrizione=Sul pulpito e ruota la chiave in chius.
+Descrizione=Vai sul pulpito e ruota la chiave in chiusura.
 Utensile=Mani
 CameraPos=(0.94, 1.29, 4.07)
 CameraTarget=(0.97, 1.15, 3.52)

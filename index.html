@@ -263,20 +263,8 @@
                 tabindex="0"
             ></canvas>
             
-            <!-- ===== FUMETTO STEP TUTORIAL ===== -->
-            <!-- Fumetto laterale sinistro per la descrizione dello step corrente -->
-            <div id="stepSpeechBubble" class="step-speech-bubble hidden" role="dialog" aria-labelledby="step-description">
-                <div class="speech-bubble-content">
-                    <div class="step-counter">
-                        <span id="stepCurrentNumber">1</span>/<span id="stepTotalNumber">5</span>
-                    </div>
-                    <div class="step-description" id="stepDescription">
-                        Seleziona un tutorial per iniziare...
-                    </div>
-                </div>
-                <div class="speech-bubble-arrow"></div>
-            </div>
-            
+            <!-- FUMETTO spostato fuori da scenarioPage (vedi sotto chiusura </div>) per z-index globale -->
+
             <!-- ===== LEGENDA STRUMENTI ===== -->
             <!-- Pannello laterale destro con gli strumenti del tutorial -->
             <div id="toolsLegend" role="complementary" aria-label="Strumenti tutorial">
@@ -354,7 +342,22 @@
                 </div>
             </div>
         </div>
-        
+
+        <!-- ===== FUMETTO STEP TUTORIAL ===== -->
+        <!-- Posizionato fuori da #scenarioPage per evitare stacking context da animation -->
+        <!-- Così il z-index 9600 è nel root stacking context (sopra cerchio 900 e AnimatedWindow 9500) -->
+        <div id="stepSpeechBubble" class="step-speech-bubble hidden" role="dialog" aria-labelledby="step-description">
+            <div class="speech-bubble-content">
+                <div class="step-counter">
+                    <span id="stepCurrentNumber">1</span>/<span id="stepTotalNumber">5</span>
+                </div>
+                <div class="step-description" id="stepDescription">
+                    Seleziona un tutorial per iniziare...
+                </div>
+            </div>
+            <div class="speech-bubble-arrow"></div>
+        </div>
+
     </div>
 
     <!-- ===== ELEMENTI UI OVERLAY ===== -->

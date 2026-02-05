@@ -67,8 +67,7 @@
 
 /* Effetto flash STATICO - Solo il glow ::before si anima */
 .step-speech-bubble.flash {
-    /* Il fumetto rimane completamente immobile */
-    position: relative;
+    /* Il fumetto rimane completamente immobile - NO position change */
 }
 
 /* Il fumetto rimane completamente invariato */
@@ -84,27 +83,31 @@
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: radial-gradient(ellipse at center, rgba(74, 144, 226, 0.3) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(74, 144, 226, 0.35) 0%, transparent 70%);
     border-radius: 20px;
     z-index: -1;
-    animation: glowPulse 1.2s ease-in-out;
+    animation: glowPulse 2s ease-in-out;
     pointer-events: none;
 }
 
 @keyframes glowPulse {
-    0% { 
+    0% {
         opacity: 0;
     }
-    15% { 
-        opacity: 0.6;
+    10% {
+        opacity: 0.7;
     }
-    30% { 
-        opacity: 0;
+    /* Persistenza: glow pieno per 1s+ */
+    30% {
+        opacity: 0.7;
     }
-    45% { 
+    50% {
         opacity: 0.4;
     }
-    60%, 100% { 
+    70% {
+        opacity: 0.2;
+    }
+    100% {
         opacity: 0;
     }
 }
@@ -1710,13 +1713,13 @@ body.tool-brugola-active [role="button"] {
 }
 
 /* ===== ANIMAZIONE DRAMMATICA FUMETTO DESCRIZIONE ===== */
-/* Animazione: centro schermo grande pulsante → posizione normale piccolo */
+/* Animazione lineare: piccolo → grande (centro) → resta grande 3s → torna piccolo a sinistra */
 .step-speech-bubble.dramatic-intro {
-    animation: dramaticIntro 3s ease-out forwards;
+    animation: dramaticIntro 5s ease-in-out forwards;
 }
 
 @keyframes dramaticIntro {
-    /* Fase 1: Appare al centro grande (0-20%) */
+    /* Fase 1: Appare al centro, cresce linearmente (0-10%) */
     0% {
         left: 50%;
         top: 50%;
@@ -1732,71 +1735,28 @@ body.tool-brugola-active [role="button"] {
         z-index: 9999;
     }
 
-    /* Fase 2: Pulse al centro (20-60%) */
-    20%, 25% {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(2.3);
-        opacity: 1;
-        z-index: 9999;
-    }
-    30%, 35% {
+    /* Fase 2: Resta grande al centro per 3s (10-70%) */
+    70% {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%) scale(2.5);
-        opacity: 1;
-        z-index: 9999;
-    }
-    40%, 45% {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(2.3);
-        opacity: 1;
-        z-index: 9999;
-    }
-    50%, 55% {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 1;
-        z-index: 9999;
-    }
-    60% {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(2.3);
         opacity: 1;
         z-index: 9999;
     }
 
-    /* Fase 3: Transizione verso posizione finale (60-100%) */
-    70% {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(1.8);
-        opacity: 1;
-        z-index: 9999;
-    }
-    85% {
-        left: 20px;
-        top: 20%;
-        transform: translateY(-50%) scale(1.1);
-        opacity: 1;
-        z-index: 150;
-    }
+    /* Fase 3: Si sposta e rimpicciolisce alla posizione finale (70-100%) */
     100% {
         left: 20px;
         top: 20%;
         transform: translateY(-50%) scale(1);
         opacity: 1;
-        z-index: 150;
+        z-index: 9600;
     }
 }
 
 /* Responsive: adatta animazione per mobile */
 @media (max-width: 768px) {
     @keyframes dramaticIntro {
-        /* Fase 1: Centro più piccolo su mobile */
         0% {
             left: 50%;
             top: 50%;
@@ -1811,57 +1771,18 @@ body.tool-brugola-active [role="button"] {
             opacity: 1;
             z-index: 9999;
         }
-
-        /* Fase 2: Pulse */
-        20%, 25% {
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.6);
-            z-index: 9999;
-        }
-        30%, 35% {
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.8);
-            z-index: 9999;
-        }
-        40%, 45% {
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.6);
-            z-index: 9999;
-        }
-        50%, 55% {
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.8);
-            z-index: 9999;
-        }
-        60% {
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.6);
-            z-index: 9999;
-        }
-
-        /* Fase 3: Transizione verso mobile (top 30%) */
         70% {
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) scale(1.2);
+            transform: translate(-50%, -50%) scale(1.8);
+            opacity: 1;
             z-index: 9999;
-        }
-        85% {
-            left: 10px;
-            top: 30%;
-            transform: translateY(-50%) scale(1.05);
-            z-index: 150;
         }
         100% {
             left: 10px;
             top: 30%;
             transform: translateY(-50%) scale(1);
-            z-index: 150;
+            z-index: 9600;
         }
     }
 }

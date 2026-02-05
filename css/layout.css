@@ -51,11 +51,11 @@
 /* ===== FUMETTO STEP TUTORIAL ===== */
 /* Fumetto laterale per le descrizioni degli step */
 .step-speech-bubble {
-    position: absolute;
+    position: fixed;
     left: 20px;
     top: 20%;
     transform: translateY(-50%);
-    z-index: 9600; /* Sopra AnimatedImages overlay (9500) ma sotto modal (10000) */
+    z-index: 9600; /* Root stacking context: sopra cerchio (900), sopra AnimatedWindow (9500), sotto modal (10000) */
     max-width: 350px;
     min-width: 280px;
     cursor: default; /* Default: non cliccabile su desktop */
@@ -131,7 +131,16 @@
     border-radius: 15px;
     box-shadow: var(--shadow-strong);
     position: relative;
-    animation: fadeInLeft 0.5s ease;
+    /* Transizioni smooth invece di animation permanente (evita flickering al re-render) */
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Stato di ingresso per transizione smooth */
+.speech-bubble-content.entering {
+    opacity: 0;
+    transform: translateX(-15px);
 }
 
 .speech-bubble-arrow {
@@ -501,7 +510,7 @@
 
 #tutorialStepsContainer {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
 }
 
@@ -512,6 +521,7 @@
     align-items: center;
     gap: 5px;
     position: relative;
+    flex: 1;
 }
 
 /* Pulsanti "Skip to this step" */
@@ -544,11 +554,16 @@
     border-radius: 8px;
     padding: 10px 15px;
     min-width: 120px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
-    
+
     /* Shape like in the image - punta della freccia a destra */
     clip-path:  polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
 }
