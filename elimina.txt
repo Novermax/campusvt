@@ -1,0 +1,68 @@
+Richiesta vincolante – rimozione legenda sinistra su mobile
+
+Obiettivo
+Eradicare completamente la legenda/toolbox verticale posizionata a sinistra (pulsanti Sposta / Ruota / Zoom) dal layout mobile, inclusa la modalità landscape.
+
+Requisiti non negoziabili
+
+Rimozione totale
+
+La legenda sinistra non deve essere renderizzata su mobile.
+
+Non deve essere:
+
+nascosta via CSS
+
+resa trasparente
+
+spostata off-screen
+
+Il relativo DOM non deve esistere nel rendering mobile.
+
+Ambito di applicazione
+
+Tutti i device mobile:
+
+portrait
+
+landscape
+
+Indipendentemente dallo stato del tutorial o dallo step corrente.
+
+Pulizia logica
+
+Rimuovere o bypassare:
+
+listener
+
+binding
+
+stato applicativo
+
+riferimenti a questa legenda nel codice mobile
+
+Nessun fallback automatico che la reinserisca.
+
+Motivazione funzionale
+
+La legenda sinistra:
+
+non è compatibile con l’esperienza mobile
+
+interferisce con il layout e la UX
+
+Questa richiesta era già stata fatta in precedenza e deve essere considerata definitiva.
+
+Criteri di accettazione (test manuale)
+
+Aprendo il sito su smartphone:
+
+la legenda sinistra non è visibile
+
+ispezionando il DOM mobile, la legenda non è presente
+
+ruotando il device (portrait ↔ landscape) non compare mai
+
+Su desktop:
+
+comportamento invariato

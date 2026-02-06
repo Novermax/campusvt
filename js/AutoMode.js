@@ -39,16 +39,13 @@
             this.isMobile = window.isMobileDevice ? window.isMobileDevice() : false;
 
             if (this.isMobile) {
-                console.log('📱 [AutoMode] Dispositivo mobile rilevato - Sistema attivo');
-                this.setupUI();
-
-                // ATTIVA AUTOMATICAMENTE AutoMode su mobile e mostra notifica
-                this.enabled = true;
-                this.showToast('🤖 Modalità AutoMode Attiva', 'Modalità interattiva disponibile solo su desktop. Per avanzare di step, clicca sul fumetto azzurro di descrizione.', 6000);
-                console.log('📱 [AutoMode] ATTIVATO AUTOMATICAMENTE su mobile');
-            } else {
-                console.log('💻 [AutoMode] Dispositivo desktop - AutoMode disabilitato');
+                // Su mobile AutoMode è disabilitato - l'utente interagisce manualmente
+                console.log('📱 [AutoMode] Dispositivo mobile - AutoMode NON attivo (interazione manuale)');
+                this.enabled = false;
+                return;
             }
+
+            console.log('💻 [AutoMode] Dispositivo desktop - AutoMode disabilitato');
         },
 
         /**

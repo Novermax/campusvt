@@ -220,12 +220,6 @@ window.TouchDragHandler = {
             return;
         }
 
-        // Verifica AutoMode
-        if (window.AutoMode && window.AutoMode.enabled) {
-            console.log('[TouchDragHandler] Drag ignorato - AutoMode attivo');
-            return;
-        }
-
         const rootModel = this.findRootModel(target);
         if (!rootModel) return;
 

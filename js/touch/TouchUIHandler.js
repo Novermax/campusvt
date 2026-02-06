@@ -45,19 +45,13 @@ window.TouchUIHandler = {
             return;
         }
 
-        // 3. Pulsante AutoMode
-        if (this.isAutoModeButton(element)) {
-            this.handleAutoModeToggle(element);
-            return;
-        }
-
-        // 4. Modal OK button
+        // 3. Modal OK button
         if (this.isModalButton(element)) {
             this.handleModalButton(element);
             return;
         }
 
-        // 5. Altri elementi - simula click nativo
+        // 4. Altri elementi - simula click nativo
         this.simulateClick(element);
     },
 
@@ -135,24 +129,6 @@ window.TouchUIHandler = {
             } else if (isNext && window.UI.nextStep) {
                 window.UI.nextStep();
             }
-        }
-    },
-
-    // ═══════════════════════════════════════════════════════════
-    // GESTIONE AUTOMODE
-    // ═══════════════════════════════════════════════════════════
-
-    isAutoModeButton: function(element) {
-        return element.classList.contains('auto-mode-toggle') ||
-               element.id === 'autoModeToggle' ||
-               element.closest('.auto-mode-toggle') !== null;
-    },
-
-    handleAutoModeToggle: function(element) {
-        console.log('[TouchUIHandler] Toggle AutoMode');
-
-        if (window.AutoMode && window.AutoMode.toggle) {
-            window.AutoMode.toggle();
         }
     },
 

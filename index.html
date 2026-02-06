@@ -480,8 +480,17 @@
                     console.log('🥽 Visore VR/AR rilevato - Ottimizzazioni memoria attive');
                     console.log(`   User Agent: ${userAgent}`);
                 } else {
-                    console.log('📱 Dispositivo mobile rilevato - AutoMode disponibile');
+                    console.log('📱 Dispositivo mobile rilevato');
                 }
+
+                // Rimuovi completamente i controlli touch Sposta/Ruota/Zoom dal DOM su mobile
+                document.addEventListener('DOMContentLoaded', function() {
+                    var mobileTouchControls = document.getElementById('mobileTouchControls');
+                    if (mobileTouchControls) {
+                        mobileTouchControls.parentNode.removeChild(mobileTouchControls);
+                        console.log('📱 mobileTouchControls rimosso dal DOM (non necessario su mobile)');
+                    }
+                });
             } else {
                 console.log('💻 Dispositivo desktop rilevato');
             }
@@ -666,7 +675,16 @@
         }
     </script>
     -->
-    
+    <!-- Overlay orientamento mobile (portrait → landscape) -->
+    <div id="orientationOverlay" class="orientation-overlay" style="display:none;">
+        <div class="orientation-content">
+            <div class="orientation-icon">📱</div>
+            <h2>Ruota il dispositivo</h2>
+            <p>Per utilizzare il training, ruota il dispositivo in modalita' orizzontale (landscape).</p>
+            <div class="orientation-arrow">↻</div>
+        </div>
+    </div>
+
 </body>
 </html>
 

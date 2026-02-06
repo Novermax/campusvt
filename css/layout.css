@@ -20,11 +20,6 @@
         opacity: 0 !important;
     }
 
-    #toolsLegend {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
 }
 
 /* ===== CANVAS 3D ===== */
@@ -62,65 +57,10 @@
     transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Su mobile: fumetto cliccabile con effetti hover */
+/* Su mobile: fumetto non cliccabile (interazione manuale come desktop) */
 @media (max-width: 768px) {
     .step-speech-bubble {
-        cursor: pointer; /* Cliccabile solo su mobile */
-    }
-
-    .step-speech-bubble:hover {
-        transform: translateY(-50%) scale(1.02);
-        filter: brightness(1.1);
-    }
-
-    .step-speech-bubble:active {
-        transform: translateY(-50%) scale(0.98);
-    }
-
-    .step-speech-bubble:hover .speech-bubble-content {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Indicatore visivo "Tocca per continuare" solo su mobile */
-    .step-speech-bubble::after {
-        content: '👆 Tocca per continuare';
-        position: absolute;
-        bottom: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 123, 255, 0.9);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-        white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        animation: pulseTap 2s ease-in-out infinite;
-        pointer-events: none; /* Non interferisce con i click */
-        z-index: 151;
-    }
-
-    /* Nasconde l'indicatore all'ultimo step (nessuno step successivo) */
-    .step-speech-bubble.last-step::after {
-        display: none;
-    }
-
-    /* All'ultimo step, rimuovi effetti hover (non è più cliccabile per avanzare) */
-    .step-speech-bubble.last-step {
         cursor: default;
-    }
-}
-
-/* Animazione pulse per l'indicatore "Tocca" */
-@keyframes pulseTap {
-    0%, 100% {
-        opacity: 0.8;
-        transform: translateX(-50%) scale(1);
-    }
-    50% {
-        opacity: 1;
-        transform: translateX(-50%) scale(1.05);
     }
 }
 
@@ -292,16 +232,10 @@
         padding-top: 140px; /* Ajustare in base all'altezza dell'header */
     }
 
-    /* NASCONDI CONTROLLI MOBILE NON UTILIZZATI CON AUTOMODE */
+    /* NASCONDI CONTROLLI MOBILE NON UTILIZZATI */
     #mobileTouchControls,
     #mobileTouchControls.mobile-only {
         display: none !important; /* Nasconde Sposta/Ruota/Zoom - sovrascrive components.css */
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-
-    #toolsLegend {
-        display: none !important; /* Nasconde panel Strumenti */
         visibility: hidden !important;
         opacity: 0 !important;
     }
@@ -451,29 +385,27 @@
     }
 }
 
-/* Responsive per la legenda strumenti */
-/* IMPORTANTE: Nasconde tools su TUTTI i dispositivi touchscreen (mobile/tablet, portrait e landscape) */
-@media (hover: none) and (pointer: coarse) {
-    #toolsLegend {
-        display: none !important; /* Nasconde su dispositivi touch (mobile/tablet) */
-    }
-}
-
-/* Fallback per browser che non supportano hover/pointer */
-@media (max-width: 1024px) and (max-height: 768px) {
-    #toolsLegend {
-        display: none !important; /* Nasconde su schermi tablet/mobile landscape */
-    }
-}
-
+/* Responsive per la legenda strumenti su mobile */
 @media (max-width: 768px) {
     #toolsLegend {
-        display: none !important; /* Nasconde su mobile/tablet portrait */
+        position: fixed;
+        top: auto;
+        bottom: 80px;
+        right: 10px;
+        transform: none;
+        padding: 10px;
+        min-width: 80px;
+        max-width: 100px;
+    }
+
+    #toolsLegend h3 {
+        font-size: 11px;
+        margin-bottom: 8px;
     }
 
     .tool-icon {
-        width: 72px;
-        height: 72px;
+        width: 56px;
+        height: 56px;
     }
 }
 
