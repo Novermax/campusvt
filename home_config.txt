@@ -148,7 +148,7 @@ description=Non Attivato
 description_key=Grease_tank_feed_description        // i18n key for machine geometric calibration
 image=menuimages/placeholder.png                                                                 // Cartesian axes schema
 
-[Replacing encoder batteries]                           // Replacing encoder batteries
+[Sostituzione batterie encoder]                           // Replacing encoder batteries
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(9, 6, 11)                                     // Optimal view for spindle access
 CameraTarget=(0, 0, 0)                                   // Focus on spindle area
