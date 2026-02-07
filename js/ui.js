@@ -85,17 +85,6 @@ window.UI = {
             // Inizializza ToolsManager
             this.initToolsManager();
 
-            // Toggle legenda strumenti su dispositivi touch
-            const toolsToggleBtn = document.getElementById('toolsToggleBtn');
-            if (toolsToggleBtn) {
-                toolsToggleBtn.addEventListener('click', function() {
-                    const legend = document.getElementById('toolsLegend');
-                    if (legend) {
-                        legend.classList.toggle('tools-expanded');
-                    }
-                });
-            }
-
             AppConfig.log(2, 'UI inizializzata con successo');
             
         } catch (error) {

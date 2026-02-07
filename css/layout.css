@@ -351,27 +351,22 @@
     }
 }
 
-/* Legenda strumenti su dispositivi touch - nascosta di default, toggle con pulsante */
+/* Legenda strumenti su dispositivi touch - sempre visibile, compatta */
 @media (pointer: coarse) {
     #toolsLegend {
         position: fixed;
         top: 50px;
-        right: 10px;
+        right: 5px;
         bottom: auto;
         transform: none;
-        padding: 8px;
-        min-width: 60px;
-        max-width: 80px;
-        display: none; /* Nascosta di default su touch */
+        padding: 6px;
+        min-width: auto;
+        max-width: 50px;
         z-index: 200;
     }
 
-    #toolsLegend.tools-expanded {
-        display: block; /* Visibile quando espansa */
-    }
-
     #toolsLegend h3 {
-        display: none; /* Nasconde titolo su touch */
+        display: none;
     }
 
     .tool-icon {
@@ -380,36 +375,8 @@
     }
 
     #toolsContainer {
-        gap: 6px;
+        gap: 4px;
     }
-
-    /* Pulsante toggle legenda strumenti */
-    #toolsToggleBtn {
-        display: flex !important;
-    }
-}
-
-/* Pulsante toggle legenda - nascosto su desktop */
-#toolsToggleBtn {
-    display: none;
-    position: fixed;
-    top: 50px;
-    right: 10px;
-    z-index: 201;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 18px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    -webkit-tap-highlight-color: transparent;
 }
 
 /* ===== BARRA STEP TUTORIAL ===== */
@@ -585,40 +552,65 @@
 @media (pointer: coarse) {
     #tutorialStepsBar {
         position: fixed !important;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
+        bottom: 5px;
+        left: 5px;
+        right: 5px;
         transform: none;
-        padding: 8px;
+        padding: 6px 8px;
         z-index: 9999 !important;
+        border-radius: 10px;
     }
 
     #tutorialStepsContainer {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 6px;
+        gap: 4px;
+    }
+
+    .tutorial-step {
+        flex: 0 1 auto;
     }
 
     .tutorial-arrow-btn {
-        min-width: 80px;
-        padding: 6px 10px;
-        font-size: 11px;
+        min-width: 60px;
+        padding: 6px 8px;
+        font-size: 10px;
+        clip-path: none !important; /* Rimuove forma freccia su touch per risparmiare spazio */
+        border-radius: 6px;
+    }
+
+    .tutorial-arrow-text {
+        font-size: 10px;
+        padding: 0 2px;
+        line-height: 1.1;
     }
 
     .tutorial-skip-btn {
-        font-size: 10px;
-        padding: 3px 6px;
+        display: none; /* Nasconde skip su touch */
+    }
+
+    .tutorial-step-number {
+        width: 14px;
+        height: 14px;
+        font-size: 9px;
+        top: -2px;
+        left: -2px;
+    }
+
+    .tutorial-separator {
+        width: 8px;
+        margin: 0 2px;
     }
 
     /* Fumetto compatto su touch */
     .step-speech-bubble {
         max-width: 250px;
-        min-width: 200px;
+        min-width: 180px;
         left: 10px;
     }
 
     .speech-bubble-content {
-        padding: 12px;
+        padding: 10px;
     }
 
     .step-description {
@@ -626,23 +618,21 @@
     }
 
     .step-counter {
-        padding: 4px 8px;
-        font-size: 12px;
-        margin-bottom: 8px;
+        padding: 3px 8px;
+        font-size: 11px;
+        margin-bottom: 6px;
     }
 }
 
 /* Smartphone touch molto piccoli */
 @media (pointer: coarse) and (max-width: 480px) {
     .tutorial-arrow-btn {
-        min-width: 70px;
-        padding: 5px 8px;
-        font-size: 10px;
+        min-width: 50px;
+        padding: 5px 6px;
+        font-size: 9px;
     }
 
-    .tutorial-step-number {
-        width: 14px;
-        height: 14px;
+    .tutorial-arrow-text {
         font-size: 9px;
     }
 
