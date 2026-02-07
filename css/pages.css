@@ -311,3 +311,16 @@
         padding: 12px;
     }
 }
+
+/* ===== FIX MOBILE VIEWPORT HEIGHT - PAGES ===== */
+/*
+ * Fix specifico per pagine che usano height: 100vh su dispositivi mobili.
+ * Usa la variabile --vh settata da MobileBrowserUI.js per compensare
+ * la barra degli indirizzi del browser.
+ */
+@media (pointer: coarse) and (hover: none) {
+    #homePage,
+    #scenarioPage {
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}

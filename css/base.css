@@ -199,3 +199,24 @@ body {
 .slide-in-top {
     animation: slideInFromTop 0.5s ease forwards;
 }
+
+/* ===== FIX MOBILE VIEWPORT HEIGHT ===== */
+/*
+ * Su dispositivi mobili, 100vh include la barra degli indirizzi del browser,
+ * causando overflow e scroll indesiderato quando la barra è visibile.
+ *
+ * La variabile CSS custom --vh viene settata dinamicamente da MobileBrowserUI.js
+ * per riflettere l'altezza reale del viewport mobile.
+ *
+ * Questo fix si applica solo su dispositivi con pointer: coarse (touchscreen)
+ * e hover: none (senza mouse hover supportato), tipici di smartphone e tablet.
+ */
+@media (pointer: coarse) and (hover: none) {
+    body {
+        min-height: calc(var(--vh, 1vh) * 100);
+    }
+
+    #container {
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}

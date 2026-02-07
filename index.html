@@ -40,7 +40,9 @@
     
     <!-- Configurazione viewport per dispositivi mobili -->
     <!-- Assicura che la pagina si adatti correttamente agli schermi mobili -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- minimal-ui: suggerisce al browser di minimizzare i controlli UI -->
+    <!-- viewport-fit=cover: gestisce notch/safe areas su iPhone X+ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui, viewport-fit=cover">
     
     <!-- Meta tags per SEO e condivisione social -->
     <meta name="description" content="Campus Virtual Training - Sistema di formazione virtuale per Campus SCM">
@@ -609,6 +611,7 @@
     <script src="js/ui/DynamicToolStyles.js?v=1000021"></script>
     <script src="js/ui/ToolsManager.js?nocache=1000024"></script>
     <script src="js/MobileOptimizer.js?v=1000021"></script>
+    <script src="js/MobileBrowserUI.js?v=1000001"></script>
     <!-- Touch Gesture System - Moduli in ordine di dipendenza -->
     <script src="js/touch/TouchEventDispatcher.js?v=1000001"></script>
     <script src="js/touch/GestureRecognizer.js?v=1000001"></script>

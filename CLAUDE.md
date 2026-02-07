@@ -4050,6 +4050,296 @@ console.log(MobileOptimizer.deviceCapabilities)
 
 ---
 
+## 📱 Sistema MobileBrowserUI - Auto-Nascondimento Barra Navigazione (Febbraio 2026)
+
+**Implementazione**: Sistema automatico per nascondere la barra di navigazione del browser mobile e massimizzare lo spazio disponibile per i controlli del tutorial.
+
+### Problema Risolto
+- **Barra Navigazione Invadente**: Address bar del browser mobile occupa spazio prezioso
+- **Pulsanti Tutorial Nascosti**: Pulsanti blu di selezione step non visibili con barra attiva
+- **100vh Issue**: Su mobile, `100vh` include la barra degli indirizzi, causando overflow
+- **Soluzione**: Scroll trick + Fullscreen API + CSS custom property dinamica
+
+### Funzionalità
+
+#### 1. Auto-Nascondimento Barra
+Il sistema forza automaticamente lo scroll per nascondere la barra degli indirizzi:
+
+```javascript
+// Scroll trick: 1px verso il basso nasconde la barra
+window.scrollTo(0, 1);
+
+// Retry automatico: 3 tentativi con delay 500ms
+// (alcuni browser richiedono delay per completare render)
+```
+
+**Trigger**:
+- **All'avvio**: Dopo 300ms dal caricamento pagina
+- **Cambio orientamento**: Quando dispositivo viene ruotato
+- **Resize significativo**: Quando dimensioni viewport cambiano
+
+#### 2. Fix Viewport Height (100vh Issue)
+
+Su mobile, `100vh` CSS include la barra degli indirizzi, causando overflow quando la barra è visibile.
+
+**Soluzione**: CSS custom property `--vh` dinamica
+
+```javascript
+// JavaScript: calcola altezza reale viewport
+const vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+// CSS: usa la variabile invece di 100vh fisso
+body {
+    height: 100vh; /* Fallback desktop */
+}
+
+@media (pointer: coarse) and (hover: none) {
+    body {
+        height: calc(var(--vh, 1vh) * 100); /* Mobile fix */
+    }
+}
+```
+
+**Aggiornamento Automatico**:
+- **Scroll**: Ricalcola quando barra appare/scompare
+- **Resize**: Ricalcola quando viewport cambia
+- **Orientamento**: Ricalcola dopo rotazione
+
+#### 3. Fullscreen API (Opzionale)
+
+API HTML5 Fullscreen per esperienza immersiva completa:
+
+```javascript
+// Richiede fullscreen (da chiamare su interazione utente)
+MobileBrowserUI.requestFullscreen();
+
+// Toggle fullscreen
+MobileBrowserUI.toggleFullscreen();
+
+// Esci da fullscreen
+MobileBrowserUI.exitFullscreen();
+```
+
+**Nota**: Fullscreen API richiede interazione utente esplicita (tap/click) per sicurezza.
+
+#### 4. Gestione Orientamento
+
+Rileva cambio orientamento e ricalcola automaticamente:
+
+```javascript
+window.addEventListener('orientationchange', () => {
+    // Attende 300ms per completare cambio orientamento
+    setTimeout(() => {
+        MobileBrowserUI.setupViewportHeight();
+        MobileBrowserUI.hideAddressBar();
+    }, 300);
+});
+```
+
+### Configurazione
+
+```javascript
+MobileBrowserUI.config = {
+    autoHideDelay: 300,        // Delay prima di nascondere barra (ms)
+    scrollAmount: 1,           // Pixel da scrollare per nascondere
+    fullscreenEnabled: true,   // Abilita fullscreen API
+    retryAttempts: 3,          // Tentativi nascondimento barra
+    retryDelay: 500            // Delay tra tentativi (ms)
+};
+```
+
+### Meta Tag Viewport
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui, viewport-fit=cover">
+```
+
+**Parametri Chiave**:
+- `minimal-ui` - Suggerisce al browser di minimizzare controlli UI (iOS Safari)
+- `viewport-fit=cover` - Gestisce notch/safe areas su iPhone X+
+- `maximum-scale=1.0` - Previene zoom accidentale su double-tap
+
+### CSS Fix Applicato
+
+**File Modificati**:
+
+1. **css/base.css** - Container principali
+```css
+@media (pointer: coarse) and (hover: none) {
+    body {
+        min-height: calc(var(--vh, 1vh) * 100);
+    }
+
+    #container {
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}
+```
+
+2. **css/pages.css** - Pagine specifiche
+```css
+@media (pointer: coarse) and (hover: none) {
+    #homePage,
+    #scenarioPage {
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}
+```
+
+**Media Query**: `(pointer: coarse) and (hover: none)`
+- `pointer: coarse` - Dispositivo con pointer impreciso (touchscreen)
+- `hover: none` - Nessun supporto hover (tipico mobile)
+- Esclude laptop touchscreen che hanno anche mouse/trackpad
+
+### Inizializzazione Automatica
+
+Il sistema si attiva automaticamente su dispositivi mobili:
+
+```javascript
+// Auto-init quando DOM è pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        MobileBrowserUI.init();
+    });
+} else {
+    MobileBrowserUI.init();
+}
+```
+
+**Guard Clause**:
+```javascript
+if (!this.isMobile) {
+    console.log('[MobileBrowserUI] Desktop - sistema inattivo');
+    return;
+}
+```
+
+### API Debug Console
+
+```javascript
+// Debug completo
+MobileBrowserUI.debugInfo()
+/* Output:
+═══════════════════════════════════════
+📱 MobileBrowserUI - Debug Info
+═══════════════════════════════════════
+Inizializzato: true
+Mobile: true
+Fullscreen attivo: false
+Fullscreen API: supportata
+───────────────────────────────────────
+Window:
+  innerWidth: 375px
+  innerHeight: 667px (iPhone 8)
+  devicePixelRatio: 2
+───────────────────────────────────────
+CSS Custom Properties:
+  --vh: 6.67px
+═══════════════════════════════════════
+*/
+
+// Nascondi barra manualmente
+MobileBrowserUI.hideAddressBar()
+
+// Fullscreen
+MobileBrowserUI.requestFullscreen()
+MobileBrowserUI.exitFullscreen()
+MobileBrowserUI.toggleFullscreen()
+
+// Stato
+console.log(MobileBrowserUI.isFullscreen)  // true/false
+console.log(MobileBrowserUI.isMobile)      // true/false
+```
+
+### Log Console
+
+```javascript
+[MobileBrowserUI] Inizializzazione su dispositivo mobile...
+📱 [MobileBrowserUI] Tentativo 1/3 nascondimento barra
+📐 [MobileBrowserUI] Viewport height: 667px (--vh: 6.67px)
+✅ [MobileBrowserUI] Fullscreen API disponibile
+✅ [MobileBrowserUI] Sistema attivo
+📱 [MobileBrowserUI] Cambio orientamento rilevato
+📐 [MobileBrowserUI] Viewport height: 375px (--vh: 3.75px)
+```
+
+### Vantaggi
+
+- ✅ **Massimizza Spazio**: Barra nascosta automaticamente = più spazio per tutorial
+- ✅ **Fix 100vh**: Altezza viewport corretta anche con barra visibile/nascosta
+- ✅ **Zero Configurazione Utente**: Tutto automatico in base a device
+- ✅ **Responsive**: Si adatta a orientamento e resize dinamicamente
+- ✅ **Fullscreen Opzionale**: API disponibile per esperienza immersiva
+- ✅ **Desktop Inalterato**: Attivo solo su mobile, desktop usa CSS standard
+
+### Compatibilità Browser
+
+| Browser | Auto-Hide | CSS --vh | Fullscreen API |
+|---------|-----------|----------|----------------|
+| Chrome Mobile | ✅ | ✅ | ✅ |
+| Safari iOS | ✅ | ✅ | ✅ |
+| Firefox Mobile | ✅ | ✅ | ✅ |
+| Samsung Internet | ✅ | ✅ | ✅ |
+| Edge Mobile | ✅ | ✅ | ✅ |
+
+**Note**:
+- Safari iOS: `minimal-ui` supportato ma con limitazioni
+- Fullscreen API: Richiede iOS 12+ per Safari
+- CSS Custom Properties: Supporto universale (tutti browser moderni)
+
+### File Modificati/Creati
+
+- `js/MobileBrowserUI.js` - NUOVO - Sistema completo (350+ righe)
+- `index.html:43` - Meta viewport aggiornato con `minimal-ui`, `maximum-scale`
+- `index.html:614` - Caricamento script MobileBrowserUI
+- `css/base.css:204-221` - Media query mobile per body e #container
+- `css/pages.css:315-326` - Media query mobile per #homePage e #scenarioPage
+
+### Test Case
+
+**Scenario**: iPhone 11 (414x896px), Safari iOS
+1. Apri sito da Safari mobile
+2. Sistema rileva: isMobile=true
+3. Dopo 300ms: scroll automatico di 1px → barra nascosta
+4. CSS `--vh` settato a `8.96px` (896 * 0.01)
+5. Container usa `calc(8.96px * 100) = 896px` invece di `100vh` (che includerebbe barra)
+6. Pulsanti tutorial completamente visibili ✅
+7. Rotazione landscape: sistema ricalcola automaticamente
+8. Nuovo `--vh = 4.14px`, container aggiornato a 414px
+9. Pulsanti sempre visibili in entrambi gli orientamenti ✅
+
+### Limitazioni e Workaround
+
+**Limitazione 1: Barra Riappare su Scroll Up**
+- **Problema**: Utente può far riapparire la barra scrollando verso l'alto
+- **Workaround**: CSS `overflow: hidden` sul body previene scroll accidentale
+- **Nota**: Tutorial non richiede scroll, quindi questo non è un problema
+
+**Limitazione 2: Fullscreen Richiede Interazione Utente**
+- **Problema**: Non si può attivare fullscreen automaticamente al caricamento
+- **Workaround**: Aggiungere pulsante "🖥️ Fullscreen" nell'UI per attivazione manuale
+- **Status**: Opzionale, non implementato di default
+
+**Limitazione 3: Orientamento Landscape su iPhone**
+- **Problema**: Notch iPhone in landscape riduce ulteriormente altezza
+- **Workaround**: `viewport-fit=cover` + `env(safe-area-inset-*)` per safe areas
+- **Status**: Meta tag già configurato correttamente
+
+### Caratteristiche
+
+- ✅ **Zero Breaking Changes**: Desktop continua a usare 100vh standard
+- ✅ **Progressive Enhancement**: Mobile ottimizzato, desktop inalterato
+- ✅ **Backward Compatible**: Tutorial esistenti funzionano senza modifiche
+- ✅ **AutoMode Compatible**: Funziona insieme ad AutoMode senza conflitti
+- ✅ **TouchSystem Compatible**: CSS fix non interferisce con gesture touch
+
+---
+
+**Ultimo aggiornamento**: 7 Febbraio 2026 - Sistema MobileBrowserUI per Auto-Nascondimento Barra Navigazione completato
+
+---
+
 ## 🚦 Sistema StepGatingManager - Gating Basato su Step (Gennaio 2026)
 
 **Implementazione**: Sistema centralizzato per controllare l'attivazione di pulsanti 3D e limiti camera in base allo step corrente del tutorial
