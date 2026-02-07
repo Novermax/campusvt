@@ -151,11 +151,6 @@ class UICore {
      * Callback quando viene mostrata la home page
      */
     onHomePageShown() {
-        // Cleanup controlli mobile se attivi
-        if (window.UI && window.UI.mobileManager) {
-            window.UI.mobileManager.cleanupMobileControls();
-        }
-
         // Reset UI tutorial
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
@@ -167,11 +162,6 @@ class UICore {
      * Callback quando viene mostrata la pagina scenario
      */
     onScenarioPageShown() {
-        // Inizializza controlli mobile se su dispositivo mobile
-        if (window.UI && window.UI.mobileManager) {
-            window.UI.mobileManager.initMobileControls();
-        }
-
         // Inizializza il cursore del canvas quando si entra nella pagina scenario
         setTimeout(() => {
             if (window.UI && window.UI.toolsManager) {
@@ -387,11 +377,6 @@ class UICore {
      * Gestisce resize della finestra
      */
     onWindowResize() {
-        // Delega la gestione resize ai manager specializzati
-        if (window.UI && window.UI.mobileManager) {
-            window.UI.mobileManager.onWindowResize();
-        }
-
         // Notifica Scene3D per aggiornamento camera/renderer
         if (window.Scene3D && window.Scene3D.onWindowResize) {
             window.Scene3D.onWindowResize();
@@ -404,11 +389,6 @@ class UICore {
      * Gestisce cambio orientamento su mobile
      */
     onOrientationChange() {
-        // Delega la gestione orientamento al mobile manager
-        if (window.UI && window.UI.mobileManager) {
-            window.UI.mobileManager.onOrientationChange();
-        }
-
         this.safeLog(3, '[UICore] Orientation change gestito');
     }
 

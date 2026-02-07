@@ -8,19 +8,6 @@
  * - Layout responsive per diversi dispositivi
  */
 
-/* ===== NASCONDI ELEMENTI NON USATI SU MOBILE (AUTOMODE) ===== */
-/* Questi elementi devono essere nascosti immediatamente su mobile,
-   PRIMA che vengano applicati altri stili che potrebbero mostrarli */
-@media (max-width: 768px) {
-    #mobileTouchControls,
-    #mobileTouchControls.mobile-only,
-    .mobile-only#mobileTouchControls {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-
-}
 
 /* ===== CANVAS 3D ===== */
 /* Il canvas dove viene renderizzata la scena 3D */
@@ -57,8 +44,8 @@
     transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Su mobile: fumetto non cliccabile (interazione manuale come desktop) */
-@media (max-width: 768px) {
+/* Su dispositivi touch: fumetto non cliccabile */
+@media (pointer: coarse) {
     .step-speech-bubble {
         cursor: default;
     }
@@ -191,75 +178,54 @@
     }
 }
 
-/* Dispositivi mobili (fino a 768px) */
-@media (max-width: 768px) {
+/* Dispositivi touch (mobile/tablet) - rilevamento tramite puntatore grossolano */
+@media (pointer: coarse) {
     #header {
-        padding: 10px;
-        position: fixed; /* Fixed invece di absolute per mobile */
+        padding: 5px 10px;
+        position: fixed;
     }
 
     #navBar {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 10px;
-        text-align: center;
+        flex-direction: row;
+        gap: 8px;
+        margin-bottom: 0;
+        align-items: center;
     }
 
     #navBar #title {
-        font-size: 18px;
-        text-align: center;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    #controls {
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
+    /* Nasconde controlli e controlli avanzati su touch */
+    #controls,
+    #advancedControls {
+        display: none !important;
     }
 
-    /* I controlli occupano tutta la larghezza disponibile su mobile */
-    #controls button,
-    #controls .file-label {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    /* Status è stato rimosso dall'HTML */
-
-    /* Istruzioni rimosse */
-
-    /* Aggiungi padding top al canvas per compensare header fisso */
+    /* Canvas: header molto compatto ~40px */
     #canvas3d {
-        padding-top: 140px; /* Ajustare in base all'altezza dell'header */
+        padding-top: 45px;
     }
 
-    /* NASCONDI CONTROLLI MOBILE NON UTILIZZATI */
-    #mobileTouchControls,
-    #mobileTouchControls.mobile-only {
-        display: none !important; /* Nasconde Sposta/Ruota/Zoom - sovrascrive components.css */
-        visibility: hidden !important;
-        opacity: 0 !important;
+    /* Pulsante Home compatto */
+    #navBar .btn-home,
+    #navBar button:first-child {
+        padding: 4px 8px;
+        font-size: 12px;
     }
 }
 
-/* Schermi molto piccoli (fino a 480px) */
-@media (max-width: 480px) {
-    #header {
-        padding: 8px;
-    }
-    
+/* Schermi touch molto piccoli (smartphone) */
+@media (pointer: coarse) and (max-width: 480px) {
     #navBar #title {
-        font-size: 16px;
+        font-size: 12px;
     }
-    
-    #controls button,
-    #controls .file-label {
-        font-size: 14px;
-        padding: 12px 16px;
-    }
-    
-    /* Canvas con padding aggiustato per header più piccolo */
+
     #canvas3d {
-        padding-top: 120px;
+        padding-top: 40px;
     }
 }
 
@@ -385,36 +351,65 @@
     }
 }
 
-/* Responsive per la legenda strumenti su mobile */
-@media (max-width: 768px) {
+/* Legenda strumenti su dispositivi touch - nascosta di default, toggle con pulsante */
+@media (pointer: coarse) {
     #toolsLegend {
         position: fixed;
-        top: auto;
-        bottom: 80px;
+        top: 50px;
         right: 10px;
+        bottom: auto;
         transform: none;
-        padding: 10px;
-        min-width: 80px;
-        max-width: 100px;
+        padding: 8px;
+        min-width: 60px;
+        max-width: 80px;
+        display: none; /* Nascosta di default su touch */
+        z-index: 200;
+    }
+
+    #toolsLegend.tools-expanded {
+        display: block; /* Visibile quando espansa */
     }
 
     #toolsLegend h3 {
-        font-size: 11px;
-        margin-bottom: 8px;
+        display: none; /* Nasconde titolo su touch */
     }
 
     .tool-icon {
-        width: 56px;
-        height: 56px;
+        width: 36px;
+        height: 36px;
+    }
+
+    #toolsContainer {
+        gap: 6px;
+    }
+
+    /* Pulsante toggle legenda strumenti */
+    #toolsToggleBtn {
+        display: flex !important;
     }
 }
 
-@media (max-width: 480px) {
-    .tool-icon {
-        width: 64px;
-        height: 64px;
-        gap: 5px;
-    }
+/* Pulsante toggle legenda - nascosto su desktop */
+#toolsToggleBtn {
+    display: none;
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    z-index: 201;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ===== BARRA STEP TUTORIAL ===== */
@@ -586,87 +581,71 @@
     }
 }
 
-/* Responsive per la barra tutorial */
-@media (max-width: 768px) {
+/* Responsive per la barra tutorial su dispositivi touch */
+@media (pointer: coarse) {
     #tutorialStepsBar {
-        position: fixed !important; /* Fixed invece di absolute per mobile */
+        position: fixed !important;
         bottom: 10px;
         left: 10px;
         right: 10px;
         transform: none;
-        padding: 10px;
-        z-index: 9999 !important; /* Z-index molto alto per assicurare visibilità */
+        padding: 8px;
+        z-index: 9999 !important;
     }
 
     #tutorialStepsContainer {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
     }
-    
+
     .tutorial-arrow-btn {
-        min-width: 100px;
-        padding: 8px 12px;
+        min-width: 80px;
+        padding: 6px 10px;
         font-size: 11px;
     }
-    
+
     .tutorial-skip-btn {
         font-size: 10px;
         padding: 3px 6px;
     }
-    
-    /* Adattamento fumetto per tablet */
-    .step-speech-bubble {
-        max-width: 280px;
-        min-width: 220px;
-        left: 15px;
-    }
-    
-    .speech-bubble-content {
-        padding: 15px;
-    }
-    
-    .step-description {
-        font-size: 14px;
-    }
-}
 
-@media (max-width: 480px) {
-    .tutorial-arrow-btn {
-        min-width: 80px;
-        padding: 6px 8px;
-        font-size: 10px;
-    }
-    
-    .tutorial-step-number {
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-    }
-    
-    /* Adattamento fumetto per mobile */
+    /* Fumetto compatto su touch */
     .step-speech-bubble {
         max-width: 250px;
         min-width: 200px;
         left: 10px;
-        top: 30%;
     }
-    
+
     .speech-bubble-content {
         padding: 12px;
     }
-    
+
+    .step-description {
+        font-size: 13px;
+    }
+
     .step-counter {
         padding: 4px 8px;
         font-size: 12px;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
-    
-    .step-description {
-        font-size: 13px;
-        margin-bottom: 0;
+}
+
+/* Smartphone touch molto piccoli */
+@media (pointer: coarse) and (max-width: 480px) {
+    .tutorial-arrow-btn {
+        min-width: 70px;
+        padding: 5px 8px;
+        font-size: 10px;
     }
-    
+
+    .tutorial-step-number {
+        width: 14px;
+        height: 14px;
+        font-size: 9px;
+    }
+
     .speech-bubble-arrow {
         right: -15px;
         border-left-width: 15px;

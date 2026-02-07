@@ -265,6 +265,9 @@
             
             <!-- FUMETTO spostato fuori da scenarioPage (vedi sotto chiusura </div>) per z-index globale -->
 
+            <!-- ===== PULSANTE TOGGLE LEGENDA (solo touch) ===== -->
+            <button id="toolsToggleBtn" aria-label="Mostra/Nascondi strumenti">&#128295;</button>
+
             <!-- ===== LEGENDA STRUMENTI ===== -->
             <!-- Pannello laterale destro con gli strumenti del tutorial -->
             <div id="toolsLegend" role="complementary" aria-label="Strumenti tutorial">
@@ -299,23 +302,6 @@
                 <!-- ===== AREA CONTROLLI ===== -->
                 <!-- Contiene tutti i pulsanti e controlli dell'applicazione -->
                 <div id="controls" role="toolbar" aria-label="Controlli applicazione">
-                
-                    
-                    <!-- Controlli modalità touch per mobile -->
-                    <div id="mobileTouchControls" class="mobile-only" style="position: fixed; top: 110px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; z-index: 999999 !important;">
-                        <label class="mobile-mode-option">
-                            <input type="radio" name="mobileMode" value="pan" checked>
-                            <span class="mobile-mode-label">Sposta</span>
-                        </label>
-                        <label class="mobile-mode-option">
-                            <input type="radio" name="mobileMode" value="rotate">
-                            <span class="mobile-mode-label">Ruota</span>
-                        </label>
-                        <label class="mobile-mode-option">
-                            <input type="radio" name="mobileMode" value="zoom">
-                            <span class="mobile-mode-label">Zoom</span>
-                        </label>
-                    </div>
                 
                     <!-- Controlli avanzati (nascosti su mobile durante scenario) -->
                     <div id="advancedControls">
@@ -483,14 +469,6 @@
                     console.log('📱 Dispositivo mobile rilevato');
                 }
 
-                // Rimuovi completamente i controlli touch Sposta/Ruota/Zoom dal DOM su mobile
-                document.addEventListener('DOMContentLoaded', function() {
-                    var mobileTouchControls = document.getElementById('mobileTouchControls');
-                    if (mobileTouchControls) {
-                        mobileTouchControls.parentNode.removeChild(mobileTouchControls);
-                        console.log('📱 mobileTouchControls rimosso dal DOM (non necessario su mobile)');
-                    }
-                });
             } else {
                 console.log('💻 Dispositivo desktop rilevato');
             }
@@ -634,8 +612,6 @@
     <script src="js/ui/DynamicToolStyles.js?v=1000021"></script>
     <script src="js/ui/ToolsManager.js?nocache=1000024"></script>
     <script src="js/MobileOptimizer.js?v=1000021"></script>
-    <script src="js/AutoMode.js?v=1000020"></script>
-
     <!-- Touch Gesture System - Moduli in ordine di dipendenza -->
     <script src="js/touch/TouchEventDispatcher.js?v=1000001"></script>
     <script src="js/touch/GestureRecognizer.js?v=1000001"></script>

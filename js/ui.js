@@ -85,8 +85,16 @@ window.UI = {
             // Inizializza ToolsManager
             this.initToolsManager();
 
-            // Inizializza AutoMode (solo su mobile)
-            this.initAutoMode();
+            // Toggle legenda strumenti su dispositivi touch
+            const toolsToggleBtn = document.getElementById('toolsToggleBtn');
+            if (toolsToggleBtn) {
+                toolsToggleBtn.addEventListener('click', function() {
+                    const legend = document.getElementById('toolsLegend');
+                    if (legend) {
+                        legend.classList.toggle('tools-expanded');
+                    }
+                });
+            }
 
             AppConfig.log(2, 'UI inizializzata con successo');
             
@@ -317,14 +325,7 @@ window.UI = {
             AppConfig.log(3, '[goHome] ParticleSystem pulito');
         }
 
-        // === FASE 6: RESET AUTOMODE ===
-        if (window.AutoMode && window.AutoMode.enabled) {
-            window.AutoMode.enabled = false;
-            window.AutoMode.isExecuting = false;
-            AppConfig.log(3, '[goHome] AutoMode disabilitato');
-        }
-
-        // === FASE 6.5: RESET HOLDABLE SYSTEM ===
+        // === FASE 6: RESET HOLDABLE SYSTEM ===
         if (window.HoldableSystem && window.HoldableSystem.reset) {
             window.HoldableSystem.reset();
             AppConfig.log(3, '[goHome] HoldableSystem resettato');
@@ -1338,11 +1339,6 @@ window.UI = {
                 // Aggiungi modello con configurazione
                 window.Scene3D.addModel(model, modelConfig);
                 
-                // DEBUG: Controlla i controlli touch dopo l'aggiunta del modello
-                setTimeout(() => {
-                    console.log('🔍 DEBUG: Controllo stato controlli touch dopo addModel');
-                    this.debugTouchControlsState();
-                }, 100);
             }
         });
         
@@ -1432,13 +1428,6 @@ window.UI = {
             window.InteractiveObject3D.attachStateGroupMeshesFromScene();
         }
 
-        // DEBUG: Stato finale dei controlli touch dopo caricamento completo
-        setTimeout(() => {
-            console.log('🔍 DEBUG: Stato controlli touch alla fine del caricamento modelli');
-            this.debugTouchControlsState();
-            // Forza nuovamente i controlli per sicurezza
-            this.forceShowTouchControls();
-        }, 500);
     },
     
     /**
@@ -1751,45 +1740,13 @@ window.UI = {
         }
     },
     
-    /**
-     * Inizializza i controlli mobile quando si entra in uno scenario
-     */
-    initMobileControls: function() {
-        // mobileTouchControls (Sposta/Ruota/Zoom) rimosso dal DOM su mobile
-        // Il TouchSystem gestisce tutte le interazioni touch
-        const isMobile = (window.innerWidth <= 768 || window.innerHeight <= 768);
-        if (isMobile) {
-            console.log('📱 Modalita\' mobile - controlli touch gestiti da TouchSystem');
-        }
-    },
-    
-    /**
-     * Disabilitato - mobileTouchControls rimosso dal DOM su mobile
-     */
-    setupMobileTouchListeners: function() {
-        // No-op: mobileTouchControls non esiste piu' su mobile
-    },
-    
-    /**
-     * Pulisce i controlli mobile quando si torna alla home
-     */
+    initMobileControls: function() {},
+    setupMobileTouchListeners: function() {},
     cleanupMobileControls: function() {
         document.body.classList.remove('mobile-controls-hidden');
     },
-    
-    /**
-     * Disabilitato - mobileTouchControls rimosso dal DOM su mobile
-     */
-    forceShowTouchControls: function() {
-        // No-op: mobileTouchControls non esiste piu' su mobile
-    },
-    
-    /**
-     * Debug dello stato dei controlli touch
-     */
-    debugTouchControlsState: function() {
-        console.log('📱 mobileTouchControls rimosso dal DOM su mobile - gestito da TouchSystem');
-    },
+    forceShowTouchControls: function() {},
+    debugTouchControlsState: function() {},
     
     /**
      * Gestisce il cambio di orientamento dello schermo mobile
@@ -1822,12 +1779,7 @@ window.UI = {
         }, 300);
     },
     
-    /**
-     * Watchdog disabilitato - mobileTouchControls rimosso dal DOM su mobile
-     */
-    startTouchControlsWatchdog: function() {
-        // No-op: mobileTouchControls non esiste piu' su mobile
-    },
+    startTouchControlsWatchdog: function() {},
     
     /**
      * Gestisce il resize della finestra
@@ -1844,13 +1796,7 @@ window.UI = {
         }, 200);
     },
     
-    /**
-     * Riapplica le impostazioni dei controlli dopo orientamento/resize
-     */
-    handleMobileControlsRefresh: function() {
-        if (this.currentPage !== 'scenario') return;
-        // mobileTouchControls rimosso dal DOM su mobile - niente da fare
-    },
+    handleMobileControlsRefresh: function() {},
     
     /**
      * Reset vista camera
@@ -1906,18 +1852,6 @@ window.UI = {
         } else {
             this.safeLog(1, 'Errore inizializzazione ToolsManager - fallback su implementazione locale');
             this.initToolsLegend();
-        }
-    },
-
-    /**
-     * Inizializza AutoMode per dispositivi mobili
-     */
-    initAutoMode: function() {
-        if (window.AutoMode && typeof window.AutoMode.init === 'function') {
-            window.AutoMode.init();
-            this.safeLog(2, 'AutoMode inizializzato');
-        } else {
-            this.safeLog(1, 'AutoMode non disponibile');
         }
     },
 

@@ -1,0 +1,57 @@
+Sono disponibili due viste della stessa applicazione:
+
+Desktop: layout corretto.
+
+Mobile: layout non ottimizzato (problemi di scala e posizionamento UI).
+
+Nella versione mobile è necessario ridefinire il layout grafico (responsive) perché alcuni elementi risultano sproporzionati e invasivi.
+
+Problemi riscontrati su mobile
+
+Legenda / toolbar strumenti a destra
+
+La colonna verticale dei tool (icone grandi circolari) mantiene dimensioni pensate per desktop.
+
+Su mobile occupa troppo spazio orizzontale e riduce eccessivamente l’area utile della scena 3D.
+
+Necessario ridimensionamento (icone + padding) oppure cambio layout (es. floating, collapsible, drawer).
+
+Header superiore (barra bianca con titolo scenario + pulsante Home)
+
+Altezza e padding eccessivi su mobile.
+
+Risulta visivamente dominante e sottrae spazio verticale critico alla scena.
+
+Serve una versione mobile-optimized (altezza ridotta, font più piccolo, spacing minimale).
+
+Pulsante / titolo dello scenario
+
+Nello scenario “Manutenzione Elettromandrino” il pulsante/titolo risulta troppo in basso rispetto alla barra superiore e viene parzialmente penalizzato in visibilità.
+
+Anomalia: lo stesso problema non si presenta nello scenario “Manutenzione Pompa Becker”, dove il posizionamento è corretto.
+
+Indizio di:
+
+offset verticale hardcoded
+
+differenze di CSS per scenario
+
+oppure layout influenzato dinamicamente dal contenuto del titolo.
+
+Obiettivo
+Implementare una gestione responsive mobile-specific che:
+
+riduca scala e ingombro degli elementi UI laterali e superiori;
+
+garantisca coerenza di posizionamento del titolo scenario tra tutti gli scenari;
+
+massimizzi l’area visibile della scena 3D su dispositivi mobili.
+
+Nota
+Il comportamento incoerente tra scenari suggerisce di verificare:
+
+CSS condizionale per scenario
+
+calcoli dinamici di altezza/header
+
+media query o breakpoints non uniformi.

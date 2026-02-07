@@ -579,164 +579,21 @@ button:disabled, .button:disabled {
     display: none;
 }
 
-/* Eccezione specifica per i controlli touch mobile */
-#mobileTouchControls.mobile-only {
-    display: block;
-}
 
-/* Media query per dispositivi mobili */
-@media screen and (max-width: 768px) {
-    /* Mostra il pulsante toggle su mobile */
+/* Media query per dispositivi touch */
+@media (pointer: coarse) {
+    /* Mostra il pulsante toggle su touch */
     .mobile-only {
         display: block !important;
     }
-    
-    /* Forza visibilità controlli touch in ogni orientamento */
-    #mobileTouchControls.mobile-only {
-        display: flex !important;
-        flex-direction: column !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-    }
-    
-    /* Nasconde i controlli avanzati su mobile quando è attiva la classe mobile-hidden */
-    body.mobile-controls-hidden #advancedControls {
-        display: none !important;
-    }
-    
-    /* Quando i controlli sono visibili su mobile, rendili più compatti */
-    #advancedControls {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    #advancedControls button {
-        padding: 8px 12px;
-        font-size: 12px;
-        min-height: 36px;
-    }
-    
-    #advancedControls .file-label {
-        padding: 8px 12px;
-        font-size: 12px;
-        min-height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* I pannelli sono stati rimossi dall'HTML */
+
+    /* Controlli avanzati nascosti su touch (gestiti da layout.css) */
 }
 
-/* Media query per schermi molto piccoli (smartphone piccoli) */
-@media screen and (max-width: 480px) {
-    #advancedControls button {
-        padding: 6px 10px;
-        font-size: 11px;
-        min-height: 32px;
-    }
-    
-    #advancedControls .file-label {
-        padding: 6px 10px;
-        font-size: 11px;
-        min-height: 32px;
-    }
-}
 
-/* ===== CONTROLLI TOUCH MOBILE ===== */
-/* Stili per i radio button della modalità touch */
-
-.mobile-mode-option {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: white;
-    font-size: 12px;
-    user-select: none;
-    transition: all 0.2s ease;
-}
-
-.mobile-mode-option:hover {
-    color: var(--primary-blue);
-}
-
-.mobile-mode-option input[type="radio"] {
-    display: none;
-}
-
-.mobile-mode-label {
-    padding: 8px 12px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 20px;
-    background: rgba(255,255,255,0.1);
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.mobile-mode-option input[type="radio"]:checked + .mobile-mode-label {
-    border-color: var(--primary-blue);
-    background: var(--primary-blue);
-    color: white;
-    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-    position: relative;
-    z-index: 100001;
-}
-
-/* Responsive per schermi molto piccoli */
-@media screen and (max-width: 480px) {
-    #mobileTouchControls {
-        top: 90px !important;
-        left: 5px !important;
-        padding: 6px !important;
-        gap: 6px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        position: fixed !important;
-        z-index: 99999 !important;
-        background: rgba(0, 0, 0, 0.7) !important;
-        border-radius: 8px !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
-    }
-    
-    .mobile-mode-label {
-        padding: 4px 6px !important;
-        font-size: 9px !important;
-    }
-}
 
 /* Regole unificate per mobile - funzionano in tutti gli orientamenti */
 @media screen and (max-width: 768px) {
-    /* Controlli touch sempre visibili e nella stessa posizione */
-    #mobileTouchControls {
-        top: 110px !important;
-        left: 10px !important;
-        padding: 8px !important;
-        gap: 10px !important;
-        position: fixed !important;
-        flex-direction: column !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        z-index: 100000 !important;
-        background: rgba(0, 0, 0, 0.8) !important;
-        border-radius: 8px !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
-        /* Evita problemi di posizionamento durante rotazione */
-        transform: translateZ(0) !important;
-        backface-visibility: hidden !important;
-        -webkit-backface-visibility: hidden !important;
-        will-change: transform !important;
-    }
-    
-    .mobile-mode-label {
-        padding: 6px 10px !important;
-        font-size: 11px !important;
-    }
-    
-    /* Toggle button rimosso dall'HTML */
     
     /* Impedisci il ridimensionamento durante rotazione */
     html {
@@ -753,14 +610,6 @@ button:disabled, .button:disabled {
         transform-origin: 0 0 !important;
     }
     
-    /* Assicura che i controlli touch rimangano sempre visibili */
-    #mobileTouchControls,
-    .mobile-mode-option,
-    .mobile-mode-label {
-        will-change: transform, visibility;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-    }
     
     /* Forza dimensioni consistenti per tutti i controlli */
     #controls button,
@@ -1533,75 +1382,6 @@ body.tool-brugola-active .btn,
 body.tool-brugola-active .button,
 body.tool-brugola-active [role="button"] {
     cursor: pointer !important;
-}
-
-/* ===== AUTOMODE - MODALITÀ AUTOMATICA PER MOBILE ===== */
-/* Pulsante toggle AutoMode nel fumetto tutorial */
-
-.auto-mode-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.auto-mode-toggle:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-}
-
-.auto-mode-toggle:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
-
-/* Stato attivo AutoMode */
-.auto-mode-toggle.active {
-    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-    animation: pulseGreen 2s ease-in-out infinite;
-}
-
-.auto-mode-toggle.active:hover {
-    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-}
-
-/* Animazione pulse per stato attivo */
-@keyframes pulseGreen {
-    0%, 100% {
-        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-    }
-    50% {
-        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
-    }
-}
-
-/* Responsive mobile - pulsante più piccolo */
-@media screen and (max-width: 480px) {
-    .auto-mode-toggle {
-        top: 8px;
-        right: 8px;
-        padding: 6px 12px;
-        font-size: 11px;
-        border-radius: 16px;
-    }
 }
 
 /* ===== TOAST NOTIFICATIONS ===== */
