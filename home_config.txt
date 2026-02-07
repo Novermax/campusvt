@@ -112,19 +112,8 @@ model=models/paletta5.glb                                    // Pump body 3D mod
 direction=0,0,1                                        // Movement direction: towards Z+
 model=models/tubograsso.glb                                    // Pump body 3D model
 direction=0,0,1                                        // Movement direction: towards Z+
-[Regolazione campi di lavoro]                             // Configuration of operative areas and origins
-// === CAMERA AND LIGHTS CONFIGURATION ===
-CameraPos=(5, 8, 10)                                     // Top view to frame work fields
-CameraTarget=(0, 0, 0)                                   // Center view on operative fields
-AmbientLight=0x404040,1.5                                // Uniform lighting for technical details
-DirectionalLight=0xffffff,2.5,(6, 15, 8)                // Main light to highlight areas
-BackLight=0xffffff,1.0,(-6, 15, 8)                       // Fill light
-// === SCENARIO INFORMATION ===
-description=Non Attivato
-description_key=scenario_work_fields_description          // i18n key for work coordinate setup
-image=menuimages/placeholder.png                                                               // Representative image of fields
 
-[Ridefinizione zone di vuoto]                            // Vacuum zone configuration for work plane
+[Ingrassaggio foratrice]                            // Drilling grease
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(6, 4, 8)                                      // Side view to visualize vacuum zones
 CameraTarget=(0, 0, 0)                                   // Focus on work plane
@@ -133,7 +122,7 @@ DirectionalLight=0xffffff,2.5,(7, 12, 6)                // Main plane illuminati
 BackLight=0xffffff,1.0,(-7, 12, 6)                       // Light to eliminate shadows on plane
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_vacuum_zones_description         // i18n key for suction management system
+description_key=Drilling_grease_description         // i18n key for suction management system
 image=menuimages/placeholder.png                                                                 // Vacuum zones diagram
 
 [RTCP Automatico]                                         // RTCP System (Rotation Tool Center Point)
@@ -147,7 +136,7 @@ BackLight=0xffffff,1.0,(-5, 12, 6)                       // Support light for vi
 description=Non Attivato
 description_key=scenario_automatic_rtcp_description       // i18n key for automatic tool rotation calibration
 image=menuimages/placeholder.png                                  
-[Regolazione ortogonalità]                               // Cartesian machine axes calibration
+[Refeed serbatoio del grasso]                               // Grease tank feed
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(7, 5, 9)                                      // Isometric view to see all axes
 CameraTarget=(0, 0, 0)                                   // Machine center as reference
@@ -156,10 +145,10 @@ DirectionalLight=0xffffff,2.5,(8, 12, 7)                // Illumination to highl
 BackLight=0xffffff,1.0,(-8, 12, 7)                       // Light to reduce excessive contrasts
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_orthogonality_description        // i18n key for machine geometric calibration
+description_key=Grease_tank_feed_description        // i18n key for machine geometric calibration
 image=menuimages/placeholder.png                                                                 // Cartesian axes schema
 
-[Sostituzione elettromandrino]                           // Complete main spindle replacement
+[Replacing encoder batteries]                           // Replacing encoder batteries
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(9, 6, 11)                                     // Optimal view for spindle access
 CameraTarget=(0, 0, 0)                                   // Focus on spindle area
@@ -168,10 +157,10 @@ DirectionalLight=0xffffff,2.5,(10, 15, 8)               // Intense light for pre
 BackLight=0xffffff,1.0,(-10, 15, 8)                      // Fill light for operational safety
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_spindle_replacement_description  // i18n key for complete replacement procedure
+description_key=Replacing_encoder_batteries_description  // i18n key for complete replacement procedure
 image=menuimages/placeholder.png                                                              // Electrospindle image
 
-[Regolazione offset elettromandrino - foratrice]         // Spindle-drill relative calibration
+[Filtro e rimozione acqua dal gruppo di alimentazione pneumatica]         // Filtering and water removal from pneumatic feed assembly
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(8, 8, 10)                                     // Top view for precise alignment
 CameraTarget=(0, 0, 0)                                   // Center machining area
@@ -180,10 +169,10 @@ DirectionalLight=0xffffff,2.5,(9, 15, 8)                // Main illumination for
 BackLight=0xffffff,1.0,(-9, 15, 8)                       // Auxiliary light for precision
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_spindle_offset_description       // i18n key for X-Y-Z offset calibration
+description_key=scenario_pneumatic_feed_description       // i18n key for X-Y-Z offset calibration
 image=menuimages/placeholder.png                                                                 // Spindle-drill offset schema
 
-[Sostituzione fuso foratrice]                            // Drilling spindle replacement
+[Manutenzione barre matic/Flex-matic]                            // Matic/Flex-matic bar maintenance
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(6, 7, 9)                                      // Side view for spindle access
 CameraTarget=(0, 0, 0)                                   // Focus on drilling unit
@@ -192,10 +181,10 @@ DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Directional light for
 BackLight=0xffffff,1.0,(-7, 15, 7)                       // Back light for visibility
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_drill_spindle_replacement_description // i18n key for spindle change and recalibration
+description_key=scenario_Matic_Flex-matic_bar_maintenance_description // i18n key for spindle change and recalibration
 image=menuimages/placeholder.png                                                                // Drill spindle image
 
-[Sostituzione Punte foratrice]                           // Multiple drilling bits change
+[Pulizia delle cremagliere assi]                           // Cleaning of axe racks
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(7, 9, 8)                                      // Top view for drill access
 CameraTarget=(0, 0, 0)                                   // Center drill group
@@ -204,10 +193,10 @@ DirectionalLight=0xffffff,2.5,(8, 15, 6)                // Intense illumination 
 BackLight=0xffffff,1.0,(-8, 15, 6)                       // Support light
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_drill_bits_replacement_description // i18n key for drill bit replacement and programming
+description_key=scenario_Cleaning_of_axe_racks_description // i18n key for drill bit replacement and programming
 image=menuimages/placeholder.png                                                                // Drill bit group
 
-[Squadro cassa foratrice]                                // Drill group orthogonality verification
+[Calibrazione barre Matic/ Flex-matic]                                // Matic/ Flex-matic Bar Calibration
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(5, 6, 12)                                     // Front view for square control
 CameraTarget=(0, 0, 0)                                   // Focus on drill case
@@ -216,41 +205,6 @@ DirectionalLight=0xffffff,2.5,(6, 15, 10)               // Illumination to highl
 BackLight=0xffffff,1.0,(-6, 15, 10)                      // Light to eliminate shadows
 // === SCENARIO INFORMATION ===
 description=Non Attivato
-description_key=scenario_drill_case_square_description    // i18n key for case perpendicularity verification
+description_key=scenario_Matic_Flex-matic_Bar_Calibration_description    // i18n key for case perpendicularity verification
 image=menuimages/placeholder.png                                  // Case square schema
 
-[Squadro fusi foratrice]                                 // Individual drilling spindles alignment
-// === CAMERA AND LIGHTS CONFIGURATION ===
-CameraPos=(8, 5, 11)                                     // Side view for parallelism control
-CameraTarget=(0, 0, 0)                                   // Center spindle group
-AmbientLight=0x404040,1.5                                // Light for precision details
-DirectionalLight=0xffffff,2.5,(9, 12, 8)                // Illumination to highlight alignments
-BackLight=0xffffff,1.0,(-9, 12, 8)                       // Auxiliary light for controls
-// === SCENARIO INFORMATION ===
-description=Non Attivato
-description_key=scenario_drill_spindles_square_description // i18n key for spindle geometric calibration
-image=menuimages/placeholder.png                                                                // Spindle alignment schema
-
-[Regolazione sensore conteggio piano di carico]          // Load plane sensor calibration
-// === CAMERA AND LIGHTS CONFIGURATION ===
-CameraPos=(4, 8, 7)                                      // Top view to see sensor
-CameraTarget=(0, 0, 0)                                   // Focus on sensor area
-AmbientLight=0x404040,1.5                                // Light for electronic components
-DirectionalLight=0xffffff,2.5,(5, 15, 5)                // Illumination for sensor setup
-BackLight=0xffffff,1.0,(-5, 15, 5)                       // Light to reduce shadows on wiring
-// === SCENARIO INFORMATION ===
-description=Non Attivato
-description_key=scenario_load_plane_sensor_description    // i18n key for position sensor configuration
-image=menuimages/placeholder.png                                                                 // Inductive sensor schema
-
-[Sostituzione e regolazione tastatore]                   // Tool probe replacement and calibration
-// === CAMERA AND LIGHTS CONFIGURATION ===
-CameraPos=(6, 8, 9)                                      // Optimal view for probe access
-CameraTarget=(0, 0, 0)                                   // Center probe area
-AmbientLight=0x404040,1.5                                // Light for precision components
-DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Illumination for delicate operations
-BackLight=0xffffff,1.0,(-7, 15, 7)                       // Light for detail visibility
-// === SCENARIO INFORMATION ===
-description=Non Attivato
-description_key=scenario_probe_replacement_description    // i18n key for replacement and measurement system recalibration
-image=menuimages/placeholder.png                                                                 // Tool probec
