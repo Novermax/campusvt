@@ -1,0 +1,43 @@
+Requisito di priorità degli eventi touch – versione mobile
+
+Nella versione mobile dell’applicazione la gestione del single tap deve seguire una logica di priorità.
+
+Regola principale:
+
+Il singolo tocco deve prioritariamente:
+
+eseguire l’azione
+
+oppure triggerare un pulsante
+
+oppure interagire con un elemento 3D attivo
+
+Non deve ricalcolare il punto di vista se il tocco intercetta uno di questi elementi.
+
+Ricalcolo del punto di vista:
+
+Il cambio / ricalcolo della vista deve avvenire solo se:
+
+il tap non intercetta alcun pulsante
+
+né un trigger
+
+né un elemento 3D interattivo
+
+In pratica, il tap viene interpretato come “manipolazione della vista” solo come fallback.
+
+Logica di dispatch consigliata (concettuale):
+
+Hit-test su UI interattiva (pulsanti, legenda, trigger)
+
+Hit-test su elementi 3D azionabili
+
+Solo se entrambi falliscono, interpretare il tap come comando di camera / vista
+
+Vincoli:
+
+Un solo evento per singolo tap
+
+Nessun comportamento cumulativo (es. azione + cambio vista)
+
+Comportamento coerente su tutti i dispositivi mobile

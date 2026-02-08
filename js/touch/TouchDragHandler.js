@@ -2,11 +2,16 @@
  * TouchDragHandler - Gestione drag & drop oggetti 3D via touch
  *
  * Responsabilità:
- * - Single tap su oggetto → Selezione + pivot camera su centro
- * - Double tap su oggetto → Esegue azione del tool selezionato
+ * - Single tap su oggetto → PRIORITÀ: Esegui azione tutorial SE presente, ALTRIMENTI pivot camera
+ * - Double tap su oggetto → Esegue azione del tool selezionato (ridondante con singolo tap)
  * - Drag 1 dito su oggetto (con tool Mano) → Presa, movimento, rilascio
  *
- * @version 1.0.0
+ * Logica Priorità Single Tap (fix 8 Febbraio 2026):
+ * 1. Se oggetto è Elemento tutorial con azioni → Esegui SOLO azione (NO pivot camera)
+ * 2. Se oggetto NON ha azioni tutorial → Esegui SOLO pivot camera (NO azioni)
+ * Vincolo: UN SOLO evento per tap, nessun comportamento cumulativo (azione + vista)
+ *
+ * @version 1.1.0
  * @date Febbraio 2026
  */
 
@@ -44,7 +49,7 @@ window.TouchDragHandler = {
     },
 
     // ═══════════════════════════════════════════════════════════
-    // TAP - SELEZIONE E PIVOT
+    // TAP - SELEZIONE E PIVOT (CON PRIORITÀ)
     // ═══════════════════════════════════════════════════════════
 
     handleTap: function(event, target, hitPoint) {
@@ -52,22 +57,35 @@ window.TouchDragHandler = {
 
         console.log('[TouchDragHandler] TAP su oggetto:', target.name);
 
-        // 1. Evidenzia oggetto selezionato
-        this.highlightObject(target);
+        // Trova il modello root per verificare se è elemento tutorial
+        const rootModel = this.findRootModel(target);
 
-        // 2. Calcola centro bounding box per pivot
-        const boundingBox = new THREE.Box3().setFromObject(target);
-        const center = boundingBox.getCenter(new THREE.Vector3());
+        // PRIORITÀ 1: Verifica se questo oggetto ha un'azione tutorial associata
+        const hasTutorialAction = this.hasTutorialAction(rootModel);
 
-        // 3. Anima camera verso il centro come pivot
-        this.animateCameraToPivot(center);
+        if (hasTutorialAction) {
+            // ✅ PRIORITÀ ALTA: Esegui SOLO azione tutorial, NON muovere camera
+            console.log('[TouchDragHandler] 🎯 Azione tutorial rilevata → Eseguo azione SENZA pivot camera');
 
-        // 4. ESEGUI AZIONE TOOL - Singolo tap ora esegue l'azione
-        const activeTool = this.getActiveTool();
-        console.log('[TouchDragHandler] Tool attivo:', activeTool);
-        this.executeToolAction(target, hitPoint, activeTool);
+            const activeTool = this.getActiveTool();
+            this.executeToolAction(target, hitPoint, activeTool);
 
-        // 5. Notifica UI della selezione (se necessario)
+        } else {
+            // ✅ FALLBACK: Esegui SOLO pivot camera, NO azioni
+            console.log('[TouchDragHandler] 📷 Nessuna azione → Eseguo SOLO pivot camera');
+
+            // 1. Evidenzia oggetto selezionato (feedback visivo)
+            this.highlightObject(target);
+
+            // 2. Calcola centro bounding box per pivot
+            const boundingBox = new THREE.Box3().setFromObject(target);
+            const center = boundingBox.getCenter(new THREE.Vector3());
+
+            // 3. Anima camera verso il centro come pivot
+            this.animateCameraToPivot(center);
+        }
+
+        // Notifica UI della selezione (se necessario)
         if (window.UI && window.UI.onObjectSelected) {
             window.UI.onObjectSelected(target);
         }
@@ -287,6 +305,47 @@ window.TouchDragHandler = {
     // ═══════════════════════════════════════════════════════════
     // UTILITY
     // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Verifica se l'oggetto ha un'azione tutorial associata
+     * (ovvero se è l'Elemento dello step corrente con azioni configurate)
+     */
+    hasTutorialAction: function(object) {
+        if (!object) return false;
+
+        // Verifica se c'è un tutorial attivo
+        if (!window.UI || !window.UI.tutorialSteps || window.UI.currentStepIndex < 0) {
+            return false; // Nessun tutorial attivo
+        }
+
+        // Ottieni step corrente
+        const currentStep = window.UI.tutorialSteps[window.UI.currentStepIndex];
+        if (!currentStep || !currentStep.properties) {
+            return false;
+        }
+
+        // Verifica se l'oggetto è l'Elemento dello step
+        const elementName = currentStep.properties.Elemento;
+        if (!elementName) {
+            return false; // Step senza Elemento
+        }
+
+        // Normalizza nomi per confronto (rimuovi estensione)
+        const normalizedElement = elementName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+        const normalizedObjectName = object.name.replace(/\.(glb|gltf|obj|stl)$/i, '');
+
+        if (normalizedElement !== normalizedObjectName) {
+            return false; // Oggetto diverso dall'Elemento
+        }
+
+        // Verifica se ci sono azioni configurate (Azione1, Azione2, etc.)
+        const hasActions = currentStep.properties.Azione1 ||
+                          currentStep.properties.Azione2 ||
+                          currentStep.properties.Azione3 ||
+                          currentStep.properties.Utensile; // Anche Utensile implica azione
+
+        return !!hasActions;
+    },
 
     /**
      * Verifica se il tool è di tipo "mano"

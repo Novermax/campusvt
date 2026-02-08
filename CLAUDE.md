@@ -4885,13 +4885,15 @@ Handler specifici (Camera, Drag, UI, Interactive3D)
 
 | Gesture | Dita | Azione |
 |---------|------|--------|
-| Tap | 1 | Selezione oggetto + pivot camera + **esegui azione tool corrente** |
-| Double Tap | 1 | Esegui azione tool corrente sull'oggetto (stesso comportamento di Tap singolo) |
+| Tap | 1 | **PRIORITÀ**: Se oggetto ha azione tutorial → esegui SOLO azione (NO pivot). Altrimenti → esegui SOLO pivot camera (NO azione) ⭐ |
+| Double Tap | 1 | Esegui azione tool corrente sull'oggetto (se disponibile) |
 | Drag | 1 | Drag & drop oggetto (con tool Mano attivo) |
 | Pinch | 2 | Zoom camera (avanti/indietro) |
 | Drag 2 dita | 2 | Rotazione camera orbitale |
 | Tap 2 dita | 2 | Set pivot camera su punto medio |
 | Double Tap 2 dita | 2 | Set pivot camera su punto medio (alternativo) |
+
+**⭐ Vincolo Single Tap (Fix 8 Febbraio 2026)**: UN SOLO evento per tap, mai comportamento cumulativo (azione + vista). Rispetta priorità: Azione > Vista.
 
 ### Priorita' Layer Routing
 
@@ -4903,6 +4905,61 @@ Handler specifici (Camera, Drag, UI, Interactive3D)
 ```
 
 Il router verifica dalla priorita' piu' alta alla piu' bassa quale handler puo' gestire l'evento.
+
+### 🎯 Logica Priorità Single Tap (Fix 8 Febbraio 2026)
+
+**Problema Originale**: Il sistema touch eseguiva **SIA** azione tool **SIA** pivot camera contemporaneamente, violando il vincolo "un solo evento per tap" richiesto dal design mobile.
+
+**Requisito** (da `problema_touch 2.txt`):
+```
+Priorità eventi touch mobile:
+1. Esegui azione/pulsante/trigger → NO cambio vista
+2. Se nessun elemento interattivo → Cambio vista/pivot camera → NO azioni
+Vincolo: UN SOLO evento per singolo tap, nessun comportamento cumulativo
+```
+
+**Implementazione Fix**:
+
+```javascript
+// TouchDragHandler.handleTap() - Logica condizionale
+handleTap(event, target, hitPoint) {
+    const rootModel = this.findRootModel(target);
+    const hasTutorialAction = this.hasTutorialAction(rootModel);
+
+    if (hasTutorialAction) {
+        // ✅ PRIORITÀ ALTA: Esegui SOLO azione
+        this.executeToolAction(target, hitPoint, activeTool);
+        // NO pivot camera
+    } else {
+        // ✅ FALLBACK: Esegui SOLO pivot camera
+        this.highlightObject(target);
+        this.animateCameraToPivot(center);
+        // NO azioni
+    }
+}
+
+// hasTutorialAction() - Verifica se oggetto è Elemento tutorial con azioni
+hasTutorialAction(object) {
+    // 1. Controlla tutorial attivo
+    // 2. Confronta nome oggetto con Elemento step corrente
+    // 3. Verifica presenza Azione1, Azione2, Azione3, Utensile
+    // 4. Ritorna true solo se tutte condizioni soddisfatte
+}
+```
+
+**Comportamento Risultante**:
+
+| Scenario | Tap su Oggetto | Comportamento |
+|----------|----------------|---------------|
+| Step con `Elemento=models/vite.glb` e `Azione1=svita` | Tap su `vite.glb` | ✅ Esegue SOLO svitamento (NO pivot camera) |
+| Step con `Elemento=models/vite.glb` e `Azione1=svita` | Tap su `coperchio.glb` | ✅ Esegue SOLO pivot camera su coperchio (NO azioni) |
+| Step senza Elemento | Tap su qualsiasi oggetto | ✅ Esegue SOLO pivot camera (NO azioni) |
+| Tutorial non attivo | Tap su qualsiasi oggetto | ✅ Esegue SOLO pivot camera (NO azioni) |
+
+**File Modificati**:
+- `js/touch/TouchDragHandler.js:1-14` - Documentazione v1.1.0
+- `js/touch/TouchDragHandler.js:50-85` - handleTap() con logica XOR
+- `js/touch/TouchDragHandler.js:297-340` - Metodo hasTutorialAction()
 
 ### Threshold Configurati
 
