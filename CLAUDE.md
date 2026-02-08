@@ -4380,24 +4380,24 @@ setTimeout(() => {
 - **v3**: Scroll 100px, helper 200vh, overflow toggle → ⚠️ Inaffidabile browser-dependent
 - **v4**: Modal + Fullscreen API → ✅ **SOLUZIONE DEFINITIVA**
 
-### Soluzione Definitiva v4 - Modal Fullscreen (8 Febbraio 2026)
+### Soluzione Definitiva v4 - Scroll Trick Automatico (8 Febbraio 2026)
 
-**Problema**: Scroll trick inaffidabile su browser mobile moderni
+**Problema**: Modal fullscreen invasivo per utenti mobile
 
-**Soluzione**: Modal che invita utente ad attivare Fullscreen API con tap
+**Soluzione**: Scroll trick automatico senza richiesta utente
 
 **Implementazione**:
 ```javascript
-// 1. Modal mostrato dopo 1s su mobile (solo prima volta)
-showFullscreenModalIfNeeded();
+// 1. Sistema rileva mobile automaticamente
+this.detectMobile();
 
-// 2. Utente clicca "Attiva Schermo Intero"
-requestFullscreen(); // Fullscreen API nativa
+// 2. Dopo 300ms, nasconde automaticamente la barra
+setTimeout(() => {
+    this.hideAddressBar();
+}, this.config.autoHideDelay);
 
-// 3. Preferenza salvata in localStorage
-localStorage.setItem('fullscreenPreference', 'accepted');
-
-// 4. Sessioni successive: fullscreen attivato automaticamente
+// 3. Scroll trick con elemento helper 200vh
+// 4. Fallback automatico senza interazione utente
 ```
 
 **Caratteristiche Modal**:

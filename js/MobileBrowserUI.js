@@ -58,10 +58,10 @@
             this.setupFullscreenAPI();
             this.setupFullscreenModal();
 
-            // Mostra modal fullscreen dopo breve delay (se non già rifiutato)
+            // Nascondi la barra automaticamente SENZA mostrare modal
             setTimeout(() => {
-                this.showFullscreenModalIfNeeded();
-            }, 1000);
+                this.hideAddressBar();
+            }, this.config.autoHideDelay);
 
             this.initialized = true;
             console.log('✅ [MobileBrowserUI] Sistema attivo');
