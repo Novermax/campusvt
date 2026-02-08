@@ -114,11 +114,11 @@ Rotazione=utensile:(0, 0, 0)
 # ═══════════════════════════════════════════════════════════════════════════
 
 [Manutenzione Elettromandrino - lubrificazione]
-CameraPos=(0.97,1.22,3.8)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.25, -0.01, 0)
+CameraPos=(0.97, 1.25, 3.92)
+CameraTarget=(0.97, 1.15, 3.52)
+CameraRotation=(-0.24, 0, 0)
 CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=1.24
+CameraDistance=0.42
 CameraFOV=75.0
 CameraTransitionTime=2.0
 
@@ -126,16 +126,12 @@ CameraTransitionTime=2.0
 [Step 1 - Vai alla schermata MDI]
 HighlightDescription=true
 Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
-CameraPos=(0.97,1.22,3.8)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.25, -0.01, 0)
+CameraPos=(0.97, 1.25, 3.92)
+CameraTarget=(0.97, 1.15, 3.52)
+CameraRotation=(-0.24, 0, 0)
 CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=1.24
-CameraFOV=55.0
-
-  Position: (0.96, 1.2, 3.8)
-
-
+CameraDistance=0.42
+CameraFOV=75.0
 CameraTransitionTime=2.0
 HighlightOpacity=0.5  # Leggera, quasi impercettibile
 # Trigger: click sul pulsante MDI
