@@ -48,7 +48,8 @@
       "Bash(for file in ANALISI_TUTORIAL.md CRITICITA_VITI.md FIX_AVVITAMENTO_VITI.md NUOVE_FUNZIONALITA_SNAPPOINTPIVOT.md TASK_FIX_SNAPPOINTPIVOT_MULTITARGET.md TASK_IMPLEMENTA_SNAPPOINTPIVOT.md TUTORIAL_REVERSE_COMPLETATO.md TUTORIAL_REVERSE_V2_MODIFICHE.md)",
       "Bash(tree:*)",
       "Bash(wc:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": [],
