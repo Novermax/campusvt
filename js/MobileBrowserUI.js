@@ -54,9 +54,14 @@
 
             // Setup
             this.setupViewportHeight();
-            this.hideAddressBar();
             this.setupOrientationChange();
             this.setupFullscreenAPI();
+            this.setupFullscreenModal();
+
+            // Mostra modal fullscreen dopo breve delay (se non già rifiutato)
+            setTimeout(() => {
+                this.showFullscreenModalIfNeeded();
+            }, 1000);
 
             this.initialized = true;
             console.log('✅ [MobileBrowserUI] Sistema attivo');
@@ -323,6 +328,99 @@
                 return this.exitFullscreen();
             } else {
                 return this.requestFullscreen();
+            }
+        },
+
+        /**
+         * Setup modal fullscreen
+         */
+        setupFullscreenModal: function() {
+            const modal = document.getElementById('fullscreenModal');
+            const activateBtn = document.getElementById('fullscreenActivateBtn');
+            const dismissBtn = document.getElementById('fullscreenDismissBtn');
+
+            if (!modal || !activateBtn || !dismissBtn) {
+                console.warn('[MobileBrowserUI] Elementi modal fullscreen non trovati');
+                return;
+            }
+
+            // Click su "Attiva Schermo Intero"
+            activateBtn.addEventListener('click', () => {
+                console.log('📱 [MobileBrowserUI] Utente ha richiesto fullscreen');
+
+                // Nascondi modal
+                this.hideFullscreenModal();
+
+                // Attiva fullscreen
+                if (this.requestFullscreen()) {
+                    // Salva preferenza
+                    localStorage.setItem('fullscreenPreference', 'accepted');
+                    console.log('✅ [MobileBrowserUI] Fullscreen attivato');
+                } else {
+                    console.warn('⚠️ [MobileBrowserUI] Fullscreen non disponibile');
+                }
+            });
+
+            // Click su "Continua così"
+            dismissBtn.addEventListener('click', () => {
+                console.log('📱 [MobileBrowserUI] Utente ha rifiutato fullscreen');
+
+                // Nascondi modal
+                this.hideFullscreenModal();
+
+                // Salva preferenza
+                localStorage.setItem('fullscreenPreference', 'dismissed');
+
+                // Fallback: prova comunque lo scroll trick
+                this.hideAddressBar();
+            });
+
+            console.log('✅ [MobileBrowserUI] Modal fullscreen configurato');
+        },
+
+        /**
+         * Mostra modal fullscreen se necessario
+         */
+        showFullscreenModalIfNeeded: function() {
+            // Controlla preferenza salvata
+            const preference = localStorage.getItem('fullscreenPreference');
+
+            if (preference === 'accepted' || preference === 'dismissed') {
+                console.log('[MobileBrowserUI] Preferenza fullscreen già salvata:', preference);
+
+                // Se già accettato in passato, attiva automaticamente
+                if (preference === 'accepted' && !this.isFullscreen) {
+                    this.requestFullscreen();
+                } else if (preference === 'dismissed') {
+                    // Se dismissato, prova scroll trick
+                    this.hideAddressBar();
+                }
+                return;
+            }
+
+            // Verifica supporto Fullscreen API
+            if (!this.fullscreenEnabled) {
+                console.log('[MobileBrowserUI] Fullscreen API non supportata, uso scroll trick');
+                this.hideAddressBar();
+                return;
+            }
+
+            // Mostra modal
+            const modal = document.getElementById('fullscreenModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                console.log('📱 [MobileBrowserUI] Modal fullscreen mostrato');
+            }
+        },
+
+        /**
+         * Nascondi modal fullscreen
+         */
+        hideFullscreenModal: function() {
+            const modal = document.getElementById('fullscreenModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                console.log('📱 [MobileBrowserUI] Modal fullscreen nascosto');
             }
         },
 
