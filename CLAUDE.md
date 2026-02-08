@@ -4334,9 +4334,38 @@ console.log(MobileBrowserUI.isMobile)      // true/false
 - ✅ **AutoMode Compatible**: Funziona insieme ad AutoMode senza conflitti
 - ✅ **TouchSystem Compatible**: CSS fix non interferisce con gesture touch
 
+### Fix Critici (8 Febbraio 2026)
+
+**Problema**: Barra indirizzi non scompariva dopo 300ms
+
+**Causa Root**: `overflow: hidden` sul body (base.css:74) impediva lo scroll, quindi `window.scrollTo(0, 1)` non funzionava
+
+**Soluzione Implementata**:
+```javascript
+// Crea elemento scrollabile temporaneo per bypassare overflow: hidden
+scrollHelper = document.createElement('div');
+scrollHelper.style.height = 'calc(100vh + 100px)'; // Permette scroll
+document.body.appendChild(scrollHelper);
+
+// Esegue scroll
+window.scrollTo(0, 1);
+
+// Rimuove elemento dopo 2 secondi
+setTimeout(() => scrollHelper.remove(), 2000);
+```
+
+**File Modificati**:
+- `js/MobileBrowserUI.js:83-130` - Metodo `hideAddressBar()` con scroll helper temporaneo
+- `js/MobileBrowserUI.js:140-167` - Metodo `setupOrientationChange()` cleanup helper
+- `index.html:614` - Versione v=1000002
+
+**Test Case Risolto**:
+- **PRIMA**: Barra indirizzi sempre visibile (overflow: hidden bloccava scroll)
+- **DOPO**: Barra scompare dopo 300ms + retry automatico ✅
+
 ---
 
-**Ultimo aggiornamento**: 7 Febbraio 2026 - Sistema MobileBrowserUI per Auto-Nascondimento Barra Navigazione completato
+**Ultimo aggiornamento**: 8 Febbraio 2026 - Fix critico overflow:hidden per auto-nascondimento barra mobile
 
 ---
 

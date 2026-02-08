@@ -83,9 +83,28 @@
         hideAddressBar: function() {
             let attempts = 0;
             const maxAttempts = this.config.retryAttempts;
+            let scrollHelper = null;
 
             const tryHide = () => {
                 attempts++;
+
+                // Crea elemento scrollabile temporaneo se non esiste
+                if (!scrollHelper) {
+                    scrollHelper = document.createElement('div');
+                    scrollHelper.id = 'mobile-scroll-helper';
+                    scrollHelper.style.cssText = `
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 1px;
+                        height: calc(100vh + 100px);
+                        pointer-events: none;
+                        visibility: hidden;
+                        z-index: -9999;
+                    `;
+                    document.body.appendChild(scrollHelper);
+                    console.log('📱 [MobileBrowserUI] Elemento scrollabile temporaneo creato');
+                }
 
                 // Scrolla di 1px per nascondere la barra
                 window.scrollTo(0, this.config.scrollAmount);
@@ -97,6 +116,14 @@
                     setTimeout(tryHide, this.config.retryDelay);
                 } else {
                     console.log('✅ [MobileBrowserUI] Barra navigazione nascosta');
+
+                    // Rimuovi elemento helper dopo 2 secondi
+                    setTimeout(() => {
+                        if (scrollHelper && scrollHelper.parentNode) {
+                            scrollHelper.parentNode.removeChild(scrollHelper);
+                            console.log('📱 [MobileBrowserUI] Elemento scrollabile temporaneo rimosso');
+                        }
+                    }, 2000);
                 }
             };
 
@@ -143,6 +170,12 @@
         setupOrientationChange: function() {
             const handleOrientationChange = () => {
                 console.log('📱 [MobileBrowserUI] Cambio orientamento rilevato');
+
+                // Rimuovi vecchio helper se esiste
+                const oldHelper = document.getElementById('mobile-scroll-helper');
+                if (oldHelper && oldHelper.parentNode) {
+                    oldHelper.parentNode.removeChild(oldHelper);
+                }
 
                 // Attendi che il browser completi il cambio orientamento
                 setTimeout(() => {
