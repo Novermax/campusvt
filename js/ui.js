@@ -4114,10 +4114,20 @@ window.UI = {
             }
         }
 
+        // ═══════════════════════════════════════════════════════════
+        // CAMERA: Calcola delay dinamico basato su CameraTransitionTime
+        // ═══════════════════════════════════════════════════════════
+        const cameraTransitionTime = step.properties.CameraTransitionTime_parsed ||
+                                    parseFloat(step.properties.CameraTransitionTime) ||
+                                    0.8; // Default 0.8s se non specificato
+        const transitionMs = cameraTransitionTime * 1000;
+
         // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente
         // NOTA: Non evidenziare se AutoExecute=true (l'utente non deve interagire)
         if (step.properties.Elemento && window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
             if (step.properties.AutoExecute !== 'true') {
+                console.log('📷 [UI] CameraTransitionTime:', cameraTransitionTime + 's (' + transitionMs + 'ms)');
+
                 // Piccolo delay per permettere che il modello sia caricato e visibile
                 setTimeout(() => {
                     window.Scene3D.highlightCurrentTutorialElement();
@@ -4125,8 +4135,10 @@ window.UI = {
                     // ═══════════════════════════════════════════════════════════
                     // CAMERA: Memorizza posizione camera DOPO che è stata impostata
                     // ═══════════════════════════════════════════════════════════
-                    // Delay lungo per dare tempo all'animazione camera di completarsi
-                    // highlightCurrentTutorialElement ha animazione ~800ms, quindi aspettiamo 1000ms
+                    // Delay = transitionMs + 300ms (margine sicurezza)
+                    const cameraDelay = transitionMs + 300;
+                    console.log('📷 [UI] Attesa completamento transizione camera:', cameraDelay + 'ms');
+
                     setTimeout(() => {
                         if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
                             this.stepCameraState = window.Scene3D.getCameraInfo();
@@ -4136,29 +4148,36 @@ window.UI = {
                             // Mostra pulsante reset camera
                             this.showResetCameraButton();
                         }
-                    }, 1000);
+                    }, cameraDelay);
                 }, 200);
             } else {
                 console.log(`[UI] 🤖 AutoExecute attivo - skip evidenziazione elemento`);
+                console.log('📷 [UI] CameraTransitionTime:', cameraTransitionTime + 's (' + transitionMs + 'ms)');
 
-                // Anche con AutoExecute, memorizza camera dopo delay maggiore
+                // Anche con AutoExecute, memorizza camera dopo transizione completa
+                const cameraDelay = transitionMs + 500;
+                console.log('📷 [UI] Attesa completamento transizione camera (AutoExecute):', cameraDelay + 'ms');
+
                 setTimeout(() => {
                     if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
                         this.stepCameraState = window.Scene3D.getCameraInfo();
                         console.log('📷 [UI] Posizione camera memorizzata per step (AutoExecute):', step.title);
                         this.showResetCameraButton();
                     }
-                }, 1200);
+                }, cameraDelay);
             }
         } else {
-            // Nessun elemento da evidenziare, memorizza comunque camera corrente
+            // Nessun elemento da evidenziare, ma potrebbe esserci cambio camera configurato
+            const cameraDelayNoElement = transitionMs + 300;
+            console.log('📷 [UI] Nessun elemento, CameraTransitionTime:', cameraTransitionTime + 's (' + cameraDelayNoElement + 'ms)');
+
             setTimeout(() => {
                 if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
                     this.stepCameraState = window.Scene3D.getCameraInfo();
                     console.log('📷 [UI] Posizione camera memorizzata per step (nessun elemento):', step.title);
                     this.showResetCameraButton();
                 }
-            }, 500);
+            }, cameraDelayNoElement);
         }
 
         // NOTA: updateStepSpeechBubble() NON chiamato qui - già chiamato da goToStep()
