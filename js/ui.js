@@ -166,6 +166,15 @@ window.UI = {
             AppConfig.log(3, 'Event listener click fumetto configurato (solo mobile)');
         }
 
+        // Event listener per pulsante reset camera step
+        const resetCameraBtn = document.getElementById('resetCameraBtn');
+        if (resetCameraBtn) {
+            resetCameraBtn.addEventListener('click', () => {
+                this.resetCameraToStepPosition();
+            });
+            AppConfig.log(3, 'Event listener pulsante reset camera configurato');
+        }
+
         AppConfig.log(3, 'Event listeners configurati');
     },
     
@@ -325,6 +334,7 @@ window.UI = {
         this.availableTutorials = [];
         this.currentTutorial = null;
         this.currentStepIndex = 0;
+        this.stepCameraState = null; // Posizione camera dello step corrente
 
         // Reset stato scenario
         this.currentScenario = null;
@@ -332,6 +342,9 @@ window.UI = {
         // Nasconde la barra tutorial e il fumetto
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
+
+        // Nasconde pulsante reset camera
+        this.hideResetCameraButton();
 
         // Nascondi modal congratulazioni se presente
         const congratsModal = document.querySelector('.congratulations-modal');
@@ -4108,10 +4121,43 @@ window.UI = {
                 // Piccolo delay per permettere che il modello sia caricato e visibile
                 setTimeout(() => {
                     window.Scene3D.highlightCurrentTutorialElement();
+
+                    // ═══════════════════════════════════════════════════════════
+                    // CAMERA: Memorizza posizione camera DOPO che è stata impostata
+                    // ═══════════════════════════════════════════════════════════
+                    // Delay maggiore per dare tempo alla camera di essere posizionata
+                    setTimeout(() => {
+                        if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
+                            this.stepCameraState = window.Scene3D.getCameraInfo();
+                            console.log('📷 [UI] Posizione camera memorizzata per step:', step.title);
+                            console.log('📷 [UI] Camera state:', this.stepCameraState);
+
+                            // Mostra pulsante reset camera
+                            this.showResetCameraButton();
+                        }
+                    }.bind(this), 200);
                 }, 100);
             } else {
                 console.log(`[UI] 🤖 AutoExecute attivo - skip evidenziazione elemento`);
+
+                // Anche con AutoExecute, memorizza camera dopo delay
+                setTimeout(() => {
+                    if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
+                        this.stepCameraState = window.Scene3D.getCameraInfo();
+                        console.log('📷 [UI] Posizione camera memorizzata per step (AutoExecute):', step.title);
+                        this.showResetCameraButton();
+                    }
+                }.bind(this), 300);
             }
+        } else {
+            // Nessun elemento da evidenziare, memorizza comunque camera corrente
+            setTimeout(() => {
+                if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
+                    this.stepCameraState = window.Scene3D.getCameraInfo();
+                    console.log('📷 [UI] Posizione camera memorizzata per step (nessun elemento):', step.title);
+                    this.showResetCameraButton();
+                }
+            }.bind(this), 100);
         }
 
         // NOTA: updateStepSpeechBubble() NON chiamato qui - già chiamato da goToStep()
@@ -5183,6 +5229,71 @@ window.UI = {
         console.log(`\n💡 Usa UI.jumpToStep(N) per saltare a uno specifico step`);
 
         return matches;
+    },
+
+    /* ═══════════════════════════════════════════════════════════════
+     * GESTIONE PULSANTE RESET CAMERA STEP
+     * ═══════════════════════════════════════════════════════════════ */
+
+    /**
+     * Mostra il pulsante reset camera
+     */
+    showResetCameraButton: function() {
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            btn.classList.remove('hidden');
+            console.log('📷 [UI] Pulsante reset camera mostrato');
+        }
+    },
+
+    /**
+     * Nasconde il pulsante reset camera
+     */
+    hideResetCameraButton: function() {
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            btn.classList.add('hidden');
+            console.log('📷 [UI] Pulsante reset camera nascosto');
+        }
+    },
+
+    /**
+     * Ripristina la camera alla posizione iniziale dello step corrente
+     */
+    resetCameraToStepPosition: function() {
+        if (!this.stepCameraState) {
+            console.warn('⚠️ [UI] Nessuna posizione camera salvata per questo step');
+            return false;
+        }
+
+        if (!window.Scene3D || typeof window.Scene3D.setCameraFromInfo !== 'function') {
+            console.error('❌ [UI] Scene3D.setCameraFromInfo non disponibile');
+            return false;
+        }
+
+        // Ripristina camera alla posizione memorizzata
+        window.Scene3D.setCameraFromInfo({
+            position: this.stepCameraState.position,
+            rotation: this.stepCameraState.rotation,
+            pivot: this.stepCameraState.pivot,
+            distance: this.stepCameraState.distance,
+            fov: this.stepCameraState.fov,
+            animate: true,
+            duration: 0.8
+        });
+
+        console.log('📷 [UI] Camera ripristinata alla posizione iniziale dello step');
+
+        // Animazione pulsante per feedback visivo
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            btn.classList.add('animating');
+            setTimeout(() => {
+                btn.classList.remove('animating');
+            }, 600);
+        }
+
+        return true;
     }
 };
 

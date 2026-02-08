@@ -5025,3 +5025,88 @@ TouchSystem.destroy()                // Rimuove tutti i listener
 ---
 
 **Ultimo aggiornamento**: 5 Febbraio 2026 - Sistema TouchSystem con integrazione DragDropSystem completato
+
+---
+
+## 📷 Sistema Reset Camera Step (Febbraio 2026)
+
+**Funzionalità**: Pulsante per ripristinare la camera alla posizione iniziale dello step corrente del tutorial
+
+### Problema Risolto
+- **Utente si perde**: Durante il tutorial, l'utente ruota/zoom/pan la camera e perde la vista ottimale
+- **Difficoltà ritrovare posizione**: Nessun modo rapido per tornare alla vista configurata nello step
+- **Soluzione**: Pulsante sempre visibile che resetta la camera alla posizione iniziale dello step
+
+### Implementazione
+
+**Pulsante UI** - Posizionato in alto al centro dello schermo, sopra tutto (z-index: 9700)
+
+**Workflow**:
+```javascript
+// 1. Step viene eseguito
+executeStep(step) {
+    // ... imposta camera per elemento (highlightCurrentTutorialElement)
+
+    // DOPO che camera è posizionata (delay 300ms):
+    this.stepCameraState = Scene3D.getCameraInfo();
+    this.showResetCameraButton();
+}
+
+// 2. Click pulsante → Reset camera
+resetCameraToStepPosition() {
+    Scene3D.setCameraFromInfo({
+        ...this.stepCameraState,
+        animate: true,
+        duration: 0.8
+    });
+}
+
+// 3. Torna home → Nasconde pulsante
+goHome() {
+    this.hideResetCameraButton();
+}
+```
+
+**Timing Memorizzazione** (IMPORTANTE):
+- Con `Elemento`: 100ms (highlight) + 200ms (memorizzazione) = **300ms totale**
+- Con `AutoExecute`: **300ms** diretti
+- Senza `Elemento`: **100ms**
+
+Questo garantisce che la camera sia posizionata PRIMA della memorizzazione.
+
+**Camera State Salvato**:
+- `position: { x, y, z }`
+- `rotation: { x, y, z }`
+- `pivot: { x, y, z }`
+- `distance: number`
+- `fov: number`
+
+### File Modificati
+
+1. **index.html:348-365** - HTML pulsante con SVG camera
+2. **css/components.css:1710-1833** - Stili + animazioni + responsive
+3. **js/ui.js:328** - Variabile `stepCameraState`
+4. **js/ui.js:162-172** - Event listener pulsante
+5. **js/ui.js:4135-4160** - Memorizzazione camera DOPO highlight (fix timing)
+6. **js/ui.js:336** - Nasconde pulsante in goHome
+7. **js/ui.js:5189-5253** - Metodi show/hide/reset camera
+
+### Caratteristiche
+
+- ✅ **Memorizzazione Automatica**: Ad ogni step
+- ✅ **Animazione Smooth**: Transizione 0.8s
+- ✅ **Responsive**: Solo icona su mobile < 480px
+- ✅ **Accessibile**: ARIA labels, min-height 44px touch
+
+### API Console
+
+```javascript
+UI.showResetCameraButton()      // Mostra pulsante
+UI.hideResetCameraButton()      // Nasconde pulsante
+UI.resetCameraToStepPosition()  // Reset camera
+console.log(UI.stepCameraState) // Verifica stato
+```
+
+---
+
+**Ultimo aggiornamento**: 8 Febbraio 2026 - Sistema Reset Camera Step implementato

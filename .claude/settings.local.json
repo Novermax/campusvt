@@ -47,7 +47,8 @@
       "Bash(for file in debug_original_positions.html sync_test.html test_debug_fix.html test_drag_enable.html test_interchangeable_snap.html test_refactoring.html test_riassemblaggio_fix.html test_simplified_assembly.html)",
       "Bash(for file in ANALISI_TUTORIAL.md CRITICITA_VITI.md FIX_AVVITAMENTO_VITI.md NUOVE_FUNZIONALITA_SNAPPOINTPIVOT.md TASK_FIX_SNAPPOINTPIVOT_MULTITARGET.md TASK_IMPLEMENTA_SNAPPOINTPIVOT.md TUTORIAL_REVERSE_COMPLETATO.md TUTORIAL_REVERSE_V2_MODIFICHE.md)",
       "Bash(tree:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": [],

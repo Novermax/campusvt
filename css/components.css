@@ -1704,6 +1704,119 @@ body.tool-brugola-active [role="button"] {
 }
 
 /* ============================================================================
+   PULSANTE RESET CAMERA STEP
+   ============================================================================ */
+
+.reset-camera-btn {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9700;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    transition: all 0.3s ease;
+
+    /* Impedisci selezione testo */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.reset-camera-btn.hidden {
+    display: none;
+}
+
+.reset-camera-btn:hover,
+.reset-camera-btn:focus {
+    background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.reset-camera-btn:active {
+    transform: translateX(-50%) translateY(0);
+    box-shadow: 0 2px 10px rgba(52, 152, 219, 0.4);
+}
+
+/* Icona camera SVG */
+.reset-camera-btn .camera-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Testo del pulsante */
+.reset-camera-btn .camera-text {
+    white-space: nowrap;
+}
+
+/* Animazione quando viene cliccato */
+.reset-camera-btn.animating {
+    animation: cameraReset 0.6s ease;
+}
+
+@keyframes cameraReset {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.1); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .reset-camera-btn {
+        top: 10px;
+        padding: 8px 16px;
+        font-size: 12px;
+        border-radius: 20px;
+    }
+
+    .reset-camera-btn .camera-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Nascondi testo su schermi molto piccoli, mostra solo icona */
+    @media (max-width: 480px) {
+        .reset-camera-btn .camera-text {
+            display: none;
+        }
+
+        .reset-camera-btn {
+            padding: 10px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            justify-content: center;
+        }
+    }
+}
+
+/* Touch feedback per dispositivi mobili */
+@media (pointer: coarse) {
+    .reset-camera-btn {
+        min-height: 44px;
+    }
+
+    .reset-camera-btn:active {
+        background: linear-gradient(135deg, #21618c 0%, #1a4d6d 100%);
+    }
+}
+
+/* ============================================================================
    MODAL FULLSCREEN MOBILE
    ============================================================================ */
 

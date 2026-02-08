@@ -347,7 +347,22 @@
 
     <!-- ===== ELEMENTI UI OVERLAY ===== -->
     <!-- Elementi mostrati sopra tutto il resto -->
-    
+
+    <!-- ===== PULSANTE RESET CAMERA STEP ===== -->
+    <!-- Pulsante per ripristinare la camera alla posizione iniziale dello step -->
+    <button
+        id="resetCameraBtn"
+        class="reset-camera-btn hidden"
+        aria-label="Ripristina vista camera allo step corrente"
+        title="Ripristina vista camera"
+    >
+        <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+        <span class="camera-text">Reset Vista</span>
+    </button>
+
     <!-- ===== LOADER ===== -->
     <!-- Indicatore di caricamento per operazioni lunghe -->
     <div id="loader" class="hidden" role="dialog" aria-labelledby="loader-text" aria-modal="true">
