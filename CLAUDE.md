@@ -5068,11 +5068,11 @@ goHome() {
 ```
 
 **Timing Memorizzazione** (IMPORTANTE):
-- Con `Elemento`: 100ms (highlight) + 200ms (memorizzazione) = **300ms totale**
-- Con `AutoExecute`: **300ms** diretti
-- Senza `Elemento`: **100ms**
+- Con `Elemento`: 200ms (highlight) + 1000ms (memorizzazione) = **1200ms totale**
+- Con `AutoExecute`: **1200ms** diretti
+- Senza `Elemento`: **500ms**
 
-Questo garantisce che la camera sia posizionata PRIMA della memorizzazione.
+Questo garantisce che la camera sia posizionata PRIMA della memorizzazione. I delay permettono all'animazione camera di `highlightCurrentTutorialElement()` (~800ms) di completarsi prima del salvataggio.
 
 **Camera State Salvato**:
 - `position: { x, y, z }`
@@ -5087,7 +5087,7 @@ Questo garantisce che la camera sia posizionata PRIMA della memorizzazione.
 2. **css/components.css:1710-1833** - Stili + animazioni + responsive
 3. **js/ui.js:328** - Variabile `stepCameraState`
 4. **js/ui.js:162-172** - Event listener pulsante
-5. **js/ui.js:4135-4160** - Memorizzazione camera DOPO highlight (fix timing)
+5. **js/ui.js:4129-4161** - Memorizzazione camera DOPO highlight con timing corretto (1200ms)
 6. **js/ui.js:336** - Nasconde pulsante in goHome
 7. **js/ui.js:5189-5253** - Metodi show/hide/reset camera
 

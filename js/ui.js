@@ -4125,7 +4125,8 @@ window.UI = {
                     // ═══════════════════════════════════════════════════════════
                     // CAMERA: Memorizza posizione camera DOPO che è stata impostata
                     // ═══════════════════════════════════════════════════════════
-                    // Delay maggiore per dare tempo alla camera di essere posizionata
+                    // Delay lungo per dare tempo all'animazione camera di completarsi
+                    // highlightCurrentTutorialElement ha animazione ~800ms, quindi aspettiamo 1000ms
                     setTimeout(() => {
                         if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
                             this.stepCameraState = window.Scene3D.getCameraInfo();
@@ -4135,19 +4136,19 @@ window.UI = {
                             // Mostra pulsante reset camera
                             this.showResetCameraButton();
                         }
-                    }.bind(this), 200);
-                }, 100);
+                    }, 1000);
+                }, 200);
             } else {
                 console.log(`[UI] 🤖 AutoExecute attivo - skip evidenziazione elemento`);
 
-                // Anche con AutoExecute, memorizza camera dopo delay
+                // Anche con AutoExecute, memorizza camera dopo delay maggiore
                 setTimeout(() => {
                     if (window.Scene3D && typeof window.Scene3D.getCameraInfo === 'function') {
                         this.stepCameraState = window.Scene3D.getCameraInfo();
                         console.log('📷 [UI] Posizione camera memorizzata per step (AutoExecute):', step.title);
                         this.showResetCameraButton();
                     }
-                }.bind(this), 300);
+                }, 1200);
             }
         } else {
             // Nessun elemento da evidenziare, memorizza comunque camera corrente
@@ -4157,7 +4158,7 @@ window.UI = {
                     console.log('📷 [UI] Posizione camera memorizzata per step (nessun elemento):', step.title);
                     this.showResetCameraButton();
                 }
-            }.bind(this), 100);
+            }, 500);
         }
 
         // NOTA: updateStepSpeechBubble() NON chiamato qui - già chiamato da goToStep()
