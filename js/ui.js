@@ -329,7 +329,14 @@ window.UI = {
             AppConfig.log(3, '[goHome] HoldableSystem resettato');
         }
 
-        // === FASE 7: RESET STATO TUTORIAL ===
+        // === FASE 7: RESET EVIDENZIAZIONI PULSANTI ===
+        // Rimuovi cerchi gialli lampeggianti dai pulsanti evidenziati
+        if (window.InteractiveObject3D && window.InteractiveObject3D.clearButtonHighlights) {
+            window.InteractiveObject3D.clearButtonHighlights();
+            AppConfig.log(3, '[goHome] Evidenziazioni pulsanti rimosse');
+        }
+
+        // === FASE 8: RESET STATO TUTORIAL ===
         this.tutorialSteps = [];
         this.availableTutorials = [];
         this.currentTutorial = null;
@@ -360,7 +367,7 @@ window.UI = {
 
         AppConfig.log(3, '[goHome] Stato tutorial resettato');
 
-        // === FASE 8: MOSTRA HOME PAGE ===
+        // === FASE 9: MOSTRA HOME PAGE ===
         this.updateStatus('Home');
         this.showPage('home');
 
@@ -4518,6 +4525,8 @@ window.UI = {
         const bubble = document.getElementById('stepSpeechBubble');
         if (bubble) {
             bubble.classList.remove('hidden');
+            // Rimuovi inline style se presente
+            bubble.style.display = '';
         }
     },
     
@@ -4527,7 +4536,16 @@ window.UI = {
     hideStepSpeechBubble: function() {
         const bubble = document.getElementById('stepSpeechBubble');
         if (bubble) {
+            // Rimuovi tutte le classi di animazione che potrebbero interferire
+            bubble.classList.remove('flash', 'pulse', 'dramatic-intro');
+
+            // Aggiungi classe hidden
             bubble.classList.add('hidden');
+
+            // Force inline style per extra sicurezza
+            bubble.style.display = 'none';
+
+            console.log('💬 [UI] Fumetto step nascosto');
         }
     },
     
@@ -5262,6 +5280,8 @@ window.UI = {
         const btn = document.getElementById('resetCameraBtn');
         if (btn) {
             btn.classList.remove('hidden');
+            // Rimuovi inline style se presente
+            btn.style.display = '';
             console.log('📷 [UI] Pulsante reset camera mostrato');
         }
     },
@@ -5272,7 +5292,15 @@ window.UI = {
     hideResetCameraButton: function() {
         const btn = document.getElementById('resetCameraBtn');
         if (btn) {
+            // Rimuovi eventuali classi di animazione
+            btn.classList.remove('pulse');
+
+            // Aggiungi classe hidden
             btn.classList.add('hidden');
+
+            // Force inline style per extra sicurezza
+            btn.style.display = 'none';
+
             console.log('📷 [UI] Pulsante reset camera nascosto');
         }
     },
