@@ -4340,28 +4340,44 @@ console.log(MobileBrowserUI.isMobile)      // true/false
 
 **Causa Root**: `overflow: hidden` sul body (base.css:74) impediva lo scroll, quindi `window.scrollTo(0, 1)` non funzionava
 
-**Soluzione Implementata**:
+**Soluzione Implementata (v3 - Aggressiva)**:
 ```javascript
-// Crea elemento scrollabile temporaneo per bypassare overflow: hidden
+// 1. Salva overflow originale e rimuovi temporaneamente overflow: hidden
+const originalOverflow = document.body.style.overflow;
+document.body.style.overflow = 'auto';
+
+// 2. Crea elemento scrollabile temporaneo (200vh)
 scrollHelper = document.createElement('div');
-scrollHelper.style.height = 'calc(100vh + 100px)'; // Permette scroll
+scrollHelper.style.height = '200vh'; // Altezza maggiorata
+scrollHelper.style.position = 'relative'; // Non absolute
 document.body.appendChild(scrollHelper);
 
-// Esegue scroll
-window.scrollTo(0, 1);
+// 3. Esegue scroll più significativo (100px invece di 1px)
+window.scrollTo(0, 100);
 
-// Rimuove elemento dopo 2 secondi
-setTimeout(() => scrollHelper.remove(), 2000);
+// 4. Rimuove elemento e ripristina overflow dopo 2 secondi
+setTimeout(() => {
+    document.body.style.overflow = originalOverflow;
+    scrollHelper.remove();
+}, 2000);
 ```
 
-**File Modificati**:
-- `js/MobileBrowserUI.js:83-130` - Metodo `hideAddressBar()` con scroll helper temporaneo
-- `js/MobileBrowserUI.js:140-167` - Metodo `setupOrientationChange()` cleanup helper
-- `index.html:614` - Versione v=1000002
+**Parametri Ottimizzati**:
+- `scrollAmount`: 1px → **100px** (scroll più evidente per Safari iOS)
+- `height`: `100vh + 100px` → **200vh** (spazio scroll maggiore)
+- `position`: `absolute` → **relative** (compatibilità overflow)
+- **Rimozione temporanea** `overflow: hidden` durante scroll
 
-**Test Case Risolto**:
-- **PRIMA**: Barra indirizzi sempre visibile (overflow: hidden bloccava scroll)
-- **DOPO**: Barra scompare dopo 300ms + retry automatico ✅
+**File Modificati**:
+- `js/MobileBrowserUI.js:28-34` - Config `scrollAmount: 100`
+- `js/MobileBrowserUI.js:87-133` - Metodo `hideAddressBar()` con overflow toggle
+- `js/MobileBrowserUI.js:144-171` - Metodo `setupOrientationChange()` cleanup overflow
+- `index.html:614` - Versione v=1000003
+
+**Test Case**:
+- **v1**: Scroll 1px, helper 100vh → ❌ Non funziona (overflow: hidden blocca)
+- **v2**: Scroll 1px, helper 100vh + cleanup → ❌ Non funziona (scroll troppo piccolo)
+- **v3**: Scroll 100px, helper 200vh, overflow toggle → ✅ **Dovrebbe funzionare**
 
 ---
 

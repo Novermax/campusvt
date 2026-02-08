@@ -27,7 +27,7 @@
 
         config: {
             autoHideDelay: 300,        // Delay prima di nascondere barra (ms)
-            scrollAmount: 1,           // Pixel da scrollare per nascondere
+            scrollAmount: 100,         // Pixel da scrollare per nascondere (aumentato)
             fullscreenEnabled: true,   // Abilita fullscreen API
             retryAttempts: 3,          // Tentativi nascondimento barra
             retryDelay: 500            // Delay tra tentativi (ms)
@@ -90,26 +90,33 @@
 
                 // Crea elemento scrollabile temporaneo se non esiste
                 if (!scrollHelper) {
+                    // Salva overflow originale del body
+                    const originalOverflow = document.body.style.overflow;
+
+                    // Rimuovi temporaneamente overflow: hidden
+                    document.body.style.overflow = 'auto';
+
                     scrollHelper = document.createElement('div');
                     scrollHelper.id = 'mobile-scroll-helper';
                     scrollHelper.style.cssText = `
-                        position: absolute;
-                        top: 0;
-                        left: 0;
+                        position: relative;
                         width: 1px;
-                        height: calc(100vh + 100px);
+                        height: 200vh;
                         pointer-events: none;
                         visibility: hidden;
                         z-index: -9999;
                     `;
                     document.body.appendChild(scrollHelper);
-                    console.log('📱 [MobileBrowserUI] Elemento scrollabile temporaneo creato');
+                    console.log('📱 [MobileBrowserUI] Elemento scrollabile temporaneo creato (200vh)');
+
+                    // Salva overflow originale per ripristinarlo dopo
+                    scrollHelper.dataset.originalOverflow = originalOverflow || 'hidden';
                 }
 
-                // Scrolla di 1px per nascondere la barra
+                // Scrolla di 100px per nascondere la barra
                 window.scrollTo(0, this.config.scrollAmount);
 
-                console.log(`📱 [MobileBrowserUI] Tentativo ${attempts}/${maxAttempts} nascondimento barra`);
+                console.log(`📱 [MobileBrowserUI] Tentativo ${attempts}/${maxAttempts} nascondimento barra (scroll ${this.config.scrollAmount}px)`);
 
                 // Retry se necessario
                 if (attempts < maxAttempts) {
@@ -117,11 +124,15 @@
                 } else {
                     console.log('✅ [MobileBrowserUI] Barra navigazione nascosta');
 
-                    // Rimuovi elemento helper dopo 2 secondi
+                    // Rimuovi elemento helper e ripristina overflow dopo 2 secondi
                     setTimeout(() => {
                         if (scrollHelper && scrollHelper.parentNode) {
+                            // Ripristina overflow originale del body
+                            const originalOverflow = scrollHelper.dataset.originalOverflow || 'hidden';
+                            document.body.style.overflow = originalOverflow;
+
                             scrollHelper.parentNode.removeChild(scrollHelper);
-                            console.log('📱 [MobileBrowserUI] Elemento scrollabile temporaneo rimosso');
+                            console.log('📱 [MobileBrowserUI] Elemento scrollabile rimosso + overflow ripristinato');
                         }
                     }, 2000);
                 }
@@ -171,9 +182,11 @@
             const handleOrientationChange = () => {
                 console.log('📱 [MobileBrowserUI] Cambio orientamento rilevato');
 
-                // Rimuovi vecchio helper se esiste
+                // Rimuovi vecchio helper se esiste e ripristina overflow
                 const oldHelper = document.getElementById('mobile-scroll-helper');
                 if (oldHelper && oldHelper.parentNode) {
+                    const originalOverflow = oldHelper.dataset.originalOverflow || 'hidden';
+                    document.body.style.overflow = originalOverflow;
                     oldHelper.parentNode.removeChild(oldHelper);
                 }
 
