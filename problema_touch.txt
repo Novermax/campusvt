@@ -1,0 +1,40 @@
+Problema di gestione del touch nella versione mobile
+
+Nella versione mobile dell’applicazione sono presenti problemi nella gestione degli eventi touch.
+
+Il sistema non reagisce al singolo tocco né sugli elementi soggetti all’azione (elementi interattivi della scena), né sul pulsante che dovrebbe fungere da trigger dell’azione.
+
+Requisito corretto:
+
+L’interazione deve avvenire tramite singolo tap
+
+Il tap sull’elemento target deve essere sufficiente a:
+
+selezionare l’elemento
+
+attivare l’azione associata
+senza richiedere tocchi aggiuntivi
+
+Comportamento attuale:
+
+Tap sull’elemento target → nessuna risposta
+
+Tap sul pulsante trigger → nessuna risposta
+
+Controlli già verificati:
+
+Il touch sulla legenda dei tools funziona correttamente
+
+Il pulsante “reset vista” funziona correttamente
+
+Conclusione tecnica:
+
+Il problema non riguarda il sistema touch nel suo complesso
+
+Gli eventi touch risultano non intercettati (o ignorati) solo per:
+
+elementi della scena
+
+pulsanti coinvolti nel flusso azione/trigger
+
+È probabile un problema di binding degli eventi, hit-testing o gestione dei pointer events limitata a questi componenti

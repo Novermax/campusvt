@@ -4885,8 +4885,8 @@ Handler specifici (Camera, Drag, UI, Interactive3D)
 
 | Gesture | Dita | Azione |
 |---------|------|--------|
-| Tap | 1 | Selezione oggetto + pivot camera su centro BB |
-| Double Tap | 1 | Esegui azione tool corrente sull'oggetto |
+| Tap | 1 | Selezione oggetto + pivot camera + **esegui azione tool corrente** |
+| Double Tap | 1 | Esegui azione tool corrente sull'oggetto (stesso comportamento di Tap singolo) |
 | Drag | 1 | Drag & drop oggetto (con tool Mano attivo) |
 | Pinch | 2 | Zoom camera (avanti/indietro) |
 | Drag 2 dita | 2 | Rotazione camera orbitale |

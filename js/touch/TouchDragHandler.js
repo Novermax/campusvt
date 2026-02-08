@@ -62,7 +62,12 @@ window.TouchDragHandler = {
         // 3. Anima camera verso il centro come pivot
         this.animateCameraToPivot(center);
 
-        // 4. Notifica UI della selezione (se necessario)
+        // 4. ESEGUI AZIONE TOOL - Singolo tap ora esegue l'azione
+        const activeTool = this.getActiveTool();
+        console.log('[TouchDragHandler] Tool attivo:', activeTool);
+        this.executeToolAction(target, hitPoint, activeTool);
+
+        // 5. Notifica UI della selezione (se necessario)
         if (window.UI && window.UI.onObjectSelected) {
             window.UI.onObjectSelected(target);
         }
