@@ -2007,3 +2007,118 @@ body.tool-brugola-active [role="button"] {
         padding: 12px 20px;
     }
 }
+/* ═══════════════════════════════════════════════════════════
+   OVERLAY SELEZIONE TUTORIAL
+   ═══════════════════════════════════════════════════════════ */
+
+.tutorial-selection-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.tutorial-selection-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tutorial-selection-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+    margin-bottom: 1rem;
+    animation: fadeInScale 0.6s ease-out;
+}
+
+.tutorial-selection-subtitle {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.tutorial-selection-arrow {
+    font-size: 3rem;
+    color: #4CAF50;
+    margin-top: 1rem;
+    animation: bounceDown 1.5s ease-in-out infinite;
+}
+
+/* Animazione pulsazione pulsanti tutorial */
+@keyframes tutorialPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 20px 10px rgba(33, 150, 243, 0);
+    }
+}
+
+.step-indicator.pulse-tutorial {
+    animation: tutorialPulse 1s ease-in-out 2;
+    position: relative;
+    z-index: 10000;
+}
+
+/* Animazioni overlay */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounceDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(20px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tutorial-selection-title {
+        font-size: 1.8rem;
+        padding: 0 1rem;
+    }
+
+    .tutorial-selection-subtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .tutorial-selection-arrow {
+        font-size: 2rem;
+    }
+}

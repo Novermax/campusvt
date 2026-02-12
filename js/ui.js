@@ -2150,7 +2150,12 @@ window.UI = {
                 this.createTutorialStepsBar();
                 this.showTutorialStepsBar();
                 // NON chiamare updateStepSpeechBubble() - il fumetto rimane nascosto
-                
+
+                // ✨ Mostra overlay selezione tutorial con pulsanti pulsanti
+                setTimeout(() => {
+                    this.showTutorialSelectionOverlay();
+                }, 500); // Delay 500ms per permettere animazione barra tutorial
+
                 AppConfig.log(2, `Tutorial disponibili: ${this.availableTutorials.length} - Camera impostata dal primo tutorial`);
             } else {
                 this.hideStepSpeechBubble(); // Nasconde il fumetto se non ci sono tutorial
@@ -5342,6 +5347,67 @@ window.UI = {
         }
 
         return true;
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // OVERLAY SELEZIONE TUTORIAL
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Mostra overlay "Seleziona un Tutorial" con pulsanti pulsanti
+     */
+    showTutorialSelectionOverlay: function() {
+        const overlay = document.getElementById('tutorialSelectionOverlay');
+        if (!overlay) {
+            console.warn('⚠️ Overlay selezione tutorial non trovato');
+            return;
+        }
+
+        // Mostra overlay
+        overlay.classList.add('show');
+        console.log('📚 [UI] Overlay selezione tutorial mostrato');
+
+        // Aggiungi animazione pulse ai pulsanti tutorial (step-indicator blu)
+        const tutorialButtons = document.querySelectorAll('.step-indicator');
+        tutorialButtons.forEach(btn => {
+            btn.classList.add('pulse-tutorial');
+        });
+
+        // Rimuovi animazione pulse dopo 2 secondi (2 cicli completi)
+        setTimeout(() => {
+            tutorialButtons.forEach(btn => {
+                btn.classList.remove('pulse-tutorial');
+            });
+            console.log('✅ [UI] Animazione pulse pulsanti completata');
+        }, 2000);
+
+        // Nascondi overlay automaticamente dopo 5 secondi
+        setTimeout(() => {
+            this.hideTutorialSelectionOverlay();
+        }, 5000);
+
+        // Nascondi overlay al click su qualsiasi pulsante tutorial
+        tutorialButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.hideTutorialSelectionOverlay();
+            }, { once: true }); // Solo una volta
+        });
+
+        // Nascondi overlay al click sull'overlay stesso
+        overlay.addEventListener('click', () => {
+            this.hideTutorialSelectionOverlay();
+        }, { once: true });
+    },
+
+    /**
+     * Nasconde overlay selezione tutorial
+     */
+    hideTutorialSelectionOverlay: function() {
+        const overlay = document.getElementById('tutorialSelectionOverlay');
+        if (!overlay) return;
+
+        overlay.classList.remove('show');
+        console.log('❌ [UI] Overlay selezione tutorial nascosto');
     }
 };
 
