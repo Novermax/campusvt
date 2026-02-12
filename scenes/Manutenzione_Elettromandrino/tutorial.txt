@@ -133,7 +133,7 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=0.42
 CameraFOV=75.0
 CameraTransitionTime=2.0
-# Trigger: click sul pulsante MDI
+# Trigger: click sul pulsante MDI modificato
 ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
 OnPhysicalTrigger=setVariant:schermo=schermo002
