@@ -2,17 +2,17 @@
  * TouchDragHandler - Gestione drag & drop oggetti 3D via touch
  *
  * Responsabilità:
- * - Single tap su oggetto → PRIORITÀ: Esegui azione tutorial SE presente, ALTRIMENTI pivot camera
- * - Double tap su oggetto → Esegue azione del tool selezionato (ridondante con singolo tap)
- * - Drag 1 dito su oggetto (con tool Mano) → Presa, movimento, rilascio
+ * - Single tap su oggetto → SOLO esegue azione tutorial (se presente)
+ * - Double tap su oggetto → Esegue azione del tool selezionato
+ * - Drag 1 dito su oggetto → SOLO se step ha DragDrop=true E tool Mano attivo
  *
- * Logica Priorità Single Tap (fix 8 Febbraio 2026):
- * 1. Se oggetto è Elemento tutorial con azioni → Esegui SOLO azione (NO pivot camera)
- * 2. Se oggetto NON ha azioni tutorial → Esegui SOLO pivot camera (NO azioni)
- * Vincolo: UN SOLO evento per tap, nessun comportamento cumulativo (azione + vista)
+ * Semplificazione Touch (fix 12 Febbraio 2026):
+ * 1. Single tap → SOLO azioni/trigger (NO pivot camera, NO rotazione)
+ * 2. Drag → SOLO se step ha DragDrop=true (altrimenti bloccato)
+ * 3. Pivot e rotazione camera → COMPLETAMENTE DISABILITATI via touch
  *
- * @version 1.1.0
- * @date Febbraio 2026
+ * @version 1.2.0
+ * @date 12 Febbraio 2026
  */
 
 window.TouchDragHandler = {
@@ -64,25 +64,16 @@ window.TouchDragHandler = {
         const hasTutorialAction = this.hasTutorialAction(rootModel);
 
         if (hasTutorialAction) {
-            // ✅ PRIORITÀ ALTA: Esegui SOLO azione tutorial, NON muovere camera
-            console.log('[TouchDragHandler] 🎯 Azione tutorial rilevata → Eseguo azione SENZA pivot camera');
+            // ✅ SOLO azione tutorial - NO pivot, NO rotazione
+            console.log('[TouchDragHandler] 🎯 Azione tutorial rilevata → Eseguo SOLO azione');
 
             const activeTool = this.getActiveTool();
             this.executeToolAction(target, hitPoint, activeTool);
 
         } else {
-            // ✅ FALLBACK: Esegui SOLO pivot camera, NO azioni
-            console.log('[TouchDragHandler] 📷 Nessuna azione → Eseguo SOLO pivot camera');
-
-            // 1. Evidenzia oggetto selezionato (feedback visivo)
-            this.highlightObject(target);
-
-            // 2. Calcola centro bounding box per pivot
-            const boundingBox = new THREE.Box3().setFromObject(target);
-            const center = boundingBox.getCenter(new THREE.Vector3());
-
-            // 3. Anima camera verso il centro come pivot
-            this.animateCameraToPivot(center);
+            // ❌ DISABILITATO: NO pivot camera, NO rotazione
+            // Single tap su oggetto senza azioni → nessuna azione
+            console.log('[TouchDragHandler] ⚠️ Tap su oggetto senza azioni → Nessuna azione (pivot disabilitato)');
         }
 
         // Notifica UI della selezione (se necessario)
@@ -236,7 +227,13 @@ window.TouchDragHandler = {
     // ═══════════════════════════════════════════════════════════
 
     handleDragStart: function(event, target, hitPoint) {
-        // Verifica che il tool Mano sia attivo
+        // ✅ VERIFICA 1: Step corrente deve avere DragDrop=true
+        if (!this.isDragDropStep()) {
+            console.log('[TouchDragHandler] 🚫 Drag BLOCCATO - Step non ha DragDrop=true');
+            return;
+        }
+
+        // ✅ VERIFICA 2: Tool Mano deve essere attivo
         const activeTool = this.getActiveTool();
         if (!this.isHandTool(activeTool)) {
             console.log('[TouchDragHandler] Drag ignorato - tool attivo non è Mano:', activeTool);
@@ -246,13 +243,13 @@ window.TouchDragHandler = {
         const rootModel = this.findRootModel(target);
         if (!rootModel) return;
 
-        // Verifica che sia draggabile
+        // ✅ VERIFICA 3: Oggetto deve essere draggabile
         if (!window.DragDropSystem || !window.DragDropSystem.isDraggableObject(rootModel)) {
             console.log('[TouchDragHandler] Oggetto non draggabile:', rootModel.name);
             return;
         }
 
-        console.log('[TouchDragHandler] DRAG START su:', rootModel.name);
+        console.log('[TouchDragHandler] ✅ DRAG START su:', rootModel.name);
 
         this.isDragging = true;
         this.draggedObject = rootModel;
@@ -305,6 +302,23 @@ window.TouchDragHandler = {
     // ═══════════════════════════════════════════════════════════
     // UTILITY
     // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Verifica se lo step corrente ha DragDrop attivo
+     */
+    isDragDropStep: function() {
+        if (!window.UI || !window.UI.tutorialSteps || window.UI.currentStepIndex < 0) {
+            return false; // Nessun tutorial attivo
+        }
+
+        const currentStep = window.UI.tutorialSteps[window.UI.currentStepIndex];
+        if (!currentStep || !currentStep.properties) {
+            return false;
+        }
+
+        // Controlla se lo step ha DragDrop=true
+        return currentStep.properties.DragDrop === 'true';
+    },
 
     /**
      * Verifica se l'oggetto ha un'azione tutorial associata

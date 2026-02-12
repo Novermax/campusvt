@@ -491,23 +491,26 @@ window.TouchInputRouter = {
 
     /**
      * Router per TWO-FINGER DRAG (rotazione camera)
+     * ❌ DISABILITATO - Rotazione camera non permessa via touch
      */
     routeTwoFingerDrag: function(event) {
-        if (this.cameraHandler) {
-            this.cameraHandler.handleTwoFingerDrag(event);
-        }
+        console.log('[TouchInputRouter] ❌ Two-finger drag DISABILITATO (rotazione camera bloccata)');
+        // if (this.cameraHandler) {
+        //     this.cameraHandler.handleTwoFingerDrag(event);
+        // }
     },
 
     routeTwoFingerDragStart: function(event) {
-        if (this.cameraHandler) {
-            this.cameraHandler.handleTwoFingerDragStart(event);
-        }
+        console.log('[TouchInputRouter] ❌ Two-finger drag start DISABILITATO');
+        // if (this.cameraHandler) {
+        //     this.cameraHandler.handleTwoFingerDragStart(event);
+        // }
     },
 
     routeTwoFingerDragEnd: function(event) {
-        if (this.cameraHandler) {
-            this.cameraHandler.handleTwoFingerDragEnd(event);
-        }
+        // if (this.cameraHandler) {
+        //     this.cameraHandler.handleTwoFingerDragEnd(event);
+        // }
     },
 
     /**
@@ -520,19 +523,20 @@ window.TouchInputRouter = {
 
     /**
      * Router per TWO-FINGER DOUBLE TAP (pivot camera)
+     * ❌ DISABILITATO - Pivot camera non permesso via touch
      */
     routeTwoFingerDoubleTap: function(event) {
-        console.log('[TouchInputRouter] TWO FINGER DOUBLE TAP → Set Pivot');
+        console.log('[TouchInputRouter] ❌ Two-finger double tap DISABILITATO (pivot camera bloccato)');
 
-        if (this.cameraHandler) {
-            // Usa centro dei due tocchi per raycast
-            const center = event.center;
-            const raycastResult = this.performRaycastIncludeFloor(center.normalizedX, center.normalizedY);
-
-            if (raycastResult && raycastResult.point) {
-                this.cameraHandler.handleTwoFingerDoubleTap(event, raycastResult.point);
-            }
-        }
+        // if (this.cameraHandler) {
+        //     // Usa centro dei due tocchi per raycast
+        //     const center = event.center;
+        //     const raycastResult = this.performRaycastIncludeFloor(center.normalizedX, center.normalizedY);
+        //
+        //     if (raycastResult && raycastResult.point) {
+        //         this.cameraHandler.handleTwoFingerDoubleTap(event, raycastResult.point);
+        //     }
+        // }
     },
 
     // ═══════════════════════════════════════════════════════════

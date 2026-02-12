@@ -4844,7 +4844,70 @@ StepController.simulateTrigger('physical', 'pulpito.Pulsante_mdi') // Test
 
 ## 📱 Sistema TouchSystem - Gesture Touch per Dispositivi Mobile (Febbraio 2026)
 
-### 🎯 Fix Priorità Assoluta Pulsanti 3D (12 Febbraio 2026)
+### 🎯 Semplificazione Sistema Touch (12 Febbraio 2026 - v1.2.0)
+
+**Problema**: Sistema touch troppo complesso, interferenze con interazioni base
+- Single tap causava rotazione camera indesiderata
+- Drag attivo anche quando non configurato in tutorial
+- Pinch zoom troppo sensibile
+- Troppe gesture attive contemporaneamente
+
+**Soluzione Implementata - Touch Minimale**:
+
+1. **Single Tap → SOLO Azioni/Trigger**:
+   - ✅ Tap su oggetto con azioni → Esegue SOLO azione
+   - ❌ Tap su oggetto senza azioni → Nessuna azione (pivot DISABILITATO)
+   - NO rotazione camera, NO pivot automatico
+
+2. **Drag → SOLO Step DragDrop**:
+   - ✅ Drag attivo SOLO se step ha `DragDrop=true`
+   - ❌ Drag bloccato su step normali (anche con tool Mano)
+   - Nuovo metodo `isDragDropStep()` verifica configurazione step
+
+3. **Pinch Zoom → Sensibilità Ridotta**:
+   - `zoomSensitivity: 0.01` → `0.003` (ridotto 70%)
+   - Configurabile in `TouchCameraHandler.config.zoomSensitivity`
+
+4. **Rotazione Camera → DISABILITATA**:
+   - Two-finger drag completamente disabilitato
+   - Log: `❌ Two-finger drag DISABILITATO (rotazione camera bloccata)`
+
+5. **Pivot Camera → DISABILITATO**:
+   - Two-finger double tap completamente disabilitato
+   - Log: `❌ Two-finger double tap DISABILITATO (pivot camera bloccato)`
+
+**Gesture Touch Attive (v1.2.0)**:
+- ✅ Single Tap (1 dito) → Attiva pulsanti/azioni
+- ✅ Double Tap (1 dito) → Esegue azione tool corrente
+- ✅ Drag (1 dito) → Drag & Drop (SOLO se step ha DragDrop=true)
+- ✅ Pinch (2 dita) → Zoom camera (sensibilità ridotta)
+- ❌ ~~Two-Finger Drag~~ → DISABILITATO
+- ❌ ~~Two-Finger Double Tap~~ → DISABILITATO
+
+**File Modificati** (12 Febbraio 2026 - v1.2.0):
+- `js/touch/TouchDragHandler.js:55-76` - handleTap() senza pivot camera
+- `js/touch/TouchDragHandler.js:238-246` - handleDragStart() con verifica DragDrop
+- `js/touch/TouchDragHandler.js:309-322` - Nuovo metodo isDragDropStep()
+- `js/touch/TouchDragHandler.js:1-14` - Versione v1.2.0
+- `js/touch/TouchInputRouter.js:437-456` - Rotazione camera disabilitata
+- `js/touch/TouchInputRouter.js:467-481` - Pivot camera disabilitato
+- `js/touch/TouchCameraHandler.js:19` - Zoom sensibilità ridotta (0.003)
+- `TOUCH_SEMPLIFICATO.md` - Documentazione completa modifiche
+
+**Regolazione Zoom**:
+```javascript
+// File: js/touch/TouchCameraHandler.js:19
+config: {
+    zoomSensitivity: 0.003,  // Più basso = meno sensibile
+    // 0.001 = Molto lento
+    // 0.003 = Normale (attuale)
+    // 0.005 = Più veloce
+}
+```
+
+---
+
+### 🎯 Fix Priorità Assoluta Pulsanti 3D (12 Febbraio 2026 - v1.1.0)
 
 **Problema Risolto** (issue touch2.txt):
 - Singolo tap su pulsanti fisici 3D (es. `Pulsante_tool`) non attivava trigger

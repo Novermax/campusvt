@@ -16,10 +16,10 @@ window.TouchCameraHandler = {
     // CONFIGURAZIONE
     // ═══════════════════════════════════════════════════════════
     config: {
-        zoomSensitivity: 0.01,        // Sensibilità zoom
+        zoomSensitivity: 0.003,       // ⚙️ Sensibilità zoom RIDOTTA (era 0.01)
         zoomMin: 0.5,                  // Zoom minimo
         zoomMax: 10,                   // Zoom massimo
-        rotateSensitivity: 0.005,      // Sensibilità rotazione
+        rotateSensitivity: 0.005,      // Sensibilità rotazione (DISABILITATA via router)
         pivotAnimationDuration: 0.8    // Durata animazione pivot (secondi)
     },
 
