@@ -52,6 +52,7 @@ window.GestureRecognizer = {
     lastTapPosition: null,
     tapTimeoutId: null,
     initialPinchDistance: 0,
+    isOnInteractiveElement: false, // Flag: tocco su elemento interattivo (fix touch2.txt)
 
     // Callbacks per eventi gesture
     onTap: null,
@@ -77,6 +78,24 @@ window.GestureRecognizer = {
         console.log('[GestureRecognizer] Inizializzato');
     },
 
+    /**
+     * Setta il flag "tocco su elemento interattivo"
+     * Quando true, previene conversione tap → drag (fix touch2.txt)
+     */
+    setInteractiveElement: function(isInteractive) {
+        this.isOnInteractiveElement = isInteractive;
+        if (isInteractive) {
+            console.log('[GestureRecognizer] 🎯 Tocco su elemento INTERATTIVO - blocco conversione tap→drag');
+        }
+    },
+
+    /**
+     * Reset flag interattivo
+     */
+    resetInteractiveFlag: function() {
+        this.isOnInteractiveElement = false;
+    },
+
     // ═══════════════════════════════════════════════════════════
     // HANDLER EVENTI TOUCH (chiamati da TouchEventDispatcher)
     // ═══════════════════════════════════════════════════════════
@@ -88,6 +107,9 @@ window.GestureRecognizer = {
         this.gestureStartTime = Date.now();
         this.startTouches = [...touches];
         this.lastTouches = [...touches];
+
+        // Reset flag interattivo ad ogni nuovo gesto
+        this.resetInteractiveFlag();
 
         switch (this.currentState) {
             case this.STATES.IDLE:
@@ -129,6 +151,15 @@ window.GestureRecognizer = {
             case this.STATES.ONE_FINGER_DOWN:
                 if (touchCount === 1) {
                     const movement = this.calculateMovement(this.startTouches[0], touches[0]);
+
+                    // 🎯 FIX touch2.txt: Se tocco è su elemento interattivo, NON convertire in drag
+                    // Priorità assoluta ai pulsanti/trigger
+                    if (this.isOnInteractiveElement) {
+                        console.log('[GestureRecognizer] 🚫 Blocco conversione tap→drag (elemento interattivo)');
+                        // Rimane in ONE_FINGER_DOWN, non passa a DRAGGING
+                        break;
+                    }
+
                     if (movement > this.config.DRAG_MIN_MOVEMENT) {
                         this.emitDragStart(touches[0]);
                         this.transitionTo(this.STATES.DRAGGING);

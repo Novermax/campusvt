@@ -27,6 +27,7 @@ window.TouchInputRouter = {
     dragHandler: null,
     cameraHandler: null,
     interactive3DHandler: null,
+    gestureRecognizer: null, // Riferimento al GestureRecognizer (fix touch2.txt)
 
     // Stato
     initialized: false,
@@ -49,13 +50,14 @@ window.TouchInputRouter = {
     },
 
     /**
-     * Registra handler
+     * Registra handler e GestureRecognizer
      */
     registerHandlers: function(handlers) {
         this.uiHandler = handlers.ui || null;
         this.dragHandler = handlers.drag || null;
         this.cameraHandler = handlers.camera || null;
         this.interactive3DHandler = handlers.interactive3D || null;
+        this.gestureRecognizer = handlers.gestureRecognizer || null; // Fix touch2.txt
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -83,6 +85,11 @@ window.TouchInputRouter = {
         if (raycastResult) {
             // 2a. È un elemento interattivo (pulsante 3D)?
             if (this.isInteractive3DElement(raycastResult.object)) {
+                // 🎯 FIX touch2.txt: Notifica GestureRecognizer per bloccare drag
+                if (this.gestureRecognizer) {
+                    this.gestureRecognizer.setInteractiveElement(true);
+                }
+
                 return {
                     layer: this.LAYERS.INTERACTIVE_3D,
                     target: raycastResult.object,
@@ -243,23 +250,74 @@ window.TouchInputRouter = {
 
     /**
      * Verifica se è un elemento interattivo 3D (pulsante)
+     * PRIORITÀ ASSOLUTA per pulsanti in ActiveButtons dello step corrente
      */
     isInteractive3DElement: function(object) {
         if (!object) return false;
 
-        // Controlla userData
+        // PRIORITÀ 1: Controlla se è in ActiveButtons dello step corrente (fix touch2.txt)
+        if (this.isActiveButton(object)) {
+            console.log('[TouchInputRouter] 🎯 Pulsante ATTIVO rilevato:', object.name);
+            return true;
+        }
+
+        // PRIORITÀ 2: Controlla userData
         if (object.userData && object.userData.interactive) return true;
         if (object.userData && object.userData.interactiveConfig) return true;
 
-        // Controlla parent
+        // PRIORITÀ 3: Controlla parent
         let parent = object.parent;
         while (parent) {
             if (parent.userData && parent.userData.interactive) return true;
             if (parent.userData && parent.userData.interactiveConfig) return true;
+
+            // Controlla anche se il parent è in ActiveButtons
+            if (this.isActiveButton(parent)) {
+                console.log('[TouchInputRouter] 🎯 Parent ATTIVO rilevato:', parent.name);
+                return true;
+            }
+
             parent = parent.parent;
         }
 
         return false;
+    },
+
+    /**
+     * Verifica se l'oggetto è in ActiveButtons dello step corrente
+     * Questo garantisce priorità assoluta ai pulsanti configurati nello step
+     */
+    isActiveButton: function(object) {
+        if (!object || !object.name) return false;
+
+        // Verifica se c'è un tutorial attivo
+        if (!window.UI || !window.UI.tutorialSteps || window.UI.currentStepIndex < 0) {
+            return false;
+        }
+
+        const currentStep = window.UI.tutorialSteps[window.UI.currentStepIndex];
+        if (!currentStep || !currentStep.properties) return false;
+
+        // Controlla ActiveButtons
+        const activeButtons = currentStep.properties.ActiveButtons;
+        if (!activeButtons) return false;
+
+        const activeButtonsList = activeButtons.split(',').map(b => b.trim());
+
+        // Normalizza nome oggetto (rimuovi estensioni e parent path)
+        let objectName = object.name.replace(/\.(glb|gltf|obj|stl)$/i, '');
+
+        // Se il nome contiene il punto (es. "pulpito.Pulsante_tool"), prendi solo la parte dopo il punto
+        if (objectName.includes('.')) {
+            const parts = objectName.split('.');
+            objectName = parts[parts.length - 1]; // Prendi l'ultima parte
+        }
+
+        // Controlla se il nome è nella lista ActiveButtons
+        return activeButtonsList.some(btnName => {
+            const normalizedBtn = btnName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+            return normalizedBtn === objectName || objectName.includes(normalizedBtn);
+        });
     },
 
     /**

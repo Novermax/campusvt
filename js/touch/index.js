@@ -63,27 +63,30 @@ window.TouchSystem = {
         this.interactive3DHandler = window.TouchInteractive3DHandler;
         this.interactive3DHandler.init();
 
-        // 2. Inizializza router e registra handler
+        // 2. Inizializza recognizer PRIMA del router (fix touch2.txt)
+        this.recognizer = window.GestureRecognizer;
+        this.recognizer.init();
+
+        // 3. Inizializza router e registra handler + recognizer
         this.router = window.TouchInputRouter;
         this.router.init();
         this.router.registerHandlers({
             camera: this.cameraHandler,
             drag: this.dragHandler,
             ui: this.uiHandler,
-            interactive3D: this.interactive3DHandler
+            interactive3D: this.interactive3DHandler,
+            gestureRecognizer: this.recognizer // Fix touch2.txt: passa recognizer al router
         });
 
-        // 3. Inizializza recognizer e collega callbacks
-        this.recognizer = window.GestureRecognizer;
-        this.recognizer.init();
+        // 4. Collega callbacks recognizer → router
         this.connectRecognizerCallbacks();
 
-        // 4. Inizializza dispatcher e collega a recognizer
+        // 5. Inizializza dispatcher e collega a recognizer
         this.dispatcher = window.TouchEventDispatcher;
         this.dispatcher.init(canvas);
         this.connectDispatcherCallbacks();
 
-        // 5. Imposta CSS per touch
+        // 6. Imposta CSS per touch
         this.setupTouchCSS(canvas);
 
         this.initialized = true;

@@ -4844,6 +4844,50 @@ StepController.simulateTrigger('physical', 'pulpito.Pulsante_mdi') // Test
 
 ## 📱 Sistema TouchSystem - Gesture Touch per Dispositivi Mobile (Febbraio 2026)
 
+### 🎯 Fix Priorità Assoluta Pulsanti 3D (12 Febbraio 2026)
+
+**Problema Risolto** (issue touch2.txt):
+- Singolo tap su pulsanti fisici 3D (es. `Pulsante_tool`) non attivava trigger
+- Sistema interpretava tap come inizio gesture navigazione (drag/rotate camera)
+- Priorità errata: camera > pulsanti interattivi
+
+**Soluzione Implementata**:
+
+1. **Sistema Priorità Assoluta ActiveButtons**:
+   - `TouchInputRouter.isActiveButton()` verifica se oggetto è in `ActiveButtons` dello step
+   - `isInteractive3DElement()` controlla PRIMA ActiveButtons, POI userData
+   - Pulsanti configurati nello step hanno priorità massima
+
+2. **Blocco Conversione Tap → Drag**:
+   - `GestureRecognizer.isOnInteractiveElement` flag per bloccare drag
+   - `handleTouchMove()` NON converte tap in drag se tocco è su elemento interattivo
+   - Garantisce che tap su pulsante rimane tap, mai diventa drag
+
+3. **Comunicazione Router ↔ Recognizer**:
+   - Router notifica Recognizer quando tocco è su INTERACTIVE_3D
+   - `setInteractiveElement(true)` settato da `determineLayer()`
+   - Reset automatico ad ogni nuovo gesto
+
+**Comportamento Garantito**:
+- ✅ Hit-test su pulsanti/trigger ha PRIORITÀ ASSOLUTA su navigation gestures
+- ✅ Drag/rotate camera abilitati SOLO se touch NON colpisce elementi interattivi
+- ✅ Single tap su pulsante trattato come PRESS, mai come gesture start
+- ✅ Sistema rispetta `ActiveButtons` e `AcceptTrigger_Physical` configurati nel tutorial
+
+**File Modificati** (12 Febbraio 2026):
+- `js/touch/TouchInputRouter.js:247-313` - Metodi `isInteractive3DElement()` e `isActiveButton()`
+- `js/touch/TouchInputRouter.js:27-30,56-60` - Riferimento gestureRecognizer
+- `js/touch/TouchInputRouter.js:92-98` - Notifica interattivo in `determineLayer()`
+- `js/touch/GestureRecognizer.js:55` - Flag `isOnInteractiveElement`
+- `js/touch/GestureRecognizer.js:79-95` - Metodi `setInteractiveElement()` e `resetInteractiveFlag()`
+- `js/touch/GestureRecognizer.js:132-142` - Blocco conversione tap→drag
+- `js/touch/GestureRecognizer.js:105` - Reset flag in `handleTouchStart()`
+- `js/touch/index.js:66-80` - Passaggio gestureRecognizer al router
+
+---
+
+## 📱 Sistema TouchSystem - Gesture Touch per Dispositivi Mobile (Febbraio 2026)
+
 **Funzionalità**: Sistema completo di gestione gesture touch per dispositivi mobile/tablet, con riconoscimento gesture, routing prioritizzato e integrazione con tutti i sistemi esistenti.
 
 ### Problema Risolto
