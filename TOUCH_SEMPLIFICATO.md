@@ -244,3 +244,63 @@ Sistema touch ora **minimale e prevedibile**:
 ---
 
 **Ultimo aggiornamento**: 12 Febbraio 2026
+
+---
+
+## 🔧 Fix Rotazione Camera durante Drag (12 Febbraio 2026)
+
+### ❌ Problema Risolto
+- **Sintomo**: Singolo drag con un dito causava rotazione camera
+- **Causa Root**: Handler mouse legacy (`onMouseMove`, `onMouseDown`, `onMouseUp`) in `scene3d-modular.js` rispondevano a touch events convertiti dal browser
+
+### ✅ Soluzione Implementata
+Blocco completo handler mouse quando TouchSystem è attivo:
+```javascript
+// js/scene3d-modular.js
+onMouseDown: function(event) {
+    if (window.TouchSystem && window.TouchSystem.initialized) {
+        console.log('[Scene3D] 🚫 onMouseDown BLOCCATO - TouchSystem attivo');
+        return;
+    }
+    // ... resto del codice
+}
+
+onMouseMove: function(event) {
+    // Hover sempre attivo
+    if (window.InteractiveObject3D && this.loadedModels.length > 0) {
+        this.handleInteractiveHover(event);
+    }
+    
+    if (!this.mouseControls.isMouseDown) return;
+    
+    if (window.TouchSystem && window.TouchSystem.initialized) {
+        console.log('[Scene3D] 🚫 onMouseMove BLOCCATO - TouchSystem attivo');
+        return;
+    }
+    // ... resto del codice
+}
+
+onMouseUp: function(event) {
+    if (window.TouchSystem && window.TouchSystem.initialized) {
+        console.log('[Scene3D] 🚫 onMouseUp BLOCCATO - TouchSystem attivo');
+        return;
+    }
+    // ... resto del codice
+}
+```
+
+### Caratteristiche
+- ✅ **Zero Interferenze**: Handler mouse completamente disabilitati su touch devices
+- ✅ **Hover Preservato**: `handleInteractiveHover()` continua a funzionare per feedback visivo
+- ✅ **Desktop Inalterato**: Controlli mouse funzionano normalmente quando TouchSystem non attivo
+
+### File Modificati (12 Febbraio 2026 - Fix Rotazione)
+- `js/scene3d-modular.js:745-762` - onMouseDown con blocco TouchSystem
+- `js/scene3d-modular.js:770-787` - onMouseMove con blocco TouchSystem
+- `js/scene3d-modular.js:820-854` - onMouseUp con blocco TouchSystem
+- `TOUCH_SEMPLIFICATO.md` - Documentazione aggiornata
+
+---
+
+**Ultimo aggiornamento**: 12 Febbraio 2026 - Fix Rotazione Camera durante Drag completato
+

@@ -743,6 +743,13 @@ const Scene3D = {
     },
 
     onMouseDown: function(event) {
+        // ❌ BLOCCO MOUSE SE TOUCHSYSTEM È ATTIVO
+        // Previene che touch events convertiti in mouse events causino rotazione
+        if (window.TouchSystem && window.TouchSystem.initialized) {
+            console.log('[Scene3D] 🚫 onMouseDown BLOCCATO - TouchSystem attivo');
+            return;
+        }
+
         this.mouseControls.isMouseDown = true;
         this.mouseControls.mouseButton = event.button;
         this.mouseControls.lastPosition.x = event.clientX;
@@ -766,6 +773,13 @@ const Scene3D = {
         }
 
         if (!this.mouseControls.isMouseDown) return;
+
+        // ❌ BLOCCO ROTAZIONE CAMERA SE TOUCHSYSTEM È ATTIVO
+        // Previene che touch events convertiti in mouse events causino rotazione
+        if (window.TouchSystem && window.TouchSystem.initialized) {
+            console.log('[Scene3D] 🚫 onMouseMove BLOCCATO - TouchSystem attivo');
+            return;
+        }
 
         const deltaX = event.clientX - this.mouseControls.lastPosition.x;
         const deltaY = event.clientY - this.mouseControls.lastPosition.y;
@@ -804,6 +818,13 @@ const Scene3D = {
     },
 
     onMouseUp: function(event) {
+        // ❌ BLOCCO MOUSE SE TOUCHSYSTEM È ATTIVO
+        // Previene che touch events convertiti in mouse events causino interazioni
+        if (window.TouchSystem && window.TouchSystem.initialized) {
+            console.log('[Scene3D] 🚫 onMouseUp BLOCCATO - TouchSystem attivo');
+            return;
+        }
+
         if (event.button === 0 && this.animationSystem.clickEnabled) {
             const deltaX = Math.abs(event.clientX - this.mouseControls.lastPosition.x);
             const deltaY = Math.abs(event.clientY - this.mouseControls.lastPosition.y);
