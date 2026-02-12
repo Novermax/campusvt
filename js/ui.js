@@ -3308,15 +3308,15 @@ window.UI = {
             if (step.properties.AcceptTrigger_Physical) {
                 const triggers = step.properties.AcceptTrigger_Physical.split(',').map(t => t.trim());
 
-                // Parsing HighlightOpacity (default: 1.0 = completamente opaco)
-                let highlightOpacity = 1.0;
+                // Parsing HighlightOpacity (default: 0.5 = semitrasparente bilanciato)
+                let highlightOpacity = 0.5;
                 if (step.properties.HighlightOpacity) {
                     const parsed = parseFloat(step.properties.HighlightOpacity);
                     if (!isNaN(parsed) && parsed >= 0 && parsed <= 1.0) {
                         highlightOpacity = parsed;
                         console.log(`💡 [UI] HighlightOpacity personalizzata: ${highlightOpacity}`);
                     } else {
-                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default 1.0`);
+                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default 0.5`);
                     }
                 }
 

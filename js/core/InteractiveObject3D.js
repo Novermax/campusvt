@@ -1184,8 +1184,8 @@ window.InteractiveObject3D = {
             return;
         }
 
-        // Default opacity: 1.0 (completamente opaco)
-        const highlightOpacity = (opacity !== undefined && !isNaN(opacity)) ? opacity : 1.0;
+        // Default opacity: 0.5 (semitrasparente bilanciato)
+        const highlightOpacity = (opacity !== undefined && !isNaN(opacity)) ? opacity : 0.5;
 
         console.log(`💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti:`, triggers);
         console.log(`💡 [InteractiveObject3D] Opacità evidenziazione: ${highlightOpacity}`);
@@ -1307,10 +1307,10 @@ window.InteractiveObject3D = {
      * Applica evidenziazione gialla a un pulsante con opacità personalizzata
      * @param {Mesh} mesh - Mesh da evidenziare
      * @param {string} triggerId - ID del trigger per tracking
-     * @param {number} opacity - Opacità del materiale (0.0=invisibile, 1.0=opaco, default: 1.0)
+     * @param {number} opacity - Opacità del materiale (0.0=invisibile, 1.0=opaco, default: 0.5)
      */
     applyButtonHighlight: function(mesh, triggerId, opacity) {
-        const highlightOpacity = (opacity !== undefined && !isNaN(opacity)) ? Math.max(0, Math.min(1, opacity)) : 1.0;
+        const highlightOpacity = (opacity !== undefined && !isNaN(opacity)) ? Math.max(0, Math.min(1, opacity)) : 0.5;
         console.log(`💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh:`, mesh.name);
         console.log(`💡 [InteractiveObject3D] Mesh ha material:`, !!mesh.material);
         console.log(`💡 [InteractiveObject3D] Material type:`, mesh.material?.type);
@@ -1321,47 +1321,57 @@ window.InteractiveObject3D = {
             return;
         }
 
-        // Salva valori originali se non già fatto (emissive, opacity, transparent)
-        if (mesh.userData.originalEmissive === undefined) {
-            const origEmissive = mesh.material.emissive ? mesh.material.emissive.getHex() : 0x000000;
-            const origIntensity = mesh.material.emissiveIntensity || 0;
-            const origOpacity = mesh.material.opacity !== undefined ? mesh.material.opacity : 1.0;
-            const origTransparent = mesh.material.transparent !== undefined ? mesh.material.transparent : false;
+        // Gestisce sia materiale singolo che array di materiali
+        const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
 
-            mesh.userData.originalEmissive = origEmissive;
-            mesh.userData.originalEmissiveIntensity = origIntensity;
-            mesh.userData.originalOpacity = origOpacity;
-            mesh.userData.originalTransparent = origTransparent;
+        console.log(`💡 [InteractiveObject3D] Applicazione highlight a ${materials.length} materiale/i`);
 
-            console.log(`💡 [InteractiveObject3D] Valori originali salvati: emissive=${origEmissive.toString(16)}, intensity=${origIntensity}, opacity=${origOpacity}, transparent=${origTransparent}`);
-        }
+        // Salva valori originali e applica highlight a ogni materiale
+        materials.forEach((material, index) => {
+            // Salva valori originali se non già fatto
+            if (!mesh.userData.originalMaterials) {
+                mesh.userData.originalMaterials = [];
+            }
 
-        // Applica emissione gialla (intensità fissa 2.0 per glow visibile)
-        if (mesh.material.emissive) {
-            mesh.material.emissive.setHex(0xffff00); // Giallo brillante
-            mesh.material.emissiveIntensity = 2.0;
-            console.log(`💡 [InteractiveObject3D] ✓ Emissive applicata: 0xffff00, intensity=2.0`);
-        } else {
-            console.warn(`💡 [InteractiveObject3D] ⚠️ Material non ha proprietà emissive, evidenziazione potrebbe non essere visibile`);
-        }
+            if (!mesh.userData.originalMaterials[index]) {
+                mesh.userData.originalMaterials[index] = {
+                    emissive: material.emissive ? material.emissive.getHex() : 0x000000,
+                    emissiveIntensity: material.emissiveIntensity || 0,
+                    opacity: material.opacity !== undefined ? material.opacity : 1.0,
+                    transparent: material.transparent !== undefined ? material.transparent : false
+                };
 
-        // Applica trasparenza reale (si vede attraverso il pulsante)
-        mesh.material.opacity = highlightOpacity;
-        mesh.material.transparent = highlightOpacity < 1.0;
-        mesh.material.depthWrite = highlightOpacity >= 1.0; // Disabilita depthWrite per trasparenza corretta
-        mesh.material.needsUpdate = true;
-        console.log(`💡 [InteractiveObject3D] ✓ Opacity impostata a ${highlightOpacity} (transparent: ${highlightOpacity < 1.0})`);
+                console.log(`💡 [InteractiveObject3D] Valori originali salvati per materiale ${index}: emissive=${mesh.userData.originalMaterials[index].emissive.toString(16)}, intensity=${mesh.userData.originalMaterials[index].emissiveIntensity}, opacity=${mesh.userData.originalMaterials[index].opacity}`);
+            }
+
+            // Applica emissione gialla (intensità scalata con opacity per trasparenza)
+            if (material.emissive) {
+                material.emissive.setHex(0xffff00); // Giallo brillante
+                // Scala intensità con opacity: 0.3 → 0.6, 0.5 → 1.0, 1.0 → 2.0
+                material.emissiveIntensity = highlightOpacity * 2.0;
+                console.log(`💡 [InteractiveObject3D] ✓ Emissive applicata al materiale ${index}: 0xffff00, intensity=${material.emissiveIntensity.toFixed(2)}`);
+            } else {
+                console.warn(`💡 [InteractiveObject3D] ⚠️ Materiale ${index} non ha proprietà emissive`);
+            }
+
+            // Applica trasparenza reale (si vede attraverso il pulsante)
+            material.opacity = highlightOpacity;
+            material.transparent = highlightOpacity < 1.0;
+            material.depthWrite = highlightOpacity >= 1.0; // Disabilita depthWrite per trasparenza corretta
+            material.needsUpdate = true;
+            console.log(`💡 [InteractiveObject3D] ✓ Opacity impostata a ${highlightOpacity} per materiale ${index} (transparent: ${highlightOpacity < 1.0})`);
+        });
 
         // Traccia pulsante evidenziato
         this.highlightedButtons.set(triggerId, mesh);
 
         console.log(`💡 [InteractiveObject3D] ✓ Pulsante "${mesh.name}" evidenziato e aggiunto a highlightedButtons (totale: ${this.highlightedButtons.size})`);
 
-        // Crea cerchio pulsante giallo sovrapposto
+        // Crea cerchio pulsante giallo sovrapposto (passa highlightOpacity per trasparenza)
         if (window.Scene3D && window.Scene3D.highlightCircleManager) {
             try {
-                window.Scene3D.highlightCircleManager.createCircle(triggerId, mesh);
-                console.log(`🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "${triggerId}"`);
+                window.Scene3D.highlightCircleManager.createCircle(triggerId, mesh, null, highlightOpacity);
+                console.log(`🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "${triggerId}" con opacità ${highlightOpacity}`);
             } catch (error) {
                 console.warn(`🔵 [InteractiveObject3D] Errore creazione cerchio per "${triggerId}":`, error);
             }
@@ -1380,23 +1390,31 @@ window.InteractiveObject3D = {
 
         for (const [triggerId, mesh] of this.highlightedButtons) {
             if (mesh && mesh.material) {
-                // Ripristina valori originali (emissive, opacity, transparent)
-                if (mesh.material.emissive) {
-                    mesh.material.emissive.setHex(mesh.userData.originalEmissive || 0x000000);
-                    mesh.material.emissiveIntensity = mesh.userData.originalEmissiveIntensity || 0;
-                }
+                // Gestisce sia materiale singolo che array
+                const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
 
-                // Ripristina opacity, transparent e depthWrite
-                if (mesh.userData.originalOpacity !== undefined) {
-                    mesh.material.opacity = mesh.userData.originalOpacity;
-                }
-                if (mesh.userData.originalTransparent !== undefined) {
-                    mesh.material.transparent = mesh.userData.originalTransparent;
-                }
-                mesh.material.depthWrite = true; // Ripristina depthWrite standard
-                mesh.material.needsUpdate = true;
+                materials.forEach((material, index) => {
+                    // Ripristina da originalMaterials se disponibile
+                    if (mesh.userData.originalMaterials && mesh.userData.originalMaterials[index]) {
+                        const orig = mesh.userData.originalMaterials[index];
 
-                console.log(`💡 [InteractiveObject3D] ✓ Evidenziazione rimossa da "${mesh.name}" (opacity ripristinata a ${mesh.userData.originalOpacity})`);
+                        // Ripristina emissive
+                        if (material.emissive) {
+                            material.emissive.setHex(orig.emissive);
+                            material.emissiveIntensity = orig.emissiveIntensity;
+                        }
+
+                        // Ripristina opacity, transparent e depthWrite
+                        material.opacity = orig.opacity;
+                        material.transparent = orig.transparent;
+                        material.depthWrite = !orig.transparent; // depthWrite false solo se era trasparente
+                        material.needsUpdate = true;
+
+                        console.log(`💡 [InteractiveObject3D] ✓ Materiale ${index} ripristinato (opacity: ${orig.opacity}, transparent: ${orig.transparent})`);
+                    }
+                });
+
+                console.log(`💡 [InteractiveObject3D] ✓ Evidenziazione rimossa da "${mesh.name}"`);
             }
 
             // NUOVO: Rimuovi cerchio pulsante corrispondente

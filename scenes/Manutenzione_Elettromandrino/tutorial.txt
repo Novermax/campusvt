@@ -133,7 +133,6 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=0.42
 CameraFOV=75.0
 CameraTransitionTime=2.0
-HighlightOpacity=1.0  # Pienamente visibile per facilitare individuazione pulsante
 # Trigger: click sul pulsante MDI
 ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
@@ -150,7 +149,6 @@ CameraPivot=(0.97, 1.15, 3.52)
 CameraDistance=1.24
 CameraFOV=55.0
 CameraTransitionTime=2.0
-HighlightOpacity=1.0  # Pienamente visibile per facilitare individuazione pulsante
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_tool
 AcceptTrigger_Physical=pulpito.Pulsante_tool
@@ -189,7 +187,6 @@ Descrizione=Premi il pulsante Start sul telecomando per avviare lo scarico utens
 Utensile=Mani
 # Trigger: click sul pulsante play del telecomando
 ActiveButtons=pulsante_r_play
-HighlightOpacity=1.0  # Pienamente visibile per facilitare individuazione pulsante
 AcceptTrigger_Physical=remote.pulsante_r_play
 OnPhysicalTrigger=setVariant:schermo=schermo004
 AutoAdvance=true
@@ -325,7 +322,6 @@ Utensile=Mani
 # Trigger: click sul pulsante pulsante_r_status
 ActiveButtons=Pulsante_r_status
 AcceptTrigger_Physical=remote.Pulsante_r_status
-HighlightOpacity=1.0  # Pienamente visibile per facilitare individuazione pulsante
 OnPhysicalTrigger=setVariant:schermo_remote=Schermo_R001
 AutoAdvance=true
 
@@ -336,7 +332,6 @@ Utensile=Mani
 Descrizione=Apri e chiudi più volte premendo il pulsante unlock (4 cicli)
 ActiveButtons=Pulsante_r_unlock
 AcceptTrigger_Physical=remote.Pulsante_r_unlock
-HighlightOpacity=1.0  # Pienamente visibile per facilitare individuazione pulsante
 AnimatedImagesFolder=screens/mandrino
 AnimatedPosition=(60%,60%)
 AnimatedMaxTriggers=8
@@ -393,7 +388,6 @@ CameraFOV=75.0
 CameraTransitionTime=2.0
 # Trigger: click sul pulsante di start (solo pstart0 perché è quello visibile dopo aver girato la chiave)
 ActiveButtons=pstart0
-HighlightOpacity=1.0  # Pienamente visibile per facilitare individuazione pulsante
 AcceptTrigger_Physical=pulpito.pstart0
 OnPhysicalTrigger=setVariant:start=pstart1;setVariant:schermo=schermo002
 

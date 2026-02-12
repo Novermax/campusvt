@@ -25,7 +25,7 @@ class HighlightCircleManager {
             defaultSize: 80,        // Dimensione default cerchio in pixel
             borderWidth: 4,         // Spessore bordo in pixel
             borderColor: '#ffff00', // Giallo puro
-            opacity: 0.9,           // Opacità bordo
+            opacity: 0.9,           // Opacità bordo (visibile)
             pulseMin: 0.9,          // Scala minima pulse
             pulseMax: 1.1,          // Scala massima pulse
             pulseDuration: 1.5,     // Durata pulse in secondi
@@ -90,8 +90,9 @@ class HighlightCircleManager {
      * @param {string} triggerId - ID del trigger (es. "pulpito.btn_start")
      * @param {THREE.Mesh} mesh - Mesh del pulsante 3D
      * @param {number} size - Dimensione cerchio in pixel (opzionale)
+     * @param {number} opacity - Opacità cerchio 0.0-1.0 (opzionale, default da config)
      */
-    createCircle(triggerId, mesh, size = null) {
+    createCircle(triggerId, mesh, size = null, opacity = null) {
         if (!this.container) {
             console.warn('⚠️ [HighlightCircleManager] Container non inizializzato');
             return;
@@ -102,6 +103,9 @@ class HighlightCircleManager {
 
         // Usa dimensione custom o default
         const circleSize = size || this.config.defaultSize;
+
+        // Usa opacità custom o default
+        const circleOpacity = (opacity !== null && opacity !== undefined) ? opacity : this.config.opacity;
 
         // Crea elemento DOM cerchio
         const circle = document.createElement('div');
@@ -114,7 +118,7 @@ class HighlightCircleManager {
             border: ${this.config.borderWidth}px solid ${this.config.borderColor};
             border-radius: 50%;
             background: transparent;
-            opacity: ${this.config.opacity};
+            opacity: ${circleOpacity};
             transform: translate(-50%, -50%);
             pointer-events: none;
             animation: pulseCircle ${this.config.pulseDuration}s ease-in-out infinite;
@@ -129,7 +133,7 @@ class HighlightCircleManager {
             size: circleSize
         });
 
-        console.log(`🔵 [HighlightCircleManager] Cerchio creato per "${triggerId}" (size: ${circleSize}px)`);
+        console.log(`🔵 [HighlightCircleManager] Cerchio creato per "${triggerId}" (size: ${circleSize}px, opacity: ${circleOpacity})`);
 
         // Aggiorna posizione immediatamente
         this.updateCirclePosition(triggerId);

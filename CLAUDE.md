@@ -942,17 +942,17 @@ HighlightOpacity=0.2  # ← Solo 20% opaco (molto trasparente)
 
 | Proprietà | Formato | Descrizione |
 |-----------|---------|-------------|
-| `HighlightOpacity=` | `float` | Opacità del pulsante evidenziato (range: 0.0-1.0, default: 1.0) |
+| `HighlightOpacity=` | `float` | Opacità del pulsante evidenziato (range: 0.0-1.0, default: 0.5) |
 
 **Valori**:
 - `0.0` - Completamente invisibile
 - `0.2` - Molto trasparente (si vede quasi tutto attraverso)
-- `0.3` - Trasparente (si vede bene attraverso)
-- `0.5` - Semi-trasparente
+- `0.3` - Trasparente - si vede bene attraverso
+- `0.5` - **Semi-trasparente (default)** - bilanciato
 - `0.7` - Leggermente trasparente
-- `1.0` - **Completamente opaco (default)** - comportamento originale
+- `1.0` - Completamente opaco - comportamento originale
 
-**Nota**: Il glow giallo emissivo (emissiveIntensity=2.0) rimane fisso. `HighlightOpacity` controlla la trasparenza reale del materiale (`material.opacity` + `material.transparent`), permettendo di vedere gli oggetti dietro il pulsante.
+**Nota**: Il glow giallo emissivo scala automaticamente con l'opacità (`emissiveIntensity = opacity × 2.0`). `HighlightOpacity` controlla sia la trasparenza del materiale che l'intensità del glow, permettendo di vedere gli oggetti dietro il pulsante.
 
 ### Comportamento Step
 
