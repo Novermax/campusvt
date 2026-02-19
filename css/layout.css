@@ -501,6 +501,17 @@
     box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
 }
 
+.tutorial-arrow-btn.loading-disabled {
+    /* Stato DISABILITATO durante caricamento 3D */
+    opacity: 0.45;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    background: linear-gradient(135deg, #90a4ae 0%, #78909c 100%) !important;
+    border-color: #607d8b !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 /* Testo del pulsante freccia */
 .tutorial-arrow-text {
     font-size: 12px;

@@ -121,7 +121,7 @@ window.ToolRegistry = (function() {
         state.scenarioPath = scenarioPath;
 
         try {
-            const response = await fetch(configPath);
+            const response = await fetchFile(configPath);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }

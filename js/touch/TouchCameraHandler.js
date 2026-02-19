@@ -27,7 +27,10 @@ window.TouchCameraHandler = {
     initialized: false,
     isPinching: false,
     isRotating: false,
+    isOneFingerDragging: false,   // Orbit 1 dito (modifica_touch.txt Priority 4)
     lastPinchDistance: 0,
+    lastOneFingerX: 0,
+    lastOneFingerY: 0,
 
     // ═══════════════════════════════════════════════════════════
     // INIZIALIZZAZIONE
@@ -54,11 +57,14 @@ window.TouchCameraHandler = {
 
         // Calcola delta zoom
         const deltaDistance = event.deltaDistance;
-        const zoomDelta = deltaDistance * this.config.zoomSensitivity;
+        const camCfg = (window.InterfaceConfig && window.InterfaceConfig.camera) || {};
+        const sensitivity = (camCfg.pinchSensitivity !== undefined) ? camCfg.pinchSensitivity : this.config.zoomSensitivity;
+        const invertSign = camCfg.invertPinchZoom ? 1 : -1;
+        const zoomDelta = deltaDistance * sensitivity;
 
         // Applica zoom
         if (window.Scene3D.zoomCamera) {
-            window.Scene3D.zoomCamera(-zoomDelta);
+            window.Scene3D.zoomCamera(invertSign * zoomDelta);
         } else if (window.Scene3D.controls) {
             // Fallback: modifica direttamente la distanza
             const controls = window.Scene3D.controls;
@@ -140,6 +146,70 @@ window.TouchCameraHandler = {
     handleTwoFingerDragEnd: function(event) {
         this.isRotating = false;
         // console.log('[TouchCameraHandler] Two-finger drag END');
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // ONE-FINGER ORBIT (modifica_touch.txt §"4) Camera solo se...")
+    // Attivo SOLO quando nessun oggetto actionable/movable/placement
+    // sotto il dito (Priority 4 fallback).
+    // DRAG_THRESHOLD applicato dal GestureRecognizer (DRAG_MIN_MOVEMENT).
+    // ═══════════════════════════════════════════════════════════
+
+    handleOneFingerDragStart: function(event) {
+        this.isOneFingerDragging = true;
+        const touch = event.touch;
+        this.lastOneFingerX = touch ? touch.clientX : 0;
+        this.lastOneFingerY = touch ? touch.clientY : 0;
+        // console.log('[TouchCameraHandler] 1-finger orbit START');
+    },
+
+    handleOneFingerDrag: function(event) {
+        if (!this.isOneFingerDragging) return;
+        if (!window.Scene3D) return;
+
+        const touch = event.touch;
+        if (!touch) return;
+
+        const currentX = touch.clientX;
+        const currentY = touch.clientY;
+        const deltaX = currentX - this.lastOneFingerX;
+        const deltaY = currentY - this.lastOneFingerY;
+
+        this.lastOneFingerX = currentX;
+        this.lastOneFingerY = currentY;
+
+        // Applica rotazione camera (stessa logica del two-finger drag)
+        if (window.Scene3D.rotateCamera) {
+            window.Scene3D.rotateCamera(
+                deltaX * this.config.rotateSensitivity,
+                deltaY * this.config.rotateSensitivity
+            );
+        } else if (window.Scene3D.controls) {
+            const controls = window.Scene3D.controls;
+
+            if (controls.rotateLeft && controls.rotateUp) {
+                controls.rotateLeft(deltaX * this.config.rotateSensitivity);
+                controls.rotateUp(deltaY * this.config.rotateSensitivity);
+            } else {
+                // Fallback con coordinate sferiche
+                const spherical = new THREE.Spherical();
+                const offset = new THREE.Vector3();
+                offset.copy(window.Scene3D.camera.position).sub(controls.target);
+                spherical.setFromVector3(offset);
+                spherical.theta -= deltaX * this.config.rotateSensitivity;
+                spherical.phi -= deltaY * this.config.rotateSensitivity;
+                spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+                offset.setFromSpherical(spherical);
+                window.Scene3D.camera.position.copy(controls.target).add(offset);
+                window.Scene3D.camera.lookAt(controls.target);
+            }
+            controls.update();
+        }
+    },
+
+    handleOneFingerDragEnd: function(event) {
+        this.isOneFingerDragging = false;
+        // console.log('[TouchCameraHandler] 1-finger orbit END');
     },
 
     // ═══════════════════════════════════════════════════════════

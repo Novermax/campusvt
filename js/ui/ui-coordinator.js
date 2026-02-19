@@ -27,6 +27,9 @@ const UI = {
     _tutorialManager: null,
     _toolsManager: null,
 
+    // Camera reset state
+    stepCameraState: null,
+
     // === LEGACY PROPERTIES FOR COMPATIBILITY ===
     // These properties delegate to the appropriate managers
     get currentPage() { return this.core?.currentPage || 'home'; },
@@ -83,6 +86,7 @@ const UI = {
 
             // Load initial configuration
             this._scenarioManager.loadHomeConfigFromServer();
+            this.loadInterfaceConfig();
 
             console.log('[UI] ✅ Sistema UI refactorizzato inizializzato con successo');
             return true;
@@ -336,6 +340,109 @@ const UI = {
     },
 
     /**
+     * Carica e applica InterfaceConfig.ini.
+     * In Electron usa IPC per leggere il file dalla directory dell'exe (fuori ASAR),
+     * così l'utente può modificarlo e rilancire il programma per applicare le modifiche.
+     * In browser usa fetch standard.
+     */
+    loadInterfaceConfig: function() {
+        // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
+        if (window.electronAPI && window.electronAPI.readConfigFile) {
+            window.electronAPI.readConfigFile('InterfaceConfig.ini')
+                .then(content => {
+                    if (content) {
+                        console.log('[UI] ✅ InterfaceConfig.ini caricato via IPC (Electron)');
+                        this.parseInterfaceConfig(content);
+                    } else {
+                        // File non trovato via IPC, prova con fetch (fallback)
+                        this._loadInterfaceConfigViaFetch();
+                    }
+                })
+                .catch(() => this._loadInterfaceConfigViaFetch());
+            return;
+        }
+        // Browser / web server: usa fetch standard
+        this._loadInterfaceConfigViaFetch();
+    },
+
+    _loadInterfaceConfigViaFetch: function() {
+        fetchFile(`./InterfaceConfig.ini?v=${Date.now()}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.text();
+            })
+            .then(content => {
+                console.log('[UI] ✅ InterfaceConfig.ini caricato');
+                this.parseInterfaceConfig(content);
+            })
+            .catch(() => {
+                // File opzionale - nessun errore se assente
+            });
+    },
+
+    /**
+     * Parsa il contenuto di InterfaceConfig.txt e applica le impostazioni
+     */
+    parseInterfaceConfig: function(content) {
+        const validPositions = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
+        const lines = content.split('\n');
+        let currentSection = null;
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line || line.startsWith('#')) continue;
+
+            if (line.startsWith('[') && line.endsWith(']')) {
+                currentSection = line.slice(1, -1);
+                continue;
+            }
+
+            if (currentSection === 'ResetCameraButton' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                if (key === 'Position' && validPositions.includes(value)) {
+                    this.resetCameraPosition = value;
+                    console.log(`📷 [UI] InterfaceConfig: ResetCameraButton.Position = ${value}`);
+                }
+            }
+
+            if (currentSection === 'CameraControls' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                window.InterfaceConfig = window.InterfaceConfig || {};
+                window.InterfaceConfig.camera = window.InterfaceConfig.camera || {};
+                if (key === 'InvertVertical') {
+                    window.InterfaceConfig.camera.invertVertical = (value === 'true');
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.InvertVertical = ${value}`);
+                } else if (key === 'InvertHorizontal') {
+                    window.InterfaceConfig.camera.invertHorizontal = (value === 'true');
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.InvertHorizontal = ${value}`);
+                } else if (key === 'PinchSensitivity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.pinchSensitivity = v;
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.PinchSensitivity = ${value}`);
+                } else if (key === 'InvertPinchZoom') {
+                    window.InterfaceConfig.camera.invertPinchZoom = (value === 'true');
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.InvertPinchZoom = ${value}`);
+                } else if (key === 'ScrollSensitivity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.scrollSensitivity = v;
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.ScrollSensitivity = ${value}`);
+                } else if (key === 'InvertScrollZoom') {
+                    window.InterfaceConfig.camera.invertScrollZoom = (value === 'true');
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.InvertScrollZoom = ${value}`);
+                } else if (key === 'ZoomMin') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMin = v;
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.ZoomMin = ${value}`);
+                } else if (key === 'ZoomMax') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMax = v;
+                    console.log(`🎥 [UI] InterfaceConfig: CameraControls.ZoomMax = ${value}`);
+                }
+            }
+        }
+    },
+
+    /**
      * Renderizza le carte degli scenari
      */
     renderScenarioCards: function() {
@@ -573,6 +680,96 @@ const UI = {
      */
     pulseStepBubble: function() {
         return this._tutorialManager.pulseStepBubble();
+    },
+
+    // === RESET CAMERA BUTTON API ===
+
+    /**
+     * Posizione corrente del pulsante reset camera.
+     * Valori: 'top-right' | 'top-left' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center'
+     */
+    resetCameraPosition: 'bottom-right',
+
+    /**
+     * Imposta la posizione del pulsante reset camera.
+     * @param {string} position
+     */
+    setResetCameraPosition: function(position) {
+        const valid = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
+        if (!valid.includes(position)) {
+            console.warn(`⚠️ [UI] Posizione non valida: "${position}". Valori validi: ${valid.join(', ')}`);
+            return;
+        }
+        this.resetCameraPosition = position;
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            valid.forEach(p => btn.classList.remove('pos-' + p));
+            btn.classList.add('pos-' + position);
+            // Preview temporaneo: mostra il pulsante brevemente per confermare la posizione
+            const wasHidden = btn.classList.contains('hidden');
+            if (wasHidden && this.currentPage !== 'home') {
+                btn.removeAttribute('style');
+                btn.classList.remove('hidden');
+                setTimeout(() => {
+                    if (!this.stepCameraState) { // Risconde solo se non c'è uno step attivo
+                        btn.classList.add('hidden');
+                    }
+                }, 1500);
+            }
+        }
+        console.log(`📷 [UI] Posizione pulsante reset camera impostata: ${position}`);
+    },
+
+    /**
+     * Mostra il pulsante reset camera.
+     */
+    showResetCameraButton: function() {
+        if (this.currentPage === 'home') return;
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            btn.removeAttribute('style');
+            btn.classList.remove('hidden');
+            // Applica SEMPRE la posizione corrente (resetCameraPosition è source of truth)
+            const valid = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
+            valid.forEach(p => btn.classList.remove('pos-' + p));
+            btn.classList.add('pos-' + (this.resetCameraPosition || 'bottom-right'));
+            console.log(`📷 [UI] Pulsante reset camera mostrato in posizione: ${this.resetCameraPosition || 'bottom-right'}`);
+        }
+    },
+
+    /**
+     * Nasconde il pulsante reset camera.
+     */
+    hideResetCameraButton: function() {
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            btn.classList.remove('pulse', 'animating');
+            btn.classList.add('hidden');
+            btn.style.display = 'none';
+            console.log('📷 [UI] Pulsante reset camera nascosto');
+        }
+    },
+
+    /**
+     * Ripristina la camera alla posizione iniziale dello step corrente.
+     */
+    resetCameraToStepPosition: function() {
+        const state = this.stepCameraState;
+        if (!state) {
+            console.warn('⚠️ [UI] Nessuna posizione camera salvata per questo step');
+            return false;
+        }
+        if (window.Scene3D && typeof window.Scene3D.setCameraFromInfo === 'function') {
+            window.Scene3D.setCameraFromInfo({ ...state, animate: true, duration: 0.8 });
+            const btn = document.getElementById('resetCameraBtn');
+            if (btn) {
+                btn.classList.add('animating');
+                setTimeout(() => btn.classList.remove('animating'), 700);
+            }
+            console.log('📷 [UI] Camera ripristinata alla posizione dello step');
+            return true;
+        }
+        return false;
     },
 
     // === TOOLS MANAGEMENT API (DELEGATED) ===

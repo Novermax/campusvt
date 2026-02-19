@@ -743,10 +743,10 @@ const Scene3D = {
     },
 
     onMouseDown: function(event) {
-        // ❌ BLOCCO MOUSE SE TOUCHSYSTEM È ATTIVO
+        // ❌ BLOCCO MOUSE SOLO SU DISPOSITIVI TOUCH
         // Previene che touch events convertiti in mouse events causino rotazione
-        if (window.TouchSystem && window.TouchSystem.initialized) {
-            console.log('[Scene3D] 🚫 onMouseDown BLOCCATO - TouchSystem attivo');
+        if (window.TouchSystem && window.TouchSystem.initialized && window.TouchSystem.isTouchDevice()) {
+            console.log('[Scene3D] 🚫 onMouseDown BLOCCATO - Dispositivo touch rilevato');
             return;
         }
 
@@ -774,10 +774,10 @@ const Scene3D = {
 
         if (!this.mouseControls.isMouseDown) return;
 
-        // ❌ BLOCCO ROTAZIONE CAMERA SE TOUCHSYSTEM È ATTIVO
+        // ❌ BLOCCO ROTAZIONE CAMERA SOLO SU DISPOSITIVI TOUCH
         // Previene che touch events convertiti in mouse events causino rotazione
-        if (window.TouchSystem && window.TouchSystem.initialized) {
-            console.log('[Scene3D] 🚫 onMouseMove BLOCCATO - TouchSystem attivo');
+        if (window.TouchSystem && window.TouchSystem.initialized && window.TouchSystem.isTouchDevice()) {
+            console.log('[Scene3D] 🚫 onMouseMove BLOCCATO - Dispositivo touch rilevato');
             return;
         }
 
@@ -818,10 +818,10 @@ const Scene3D = {
     },
 
     onMouseUp: function(event) {
-        // ❌ BLOCCO MOUSE SE TOUCHSYSTEM È ATTIVO
+        // ❌ BLOCCO MOUSE SOLO SU DISPOSITIVI TOUCH
         // Previene che touch events convertiti in mouse events causino interazioni
-        if (window.TouchSystem && window.TouchSystem.initialized) {
-            console.log('[Scene3D] 🚫 onMouseUp BLOCCATO - TouchSystem attivo');
+        if (window.TouchSystem && window.TouchSystem.initialized && window.TouchSystem.isTouchDevice()) {
+            console.log('[Scene3D] 🚫 onMouseUp BLOCCATO - Dispositivo touch rilevato');
             return;
         }
 
@@ -880,9 +880,12 @@ const Scene3D = {
     },
 
     onMouseWheel: function(event) {
+        const camCfg = (window.InterfaceConfig && window.InterfaceConfig.camera) || {};
+        const sensitivity = (camCfg.scrollSensitivity !== undefined) ? camCfg.scrollSensitivity : this.mouseControls.sensitivity.zoom;
         const rawDelta = event.deltaY;
-        const normalizedDelta = rawDelta > 0 ? 100 : -100;
-        const delta = normalizedDelta * this.mouseControls.sensitivity.zoom;
+        const direction = camCfg.invertScrollZoom ? -1 : 1;
+        const normalizedDelta = (rawDelta > 0 ? 100 : -100) * direction;
+        const delta = normalizedDelta * sensitivity;
         this.zoomCamera(delta);
         event.preventDefault();
     },
@@ -1077,8 +1080,11 @@ const Scene3D = {
         const spherical = new THREE.Spherical();
         spherical.setFromVector3(relativePosition);
         
-        spherical.theta -= deltaX * sensitivity;
-        spherical.phi += deltaY * sensitivity;
+        const camCfg = (window.InterfaceConfig && window.InterfaceConfig.camera) || {};
+        const signH = camCfg.invertHorizontal ? 1 : -1;
+        const signV = camCfg.invertVertical ? -1 : 1;
+        spherical.theta += signH * deltaX * sensitivity;
+        spherical.phi += signV * deltaY * sensitivity;
         
         spherical.phi = Math.max(limits.minPhi, Math.min(limits.maxPhi, spherical.phi));
         
@@ -1094,6 +1100,9 @@ const Scene3D = {
     zoomCamera: function(delta) {
         const limits = this.mouseControls.limits;
         const pivotPoint = this.mouseControls.pivotPoint;
+        const camCfg = (window.InterfaceConfig && window.InterfaceConfig.camera) || {};
+        const minZoom = (camCfg.zoomMin !== undefined) ? camCfg.zoomMin : limits.minZoom;
+        const maxZoom = (camCfg.zoomMax !== undefined) ? camCfg.zoomMax : limits.maxZoom;
 
         const relativePosition = new THREE.Vector3().subVectors(this.camera.position, pivotPoint);
         const spherical = new THREE.Spherical();
@@ -1102,7 +1111,7 @@ const Scene3D = {
         const zoomStep = delta > 0 ? 1.2 : 1/1.2;
         spherical.radius *= zoomStep;
 
-        spherical.radius = Math.max(limits.minZoom, Math.min(limits.maxZoom, spherical.radius));
+        spherical.radius = Math.max(minZoom, Math.min(maxZoom, spherical.radius));
 
         relativePosition.setFromSpherical(spherical);
         this.camera.position.copy(pivotPoint).add(relativePosition);
@@ -1552,13 +1561,26 @@ const Scene3D = {
                 const highlightedModel = this.highlightSystem.highlightedModel;
                 console.log(`[Scene3D] 🌟 Modello evidenziato attivo: ${highlightedModel.name}, cerco priorità...`);
 
-                // Cerca tra tutti gli intersects se uno appartiene al modello evidenziato
+                // Prima cerca tra tutti gli intersects normali
+                let foundInNormalIntersects = false;
                 for (let i = 0; i < intersects.length; i++) {
                     const rootModel = this.findRootModel(intersects[i].object);
                     if (rootModel === highlightedModel) {
                         selectedIntersect = intersects[i];
+                        foundInNormalIntersects = true;
                         console.log(`[Scene3D] ✨ PRIORITA' SILHOUETTE: Selezionato modello evidenziato "${highlightedModel.name}" (posizione ${i+1}/${intersects.length} nel raycast)`);
                         break;
+                    }
+                }
+
+                // Se non trovato negli intersects normali (oggetto completamente occludato da altra geometria),
+                // esegui raycast diretto SOLO sul modello evidenziato, bypassando la geometria davanti.
+                // Questo permette la selezione tramite la silhouette gialla da qualsiasi angolazione.
+                if (!foundInNormalIntersects) {
+                    const directIntersects = this.raycaster.intersectObject(highlightedModel, true);
+                    if (directIntersects.length > 0) {
+                        selectedIntersect = directIntersects[0];
+                        console.log(`[Scene3D] ✨ PRIORITA' SILHOUETTE OCCLUSA: "${highlightedModel.name}" selezionato attraverso geometria occludante`);
                     }
                 }
             }
@@ -1598,6 +1620,21 @@ const Scene3D = {
                     this.handleModelAction(targetModel);
                 } else {
                     console.log(`[Scene3D] 🎮 DragDropSystem attivo - evento delegato automaticamente`);
+                }
+            }
+        } else {
+            // Nessun intersect normale (clic in area vuota).
+            // Verifica se il modello evidenziato è geometricamente sotto il cursore:
+            // succede quando la silhouette gialla (depthTest=false) si estende oltre
+            // la geometria dei modelli davanti, ed è l'unica cosa visibile in quel punto.
+            if (this.highlightSystem.highlightedModel && this.highlightSystem.isHighlighting) {
+                const highlightedModel = this.highlightSystem.highlightedModel;
+                const directIntersects = this.raycaster.intersectObject(highlightedModel, true);
+                if (directIntersects.length > 0 && this.isModelSelectable(highlightedModel)) {
+                    console.log(`[Scene3D] ✨ SILHOUETTE IN SPAZIO VUOTO: "${highlightedModel.name}" selezionato`);
+                    if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
+                        this.handleModelAction(highlightedModel);
+                    }
                 }
             }
         }

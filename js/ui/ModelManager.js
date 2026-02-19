@@ -155,8 +155,8 @@ window.ModelManager = {
             
             // Aggiorna progress bar - fetch iniziato
             this.updateModelProgress(completedFiles, totalFiles, model.name);
-            
-            return fetch(model.path)
+
+            return fetchFile(model.path)
                 .then(response => {
                     console.log(`[ModelManager] 🌐 Response per ${model.path}:`, response.status, response.statusText);
                     if (!response.ok) {

@@ -1,0 +1,174 @@
+Scope della modifica
+
+Applicare la nuova logica SOLO quando:
+
+const isTouchDevice =
+  'ontouchstart' in window ||
+  navigator.maxTouchPoints > 0;
+
+
+Oppure usando pointerType === "touch" nei Pointer Events.
+
+Su desktop:
+
+Drag & drop invariato
+
+OrbitControls invariato
+
+Su touch:
+
+Abilitare:
+
+Select → Ghost Target → Tap to Place
+
+Tap singolo = azione oggetto 3D
+
+Camera solo se nessun oggetto interattivo
+
+Architettura di separazione
+Input routing
+renderer.domElement.addEventListener("pointerdown", onPointerDown);
+
+function onPointerDown(event) {
+    if (event.pointerType === "touch") {
+        handleTouchInteraction(event);
+    } else {
+        handleDesktopInteraction(event);
+    }
+}
+
+TOUCH MODE – Specifica comportamentale
+Priorità eventi (obbligatoria)
+1. Actionable object
+2. Movable object
+3. Placement target
+4. Camera control
+
+1) Touch → Azione oggetto 3D
+
+Se raycast colpisce:
+
+object.userData.isActionable === true
+
+
+Allora:
+
+Bloccare orbit
+
+Eseguire azione immediata
+
+Non attivare selezione
+
+Non entrare in drag
+
+if (hit.object.userData.isActionable) {
+    executeAction(hit.object);
+    return;
+}
+
+2) Touch → Selezione oggetto spostabile
+
+Se colpisce:
+
+object.userData.isMovable === true
+
+
+Allora:
+
+selectedObject = object
+
+Mostrare feedback visivo (outline / highlight)
+
+Attivare modalità placement
+
+Nessun drag.
+
+3) Touch → Placement (secondo tap)
+
+Se selectedObject != null:
+
+Raycast su layer placement
+
+Calcolare punto valido
+
+Snap automatico
+
+Applicare posizione
+
+Resettare stato
+
+if (selectedObject && hitPlacement) {
+    placeObject(selectedObject, hitPlacement);
+    selectedObject = null;
+}
+
+4) Camera solo se:
+
+Nessun oggetto actionable
+
+Nessun oggetto movable
+
+Nessun placement attivo
+
+Inoltre:
+
+Attivare orbit SOLO se movimento supera soglia:
+
+const DRAG_THRESHOLD = 8; // px
+
+
+Se lo spostamento del dito < soglia → interpretare come tap
+Se > soglia → orbit
+
+Ghost Target (solo touch)
+
+Quando selectedObject != null:
+
+Calcolare raycast continuo su pointermove
+
+Mostrare preview semitrasparente
+
+Verde = valido
+
+Rosso = non valido
+
+Disabilitato su desktop.
+
+Stato globale suggerito
+const interactionState = {
+    mode: "idle", // idle | selected
+    selectedObject: null,
+    isTouch: false
+};
+
+Vincolo chiave
+
+Il comportamento touch NON deve:
+
+Alterare drag desktop
+
+Alterare comportamento mouse
+
+Alterare scorciatoie tastiera
+
+Alterare eventi pointer non-touch
+
+Riassunto per LLM coder
+
+Su touch:
+
+No drag continuo
+
+Tap = azione prioritaria
+
+Tap = selezione
+
+Secondo tap = placement automatico
+
+Camera solo se nessun oggetto interattivo
+
+Soglia anti-drag obbligatoria
+
+Su desktop:
+
+Sistema attuale invariato

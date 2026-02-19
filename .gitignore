@@ -1,0 +1,41 @@
+# ============================================================================
+# CAMPUS VIRTUAL TRAINING - GITIGNORE
+# ============================================================================
+
+# Electron / Node.js
+node_modules/
+dist/
+out/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build artifacts
+build/*.ico
+build/*.png
+!build/README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# User data (se presente)
+user_data/
+logs/

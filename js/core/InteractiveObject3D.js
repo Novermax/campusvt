@@ -514,26 +514,26 @@ window.InteractiveObject3D = {
         if (this.highlightedButtons.has(triggerId)) {
             const highlightedMesh = this.highlightedButtons.get(triggerId);
             if (highlightedMesh && highlightedMesh.material) {
-                // Ripristina valori originali (emissive, opacity, transparent)
-                if (highlightedMesh.material.emissive) {
-                    highlightedMesh.material.emissive.setHex(highlightedMesh.userData.originalEmissive || 0x000000);
-                    highlightedMesh.material.emissiveIntensity = highlightedMesh.userData.originalEmissiveIntensity || 0;
-                }
-
-                // Ripristina opacity, transparent e depthWrite
-                if (highlightedMesh.userData.originalOpacity !== undefined) {
-                    highlightedMesh.material.opacity = highlightedMesh.userData.originalOpacity;
-                }
-                if (highlightedMesh.userData.originalTransparent !== undefined) {
-                    highlightedMesh.material.transparent = highlightedMesh.userData.originalTransparent;
-                }
-                highlightedMesh.material.depthWrite = true;
-                highlightedMesh.material.needsUpdate = true;
+                // Gestisce sia materiale singolo che array (stesso approccio di clearButtonHighlights)
+                const materials = Array.isArray(highlightedMesh.material) ? highlightedMesh.material : [highlightedMesh.material];
+                materials.forEach((material, index) => {
+                    if (highlightedMesh.userData.originalMaterials && highlightedMesh.userData.originalMaterials[index]) {
+                        const orig = highlightedMesh.userData.originalMaterials[index];
+                        if (material.emissive) {
+                            material.emissive.setHex(orig.emissive);
+                            material.emissiveIntensity = orig.emissiveIntensity;
+                        }
+                        material.opacity = orig.opacity;
+                        material.transparent = orig.transparent;
+                        material.depthWrite = !orig.transparent;
+                        material.needsUpdate = true;
+                    }
+                });
             }
             this.highlightedButtons.delete(triggerId);
-            console.log(`💡 [InteractiveObject3D] Evidenziazione rimossa da "${buttonId}" dopo click (opacity ripristinata a ${highlightedMesh.userData.originalOpacity})`);
+            console.log(`💡 [InteractiveObject3D] Evidenziazione rimossa da "${buttonId}" dopo click`);
 
-            // NUOVO: Rimuovi cerchio pulsante dopo click
+            // Rimuovi cerchio pulsante dopo click
             if (window.Scene3D && window.Scene3D.highlightCircleManager) {
                 try {
                     window.Scene3D.highlightCircleManager.removeCircle(triggerId);

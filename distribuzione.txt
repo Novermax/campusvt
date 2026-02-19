@@ -1,0 +1,39 @@
+Ho un’applicazione web basata su Three.js che attualmente eseguo in locale tramite:
+
+python -m http.server 8000
+
+
+Serve solo come web server statico, non uso Python per logica applicativa.
+
+Obiettivo
+Devo trasferire l’intero pacchetto su un altro PC con schermo touch e poterlo eseguire offline, in modo totalmente indipendente, senza:
+
+installare Python
+
+installare Node.js
+
+installare librerie di sistema o dipendenze aggiuntive
+
+richiedere connessione internet
+
+Vincoli
+
+L’app deve funzionare aprendo un singolo entry point (es. doppio click).
+
+Tutte le risorse (HTML, JS, CSS, asset Three.js, texture, modelli) devono essere incluse localmente.
+
+Nessuna dipendenza runtime esterna.
+
+Compatibilità con input touch .
+
+Aspettative tecniche
+Mi aspetto una soluzione del tipo:
+
+bundle statico auto-contenuto oppure
+
+wrapper con webview integrata (es. Electron-like ma senza installazioni lato utente) oppure
+
+altro approccio equivalente che elimini la necessità di un web server esterno.
+
+Non voglio workaround tipo “installa X e poi lancia Y”.
+Voglio un pacchetto distribuibile chiuso.

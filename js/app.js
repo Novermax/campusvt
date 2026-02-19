@@ -15,6 +15,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 // Rendi Three.js disponibile globalmente per compatibilità
 window.THREE = THREE;
@@ -22,6 +23,7 @@ window.OBJLoader = OBJLoader;
 window.MTLLoader = MTLLoader;
 window.STLLoader = STLLoader;
 window.GLTFLoader = GLTFLoader;
+window.DRACOLoader = DRACOLoader;
 
 window.App = {
     

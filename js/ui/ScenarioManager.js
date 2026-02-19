@@ -62,7 +62,7 @@ class ScenarioManager {
 
         const configUrl = './scenes/home.config';
 
-        fetch(configUrl)
+        fetchFile(configUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);

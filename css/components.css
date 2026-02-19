@@ -1707,11 +1707,9 @@ body.tool-brugola-active [role="button"] {
    PULSANTE RESET CAMERA STEP
    ============================================================================ */
 
+/* Stili base del pulsante (senza posizione - gestita dalle classi pos-*) */
 .reset-camera-btn {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 9700;
 
     display: flex;
@@ -1729,9 +1727,8 @@ body.tool-brugola-active [role="button"] {
     cursor: pointer;
 
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 
-    /* Impedisci selezione testo */
     user-select: none;
     -webkit-user-select: none;
 }
@@ -1740,77 +1737,130 @@ body.tool-brugola-active [role="button"] {
     display: none;
 }
 
+/* ── Posizioni configurabili ── */
+.reset-camera-btn.pos-top-center {
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: auto; right: auto;
+}
+.reset-camera-btn.pos-top-right {
+    top: 20px;
+    right: 20px;
+    left: auto; bottom: auto; transform: none;
+}
+.reset-camera-btn.pos-top-left {
+    top: 20px;
+    left: 20px;
+    right: auto; bottom: auto; transform: none;
+}
+.reset-camera-btn.pos-bottom-center {
+    bottom: 100px; /* sopra la barra step tutorial (~80px) */
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto; right: auto;
+}
+.reset-camera-btn.pos-bottom-right {
+    bottom: 100px; /* sopra la barra step tutorial (~80px) */
+    right: 20px;
+    left: auto; top: auto; transform: none;
+}
+.reset-camera-btn.pos-bottom-left {
+    bottom: 100px; /* sopra la barra step tutorial (~80px) */
+    left: 20px;
+    right: auto; top: auto; transform: none;
+}
+
+/* ── Hover / focus (per posizioni non centrate) ── */
 .reset-camera-btn:hover,
 .reset-camera-btn:focus {
     background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
     box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
-    transform: translateX(-50%) translateY(-2px);
+    transform: translateY(-2px);
 }
-
 .reset-camera-btn:active {
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
     box-shadow: 0 2px 10px rgba(52, 152, 219, 0.4);
 }
 
-/* Icona camera SVG */
+/* Hover per posizioni centrate (mantiene translateX) */
+.reset-camera-btn.pos-top-center:hover,
+.reset-camera-btn.pos-top-center:focus {
+    transform: translateX(-50%) translateY(-2px);
+}
+.reset-camera-btn.pos-top-center:active {
+    transform: translateX(-50%) translateY(0);
+}
+.reset-camera-btn.pos-bottom-center:hover,
+.reset-camera-btn.pos-bottom-center:focus {
+    transform: translateX(-50%) translateY(-2px);
+}
+.reset-camera-btn.pos-bottom-center:active {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Icona e testo ── */
 .reset-camera-btn .camera-icon {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
 }
-
-/* Testo del pulsante */
 .reset-camera-btn .camera-text {
     white-space: nowrap;
 }
 
-/* Animazione quando viene cliccato */
+/* ── Animazione click ── */
 .reset-camera-btn.animating {
     animation: cameraReset 0.6s ease;
 }
-
 @keyframes cameraReset {
-    0% { transform: translateX(-50%) scale(1); }
-    50% { transform: translateX(-50%) scale(1.1); }
-    100% { transform: translateX(-50%) scale(1); }
+    0%   { opacity: 1; }
+    30%  { opacity: 0.6; }
+    100% { opacity: 1; }
 }
 
-/* Mobile responsive */
+/* ── Mobile responsive ── */
 @media (max-width: 768px) {
     .reset-camera-btn {
-        top: 10px;
         padding: 8px 16px;
         font-size: 12px;
         border-radius: 20px;
     }
+    .reset-camera-btn.pos-top-center,
+    .reset-camera-btn.pos-top-right,
+    .reset-camera-btn.pos-top-left { top: 10px; }
+    .reset-camera-btn.pos-bottom-center,
+    .reset-camera-btn.pos-bottom-right,
+    .reset-camera-btn.pos-bottom-left { bottom: 80px; } /* sopra la barra step mobile */
+    .reset-camera-btn.pos-top-right,
+    .reset-camera-btn.pos-bottom-right { right: 10px; }
+    .reset-camera-btn.pos-top-left,
+    .reset-camera-btn.pos-bottom-left { left: 10px; }
 
     .reset-camera-btn .camera-icon {
         width: 18px;
         height: 18px;
     }
+}
 
-    /* Nascondi testo su schermi molto piccoli, mostra solo icona */
-    @media (max-width: 480px) {
-        .reset-camera-btn .camera-text {
-            display: none;
-        }
-
-        .reset-camera-btn {
-            padding: 10px;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            justify-content: center;
-        }
+@media (max-width: 480px) {
+    .reset-camera-btn .camera-text {
+        display: none;
+    }
+    .reset-camera-btn {
+        padding: 10px;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        justify-content: center;
     }
 }
 
-/* Touch feedback per dispositivi mobili */
+/* Touch feedback */
 @media (pointer: coarse) {
     .reset-camera-btn {
         min-height: 44px;
     }
-
     .reset-camera-btn:active {
         background: linear-gradient(135deg, #21618c 0%, #1a4d6d 100%);
     }

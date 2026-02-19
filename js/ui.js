@@ -70,6 +70,9 @@ window.UI = {
             // Carica automaticamente la configurazione home se disponibile
             this.loadHomeConfigFromServer();
 
+            // Carica configurazione interfaccia (InterfaceConfig.txt)
+            this.loadInterfaceConfig();
+
             // Inizializza ToolRegistry prima di ToolsManager
             if (window.ToolRegistry && typeof window.ToolRegistry.init === 'function') {
                 window.ToolRegistry.init();
@@ -175,6 +178,18 @@ window.UI = {
             AppConfig.log(3, 'Event listener pulsante reset camera configurato');
         }
 
+        // Event listener per pulsante Home
+        const homeButton = document.getElementById('homeButton');
+        if (homeButton) {
+            homeButton.addEventListener('click', () => {
+                console.log('🏠🏠🏠 [HOME BUTTON] Click rilevato, chiamando goHome()...');
+                this.goHome();
+            });
+            AppConfig.log(3, 'Event listener pulsante Home configurato');
+        } else {
+            console.error('❌ [setupEventListeners] Pulsante Home NON trovato!');
+        }
+
         AppConfig.log(3, 'Event listeners configurati');
     },
     
@@ -221,6 +236,8 @@ window.UI = {
      * RESET COMPLETO: Ripristina tutti gli stati come se l'app fosse appena caricata
      */
     goHome: function() {
+        console.log('🏠🏠🏠 [goHome] CHIAMATO - INIZIO FUNZIONE');
+        console.log('🏠🏠🏠 [goHome] currentPage:', this.currentPage);
         AppConfig.log(2, '[goHome] 🏠 Avvio reset completo per ritorno alla home...');
 
         // === FASE 1: RESET CURSORI E TOOL ===
@@ -336,12 +353,37 @@ window.UI = {
             AppConfig.log(3, '[goHome] Evidenziazioni pulsanti rimosse');
         }
 
+        // === CLEANUP FORZATO CERCHI GIALLI ===
+        // Rimuovi tutti i cerchi gialli (indicatori highlight) dalla scena
+        if (window.Scene3D && window.Scene3D.scene) {
+            const objectsToRemove = [];
+            window.Scene3D.scene.traverse((object) => {
+                // Trova oggetti con nome che indica cerchi di highlight
+                if (object.name && (object.name.includes('highlightCircle') || object.name.includes('highlight_circle'))) {
+                    objectsToRemove.push(object);
+                }
+            });
+
+            objectsToRemove.forEach(obj => {
+                if (obj.parent) {
+                    obj.parent.remove(obj);
+                    if (obj.geometry) obj.geometry.dispose();
+                    if (obj.material) obj.material.dispose();
+                }
+            });
+
+            if (objectsToRemove.length > 0) {
+                console.log(`🟡 [goHome] Rimossi ${objectsToRemove.length} cerchi highlight dalla scena`);
+            }
+        }
+
         // === FASE 8: RESET STATO TUTORIAL ===
         this.tutorialSteps = [];
         this.availableTutorials = [];
         this.currentTutorial = null;
         this.currentStepIndex = 0;
         this.stepCameraState = null; // Posizione camera dello step corrente
+        this.resetCameraPosition = 'bottom-right'; // Posizione pulsante reset camera (top-right/top-left/top-center/bottom-right/bottom-left/bottom-center)
 
         // Reset stato scenario
         this.currentScenario = null;
@@ -352,6 +394,27 @@ window.UI = {
 
         // Nasconde pulsante reset camera
         this.hideResetCameraButton();
+
+        // === CLEANUP FORZATO ELEMENTI UI ===
+        // Force nascondimento fumetto (backup)
+        const bubble = document.getElementById('stepSpeechBubble');
+        if (bubble) {
+            bubble.classList.remove('flash', 'pulse', 'dramatic-intro');
+            bubble.classList.add('hidden');
+            bubble.style.display = 'none';
+            bubble.style.visibility = 'hidden';
+            console.log('💬 [goHome] Fumetto forzatamente nascosto');
+        }
+
+        // Force nascondimento pulsante reset (backup)
+        const resetBtn = document.getElementById('resetCameraBtn');
+        if (resetBtn) {
+            resetBtn.classList.remove('pulse', 'animating');
+            resetBtn.classList.add('hidden');
+            resetBtn.style.display = 'none';
+            resetBtn.style.visibility = 'hidden';
+            console.log('📷 [goHome] Pulsante reset forzatamente nascosto');
+        }
 
         // Nascondi modal congratulazioni se presente
         const congratsModal = document.querySelector('.congratulations-modal');
@@ -370,6 +433,84 @@ window.UI = {
         // === FASE 9: MOSTRA HOME PAGE ===
         this.updateStatus('Home');
         this.showPage('home');
+
+        // === CLEANUP AGGRESSIVO CON MULTIPLI TENTATIVI ===
+        const forceHideElements = () => {
+            // Guard: esegui solo se siamo ancora sulla home page
+            if (this.currentPage !== 'home') {
+                console.log('🧹 [goHome] Cleanup saltato - utente già nello scenario');
+                return;
+            }
+            console.log('🧹 [goHome] Esecuzione cleanup UI...');
+
+            // Fumetto: inline style con !important per override totale
+            const bubble = document.getElementById('stepSpeechBubble');
+            if (bubble) {
+                console.log('💬 [goHome] Trovato fumetto, nascondendolo...');
+                // Rimuovi classi animazione
+                bubble.classList.remove('flash', 'pulse', 'dramatic-intro');
+                bubble.classList.add('hidden');
+                // Inline style che override qualsiasi altro CSS
+                bubble.setAttribute('style', 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;');
+                console.log('💬 [goHome] ✅ Fumetto nascosto con inline style !important');
+            } else {
+                console.log('💬 [goHome] ⚠️ Fumetto NON trovato nel DOM');
+            }
+
+            // Pulsante reset: inline style con !important per override totale
+            const resetBtn = document.getElementById('resetCameraBtn');
+            if (resetBtn) {
+                console.log('📷 [goHome] Trovato pulsante reset, nascondendolo...');
+                // Rimuovi classi animazione
+                resetBtn.classList.remove('pulse', 'animating');
+                resetBtn.classList.add('hidden');
+                // Inline style che override qualsiasi altro CSS
+                resetBtn.setAttribute('style', 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;');
+                console.log('📷 [goHome] ✅ Pulsante reset nascosto con inline style !important');
+            } else {
+                console.log('📷 [goHome] ⚠️ Pulsante reset NON trovato nel DOM');
+            }
+
+            // Rimuovi tutti i cerchi gialli dalla scena 3D
+            if (window.Scene3D && window.Scene3D.scene) {
+                const toRemove = [];
+                window.Scene3D.scene.traverse((obj) => {
+                    if (obj.name && (obj.name.includes('highlightCircle') || obj.name.includes('highlight_circle') || obj.name.includes('highlight'))) {
+                        toRemove.push(obj);
+                    }
+                });
+
+                toRemove.forEach(obj => {
+                    if (obj.parent) {
+                        obj.parent.remove(obj);
+                        if (obj.geometry) obj.geometry.dispose();
+                        if (obj.material) {
+                            if (Array.isArray(obj.material)) {
+                                obj.material.forEach(m => m.dispose());
+                            } else {
+                                obj.material.dispose();
+                            }
+                        }
+                    }
+                });
+
+                if (toRemove.length > 0) {
+                    console.log(`🟡 [goHome] Rimossi ${toRemove.length} cerchi highlight dalla scena`);
+                }
+            }
+        };
+
+        // Esegui cleanup IMMEDIATAMENTE
+        forceHideElements();
+
+        // Esegui cleanup RITARDATO (backup) - multipli tentativi
+        setTimeout(forceHideElements, 0);
+        setTimeout(forceHideElements, 50);
+        setTimeout(forceHideElements, 100);
+        setTimeout(forceHideElements, 200);
+        setTimeout(forceHideElements, 500);
+
+        console.log('🧹 [goHome] Cleanup UI schedulato: immediato + 5 tentativi ritardati');
 
         AppConfig.log(2, '[goHome] ✅ Reset completo terminato - ritorno alla home');
     },
@@ -457,8 +598,8 @@ window.UI = {
     loadHomeConfigFromServer: function() {
         this.safeLog(2, 'Tentativo caricamento home_config.txt dal server...');
         this.updateStatus('Caricamento configurazione...');
-        
-        fetch(`./home_config.txt?v=${Date.now()}`)
+
+        fetchFile(`./home_config.ini?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -477,6 +618,109 @@ window.UI = {
             });
     },
     
+    /**
+     * Carica e applica InterfaceConfig.ini (opzionale).
+     * In Electron usa IPC per leggere il file dalla directory dell'exe (fuori ASAR),
+     * così l'utente può modificarlo e rilancire il programma per applicare le modifiche.
+     * In browser usa fetch standard.
+     */
+    loadInterfaceConfig: function() {
+        // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
+        if (window.electronAPI && window.electronAPI.readConfigFile) {
+            window.electronAPI.readConfigFile('InterfaceConfig.ini')
+                .then(content => {
+                    if (content) {
+                        this.safeLog(2, 'InterfaceConfig.ini caricato via IPC (Electron)');
+                        this.parseInterfaceConfig(content);
+                    } else {
+                        // File non trovato via IPC, prova con fetch (fallback)
+                        this._loadInterfaceConfigViaFetch();
+                    }
+                })
+                .catch(() => this._loadInterfaceConfigViaFetch());
+            return;
+        }
+        // Browser / web server: usa fetch standard
+        this._loadInterfaceConfigViaFetch();
+    },
+
+    _loadInterfaceConfigViaFetch: function() {
+        fetchFile(`./InterfaceConfig.ini?v=${Date.now()}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.text();
+            })
+            .then(content => {
+                this.safeLog(2, 'InterfaceConfig.ini caricato con successo');
+                this.parseInterfaceConfig(content);
+            })
+            .catch(() => {
+                // File opzionale - silenzioso se assente
+            });
+    },
+
+    /**
+     * Parsa InterfaceConfig.txt e applica le impostazioni UI
+     */
+    parseInterfaceConfig: function(content) {
+        const validPositions = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
+        const lines = content.split('\n');
+        let currentSection = null;
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line || line.startsWith('#')) continue;
+
+            if (line.startsWith('[') && line.endsWith(']')) {
+                currentSection = line.slice(1, -1);
+                continue;
+            }
+
+            if (currentSection === 'ResetCameraButton' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                if (key === 'Position' && validPositions.includes(value)) {
+                    this.resetCameraPosition = value;
+                    this.safeLog(2, `InterfaceConfig: ResetCameraButton.Position = ${value}`);
+                }
+            }
+
+            if (currentSection === 'CameraControls' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                window.InterfaceConfig = window.InterfaceConfig || {};
+                window.InterfaceConfig.camera = window.InterfaceConfig.camera || {};
+                if (key === 'InvertVertical') {
+                    window.InterfaceConfig.camera.invertVertical = (value === 'true');
+                    this.safeLog(2, `InterfaceConfig: CameraControls.InvertVertical = ${value}`);
+                } else if (key === 'InvertHorizontal') {
+                    window.InterfaceConfig.camera.invertHorizontal = (value === 'true');
+                    this.safeLog(2, `InterfaceConfig: CameraControls.InvertHorizontal = ${value}`);
+                } else if (key === 'PinchSensitivity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.pinchSensitivity = v;
+                    this.safeLog(2, `InterfaceConfig: CameraControls.PinchSensitivity = ${value}`);
+                } else if (key === 'InvertPinchZoom') {
+                    window.InterfaceConfig.camera.invertPinchZoom = (value === 'true');
+                    this.safeLog(2, `InterfaceConfig: CameraControls.InvertPinchZoom = ${value}`);
+                } else if (key === 'ScrollSensitivity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.scrollSensitivity = v;
+                    this.safeLog(2, `InterfaceConfig: CameraControls.ScrollSensitivity = ${value}`);
+                } else if (key === 'InvertScrollZoom') {
+                    window.InterfaceConfig.camera.invertScrollZoom = (value === 'true');
+                    this.safeLog(2, `InterfaceConfig: CameraControls.InvertScrollZoom = ${value}`);
+                } else if (key === 'ZoomMin') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMin = v;
+                    this.safeLog(2, `InterfaceConfig: CameraControls.ZoomMin = ${value}`);
+                } else if (key === 'ZoomMax') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMax = v;
+                    this.safeLog(2, `InterfaceConfig: CameraControls.ZoomMax = ${value}`);
+                }
+            }
+        }
+    },
+
     /**
      * Analizza il file di configurazione home e genera le card scenari
      */
@@ -1120,7 +1364,7 @@ window.UI = {
                 return Promise.race([
                     // IMPORTANTE: cache: 'no-store' forza il browser a bypassare la cache HTTP
                     // Risolve il problema "Modelli mancanti" causato da risposte corrotte/parziali in cache
-                    fetch(url, { cache: 'no-store' }),
+                    fetchFile(url, { cache: 'no-store' }),
                     new Promise((_, reject) =>
                         setTimeout(() => reject(new Error(`Timeout dopo ${timeout/1000}s`)), timeout)
                     )
@@ -1533,12 +1777,18 @@ window.UI = {
         if (progressBar) {
             // Reset elementi
             this.updateModelProgress(0, totalFiles, 'Preparazione...');
-            
+
             // Mostra la progress bar
             progressBar.classList.remove('hidden');
-            
+
             console.log('📊 Progress bar modelli mostrata');
         }
+
+        // Disabilita pulsanti tutorial durante caricamento 3D
+        document.querySelectorAll('.tutorial-arrow-btn').forEach(btn => {
+            btn.classList.add('loading-disabled');
+        });
+        console.log('🔒 Pulsanti tutorial disabilitati durante caricamento 3D');
     },
     
     /**
@@ -1588,6 +1838,12 @@ window.UI = {
             progressBar.classList.add('hidden');
             console.log('📊 Progress bar modelli nascosta');
         }
+
+        // Riabilita pulsanti tutorial al termine del caricamento 3D
+        document.querySelectorAll('.tutorial-arrow-btn').forEach(btn => {
+            btn.classList.remove('loading-disabled');
+        });
+        console.log('🔓 Pulsanti tutorial riabilitati dopo caricamento 3D');
     },
     
     /* ===== AZIONI PULSANTI ===== */
@@ -2123,8 +2379,8 @@ window.UI = {
         
         try {
             AppConfig.log(2, `Caricamento tutorial: ${tutorialPath}`);
-            
-            const response = await fetch(tutorialPath);
+
+            const response = await fetchFile(tutorialPath);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
@@ -3287,6 +3543,13 @@ window.UI = {
         console.log(`[DEBUG] 🚀 EXECUTE STEP chiamata per: "${step.title}"`);
         console.log(`[DEBUG] 🚀 Step properties:`, step.properties);
         AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
+
+        // ═══════════════════════════════════════════════════════════════
+        // RESET: Pulisci posizione camera precedente
+        // ═══════════════════════════════════════════════════════════════
+        this.stepCameraState = null;
+        this.hideResetCameraButton();
+        console.log('📷 [UI] Reset stepCameraState per nuovo step');
 
         // ═══════════════════════════════════════════════════════════════
         // STEP CONTROLLER: Notifica cambio step corrente
@@ -4527,11 +4790,17 @@ window.UI = {
      * Mostra il fumetto per la descrizione step
      */
     showStepSpeechBubble: function() {
+        // GUARD: Non mostrare se siamo sulla home page
+        if (this.currentPage === 'home') {
+            console.log('💬 [UI] showStepSpeechBubble BLOCCATO - siamo sulla home page');
+            return;
+        }
+
         const bubble = document.getElementById('stepSpeechBubble');
         if (bubble) {
             bubble.classList.remove('hidden');
-            // Rimuovi inline style se presente
-            bubble.style.display = '';
+            // Rimuovi TUTTI gli inline style (inclusi !important impostati da goHome)
+            bubble.removeAttribute('style');
         }
     },
     
@@ -4818,7 +5087,7 @@ window.UI = {
         try {
             AppConfig.log(3, `🏗️ ASSEMBLY CONFIG: Caricamento da ${configPath}`);
 
-            const response = await fetch(configPath);
+            const response = await fetchFile(configPath);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
@@ -5279,15 +5548,55 @@ window.UI = {
      * ═══════════════════════════════════════════════════════════════ */
 
     /**
+     * Imposta la posizione del pulsante reset camera.
+     * @param {string} position - 'top-right'|'top-left'|'top-center'|'bottom-right'|'bottom-left'|'bottom-center'
+     */
+    setResetCameraPosition: function(position) {
+        const valid = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
+        if (!valid.includes(position)) {
+            console.warn(`⚠️ [UI] Posizione non valida: "${position}". Valori validi: ${valid.join(', ')}`);
+            return;
+        }
+        this.resetCameraPosition = position;
+        const btn = document.getElementById('resetCameraBtn');
+        if (btn) {
+            valid.forEach(p => btn.classList.remove('pos-' + p));
+            btn.classList.add('pos-' + position);
+            // Preview temporaneo: mostra il pulsante brevemente per confermare la posizione
+            const wasHidden = btn.classList.contains('hidden');
+            if (wasHidden && this.currentPage !== 'home') {
+                btn.removeAttribute('style');
+                btn.classList.remove('hidden');
+                setTimeout(() => {
+                    if (!this.stepCameraState) { // Risconde solo se non c'è uno step attivo
+                        btn.classList.add('hidden');
+                    }
+                }, 1500);
+            }
+        }
+        console.log(`📷 [UI] Posizione pulsante reset camera impostata: ${position}`);
+    },
+
+    /**
      * Mostra il pulsante reset camera
      */
     showResetCameraButton: function() {
+        // GUARD: Non mostrare se siamo sulla home page
+        if (this.currentPage === 'home') {
+            console.log('📷 [UI] showResetCameraButton BLOCCATO - siamo sulla home page');
+            return;
+        }
+
         const btn = document.getElementById('resetCameraBtn');
         if (btn) {
+            // Rimuovi TUTTO l'inline style (inclusi visibility:hidden !important impostati da goHome)
+            btn.removeAttribute('style');
             btn.classList.remove('hidden');
-            // Rimuovi inline style se presente
-            btn.style.display = '';
-            console.log('📷 [UI] Pulsante reset camera mostrato');
+            // Applica SEMPRE la posizione corrente (resetCameraPosition è source of truth)
+            const valid = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
+            valid.forEach(p => btn.classList.remove('pos-' + p));
+            btn.classList.add('pos-' + (this.resetCameraPosition || 'bottom-left'));
+            console.log(`📷 [UI] Pulsante reset camera mostrato in posizione: ${this.resetCameraPosition || 'bottom-left'}`);
         }
     },
 

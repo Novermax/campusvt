@@ -1,0 +1,319 @@
+
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 1 1 1
+modelloader.js?nocache=1000011:833 🎨 Color sum: 3
+modelloader.js?nocache=1000011:840 🔍 Controllo material: bianco colorSum=3
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.06933585740625858
+modelloader.js?nocache=1000011:840 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
+modelloader.js?nocache=1000011:853 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.023 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02539406530559063 0.02539406530559063 0.02539406530559063
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.07618219591677189
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.023 colorSum=0.07618219591677189
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 2c2c2c
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Silver.004 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.4200245141983032 0.4200245141983032 0.4200245141983032
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.2600735425949097
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Silver.004 colorSum=1.2600735425949097
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.024 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.2202576845884323 0.18442445993423462 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.40468214452266693
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.024 colorSum=0.40468214452266693
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.06933585740625858
+modelloader.js?nocache=1000011:840 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
+modelloader.js?nocache=1000011:853 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.025 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02539406530559063 0.02539406530559063 0.02539406530559063
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.07618219591677189
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.025 colorSum=0.07618219591677189
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 2c2c2c
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Silver.005 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.4200245141983032 0.4200245141983032 0.4200245141983032
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.2600735425949097
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Silver.005 colorSum=1.2600735425949097
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.026 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.2202576845884323 0.18442445993423462 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.40468214452266693
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.026 colorSum=0.40468214452266693
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.06933585740625858
+modelloader.js?nocache=1000011:840 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
+modelloader.js?nocache=1000011:853 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.027 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02539406530559063 0.02539406530559063 0.02539406530559063
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.07618219591677189
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.027 colorSum=0.07618219591677189
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 2c2c2c
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Silver.006 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.4200245141983032 0.4200245141983032 0.4200245141983032
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.2600735425949097
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Silver.006 colorSum=1.2600735425949097
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.028 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.2202576845884323 0.18442445993423462 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.40468214452266693
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.028 colorSum=0.40468214452266693
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Letter Glow.001 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Letter Glow.001 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:929 💡 [ModelLoader] Materiale luminoso potenziato: Letter Glow.001 su mesh telaio_14, emissiveIntensity=3
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.037 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.9600689113140106
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.037 colorSum=0.9600689113140106
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.003 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.9600689113140106
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.003 colorSum=0.9600689113140106
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.058 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.8000074625015259 0.0017059262609109282 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.8017133887624368
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.058 colorSum=0.8017133887624368
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.035 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.8000074625015259 0.0017059262609109282 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.8017133887624368
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.035 colorSum=0.8017133887624368
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.069 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.074936032295227
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.069 colorSum=1.074936032295227
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: bianco.005 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+modelloader.js?nocache=1000011:833 🎨 Color sum: 2.400000035762787
+modelloader.js?nocache=1000011:840 🔍 Controllo material: bianco.005 colorSum=2.400000035762787
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.068 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.074936032295227
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.068 colorSum=1.074936032295227
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Luminoso.001 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Luminoso.001 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:929 💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.001 su mesh p_on_1, emissiveIntensity=3
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+modelloader.js?nocache=1000011:833 🎨 Color sum: 2.400000035762787
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material colorSum=2.400000035762787
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.067 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+modelloader.js?nocache=1000011:833 🎨 Color sum: 2.400000035762787
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.067 colorSum=2.400000035762787
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: simbolini.001 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: simbolini.001 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.029 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.074936032295227
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.029 colorSum=1.074936032295227
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.030 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.030 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Luminoso.001 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.2 0.2 0.2
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.6000000000000001
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Luminoso.001 colorSum=0.6000000000000001
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:929 💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.001 su mesh simbolini001_3, emissiveIntensity=3
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.031 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0.2581735849380493 0.46068859100341797
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.7188621759414673
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.031 colorSum=0.7188621759414673
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.032 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0.04249753803014755 0.250879168510437
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.29337670654058456
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.032 colorSum=0.29337670654058456
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.033 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.074936032295227
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.033 colorSum=1.074936032295227
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:871 ⚠️ Roughness troppo bassa, aumentando
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.034 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0.250879168510437 0.010888764634728432
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.26176793314516544
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.034 colorSum=0.26176793314516544
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.06933585740625858
+modelloader.js?nocache=1000011:840 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
+modelloader.js?nocache=1000011:853 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.036 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.8000156879425049 0.40019044280052185 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 1.2002061307430267
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.036 colorSum=1.2002061307430267
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.037 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.9600689113140106
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.037 colorSum=0.9600689113140106
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: mat_1.001 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0.03310476616024971 0.03310476616024971 0.03310476616024971
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0.09931429848074913
+modelloader.js?nocache=1000011:840 🔍 Controllo material: mat_1.001 colorSum=0.09931429848074913
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 333333
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.002 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.002 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.066 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.066 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.041 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.041 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.042 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.042 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Material.001 Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 0 0 0
+modelloader.js?nocache=1000011:833 🎨 Color sum: 0
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Material.001 colorSum=0
+modelloader.js?nocache=1000011:856 ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+modelloader.js?nocache=1000011:858 🎨 NUOVO COLORE: 7c7c7c
+modelloader.js?nocache=1000011:865 ⚠️ Metalness troppo alta, riducendo
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:803 🎯 GLTF/GLB processato, chiamando onSuccess
+modelloader.js?nocache=1000011:213 ✅ Modello 1/4 caricato: pulpito.glb
+ui.js?nocache=1000040:1398 🌐 Progress: 1/4 - pulpito.glb
+ui.js?nocache=1000040:1760 📊 Progress aggiornato: 25% - pulpito.glb
+fetchFile.js?v=1000001:63 [fetchFile] ✅ XMLHttpRequest completato - Status: 200, StatusText: "OK"
+fetchFile.js?v=1000001:69 [fetchFile] 📄 Contenuto testo ricevuto (primi 200 caratteri): var $jscomp=$jscomp||{};$jscomp.scope={};$jscomp.arrayIteratorImpl=function(k){var n=0;return function(){return n<k.length?{done:!1,value:k[n++]}:{done:!0}}};$jscomp.arrayIterator=function(k){return{n
+fetchFile.js?v=1000001:120 [fetchFile] Response.ok = true
+modelloader.js?nocache=1000011:762 ✅ GLTF/GLB caricato con successo: Object
+modelloader.js?nocache=1000011:831 🎨 Fixing material: Matte Porcelain Tile Beige Type: MeshStandardMaterial Color: Color
+modelloader.js?nocache=1000011:832 🎨 Color RGB values: 1 1 1
+modelloader.js?nocache=1000011:833 🎨 Color sum: 3
+modelloader.js?nocache=1000011:840 🔍 Controllo material: Matte Porcelain Tile Beige colorSum=3
+modelloader.js?nocache=1000011:860 ✅ Colore OK, non modificato
+modelloader.js?nocache=1000011:900 ✅ Materiale corretto: Object
+modelloader.js?nocache=1000011:803 🎯 GLTF/GLB processato, chiamando onSuccess
+modelloader.js?nocache=1000011:213 ✅ Modello 2/4 caricato: pavimento.glb
+ui.js?nocache=1000040:1398 🌐 Progress: 2/4 - pavimento.glb
+ui.js?nocache=1000040:1760 📊 Progress aggiornato: 50% - pavimento.glb
+fetchFile.js?v=1000001:63 [fetchFile] ✅ XMLHttpRequest completato - Status: 200, StatusText: "OK"
+fetchFile.js?v=1000001:73 [fetchFile] 📦 File binario ricevuto - Dimensione: 1556974 bytes
+fetchFile.js?v=1000001:120 [fetchFile] Response.ok = true
+fetchFile.js?v=1000001:63 [fetchFile] ✅ XMLHttpRequest completato - Status: 200, StatusText: "OK"
+fetchFile.js?v=1000001:73 [fetchFile] 📦 File binario ricevuto - Dimensione: 2989997 bytes
+fetchFile.js?v=1000001:120 [fetchFile] Response.ok = true
+fetchFile.js?v=1000001:63 [fetchFile] ✅ XMLHttpRequest completato - Status: 200, StatusText: "OK"
+fetchFile.js?v=1000001:73 [fetchFile] 📦 File binario ricevuto - Dimensione: 3585782 bytes
+fetchFile.js?v=1000001:120 [fetchFile] Response.ok = true
+fetchFile.js?v=1000001:63 [fetchFile] ✅ XMLHttpRequest completato - Status: 200, StatusText: "OK"
+fetchFile.js?v=1000001:69 [fetchFile] 📄 Contenuto testo ricevuto (primi 200 caratteri): 

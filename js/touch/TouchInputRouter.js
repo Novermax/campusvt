@@ -79,8 +79,8 @@ window.TouchInputRouter = {
             return { layer: this.LAYERS.UI, target: uiTarget, hitPoint: null };
         }
 
-        // 2. Controlla elementi 3D con raycast
-        const raycastResult = this.performRaycast(touch.normalizedX, touch.normalizedY);
+        // 2. Controlla elementi 3D con raycast multi-punto (più sensibile al tocco dita)
+        const raycastResult = this.performRaycastMultiPoint(touch.normalizedX, touch.normalizedY);
 
         if (raycastResult) {
             // 2a. È un elemento interattivo (pulsante 3D)?
@@ -183,7 +183,7 @@ window.TouchInputRouter = {
     },
 
     /**
-     * Esegue raycast 3D
+     * Esegue raycast 3D su singolo punto
      */
     performRaycast: function(normalizedX, normalizedY) {
         if (!window.Scene3D || !window.Scene3D.camera || !window.Scene3D.scene) {
@@ -217,6 +217,70 @@ window.TouchInputRouter = {
         }
 
         return null;
+    },
+
+    /**
+     * Raycast multi-punto: prova il centro + 8 punti adiacenti (~12px di raggio)
+     * Compensare la larghezza delle dita su touchscreen (~40-50px)
+     */
+    performRaycastMultiPoint: function(normalizedX, normalizedY) {
+        // Prova prima il punto esatto
+        const centerResult = this.performRaycast(normalizedX, normalizedY);
+        if (centerResult) return centerResult;
+
+        // Calcola offset in coordinate normalizzate (circa 12px su schermo tipico mobile)
+        const canvas = document.getElementById('canvas3d');
+        const cw = canvas ? canvas.clientWidth : 400;
+        const ch = canvas ? canvas.clientHeight : 700;
+        const ox = 12 / cw * 2;
+        const oy = 12 / ch * 2;
+
+        // 8 punti attorno al centro (croce + diagonali)
+        const offsets = [
+            { x:  0,  y:  oy }, // sopra
+            { x:  0,  y: -oy }, // sotto
+            { x: -ox, y:   0 }, // sinistra
+            { x:  ox, y:   0 }, // destra
+            { x: -ox, y:  oy }, // alto-sinistra
+            { x:  ox, y:  oy }, // alto-destra
+            { x: -ox, y: -oy }, // basso-sinistra
+            { x:  ox, y: -oy }  // basso-destra
+        ];
+
+        for (const off of offsets) {
+            const result = this.performRaycast(normalizedX + off.x, normalizedY + off.y);
+            if (result) return result;
+        }
+
+        return null;
+    },
+
+    /**
+     * Controlla immediatamente al touchStart se il tocco è su un elemento
+     * interattivo o draggabile, e setta il flag sul GestureRecognizer.
+     * Questo previene la conversione tap→drag prima ancora che il movimento inizi.
+     */
+    checkAndSetInteractiveFlag: function(touchEvent) {
+        const touch = touchEvent.touch || (touchEvent.touches && touchEvent.touches[0]);
+        if (!touch) return;
+
+        // Salta se non è un tocco singolo (pinch/gesture a 2 dita non bloccate)
+        if (touchEvent.touches && touchEvent.touches.length !== 1) return;
+
+        // Usa raycast multi-punto per massimizzare il rilevamento
+        const raycastResult = this.performRaycastMultiPoint(touch.normalizedX, touch.normalizedY);
+        if (!raycastResult) return;
+
+        const isInteractive = this.isInteractive3DElement(raycastResult.object);
+        const isDraggable = this.isDraggableObject(raycastResult.object);
+
+        // Se l'oggetto è interattivo O draggabile (ha senso bloccarlo), setta il flag
+        if (isInteractive || isDraggable) {
+            if (this.gestureRecognizer) {
+                this.gestureRecognizer.setInteractiveElement(true);
+                console.log('[TouchInputRouter] 🎯 Flag interattivo settato al touchStart per:', raycastResult.object.name);
+            }
+        }
     },
 
     /**
@@ -441,7 +505,10 @@ window.TouchInputRouter = {
                 break;
 
             case this.LAYERS.CAMERA:
-                // Drag su vuoto - potrebbe essere pan camera con 1 dito?
+                // Priority 4 (modifica_touch.txt): orbit 1 dito solo se nessun elemento interattivo
+                if (this.cameraHandler && this.cameraHandler.handleOneFingerDragStart) {
+                    this.cameraHandler.handleOneFingerDragStart(event);
+                }
                 break;
         }
     },
@@ -453,6 +520,9 @@ window.TouchInputRouter = {
         // Usa il layer determinato al dragstart
         if (this.currentLayer === this.LAYERS.OBJECT_3D && this.dragHandler) {
             this.dragHandler.handleDragMove(event, this.currentTarget);
+        } else if (this.currentLayer === this.LAYERS.CAMERA && this.cameraHandler &&
+                   this.cameraHandler.handleOneFingerDrag) {
+            this.cameraHandler.handleOneFingerDrag(event);
         }
     },
 
@@ -462,6 +532,9 @@ window.TouchInputRouter = {
     routeDragEnd: function(event) {
         if (this.currentLayer === this.LAYERS.OBJECT_3D && this.dragHandler) {
             this.dragHandler.handleDragEnd(event, this.currentTarget);
+        } else if (this.currentLayer === this.LAYERS.CAMERA && this.cameraHandler &&
+                   this.cameraHandler.handleOneFingerDragEnd) {
+            this.cameraHandler.handleOneFingerDragEnd(event);
         }
 
         this.currentLayer = null;

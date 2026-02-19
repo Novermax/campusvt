@@ -734,7 +734,15 @@ window.ModelLoader = {
         // Inizializza GLTFLoader se necessario
         if (!this.loaders.gltf && typeof window.GLTFLoader !== 'undefined') {
             this.loaders.gltf = new window.GLTFLoader();
-            console.log('✅ GLTFLoader inizializzato');
+            // Configura DRACOLoader per supporto modelli compressi
+            if (typeof window.DRACOLoader !== 'undefined') {
+                const dracoLoader = new window.DRACOLoader();
+                dracoLoader.setDecoderPath('./libs/draco/');
+                this.loaders.gltf.setDRACOLoader(dracoLoader);
+                console.log('✅ GLTFLoader + DRACOLoader inizializzati (decoder: ./libs/draco/)');
+            } else {
+                console.log('✅ GLTFLoader inizializzato (DRACOLoader non disponibile)');
+            }
         }
         
         if (!this.loaders.gltf) {

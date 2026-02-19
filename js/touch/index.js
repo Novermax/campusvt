@@ -102,11 +102,23 @@ window.TouchSystem = {
         this.dispatcher.onTouchStart = function(event) {
             if (!self.enabled) return;
             self.recognizer.handleTouchStart(event);
+            // 🎯 Controlla SUBITO se il tocco è su un elemento interattivo/draggabile.
+            // Questo setta il flag sul GestureRecognizer PRIMA di qualsiasi touchMove,
+            // impedendo che piccoli tremori del dito convertano il tap in drag/rotazione camera.
+            if (self.router && self.router.checkAndSetInteractiveFlag) {
+                self.router.checkAndSetInteractiveFlag(event);
+            }
         };
 
         this.dispatcher.onTouchMove = function(event) {
             if (!self.enabled) return;
             self.recognizer.handleTouchMove(event);
+
+            // 👻 Aggiorna ghost target se c'è un oggetto selezionato in modalità placement
+            // (modifica_touch.txt §"Ghost Target (solo touch)")
+            if (self.dragHandler && self.dragHandler.hasSelectedObject()) {
+                self.dragHandler.handleGhostMove(event);
+            }
         };
 
         this.dispatcher.onTouchEnd = function(event) {

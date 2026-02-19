@@ -33,10 +33,10 @@ window.GestureRecognizer = {
     // CONFIGURAZIONE THRESHOLD
     // ═══════════════════════════════════════════════════════════
     config: {
-        TAP_MAX_DURATION: 250,          // ms - durata max per tap
-        TAP_MAX_MOVEMENT: 15,           // px - movimento max per tap
-        DOUBLE_TAP_MAX_INTERVAL: 300,   // ms - intervallo max tra tap
-        DRAG_MIN_MOVEMENT: 10,          // px - movimento min per drag
+        TAP_MAX_DURATION: 400,          // ms - durata max per tap (era 250, aumentato per dita lente)
+        TAP_MAX_MOVEMENT: 28,           // px - movimento max per tap (era 15, tollerante al tremore dita)
+        DOUBLE_TAP_MAX_INTERVAL: 150,   // ms - intervallo max tra tap (era 300, ridotto per risposta rapida)
+        DRAG_MIN_MOVEMENT: 22,          // px - movimento min per drag (era 10, alzato per evitare falsi drag)
         PINCH_MIN_DELTA: 20,            // px - delta distanza min per pinch
         ROTATION_MIN_MOVEMENT: 15       // px - movimento min per rotazione
     },

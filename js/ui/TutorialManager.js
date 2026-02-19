@@ -65,7 +65,7 @@ class TutorialManager {
         try {
             this.safeLog(2, `[TutorialManager] Caricamento tutorial: ${tutorialPath}`);
 
-            const response = await fetch(tutorialPath);
+            const response = await fetchFile(tutorialPath);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
@@ -403,6 +403,12 @@ class TutorialManager {
      * Mostra il fumetto dello step
      */
     showStepSpeechBubble() {
+        // GUARD: Non mostrare se siamo sulla home page
+        if (window.UI && window.UI.currentPage === 'home') {
+            console.log('💬 [TutorialManager] showStepSpeechBubble BLOCCATO - siamo sulla home page');
+            return;
+        }
+
         const stepSpeechBubble = document.getElementById('stepSpeechBubble');
         if (stepSpeechBubble) {
             stepSpeechBubble.style.display = 'block';
