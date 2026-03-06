@@ -1091,18 +1091,29 @@ window.DragDropSystem = {
 
                 let closestTarget = null;
                 let closestDistance = Infinity;
+                let closestTargetName = null;
 
                 groupSnapTargets.forEach(target => {
+                    // FIX: Verifica che la posizione non sia già occupata da un altro oggetto
+                    const posKey = this.createSnapPositionKey(target.targetName, target.position);
+                    if (this.isSnapPositionOccupied(posKey, this.draggedObject)) return;
+
                     const distance = currentCenter.distanceTo(target.position);
                     if (distance <= this.snapDistance && distance < closestDistance) {
                         closestTarget = target.position;
                         closestDistance = distance;
+                        closestTargetName = target.targetName;
                     }
                 });
 
                 if (closestTarget) {
                     snapTarget = closestTarget;
-                    console.log(`[DragDropSystem] 🎯 Snap target trovato tramite AssemblySystemSimplified: (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})`);
+                    // Associa chiave posizione al Vector3 per occupation tracking dopo snap
+                    if (closestTargetName) {
+                        const snapKey = this.createSnapPositionKey(closestTargetName, null);
+                        this.snapPositionKeys.set(closestTarget, snapKey);
+                    }
+                    console.log(`[DragDropSystem] 🎯 Snap target trovato tramite AssemblySystemSimplified: (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)}) → "${closestTargetName}"`);
                 }
             }
         }

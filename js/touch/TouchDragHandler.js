@@ -98,6 +98,21 @@ window.TouchDragHandler = {
             return;
         }
 
+        // ── PRIORITY 1b: FALLBACK ELEMENTO ──────────────────────────────────
+        // Se il raycast ha colpito un oggetto diverso (es. culatta) ma il punto
+        // touch è vicino all'Elemento dello step corrente, esegui l'azione su quello.
+        // Risolve il problema delle viti piccole/corte coperte da geometria adiacente.
+        if (hitPoint) {
+            const elementoFallback = this.findNearbyStepElemento(hitPoint);
+            if (elementoFallback) {
+                console.log('[TouchDragHandler] 🎯 P1b Fallback Elemento → tap vicino a',
+                            elementoFallback.name, '(raycast aveva colpito', rootModel.name + ')');
+                const activeTool = this.getActiveTool();
+                this.executeToolAction(elementoFallback, hitPoint, activeTool);
+                return;
+            }
+        }
+
         // ── PRIORITY 2/3: MOVABLE + PLACEMENT ────────────────────────────────
         const isMovable = this.isMovable(rootModel);
 
@@ -180,15 +195,47 @@ window.TouchDragHandler = {
         console.log('[TouchDragHandler] 📍 Piazzamento:', selected.name, 'in:', hitPoint);
 
         if (window.DragDropSystem && window.DragDropSystem.isEnabled()) {
-            // Avvia un drag artificiale, sposta al punto, poi termina (attiva snap)
-            const startPoint = selected.position.clone();
-            window.DragDropSystem.startDrag(selected, startPoint, { isTouch: true });
+            // FIX: Cerca snap targets disponibili (non occupati) e trova il più vicino al tocco
+            const snapTargets = this.findAvailableSnapTargets(selected);
 
-            // Muovi all'hit point mantenendo la quota Y originale
-            selected.position.set(hitPoint.x, selected.position.y, hitPoint.z);
+            if (snapTargets.length > 0) {
+                // Distanza di tolleranza generosa per touch (snapDistance × 3, minimo 0.5)
+                const baseSnapDist = window.DragDropSystem.snapDistance || 0.5;
+                const touchSnapDistance = Math.max(baseSnapDist * 3, 0.5);
 
-            // Termina drag → DragDropSystem esegue snap automatico
-            window.DragDropSystem.endDrag();
+                let bestTarget = null;
+                let bestDistance = Infinity;
+
+                for (var i = 0; i < snapTargets.length; i++) {
+                    var target = snapTargets[i];
+                    var dist = hitPoint.distanceTo(target.position);
+                    if (dist < bestDistance && dist <= touchSnapDistance) {
+                        bestTarget = target;
+                        bestDistance = dist;
+                    }
+                }
+
+                if (bestTarget) {
+                    console.log('[TouchDragHandler] 📍 Snap target trovato:', bestTarget.name,
+                                'distanza:', bestDistance.toFixed(3), '(max:', touchSnapDistance.toFixed(3) + ')');
+
+                    // Avvia drag artificiale, muovi DIRETTAMENTE al target, poi termina (snap automatico)
+                    window.DragDropSystem.startDrag(selected, selected.position.clone(), { isTouch: true });
+                    selected.position.copy(bestTarget.position);
+                    window.DragDropSystem.endDrag();
+                } else {
+                    console.log('[TouchDragHandler] ❌ Nessun snap target entro distanza touch',
+                                touchSnapDistance.toFixed(3));
+                    // Non piazzare — lascia l'oggetto dov'è
+                }
+            } else {
+                console.log('[TouchDragHandler] ❌ Nessun snap target disponibile (tutti occupati?)');
+                // Fallback: usa il flusso originale (startDrag → move → endDrag)
+                var startPoint = selected.position.clone();
+                window.DragDropSystem.startDrag(selected, startPoint, { isTouch: true });
+                selected.position.set(hitPoint.x, selected.position.y, hitPoint.z);
+                window.DragDropSystem.endDrag();
+            }
         } else {
             // Fallback senza DragDropSystem
             selected.position.set(hitPoint.x, selected.position.y, hitPoint.z);
@@ -196,6 +243,77 @@ window.TouchDragHandler = {
 
         // Pulisci stato selezione
         this.cancelSelection();
+    },
+
+    /**
+     * Cerca tutti gli snap targets disponibili e non occupati per l'oggetto selezionato.
+     * Supporta: AssemblySystemSimplified, custom snap targets, posizione originale.
+     * @param {THREE.Object3D} object - Oggetto da posizionare
+     * @returns {Array<{position: THREE.Vector3, key: string, name: string}>}
+     */
+    findAvailableSnapTargets: function(object) {
+        var targets = [];
+        var dds = window.DragDropSystem;
+        if (!dds) return targets;
+
+        var cleanName = dds.getCleanModelName ? dds.getCleanModelName(object.name) : object.name;
+
+        // 1. Assembly mode: usa getCurrentGroupSnapTargets
+        if (window.AssemblySystemSimplified && window.AssemblySystemSimplified.assemblyMode) {
+            var groupTargets = window.AssemblySystemSimplified.getCurrentGroupSnapTargets(cleanName);
+            console.log('[TouchDragHandler] 🔍 Assembly snap targets:', groupTargets.length, 'per', cleanName);
+
+            for (var i = 0; i < groupTargets.length; i++) {
+                var t = groupTargets[i];
+                var key = dds.createSnapPositionKey(t.targetName, t.position);
+                if (!dds.isSnapPositionOccupied(key, object)) {
+                    targets.push({ position: t.position, key: key, name: t.targetName || ('target_' + i) });
+                } else {
+                    console.log('[TouchDragHandler] 🚫 Target occupato:', t.targetName);
+                }
+            }
+            return targets;
+        }
+
+        // 2. Custom snap targets (SnapPoint/SnapTargets configurati nel tutorial)
+        var customTarget = dds.customSnapTargets ? dds.customSnapTargets.get(object.uuid) : null;
+        if (customTarget) {
+            if (customTarget.isMultiTarget && customTarget.targets) {
+                for (var j = 0; j < customTarget.targets.length; j++) {
+                    var ct = customTarget.targets[j];
+                    if (ct.targetName && window.Scene3D) {
+                        var targetModel = window.Scene3D.findModelByName(ct.targetName);
+                        if (targetModel) {
+                            var bb = new THREE.Box3().setFromObject(targetModel);
+                            var center = bb.getCenter(new THREE.Vector3());
+                            var posKey = dds.createSnapPositionKey(ct.targetName, null);
+                            if (!dds.isSnapPositionOccupied(posKey, object)) {
+                                targets.push({ position: center, key: posKey, name: ct.targetName });
+                            }
+                        }
+                    }
+                }
+            } else if (customTarget.targetName && window.Scene3D) {
+                var singleModel = window.Scene3D.findModelByName(customTarget.targetName);
+                if (singleModel) {
+                    var sbb = new THREE.Box3().setFromObject(singleModel);
+                    var sCenter = sbb.getCenter(new THREE.Vector3());
+                    var sKey = dds.createSnapPositionKey(customTarget.targetName, null);
+                    if (!dds.isSnapPositionOccupied(sKey, object)) {
+                        targets.push({ position: sCenter, key: sKey, name: customTarget.targetName });
+                    }
+                }
+            }
+            if (targets.length > 0) return targets;
+        }
+
+        // 3. Fallback: posizione originale
+        var origPos = dds.originalPositions ? dds.originalPositions.get(object.uuid) : null;
+        if (origPos) {
+            targets.push({ position: origPos.clone(), key: null, name: object.name + '_original' });
+        }
+
+        return targets;
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -312,37 +430,16 @@ window.TouchDragHandler = {
     isSnapPositionValid: function(position) {
         if (!window.DragDropSystem || !this.interactionState.selectedObject) return false;
 
-        var snapDistance = (window.DragDropSystem.snapDistance || 0.5) * 2;
         var selected = this.interactionState.selectedObject;
-        var customTargets = window.DragDropSystem.customSnapTargets;
-        if (!customTargets) return false;
+        // Usa la stessa distanza generosa del placement per coerenza ghost/snap
+        var baseSnapDist = window.DragDropSystem.snapDistance || 0.5;
+        var touchSnapDistance = Math.max(baseSnapDist * 3, 0.5);
 
-        var objectName = selected.name.replace(/\.(glb|gltf|obj|stl)$/i, '');
-        var targets = customTargets.get(objectName);
-        if (!targets) return false;
-
-        // Controlla target singolo
-        if (!targets.isMultiTarget && targets.targetName && window.Scene3D) {
-            var targetModel = window.Scene3D.findModelByName(targets.targetName);
-            if (targetModel) {
-                var bb = new THREE.Box3().setFromObject(targetModel);
-                var center = bb.getCenter(new THREE.Vector3());
-                return position.distanceTo(center) <= snapDistance;
-            }
-        }
-
-        // Controlla multi-target
-        if (targets.isMultiTarget && targets.targets && window.Scene3D) {
-            for (var i = 0; i < targets.targets.length; i++) {
-                var t = targets.targets[i];
-                if (t.targetName) {
-                    var tm = window.Scene3D.findModelByName(t.targetName);
-                    if (tm) {
-                        var bb2 = new THREE.Box3().setFromObject(tm);
-                        var c2 = bb2.getCenter(new THREE.Vector3());
-                        if (position.distanceTo(c2) <= snapDistance) return true;
-                    }
-                }
+        // Cerca tra gli snap targets disponibili (non occupati)
+        var availableTargets = this.findAvailableSnapTargets(selected);
+        for (var i = 0; i < availableTargets.length; i++) {
+            if (position.distanceTo(availableTargets[i].position) <= touchSnapDistance) {
+                return true;
             }
         }
 
@@ -531,6 +628,59 @@ window.TouchDragHandler = {
                           currentStep.properties.Utensile;
 
         return !!hasActions;
+    },
+
+    /**
+     * Fallback touch: se il raycast ha colpito un oggetto diverso dall'Elemento dello step,
+     * cerca se il punto touch è comunque vicino all'Elemento corrente.
+     * Risolve il problema di viti piccole/corte coperte da geometria adiacente (es. culatta).
+     *
+     * @param {THREE.Vector3} hitPoint - Punto 3D dove il dito ha toccato
+     * @returns {THREE.Object3D|null} - Il modello Elemento se vicino, altrimenti null
+     */
+    findNearbyStepElemento: function(hitPoint) {
+        if (!hitPoint) return null;
+        if (!window.UI || !window.UI.tutorialSteps || window.UI.currentStepIndex < 0) return null;
+        if (!window.Scene3D || !window.Scene3D.findModelByName) return null;
+
+        var currentStep = window.UI.tutorialSteps[window.UI.currentStepIndex];
+        if (!currentStep || !currentStep.properties) return null;
+
+        var elementName = currentStep.properties.Elemento;
+        if (!elementName) return null;
+
+        // Lo step deve avere azioni (Azione1/Utensile) per essere un action step
+        var hasActions = currentStep.properties.Azione1 ||
+                         currentStep.properties.Azione2 ||
+                         currentStep.properties.Azione3 ||
+                         currentStep.properties.Utensile;
+        if (!hasActions) return null;
+
+        // Trova il modello Elemento nella scena
+        var cleanName = elementName.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
+        var elementModel = window.Scene3D.findModelByName(cleanName);
+        if (!elementModel) return null;
+
+        // Calcola distanza tra il punto touch e il bounding box dell'Elemento
+        var bb = new THREE.Box3().setFromObject(elementModel);
+        var center = bb.getCenter(new THREE.Vector3());
+        var size = bb.getSize(new THREE.Vector3());
+
+        // Soglia: raggio del bounding sphere + margine generoso per touch (0.15 unità)
+        var radius = size.length() / 2;
+        var touchMargin = 0.15;
+        var threshold = radius + touchMargin;
+
+        var distance = hitPoint.distanceTo(center);
+
+        if (distance <= threshold) {
+            console.log('[TouchDragHandler] 🔍 Fallback Elemento: "' + cleanName +
+                        '" trovato a distanza ' + distance.toFixed(3) +
+                        ' (soglia: ' + threshold.toFixed(3) + ')');
+            return elementModel;
+        }
+
+        return null;
     },
 
     highlightObject: function(object) {

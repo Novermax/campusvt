@@ -3459,6 +3459,13 @@ window.UI = {
         // IMPORTANTE: Reset silhouette/highlight da step precedente
         this.resetAllHighlights();
 
+        // IMPORTANTE: Reset stato touch drag (cancella selezione + rimuovi ghost)
+        // Previene ghost mesh residue che intercettano raycast nello step successivo
+        if (window.TouchDragHandler && window.TouchDragHandler.interactionState.mode !== 'idle') {
+            console.log('[UI] 🔄 Reset TouchDragHandler al cambio step');
+            window.TouchDragHandler.cancelSelection();
+        }
+
         // Mobile Optimizer: Lazy loading modelli per step corrente
         if (window.MobileOptimizer && window.MobileOptimizer.enabled) {
             window.MobileOptimizer.loadModelsForStep(stepIndex, this.tutorialSteps);

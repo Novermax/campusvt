@@ -204,6 +204,17 @@ window.TouchInputRouter = {
             if (object.name && object.name.includes('Helper')) continue;
             if (object.name && object.name.includes('Grid')) continue;
 
+            // Salta ghost mesh del TouchDragHandler (non deve intercettare raycast)
+            if (object.name === '__ghost_target__') continue;
+            // Salta anche se è figlio di un ghost
+            let isGhostChild = false;
+            let p = object.parent;
+            while (p) {
+                if (p.name === '__ghost_target__') { isGhostChild = true; break; }
+                p = p.parent;
+            }
+            if (isGhostChild) continue;
+
             // Salta il pavimento per tap/selezione (ma non per pivot 2 dita)
             if (object.name === 'floor' || object.name === 'ground' || object.name === 'piano') {
                 continue;
@@ -228,12 +239,13 @@ window.TouchInputRouter = {
         const centerResult = this.performRaycast(normalizedX, normalizedY);
         if (centerResult) return centerResult;
 
-        // Calcola offset in coordinate normalizzate (circa 12px su schermo tipico mobile)
+        // Calcola offset in coordinate normalizzate (circa 20px su schermo tipico mobile)
+        // FIX: Aumentato da 12px a 20px per migliorare selezione touch di oggetti piccoli (viti)
         const canvas = document.getElementById('canvas3d');
         const cw = canvas ? canvas.clientWidth : 400;
         const ch = canvas ? canvas.clientHeight : 700;
-        const ox = 12 / cw * 2;
-        const oy = 12 / ch * 2;
+        const ox = 20 / cw * 2;
+        const oy = 20 / ch * 2;
 
         // 8 punti attorno al centro (croce + diagonali)
         const offsets = [
