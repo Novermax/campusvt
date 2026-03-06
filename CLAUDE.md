@@ -2,6 +2,7 @@
 
 **Stack**: Three.js r155, ES6, CSS modulare | **Target**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
 **Server**: `python -m http.server 8000` → `index.html` → Login (users.txt: `username;password;yyyy-mm-dd`)
+**Estensione config**: tutti i file di configurazione usano `.cvtscript` (ex `.ini`)
 
 ---
 
@@ -21,7 +22,7 @@
 │   │              TouchUIHandler, TouchInteractive3DHandler
 │   └── ui/        TutorialManager, ModelManager, ScenarioManager, ToolsManager,
 │                  UICore, PageManager, DynamicToolStyles
-├── scenes/<Nome>/ config.ini, tutorial.ini, models/
+├── scenes/<Nome>/ config.cvtscript, tutorial.cvtscript, models/
 ├── cursors/       SVG cursori strumenti
 └── utilimages/    Icone strumenti legenda
 ```
@@ -37,7 +38,7 @@
 
 ---
 
-## Sintassi Tutorial (tutorial.ini)
+## Sintassi Tutorial (tutorial.cvtscript)
 
 ### Struttura base
 
@@ -86,7 +87,7 @@ Azione1=inserisci(0.6)
 Azione2=...                            # Fino a Azione9
 ```
 
-> La direzione di svita/estrai viene letta da `home_config.ini` → sezione del modello → `direction=x,y,z`
+> La direzione di svita/estrai viene letta da `home_config.cvtscript` → sezione del modello → `direction=x,y,z`
 
 #### Camera
 
@@ -279,7 +280,7 @@ Default=schermo.000
 
 ---
 
-## Config Scenario (config.ini)
+## Config Scenario (config.cvtscript)
 
 ```ini
 [Tools]
@@ -300,18 +301,18 @@ Type=tool                        # tool | hand
 TutorialNames=ChiaveBrugola,brugola
 ```
 
-> Se `Configuration=` non è specificato in `home_config.ini`, il sistema usa i 4 tool di default.
+> Se `Configuration=` non è specificato in `home_config.cvtscript`, il sistema usa i 4 tool di default.
 > Icone in `utilimages/`, cursori in `cursors/`.
 
 ---
 
-## home_config.ini — Configurazione Scenari e Direzioni
+## home_config.cvtscript — Configurazione Scenari e Direzioni
 
 ```ini
 [NomeScenario]
 Scenario=scenes/NomeScenario
-Tutorial=scenes/NomeScenario/tutorial.ini
-Configuration=scenes/NomeScenario/config.ini
+Tutorial=scenes/NomeScenario/tutorial.cvtscript
+Configuration=scenes/NomeScenario/config.cvtscript
 
 # Direzioni svita/estrai per ogni modello
 [models/vite.glb]

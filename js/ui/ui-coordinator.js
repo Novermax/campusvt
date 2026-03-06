@@ -340,7 +340,7 @@ const UI = {
     },
 
     /**
-     * Carica e applica InterfaceConfig.ini.
+     * Carica e applica InterfaceConfig.cvtscript.
      * In Electron usa IPC per leggere il file dalla directory dell'exe (fuori ASAR),
      * così l'utente può modificarlo e rilancire il programma per applicare le modifiche.
      * In browser usa fetch standard.
@@ -348,10 +348,10 @@ const UI = {
     loadInterfaceConfig: function() {
         // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
         if (window.electronAPI && window.electronAPI.readConfigFile) {
-            window.electronAPI.readConfigFile('InterfaceConfig.ini')
+            window.electronAPI.readConfigFile('InterfaceConfig.cvtscript')
                 .then(content => {
                     if (content) {
-                        console.log('[UI] ✅ InterfaceConfig.ini caricato via IPC (Electron)');
+                        console.log('[UI] ✅ InterfaceConfig.cvtscript caricato via IPC (Electron)');
                         this.parseInterfaceConfig(content);
                     } else {
                         // File non trovato via IPC, prova con fetch (fallback)
@@ -366,13 +366,13 @@ const UI = {
     },
 
     _loadInterfaceConfigViaFetch: function() {
-        fetchFile(`./InterfaceConfig.ini?v=${Date.now()}`)
+        fetchFile(`./InterfaceConfig.cvtscript?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.text();
             })
             .then(content => {
-                console.log('[UI] ✅ InterfaceConfig.ini caricato');
+                console.log('[UI] ✅ InterfaceConfig.cvtscript caricato');
                 this.parseInterfaceConfig(content);
             })
             .catch(() => {

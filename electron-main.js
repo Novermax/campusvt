@@ -123,7 +123,7 @@ function createWindow() {
  * 1. Modalità packaged: cerca accanto all'exe (extraFiles dalla build)
  * 2. Fallback / modalità sviluppo: cerca nella directory del progetto (__dirname)
  *
- * Questo permette all'utente di modificare InterfaceConfig.ini accanto all'exe
+ * Questo permette all'utente di modificare InterfaceConfig.cvtscript accanto all'exe
  * installato e di rilanciare il programma per applicare le modifiche.
  */
 ipcMain.handle('read-config-file', async (event, filename) => {

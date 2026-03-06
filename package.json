@@ -34,8 +34,8 @@
     ],
     "extraFiles": [
       {
-        "from": "InterfaceConfig.ini",
-        "to": "InterfaceConfig.ini"
+        "from": "InterfaceConfig.cvtscript",
+        "to": "InterfaceConfig.cvtscript"
       }
     ],
     "win": {

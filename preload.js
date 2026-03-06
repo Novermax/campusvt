@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * In modalità compilata (packaged), cerca prima accanto all'exe (extraFiles).
      * In modalità sviluppo, cerca nella directory del progetto (__dirname).
      *
-     * @param {string} filename - Nome del file (es. 'InterfaceConfig.ini')
+     * @param {string} filename - Nome del file (es. 'InterfaceConfig.cvtscript')
      * @returns {Promise<string|null>} Contenuto testuale del file, o null se non trovato
      */
     readConfigFile: (filename) => ipcRenderer.invoke('read-config-file', filename)

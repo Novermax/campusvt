@@ -599,7 +599,7 @@ window.UI = {
         this.safeLog(2, 'Tentativo caricamento home_config.txt dal server...');
         this.updateStatus('Caricamento configurazione...');
 
-        fetchFile(`./home_config.ini?v=${Date.now()}`)
+        fetchFile(`./home_config.cvtscript?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -619,7 +619,7 @@ window.UI = {
     },
     
     /**
-     * Carica e applica InterfaceConfig.ini (opzionale).
+     * Carica e applica InterfaceConfig.cvtscript (opzionale).
      * In Electron usa IPC per leggere il file dalla directory dell'exe (fuori ASAR),
      * così l'utente può modificarlo e rilancire il programma per applicare le modifiche.
      * In browser usa fetch standard.
@@ -627,10 +627,10 @@ window.UI = {
     loadInterfaceConfig: function() {
         // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
         if (window.electronAPI && window.electronAPI.readConfigFile) {
-            window.electronAPI.readConfigFile('InterfaceConfig.ini')
+            window.electronAPI.readConfigFile('InterfaceConfig.cvtscript')
                 .then(content => {
                     if (content) {
-                        this.safeLog(2, 'InterfaceConfig.ini caricato via IPC (Electron)');
+                        this.safeLog(2, 'InterfaceConfig.cvtscript caricato via IPC (Electron)');
                         this.parseInterfaceConfig(content);
                     } else {
                         // File non trovato via IPC, prova con fetch (fallback)
@@ -645,13 +645,13 @@ window.UI = {
     },
 
     _loadInterfaceConfigViaFetch: function() {
-        fetchFile(`./InterfaceConfig.ini?v=${Date.now()}`)
+        fetchFile(`./InterfaceConfig.cvtscript?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.text();
             })
             .then(content => {
-                this.safeLog(2, 'InterfaceConfig.ini caricato con successo');
+                this.safeLog(2, 'InterfaceConfig.cvtscript caricato con successo');
                 this.parseInterfaceConfig(content);
             })
             .catch(() => {

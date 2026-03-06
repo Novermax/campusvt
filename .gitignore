@@ -39,3 +39,6 @@ desktop.ini
 # User data (se presente)
 user_data/
 logs/
+
+# CVTScript Editor (tool locale, non pubblicato)
+editor/
