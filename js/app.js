@@ -310,7 +310,7 @@ window.App = {
             // Carica moduli UI refactorizzati in ordine di dipendenza
             console.log('📦 Caricamento moduli UI refactorizzati...');
             await this.loadModule('./js/ui/UICore.js?nocache=1000026');
-            await this.loadModule('./js/ui/ScenarioManager.js?nocache=1000026');
+            await this.loadModule('./js/ui/ScenarioManager.js?nocache=1000027');
             await this.loadModule('./js/ui/TutorialManager.js?nocache=1000027');
             // ToolsManager.js è già caricato nell'HTML
             await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
