@@ -382,7 +382,7 @@
 /* ===== BARRA STEP TUTORIAL ===== */
 /* Barra inferiore con i pulsanti di navigazione step tutorial */
 #tutorialStepsBar {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);

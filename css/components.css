@@ -1495,7 +1495,7 @@ body.tool-brugola-active [role="button"] {
 /* ===== ANIMAZIONE DRAMMATICA FUMETTO DESCRIZIONE ===== */
 /* Animazione lineare: piccolo → grande (centro) → resta grande 3s → torna piccolo a sinistra */
 .step-speech-bubble.dramatic-intro {
-    animation: dramaticIntro 5s ease-in-out forwards;
+    animation: dramaticIntro 1s ease-in-out forwards;
 }
 
 @keyframes dramaticIntro {
@@ -2122,7 +2122,14 @@ body.tool-brugola-active [role="button"] {
 
 .step-indicator.pulse-tutorial {
     animation: tutorialPulse 1s ease-in-out 2;
+}
+
+.step-indicator.tutorial-above-overlay {
     position: relative;
+    z-index: 10000;
+}
+
+#tutorialStepsBar.tutorial-above-overlay {
     z-index: 10000;
 }
 

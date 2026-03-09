@@ -229,8 +229,10 @@
                     <!-- Logo placeholder (sarà sostituito se disponibile) -->
                     <img src="newlogo.png" alt="" class="logo" style="display: none;" id="logoImage">
                 </h1>
-                <p>Gli scenari vengono caricati automaticamente dal server.</p>
-
+                <div id="userBar">
+                    <span id="userBarName"></span>
+                    <button id="changeUserBtn" onclick="logoutUser()">🔄 Cambia utente</button>
+                </div>
             </div>
 
             <!-- Griglia degli scenari disponibili -->
@@ -319,12 +321,13 @@
                 </div>
             </header>
 
-            <!-- ===== BARRA STEP TUTORIAL ===== -->
-            <!-- Pulsanti di navigazione tutorial in basso allo schermo -->
-            <div id="tutorialStepsBar" class="hidden">
-                <div id="tutorialStepsContainer">
-                    <!-- Gli step verranno caricati dinamicamente -->
-                </div>
+        </div>
+
+        <!-- ===== BARRA STEP TUTORIAL ===== -->
+        <!-- Posizionato fuori da #scenarioPage per evitare stacking context da animation -->
+        <div id="tutorialStepsBar" class="hidden">
+            <div id="tutorialStepsContainer">
+                <!-- Gli step verranno caricati dinamicamente -->
             </div>
         </div>
 
@@ -543,6 +546,12 @@
                         const expDate = new Date(userData.expiration);
                         const today = new Date();
                         if (expDate > today) {
+                            // Se manca il campo language, la sessione è obsoleta: forza re-login
+                            if (!('language' in userData)) {
+                                localStorage.removeItem('currentUser');
+                                console.log(`🔄 Sessione obsoleta (no language) per: ${userData.name} — re-login richiesto`);
+                                // lascia mostrare il form di login
+                            } else {
                             // Login ancora valido
                             window.currentUser = userData;
                             document.getElementById('loginPage').classList.add('hidden');
@@ -550,6 +559,7 @@
                             document.getElementById('init-loader').classList.add('hidden');
                             console.log(`🔄 Sessione ripristinata per: ${userData.name}`);
                             return; // Evita di mostrare il form di login
+                            }
                         } else {
                             // Sessione scaduta, rimuovi dati salvati
                             localStorage.removeItem('currentUser');
@@ -623,7 +633,7 @@
                     let userExpiration = null;
                     for (const line of lines) {
                         const parts = line.trim().split(';');
-                        const [fileUsername, filePassword, expirationDate] = parts;
+                        const [fileUsername, filePassword, expirationDate, userLanguage] = parts;
 
                         if (username === fileUsername && password === filePassword) {
                             // Controllo data scadenza
@@ -640,6 +650,8 @@
                                 }
                                 userExpiration = expDate;
                             }
+                            // Salva lingua utente (lowercase, fallback null)
+                            window._userLanguage = userLanguage ? userLanguage.trim().toLowerCase() : null;
                             authenticated = true;
                             break;
                         }
@@ -650,13 +662,15 @@
                         window.currentUser = {
                             name: username,
                             loginTime: new Date(),
-                            expiration: userExpiration
+                            expiration: userExpiration,
+                            language: window._userLanguage || null
                         };
 
                         // Salva anche in localStorage per persistenza
                         localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
 
                         console.log(`✅ Login riuscito per: ${username}`);
+                        console.error(`🌍 DEBUG LINGUA: currentUser.language = "${window.currentUser.language}", _userLanguage = "${window._userLanguage}"`);
 
                         // Mostra data scadenza se presente e nascondi login
                         if (userExpiration) {
@@ -681,6 +695,21 @@
                         document.getElementById('loginPage').classList.add('hidden');
                         document.getElementById('container').classList.remove('hidden');
                         document.getElementById('init-loader').classList.add('hidden');
+                        updateUserBar();
+
+                        // Ricarica home_config con la lingua corretta dell'utente appena loggato
+                        // UI potrebbe non essere ancora inizializzato (App.init è asincrono),
+                        // quindi usiamo polling per aspettare che sia pronto
+                        function reloadConfigWithLanguage() {
+                            if (window.UI && typeof window.UI.loadHomeConfigFromServer === 'function') {
+                                console.log(`🌍 [Login] Ricaricamento config per lingua: ${window.currentUser.language || 'default'}`);
+                                window.UI.loadHomeConfigFromServer();
+                            } else {
+                                console.log('🌍 [Login] UI non ancora pronto, riprovo tra 500ms...');
+                                setTimeout(reloadConfigWithLanguage, 500);
+                            }
+                        }
+                        reloadConfigWithLanguage();
                     } else {
                         // Login fallito - mostra errore
                         loginError.classList.remove('hidden');
@@ -693,7 +722,32 @@
                     loginError.classList.remove('hidden');
                 }
             });
+
+            // Aggiorna il nome utente nella home dopo ogni login riuscito
+            function updateUserBar() {
+                const nameEl = document.getElementById('userBarName');
+                if (nameEl && window.currentUser && window.currentUser.name) {
+                    nameEl.textContent = '👤 ' + window.currentUser.name;
+                }
+            }
+
+            // Osserva quando il container diventa visibile (dopo login) per aggiornare la barra
+            const containerObs = new MutationObserver(() => updateUserBar());
+            const containerEl = document.getElementById('container');
+            if (containerEl) containerObs.observe(containerEl, { attributes: true, attributeFilter: ['class'] });
+
         });
+
+        function logoutUser() {
+            localStorage.removeItem('currentUser');
+            window.currentUser = null;
+            // Torna alla pagina di login senza ricaricare la pagina intera
+            document.getElementById('container').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+        }
     </script>
 
     <!-- FetchFile Helper - Compatibilità Browser e Electron (DEVE essere caricato PRIMA di tutto) -->

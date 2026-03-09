@@ -596,26 +596,45 @@ window.UI = {
      * Carica automaticamente il file home_config.txt dal server
      */
     loadHomeConfigFromServer: function() {
-        this.safeLog(2, 'Tentativo caricamento home_config.txt dal server...');
+        this.safeLog(2, 'Tentativo caricamento home_config dal server...');
         this.updateStatus('Caricamento configurazione...');
 
-        fetchFile(`./home_config.cvtscript?v=${Date.now()}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                return response.text();
+        const lang = window.currentUser && window.currentUser.language
+            ? window.currentUser.language.toLowerCase()
+            : null;
+
+        console.log(`🌍 [loadHomeConfig] currentUser:`, JSON.stringify(window.currentUser));
+        console.log(`🌍 [loadHomeConfig] lang rilevata: "${lang}"`);
+
+        const localizedConfig = lang ? `./home_config_${lang}.cvtscript` : null;
+        const fallbackConfig = `./home_config.cvtscript`;
+
+        console.log(`🌍 [loadHomeConfig] Tentativo: ${localizedConfig || '(nessuno, diretto fallback)'} → fallback: ${fallbackConfig}`);
+
+        const loadConfig = (path) => {
+            return fetchFile(`${path}?v=${Date.now()}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.text();
+                })
+                .then(content => {
+                    this.safeLog(2, `home_config caricato: ${path}`);
+                    this.parseHomeConfig(content);
+                    this.updateStatus('Configurazione caricata automaticamente');
+                });
+        };
+
+        const tryLoad = localizedConfig
+            ? loadConfig(localizedConfig).catch((err) => {
+                console.warn(`🌍 [loadHomeConfig] ❌ Config localizzata FALLITA: ${localizedConfig}`, err.message);
+                return loadConfig(fallbackConfig);
             })
-            .then(content => {
-                this.safeLog(2, 'home_config.txt caricato con successo dal server');
-                this.parseHomeConfig(content);
-                this.updateStatus('Configurazione caricata automaticamente');
-            })
-            .catch(error => {
-                this.safeLog(1, 'Impossibile caricare home_config.txt dal server:', error.message);
-                this.updateStatus('Nessuna configurazione - usa caricamento manuale');
-                // Non mostrare errore all'utente - è normale se il file non esiste
-            });
+            : loadConfig(fallbackConfig);
+
+        tryLoad.catch(error => {
+            this.safeLog(1, 'Impossibile caricare home_config dal server:', error.message);
+            this.updateStatus('Nessuna configurazione - usa caricamento manuale');
+        });
     },
     
     /**
@@ -4932,7 +4951,7 @@ window.UI = {
             setTimeout(() => {
                 bubble.classList.remove('dramatic-intro');
                 console.log('🎬 [UI] Animazione drammatica completata');
-            }, 5000);
+            }, 1000);
             return;
         }
 
@@ -5683,13 +5702,18 @@ window.UI = {
         overlay.classList.add('show');
         console.log('📚 [UI] Overlay selezione tutorial mostrato');
 
+        // Alza z-index della barra tutorial sopra l'overlay
+        const stepsBar = document.getElementById('tutorialStepsBar');
+        if (stepsBar) stepsBar.classList.add('tutorial-above-overlay');
+
         // Aggiungi animazione pulse ai pulsanti tutorial (step-indicator blu)
         const tutorialButtons = document.querySelectorAll('.step-indicator');
         tutorialButtons.forEach(btn => {
-            btn.classList.add('pulse-tutorial');
+            btn.classList.add('pulse-tutorial', 'tutorial-above-overlay');
         });
 
-        // Rimuovi animazione pulse dopo 2 secondi (2 cicli completi)
+        // Rimuovi solo animazione pulse dopo 2 secondi (2 cicli completi)
+        // tutorial-above-overlay rimane fino a hideTutorialSelectionOverlay()
         setTimeout(() => {
             tutorialButtons.forEach(btn => {
                 btn.classList.remove('pulse-tutorial');
@@ -5700,7 +5724,7 @@ window.UI = {
         // Nascondi overlay automaticamente dopo 5 secondi
         setTimeout(() => {
             this.hideTutorialSelectionOverlay();
-        }, 5000);
+        }, 2000);
 
         // Nascondi overlay al click su qualsiasi pulsante tutorial
         tutorialButtons.forEach(btn => {
@@ -5723,6 +5747,14 @@ window.UI = {
         if (!overlay) return;
 
         overlay.classList.remove('show');
+
+        // Rimuovi z-index elevato dalla barra e dai pulsanti
+        const stepsBar = document.getElementById('tutorialStepsBar');
+        if (stepsBar) stepsBar.classList.remove('tutorial-above-overlay');
+        document.querySelectorAll('.step-indicator').forEach(btn => {
+            btn.classList.remove('tutorial-above-overlay', 'pulse-tutorial');
+        });
+
         console.log('❌ [UI] Overlay selezione tutorial nascosto');
     }
 };

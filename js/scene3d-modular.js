@@ -325,23 +325,50 @@ const Scene3D = {
         console.log('  FOV:', cameraInfo.fov);
         console.log('  Near/Far:', `${cameraInfo.near}/${cameraInfo.far}`);
         
-        // Formatta per tutorial.txt
-        console.log('\n📋 TUTORIAL SYNTAX:');
-        console.log(`CameraPos=(${cameraInfo.position.x},${cameraInfo.position.y},${cameraInfo.position.z})`);
-        if (cameraInfo.pivot) {
-            console.log(`CameraTarget=(${cameraInfo.pivot.x},${cameraInfo.pivot.y},${cameraInfo.pivot.z})`);
-        }
-        
-        // Suggerimenti per target con nome oggetto
-        console.log('\n💡 ALTERNATIVE CAMERtarget SYNTAX:');
-        console.log('CameraTarget=nome_oggetto   # Punta al centro del bounding box dell\'oggetto');
-        console.log('Usa Scene3D.listAvailableObjects() per vedere tutti gli oggetti disponibili');
-        console.log('\n📝 ESEMPI:');
-        console.log('CameraTarget=filtro         # Punta al centro del filtro');
-        console.log('CameraTarget=pompa          # Punta al centro della pompa');
-        console.log('CameraTarget=(1.5,2.0,0.5)  # Coordinate esatte');
+        // Formatta per tutorial.cvtscript — blocco pronto per copia/incolla
+        const fmt = v => {
+            const n = parseFloat(v) || 0; // corregge -0
+            return parseFloat(n.toFixed(2));
+        };
+        const p = cameraInfo.position;
+        const r = cameraInfo.rotation;
+        const pv = cameraInfo.pivot;
+        const lines = [
+            `CameraPos=(${fmt(p.x)},${fmt(p.y)},${fmt(p.z)})`,
+            pv ? `CameraTarget=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
+            `CameraRotation=(${fmt(r.x)},${fmt(r.y)},${fmt(r.z)})`,
+            pv ? `CameraPivot=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
+            cameraInfo.distance ? `CameraDistance=${fmt(cameraInfo.distance)}` : null,
+            `CameraFOV=${fmt(cameraInfo.fov)}`,
+            'CameraTransitionTime=1.0'
+        ].filter(Boolean);
+        const block = lines.join('\n');
+        console.log('\n📋 TUTORIAL SYNTAX (copia e incolla):\n' + block);
         
         return cameraInfo;
+    },
+
+    /**
+     * Ritorna il blocco camera pronto per copia/incolla nel tutorial.cvtscript
+     * Uso: Scene3D.getCameraScript()
+     */
+    getCameraScript: function() {
+        if (!this.camera) return null;
+        const fmt = v => parseFloat((+v || 0).toFixed(2));
+        const pos = this.camera.position;
+        const rot = this.camera.rotation;
+        const pv = this.mouseControls && this.mouseControls.pivotPoint;
+        const dist = pv ? Math.round(this.camera.position.distanceTo(pv) * 100) / 100 : null;
+        const lines = [
+            `CameraPos=(${fmt(pos.x)},${fmt(pos.y)},${fmt(pos.z)})`,
+            pv ? `CameraTarget=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
+            `CameraRotation=(${fmt(rot.x)},${fmt(rot.y)},${fmt(rot.z)})`,
+            pv ? `CameraPivot=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
+            dist !== null ? `CameraDistance=${fmt(dist)}` : null,
+            `CameraFOV=${fmt(this.camera.fov)}`,
+            'CameraTransitionTime=1.0'
+        ].filter(Boolean).join('\n');
+        return lines;
     },
 
     /**
@@ -511,6 +538,34 @@ const Scene3D = {
         }
 
         return false;
+    },
+
+    /**
+     * Imposta la camera incollando direttamente il blocco testo dal tutorial.cvtscript
+     * Uso da console: Scene3D.setCameraFromScript(`
+     *   CameraPos=(1.01,1.09,3.6)
+     *   CameraTarget=(0.97,1.15,3.52)
+     *   CameraRotation=(-0.25,-0.01,0)
+     *   CameraPivot=(0.97,1.15,3.52)
+     *   CameraDistance=1.24
+     *   CameraFOV=55.0
+     *   CameraTransitionTime=2.0
+     * `)
+     */
+    setCameraFromScript: function(scriptText) {
+        const properties = {};
+        const lines = scriptText.split('\n');
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('#')) continue;
+            const eq = trimmed.indexOf('=');
+            if (eq === -1) continue;
+            const key = trimmed.substring(0, eq).trim();
+            const val = trimmed.substring(eq + 1).trim();
+            properties[key] = val;
+        }
+        console.log('[Scene3D] 📋 setCameraFromScript - proprietà lette:', properties);
+        return this.setCameraFromTutorialProperties(properties);
     },
 
     listAvailableObjects: function() {

@@ -305,7 +305,7 @@ class ScenarioManager {
     /**
      * Carica uno scenario specifico
      */
-    loadScenario(scenario) {
+    async loadScenario(scenario) {
         this.currentScenario = scenario;
 
         // Aggiorna titolo scenario
@@ -328,9 +328,31 @@ class ScenarioManager {
 
         // Carica il tutorial se specificato
         if (scenario.tutorial) {
-            this.safeLog(2, `[ScenarioManager] 🎓 Caricamento tutorial: ${scenario.tutorial}`);
+            const lang = window.currentUser && window.currentUser.language
+                ? window.currentUser.language.toLowerCase()
+                : null;
+
+            let tutorialPath = scenario.tutorial;
+
+            if (lang) {
+                // Costruisce path localizzato: tutorial.cvtscript → tutorial_ita.cvtscript
+                const localizedPath = scenario.tutorial.replace(/(\.cvtscript)$/i, `_${lang}$1`);
+                try {
+                    const probe = await fetchFile(localizedPath);
+                    if (probe.ok) {
+                        tutorialPath = localizedPath;
+                        this.safeLog(2, `[ScenarioManager] 🌍 Tutorial localizzato trovato: ${tutorialPath}`);
+                    } else {
+                        this.safeLog(2, `[ScenarioManager] ⚠️ Tutorial localizzato non trovato (${localizedPath}), uso fallback`);
+                    }
+                } catch (e) {
+                    this.safeLog(2, `[ScenarioManager] ⚠️ Errore probe tutorial localizzato, uso fallback`);
+                }
+            }
+
+            this.safeLog(2, `[ScenarioManager] 🎓 Caricamento tutorial: ${tutorialPath}`);
             if (window.UI && window.UI.tutorialManager) {
-                window.UI.tutorialManager.loadTutorial(scenario.tutorial);
+                window.UI.tutorialManager.loadTutorial(tutorialPath);
             }
         } else {
             this.safeLog(2, `[ScenarioManager] ❌ Nessun tutorial per scenario: ${scenario.name}`);
