@@ -329,6 +329,10 @@ const UI = {
      * Carica configurazione home dal server
      */
     loadHomeConfigFromServer: function() {
+        if (!this._scenarioManager) {
+            console.warn('[UI] ⚠️ ScenarioManager non ancora inizializzato, loadHomeConfigFromServer ignorato');
+            return;
+        }
         return this._scenarioManager.loadHomeConfigFromServer();
     },
 

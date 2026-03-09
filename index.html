@@ -340,7 +340,7 @@
                     <span id="stepCurrentNumber">1</span>/<span id="stepTotalNumber">5</span>
                 </div>
                 <div class="step-description" id="stepDescription">
-                    Seleziona un tutorial per iniziare...
+                    Select a tutorial to start...
                 </div>
             </div>
             <div class="speech-bubble-arrow"></div>
@@ -455,10 +455,10 @@
     <!-- ===== OVERLAY SELEZIONE TUTORIAL ===== -->
     <div id="tutorialSelectionOverlay" class="tutorial-selection-overlay">
         <div class="tutorial-selection-title">
-            📚 Seleziona un Tutorial
+            📚 Tutorial Select
         </div>
         <div class="tutorial-selection-subtitle">
-            Clicca su uno dei pulsanti blu per iniziare
+            Click on a blue button to start
         </div>
         <div class="tutorial-selection-arrow">
             ↓
@@ -701,7 +701,10 @@
                         // UI potrebbe non essere ancora inizializzato (App.init è asincrono),
                         // quindi usiamo polling per aspettare che sia pronto
                         function reloadConfigWithLanguage() {
-                            if (window.UI && typeof window.UI.loadHomeConfigFromServer === 'function') {
+                            // Verifica che UI sia completamente inizializzato (non solo che esista il metodo)
+                            const uiReady = window.UI && typeof window.UI.loadHomeConfigFromServer === 'function'
+                                && (window.UI._scenarioManager || window.UI.homeConfig !== undefined);
+                            if (uiReady) {
                                 console.log(`🌍 [Login] Ricaricamento config per lingua: ${window.currentUser.language || 'default'}`);
                                 window.UI.loadHomeConfigFromServer();
                             } else {
