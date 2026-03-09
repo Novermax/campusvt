@@ -189,7 +189,7 @@
                     <div id="subscriptionDetails"></div>
                 </div>
 
-            <form id="loginForm">
+            <form id="loginForm" method="POST" action="javascript:void(0)">
                 <div class="form-group">
                     <label for="username">Nome Utente:</label>
                     <input type="text" id="username" name="username" required>
@@ -614,6 +614,18 @@
             const loginForm = document.getElementById('loginForm');
             const loginError = document.getElementById('loginError');
 
+            // Auto-fill da parametri URL se presenti (e pulisci URL subito)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('username')) {
+                document.getElementById('username').value = urlParams.get('username');
+            }
+            if (urlParams.has('password')) {
+                document.getElementById('password').value = urlParams.get('password');
+            }
+            if (urlParams.has('username') || urlParams.has('password')) {
+                history.replaceState(null, '', window.location.pathname);
+            }
+
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
@@ -696,6 +708,11 @@
                         document.getElementById('container').classList.remove('hidden');
                         document.getElementById('init-loader').classList.add('hidden');
                         updateUserBar();
+
+                        // Pulisci URL da parametri sensibili (username/password)
+                        if (window.location.search) {
+                            history.replaceState(null, '', window.location.pathname);
+                        }
 
                         // Ricarica home_config con la lingua corretta dell'utente appena loggato
                         // UI potrebbe non essere ancora inizializzato (App.init è asincrono),
