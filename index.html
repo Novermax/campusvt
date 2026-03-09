@@ -633,9 +633,21 @@
                 const password = document.getElementById('password').value;
 
                 try {
-                    // Fetch del file users.txt
+                    // Fetch del file users.txt (codificato)
                     const response = await fetchFile('users.txt');
-                    const text = await response.text();
+                    const rawText = await response.text();
+
+                    // Decodifica: XOR + Base64
+                    const _k = 'CVT2025!secure#training';
+                    function _xd(t, k) { let r=''; for(let i=0;i<t.length;i++) r+=String.fromCharCode(t.charCodeAt(i)^k.charCodeAt(i%k.length)); return r; }
+                    let text;
+                    try {
+                        const xored = decodeURIComponent(escape(atob(rawText.trim())));
+                        text = _xd(xored, _k);
+                    } catch(decErr) {
+                        // Fallback: file in chiaro (compatibilità)
+                        text = rawText;
+                    }
 
                     // Parse delle righe del file
                     const lines = text.split('\n').filter(line => line.trim() !== '');
