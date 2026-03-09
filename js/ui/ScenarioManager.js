@@ -41,9 +41,7 @@ class ScenarioManager {
         this.safeLog(2, '[ScenarioManager] Inizializzazione...');
 
         try {
-            // Carica automaticamente la configurazione home se disponibile
-            this.loadHomeConfigFromServer();
-
+            // Il caricamento config viene fatto da ui-coordinator dopo init()
             this.isInitialized = true;
             this.safeLog(2, '[ScenarioManager] Inizializzato con successo');
             return true;
@@ -60,34 +58,45 @@ class ScenarioManager {
     loadHomeConfigFromServer() {
         this.safeLog(2, '[ScenarioManager] Caricamento configurazione home dal server...');
 
-        const configUrl = './scenes/home.config';
+        const lang = window.currentUser && window.currentUser.language
+            ? window.currentUser.language.toLowerCase()
+            : null;
 
-        fetchFile(configUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                return response.text();
-            })
-            .then(content => {
-                this.safeLog(2, '[ScenarioManager] File home.config caricato con successo');
-                this.parseHomeConfig(content);
-            })
-            .catch(error => {
-                this.safeLog(1, '[ScenarioManager] Impossibile caricare home.config dal server:', error);
-                this.safeLog(2, '[ScenarioManager] Modalità manuale attivata automaticamente');
+        const localizedConfig = lang ? `./home_config_${lang}.cvtscript` : null;
+        const fallbackConfig = `./home_config.cvtscript`;
 
-                // Crea configurazione di fallback per modalità manuale
-                this.scenariosConfig = {
-                    scenarios: [],
-                    manualMode: true
-                };
-                this.renderScenarioCards();
-            });
+        const loadConfig = (path) => {
+            return fetchFile(`${path}?v=${Date.now()}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.text();
+                })
+                .then(content => {
+                    this.safeLog(2, `[ScenarioManager] home_config caricato: ${path}`);
+                    this.parseHomeConfig(content);
+                });
+        };
+
+        const tryLoad = localizedConfig
+            ? loadConfig(localizedConfig).catch(() => loadConfig(fallbackConfig))
+            : loadConfig(fallbackConfig);
+
+        tryLoad.catch(error => {
+            this.safeLog(1, '[ScenarioManager] Impossibile caricare home_config:', error);
+            this.safeLog(2, '[ScenarioManager] Modalità manuale attivata automaticamente');
+
+            // Crea configurazione di fallback per modalità manuale
+            this.scenariosConfig = {
+                scenarios: [],
+                manualMode: true
+            };
+            this.renderScenarioCards();
+        });
     }
 
     /**
-     * Parsing del file home.config
+     * Parsing del file home_config.cvtscript
+     * Formato: sezioni [NomeScenario] con proprietà model=, direction=, description=, etc.
      */
     parseHomeConfig(content) {
         this.safeLog(3, '[ScenarioManager] Parsing configurazione home...');
@@ -105,54 +114,72 @@ class ScenarioManager {
                     continue;
                 }
 
+                // Rimuovi commenti inline (dopo //)
+                const commentIndex = line.indexOf('//');
+                if (commentIndex !== -1) {
+                    line = line.substring(0, commentIndex).trim();
+                    if (!line) continue;
+                }
+
                 // Riconoscimento sezioni scenario
                 if (line.startsWith('[') && line.endsWith(']')) {
-                    // Salva scenario precedente se esisteva
                     if (currentScenario) {
                         scenarios.push(currentScenario);
                     }
 
-                    // Crea nuovo scenario
                     const scenarioName = line.slice(1, -1);
                     currentScenario = {
                         name: scenarioName,
+                        description: '',
+                        image: '',
                         files: [],
-                        path: `./scenes/${scenarioName}/`
+                        positions: []
                     };
                     continue;
                 }
 
                 // Parsing proprietà scenario
                 if (currentScenario && line.includes('=')) {
-                    const [key, value] = line.split('=', 2);
-                    const cleanKey = key.trim();
-                    const cleanValue = value.trim();
+                    const eqIndex = line.indexOf('=');
+                    const key = line.substring(0, eqIndex).trim();
+                    const value = line.substring(eqIndex + 1).trim();
 
-                    switch (cleanKey) {
-                        case 'files':
-                            currentScenario.files = cleanValue.split(',').map(f => f.trim());
-                            break;
-                        case 'tutorial':
-                            currentScenario.tutorial = cleanValue;
-                            break;
-                        case 'cameraPos':
-                            currentScenario.cameraPos = cleanValue;
-                            break;
-                        case 'cameraTarget':
-                            currentScenario.cameraTarget = cleanValue;
-                            break;
-                        case 'ambientLight':
-                            currentScenario.ambientLight = cleanValue;
-                            break;
-                        case 'directionalLight':
-                            currentScenario.directionalLight = cleanValue;
-                            break;
-                        case 'backLight':
-                            currentScenario.backLight = cleanValue;
-                            break;
-                        default:
-                            // Proprietà generica
-                            currentScenario[cleanKey] = cleanValue;
+                    if (key === 'description') {
+                        currentScenario.description = value;
+                    } else if (key === 'image') {
+                        currentScenario.image = value;
+                    } else if (key === 'tutorial') {
+                        currentScenario.tutorial = value;
+                    } else if (key === 'CameraPos') {
+                        currentScenario.cameraPos = value;
+                    } else if (key === 'CameraTarget') {
+                        currentScenario.cameraTarget = value;
+                    } else if (key === 'AmbientLight') {
+                        currentScenario.ambientLight = value;
+                    } else if (key === 'DirectionalLight') {
+                        currentScenario.directionalLight = value;
+                    } else if (key === 'BackLight') {
+                        currentScenario.backLight = value;
+                    } else if (key === 'Configuration') {
+                        currentScenario.configuration = value;
+                    } else if (key === 'direction' || key === 'direzione') {
+                        // Direzione per l'ultimo modello aggiunto
+                        const coords = value.split(',').map(n => parseFloat(n.trim()));
+                        if (coords.length === 3 && currentScenario.files.length > 0) {
+                            const lastFile = currentScenario.files[currentScenario.files.length - 1];
+                            lastFile.direction = { x: coords[0], y: coords[1], z: coords[2] };
+                        }
+                    } else if (key === 'model') {
+                        // Modello 3D
+                        currentScenario.files.push({ label: key, path: value, direction: null });
+                    } else if (key === 'position') {
+                        const coords = value.split(',').map(n => parseFloat(n.trim()));
+                        if (coords.length === 3) {
+                            currentScenario.positions.push({ x: coords[0], y: coords[1], z: coords[2] });
+                        }
+                    } else {
+                        // Proprietà generica
+                        currentScenario[key] = value;
                     }
                 }
             }
@@ -175,8 +202,7 @@ class ScenarioManager {
             this.renderScenarioCards();
 
         } catch (error) {
-            this.safeLog(0, '[ScenarioManager] Errore parsing home.config:', error);
-            // Fallback a modalità manuale
+            this.safeLog(0, '[ScenarioManager] Errore parsing home_config:', error);
             this.scenariosConfig = { scenarios: [], manualMode: true };
             this.renderScenarioCards();
         }
@@ -224,14 +250,37 @@ class ScenarioManager {
         card.setAttribute('role', 'button');
         card.setAttribute('aria-label', `Carica scenario ${scenario.name}`);
 
-        const filesCount = scenario.files ? scenario.files.length : 0;
-        const hasTutorial = scenario.tutorial ? '🎓' : '';
+        // Sezione immagine
+        const imageSection = document.createElement('div');
+        imageSection.className = 'scenario-image';
 
-        card.innerHTML = `
-            <h3>${scenario.name} ${hasTutorial}</h3>
-            <p>📁 ${filesCount} file${filesCount !== 1 ? 's' : ''}</p>
-            <p class="scenario-path">${scenario.path}</p>
-        `;
+        if (scenario.image) {
+            const img = document.createElement('img');
+            img.src = scenario.image;
+            img.alt = scenario.name;
+            img.onerror = () => {
+                imageSection.innerHTML = '<div class="placeholder-image">🎯</div>';
+            };
+            imageSection.appendChild(img);
+        } else {
+            imageSection.innerHTML = '<div class="placeholder-image">🎯</div>';
+        }
+
+        // Sezione info
+        const infoSection = document.createElement('div');
+        infoSection.className = 'scenario-info';
+
+        const title = document.createElement('h3');
+        title.textContent = scenario.name;
+
+        const description = document.createElement('p');
+        description.textContent = scenario.description || 'Nessuna descrizione disponibile';
+
+        infoSection.appendChild(title);
+        infoSection.appendChild(description);
+
+        card.appendChild(imageSection);
+        card.appendChild(infoSection);
 
         return card;
     }
@@ -501,11 +550,12 @@ class ScenarioManager {
 
         // Costruisci URL completi per i modelli
         const modelUrls = scenario.files.map(file => {
-            // Se il file non ha un path assoluto, usa il path dello scenario
-            if (!file.startsWith('http') && !file.startsWith('./') && !file.startsWith('/')) {
-                return scenario.path + file;
+            // file può essere oggetto { label, path, direction } o stringa
+            const filePath = typeof file === 'string' ? file : file.path;
+            if (!filePath.startsWith('http') && !filePath.startsWith('./') && !filePath.startsWith('/')) {
+                return './' + filePath;
             }
-            return file;
+            return filePath;
         });
 
         this.safeLog(3, `[ScenarioManager] URL modelli:`, modelUrls);
