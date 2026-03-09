@@ -58,7 +58,8 @@
       "Bash(powershell -Command:*)",
       "Bash(# Controlla i primi byte di remote.glb e a500.glb per verificare formato \\(GLB vs GLTF\\) xxd \"\"C:/Users/mloffredo/campus_virtual_training/scenes/Manutenzione_Elettromandrino/models/remote.glb\"\")",
       "Bash(powershell -NoProfile -Command:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "WebFetch(domain:novermax.github.io)"
     ],
     "deny": [],
     "ask": [],
