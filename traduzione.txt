@@ -1,0 +1,66 @@
+Task
+
+Devi modificare il file:
+
+@tutorial@scenes/Pompa_Becker/tutorial_eng.cvtscript
+
+L'obiettivo è tradurre in lingua inglese tutto il testo in italiano presente nel file, senza modificare la struttura o la sintassi dello script.
+
+Regole di traduzione
+
+Tradurre tutte le stringhe dopo Descrizione=
+
+Traduci solo il testo dopo il simbolo =.
+La chiave Descrizione non deve essere modificata.
+
+Esempio:
+
+Descrizione=pulsante Start sul telecomando per avviare lo scarico utensile.
+
+diventa
+
+Descrizione=Press the Start button on the remote control to start the tool drain.
+
+Tradurre tutti i commenti
+
+Tutti i commenti che iniziano con # devono essere tradotti in inglese.
+
+Il simbolo # deve rimanere invariato.
+
+Esempio:
+
+# vai alla schermata mdi
+
+diventa
+
+# go to the MDI screen
+
+Tradurre i titoli degli step
+
+Tutti i titoli degli step racchiusi tra parentesi quadre [] devono essere tradotti in inglese.
+
+La struttura e la numerazione devono rimanere identiche.
+
+Esempio:
+
+[Step 1 - Vai alla schermata MDI]
+
+diventa
+
+[Step 1 - Go to MDI screen]
+
+Vincoli importanti
+
+Non modificare la struttura del file.
+
+Non cambiare nomi delle chiavi come Descrizione.
+
+Non modificare comandi, variabili, percorsi o sintassi dello script.
+
+Tradurre solo il testo destinato all'utente o ai commenti.
+
+Mantenere formattazione e spaziatura originali.
+
+Output richiesto
+
+Restituisci l'intero file modificato, mantenendo identica la struttura originale ma con tutte le parti richieste tradotte in inglese.

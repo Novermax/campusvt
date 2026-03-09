@@ -1,0 +1,11 @@
+git status
+git add .
+git commit -m "Messaggio commit"
+git pull --rebase
+git push
+
+
+git add -A        
+git commit -m "descrizione modifiche"
+git pull --rebase
+git push

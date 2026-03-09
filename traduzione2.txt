@@ -1,0 +1,80 @@
+Task
+
+Il problema nasce dal file:
+
+home_config.cvtscript
+
+Attualmente esiste solo la versione italiana.
+Deve essere creata anche una versione inglese del file.
+
+Obiettivo
+
+Creare un nuovo file:
+
+home_config_eng.cvtscript
+
+Questo file deve essere identico nella struttura a home_config.cvtscript, ma con i contenuti testuali tradotti in inglese e con i riferimenti ai tutorial inglesi.
+
+Il file home_config.cvtscript deve rimanere la versione italiana di fallback e non deve essere modificato.
+
+Regole di modifica per home_config_eng.cvtscript
+1. Traduzione del titolo principale
+
+Nel file inglese devono essere tradotti i seguenti campi.
+
+Esempio:
+
+title=Campus Virtual Training Morbidelli X400              // Main title shown in home page
+subtitle=Seleziona uno scenario di simulazione per iniziare la dimostrazione  // Explanatory subtitle
+
+diventa:
+
+title=Campus Virtual Training Morbidelli X400
+subtitle=Select a simulation scenario to start the demonstration
+2. Traduzione delle descrizioni degli scenari
+
+Nella sezione scenario description tradurre i seguenti contenuti.
+
+Esempio:
+
+description=Controllo e manutenzione dell'elettromandrino con coni HSK: pulizia della pinza, lubrificazione, sblocco/bloccaggio manuale della pinza.
+
+diventa
+
+description=Electrospindle control and maintenance with HSK cones: caliper cleaning, lubrication, manual caliper unlocking/locking.
+3. Traduzione dello stato non attivo
+description=Non Attivato
+
+diventa
+
+description=Non-activated
+4. Modifica del percorso del tutorial
+
+Nel file inglese il riferimento al tutorial deve puntare alla versione inglese del tutorial.
+
+Esempio:
+
+tutorial=scenes/Manutenzione_Elettromandrino/tutorial.cvtscript
+
+diventa
+
+tutorial=scenes/Manutenzione_Elettromandrino/tutorial_eng.cvtscript
+Vincoli importanti
+
+Non modificare la struttura del file.
+
+Non modificare nomi delle chiavi (title, subtitle, description, tutorial, ecc.).
+
+Non modificare la logica del file.
+
+Modificare solo i testi e i riferimenti al tutorial inglese.
+
+Il file home_config.cvtscript deve rimanere inalterato come versione italiana di fallback.
+
+Output richiesto
+
+Creare il file:
+
+home_config_eng.cvtscript
+
+Restituire l'intero contenuto completo del nuovo file.
