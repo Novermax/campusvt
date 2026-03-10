@@ -97,7 +97,24 @@ window.TouchInputRouter = {
                 };
             }
 
-            // 2b. È un oggetto 3D draggabile?
+            // 2b. PRIORITÀ CERCHIO: se il tocco cade dentro un cerchio giallo lampeggiante,
+            // trattalo come tap sul pulsante associato ANCHE se il raycast ha colpito un altro oggetto.
+            // Questo garantisce che toccando dentro il cerchio giallo il pulsante viene sempre attivato,
+            // anche se il dito colpisce la superficie del modello sottostante (es. corpo pulpito).
+            const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
+            if (circleHit) {
+                if (this.gestureRecognizer) {
+                    this.gestureRecognizer.setInteractiveElement(true);
+                }
+                console.log(`[TouchInputRouter] 🟡 Cerchio giallo ha priorità su raycast (oggetto colpito: ${raycastResult.object.name})`);
+                return {
+                    layer: this.LAYERS.INTERACTIVE_3D,
+                    target: circleHit.mesh,
+                    hitPoint: raycastResult.point
+                };
+            }
+
+            // 2c. È un oggetto 3D draggabile?
             if (this.isDraggableObject(raycastResult.object)) {
                 return {
                     layer: this.LAYERS.OBJECT_3D,
@@ -106,7 +123,7 @@ window.TouchInputRouter = {
                 };
             }
 
-            // 2c. È un oggetto 3D qualsiasi (per selezione/pivot)
+            // 2d. È un oggetto 3D qualsiasi (per selezione/pivot)
             const rootModel = this.findRootModel(raycastResult.object);
             if (rootModel) {
                 return {
@@ -117,16 +134,16 @@ window.TouchInputRouter = {
             }
         }
 
-        // 2d. Fallback cerchio evidenziatore: se il tocco cade dentro un cerchio giallo,
-        // trattalo come tap sul pulsante associato (migliora UX touch su pulsanti piccoli)
-        const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
-        if (circleHit) {
+        // 2e. Fallback cerchio evidenziatore senza raycast: se il tocco cade dentro un cerchio giallo
+        // ma il raycast non ha colpito nulla (es. tocco sul bordo del cerchio fuori dal modello)
+        const circleHitFallback = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
+        if (circleHitFallback) {
             if (this.gestureRecognizer) {
                 this.gestureRecognizer.setInteractiveElement(true);
             }
             return {
                 layer: this.LAYERS.INTERACTIVE_3D,
-                target: circleHit.mesh,
+                target: circleHitFallback.mesh,
                 hitPoint: null
             };
         }
@@ -146,6 +163,9 @@ window.TouchInputRouter = {
         const mgr = window.Scene3D && window.Scene3D.highlightCircleManager;
         if (!mgr || !mgr.isEnabled || mgr.circles.size === 0) return null;
 
+        // Margine extra in pixel oltre il cerchio visibile per compensare imprecisione dita
+        const TOUCH_MARGIN = 15;
+
         for (const [triggerId, circleData] of mgr.circles) {
             const { element, mesh, size } = circleData;
             if (!mesh || !element || element.style.display === 'none') continue;
@@ -155,8 +175,8 @@ window.TouchInputRouter = {
             const cy = parseFloat(element.style.top);
             if (isNaN(cx) || isNaN(cy)) continue;
 
-            // Raggio del cerchio in pixel (metà dimensione)
-            const radius = size / 2;
+            // Raggio del cerchio in pixel (metà dimensione) + margine touch extra
+            const radius = (size / 2) + TOUCH_MARGIN;
 
             // Distanza dal centro del cerchio
             const dx = clientX - cx;
@@ -164,7 +184,7 @@ window.TouchInputRouter = {
             const dist = Math.sqrt(dx * dx + dy * dy);
 
             if (dist <= radius) {
-                console.log(`[TouchInputRouter] 🟡 Tocco dentro cerchio evidenziatore "${triggerId}" (dist: ${dist.toFixed(1)}px, raggio: ${radius}px)`);
+                console.log(`[TouchInputRouter] 🟡 Tocco dentro cerchio evidenziatore "${triggerId}" (dist: ${dist.toFixed(1)}px, raggio: ${radius}px, margine: ${TOUCH_MARGIN}px)`);
                 return { mesh, triggerId };
             }
         }
