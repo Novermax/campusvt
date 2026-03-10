@@ -510,8 +510,19 @@ window.InteractiveObject3D = {
         console.log(`🔘 [InteractiveObject3D] Button click: ${parentName}.${buttonId} (mesh: ${mesh.name}) → ${action}`);
 
         // Rimuovi evidenziazione del pulsante cliccato (se era evidenziato)
+        // ECCEZIONE: Se lo step ha AnimatedMaxTriggers e la finestra animata è ancora attiva,
+        // mantieni l'evidenziazione per tutti i cicli (es. "apri e chiudi 4 volte")
         const triggerId = `${parentName}.${buttonId}`;
-        if (this.highlightedButtons.has(triggerId)) {
+        let keepHighlight = false;
+        if (window.AnimatedWindowSystem && window.AnimatedWindowSystem.isVisible) {
+            const stepProps = window.UI?.tutorialSteps?.[window.UI?.currentStepIndex]?.properties;
+            if (stepProps && (stepProps.AnimatedMaxTriggers || stepProps.AnimatedImages || stepProps.AnimatedImagesFolder)) {
+                keepHighlight = true;
+                console.log(`💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "${buttonId}" (AnimatedWindow attiva, trigger multipli)`);
+            }
+        }
+
+        if (this.highlightedButtons.has(triggerId) && !keepHighlight) {
             const highlightedMesh = this.highlightedButtons.get(triggerId);
             if (highlightedMesh && highlightedMesh.material) {
                 // Gestisce sia materiale singolo che array (stesso approccio di clearButtonHighlights)
