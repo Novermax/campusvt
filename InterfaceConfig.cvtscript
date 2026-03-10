@@ -42,3 +42,8 @@ ZoomMin=0.4
 # Distanza massima camera dal pivot (quanto ci si puo' allontanare)
 # default: 15    |  valori tipici: 5 (vicino) - 50 (lontano)
 ZoomMax=1.3
+
+[SpeechBubble]
+# Durata dell'animazione drammatica del fumetto (ms) quando HighlightDescription=true
+# default: 1000 | range consigliato: 500 - 3000
+DramaticAnimationDuration=1300

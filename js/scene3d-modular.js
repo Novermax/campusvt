@@ -1827,13 +1827,13 @@ const Scene3D = {
         // Crea spray dal cursore verso l'oggetto con distanza limitata
         const sprayId = this.particleSystem.createSpray(cursorPosition3D, sprayDirection, {
             particleCount: 400,
-            life: 2.0,
-            speed: { min: 5, max: 15 },
+            life: 1,
+            speed: { min: 1, max: 5},
             size: { min: 0.002, max: 0.008 },
             spread: { x: 0.05, y: 0.05, z: 0.05 },
             opacity: { start: 0.8, end: 0.0 },
             maxDistance: distanceToTarget,
-            gravity: { x: 0, y: -0.3, z: 0 }
+            gravity: { x: 0, y: 5, z: 0 }
         });
 
         // Feedback visivo aggiuntivo

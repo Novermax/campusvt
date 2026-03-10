@@ -703,6 +703,15 @@ window.UI = {
                 }
             }
 
+            if (currentSection === 'SpeechBubble' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                if (key === 'DramaticAnimationDuration') {
+                    const v = parseInt(value, 10);
+                    if (!isNaN(v) && v > 0) this.dramaticAnimationDuration = v;
+                    this.safeLog(2, `InterfaceConfig: SpeechBubble.DramaticAnimationDuration = ${value}`);
+                }
+            }
+
             if (currentSection === 'CameraControls' && line.includes('=')) {
                 const [key, value] = line.split('=', 2).map(s => s.trim());
                 window.InterfaceConfig = window.InterfaceConfig || {};
@@ -3879,6 +3888,14 @@ window.UI = {
             console.log(`[DEBUG] 🎯 DRAG & DROP: Processo abilitazione per step "${step.title}"`);
             AppConfig.log(2, `🎯 DRAG & DROP: Abilitato per step "${step.title}"`);
 
+            // Auto-attiva lo strumento "Mano" per step DragDrop
+            // Il DragDropSystem richiede che il tool "mano" sia attivo per permettere il drag
+            if (window.ToolsManager && typeof window.ToolsManager.activateToolFromTutorial === 'function') {
+                const requiredTool = step.properties.Utensile || 'Mani';
+                window.ToolsManager.activateToolFromTutorial(requiredTool);
+                AppConfig.log(3, `🎯 DRAG & DROP: Auto-attivato strumento "${requiredTool}" per drag & drop`);
+            }
+
             // Configura oggetti draggabili se specificati
             const draggableObjects = [];
             if (step.properties.DragDropObjects) {
@@ -4948,10 +4965,13 @@ window.UI = {
             requestAnimationFrame(() => {
                 bubble.classList.add('dramatic-intro');
             });
+            const dramaticDuration = this.dramaticAnimationDuration || 1000;
+            bubble.style.animationDuration = dramaticDuration + 'ms';
             setTimeout(() => {
                 bubble.classList.remove('dramatic-intro');
+                bubble.style.animationDuration = '';
                 console.log('🎬 [UI] Animazione drammatica completata');
-            }, 1000);
+            }, dramaticDuration);
             return;
         }
 

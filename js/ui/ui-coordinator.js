@@ -409,6 +409,15 @@ const UI = {
                 }
             }
 
+            if (currentSection === 'SpeechBubble' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                if (key === 'DramaticAnimationDuration') {
+                    const v = parseInt(value, 10);
+                    if (!isNaN(v) && v > 0) this.dramaticAnimationDuration = v;
+                    console.log(`💬 [UI] InterfaceConfig: SpeechBubble.DramaticAnimationDuration = ${value}`);
+                }
+            }
+
             if (currentSection === 'CameraControls' && line.includes('=')) {
                 const [key, value] = line.split('=', 2).map(s => s.trim());
                 window.InterfaceConfig = window.InterfaceConfig || {};

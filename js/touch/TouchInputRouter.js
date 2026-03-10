@@ -117,8 +117,59 @@ window.TouchInputRouter = {
             }
         }
 
+        // 2d. Fallback cerchio evidenziatore: se il tocco cade dentro un cerchio giallo,
+        // trattalo come tap sul pulsante associato (migliora UX touch su pulsanti piccoli)
+        const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
+        if (circleHit) {
+            if (this.gestureRecognizer) {
+                this.gestureRecognizer.setInteractiveElement(true);
+            }
+            return {
+                layer: this.LAYERS.INTERACTIVE_3D,
+                target: circleHit.mesh,
+                hitPoint: null
+            };
+        }
+
         // 3. Nessun elemento - camera control
         return { layer: this.LAYERS.CAMERA, target: null, hitPoint: null };
+    },
+
+    /**
+     * Controlla se il tocco cade dentro un cerchio evidenziatore giallo attivo.
+     * Se sì, restituisce la mesh del pulsante associato al cerchio.
+     * @param {number} clientX - Coordinata X del tocco (pixel schermo)
+     * @param {number} clientY - Coordinata Y del tocco (pixel schermo)
+     * @returns {Object|null} { mesh, triggerId } oppure null
+     */
+    checkHighlightCircleHit: function(clientX, clientY) {
+        const mgr = window.Scene3D && window.Scene3D.highlightCircleManager;
+        if (!mgr || !mgr.isEnabled || mgr.circles.size === 0) return null;
+
+        for (const [triggerId, circleData] of mgr.circles) {
+            const { element, mesh, size } = circleData;
+            if (!mesh || !element || element.style.display === 'none') continue;
+
+            // Posizione centro cerchio (CSS left/top)
+            const cx = parseFloat(element.style.left);
+            const cy = parseFloat(element.style.top);
+            if (isNaN(cx) || isNaN(cy)) continue;
+
+            // Raggio del cerchio in pixel (metà dimensione)
+            const radius = size / 2;
+
+            // Distanza dal centro del cerchio
+            const dx = clientX - cx;
+            const dy = clientY - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist <= radius) {
+                console.log(`[TouchInputRouter] 🟡 Tocco dentro cerchio evidenziatore "${triggerId}" (dist: ${dist.toFixed(1)}px, raggio: ${radius}px)`);
+                return { mesh, triggerId };
+            }
+        }
+
+        return null;
     },
 
     /**
@@ -281,7 +332,16 @@ window.TouchInputRouter = {
 
         // Usa raycast multi-punto per massimizzare il rilevamento
         const raycastResult = this.performRaycastMultiPoint(touch.normalizedX, touch.normalizedY);
-        if (!raycastResult) return;
+
+        if (!raycastResult) {
+            // Fallback: controlla se il tocco cade dentro un cerchio evidenziatore
+            const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
+            if (circleHit && this.gestureRecognizer) {
+                this.gestureRecognizer.setInteractiveElement(true);
+                console.log('[TouchInputRouter] 🟡 Flag interattivo settato via cerchio evidenziatore:', circleHit.triggerId);
+            }
+            return;
+        }
 
         const isInteractive = this.isInteractive3DElement(raycastResult.object);
         const isDraggable = this.isDraggableObject(raycastResult.object);
