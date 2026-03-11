@@ -98,20 +98,31 @@ window.TouchInputRouter = {
             }
 
             // 2b. PRIORITÀ CERCHIO: se il tocco cade dentro un cerchio giallo lampeggiante,
-            // trattalo come tap sul pulsante associato ANCHE se il raycast ha colpito un altro oggetto.
-            // Questo garantisce che toccando dentro il cerchio giallo il pulsante viene sempre attivato,
-            // anche se il dito colpisce la superficie del modello sottostante (es. corpo pulpito).
+            // trattalo come tap sull'elemento associato ANCHE se il raycast ha colpito un altro oggetto.
             const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
             if (circleHit) {
-                if (this.gestureRecognizer) {
-                    this.gestureRecognizer.setInteractiveElement(true);
+                // Distingui cerchi DragDrop (dragdrop_*) da cerchi pulsanti interattivi
+                if (circleHit.triggerId.startsWith('dragdrop_')) {
+                    // CERCHIO DRAGDROP: instrada al layer OBJECT_3D per il TouchDragHandler
+                    const rootModel = this.findRootModel(circleHit.mesh);
+                    console.log(`[TouchInputRouter] 🟡 Cerchio DragDrop "${circleHit.triggerId}" → OBJECT_3D (root: ${rootModel ? rootModel.name : 'N/A'})`);
+                    return {
+                        layer: this.LAYERS.OBJECT_3D,
+                        target: rootModel || circleHit.mesh,
+                        hitPoint: raycastResult.point
+                    };
+                } else {
+                    // CERCHIO PULSANTE: instrada al layer INTERACTIVE_3D
+                    if (this.gestureRecognizer) {
+                        this.gestureRecognizer.setInteractiveElement(true);
+                    }
+                    console.log(`[TouchInputRouter] 🟡 Cerchio pulsante "${circleHit.triggerId}" → INTERACTIVE_3D`);
+                    return {
+                        layer: this.LAYERS.INTERACTIVE_3D,
+                        target: circleHit.mesh,
+                        hitPoint: raycastResult.point
+                    };
                 }
-                console.log(`[TouchInputRouter] 🟡 Cerchio giallo ha priorità su raycast (oggetto colpito: ${raycastResult.object.name})`);
-                return {
-                    layer: this.LAYERS.INTERACTIVE_3D,
-                    target: circleHit.mesh,
-                    hitPoint: raycastResult.point
-                };
             }
 
             // 2c. È un oggetto 3D draggabile?
@@ -138,14 +149,25 @@ window.TouchInputRouter = {
         // ma il raycast non ha colpito nulla (es. tocco sul bordo del cerchio fuori dal modello)
         const circleHitFallback = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
         if (circleHitFallback) {
-            if (this.gestureRecognizer) {
-                this.gestureRecognizer.setInteractiveElement(true);
+            if (circleHitFallback.triggerId.startsWith('dragdrop_')) {
+                // CERCHIO DRAGDROP senza raycast: instrada a OBJECT_3D
+                const rootModel = this.findRootModel(circleHitFallback.mesh);
+                console.log(`[TouchInputRouter] 🟡 Fallback cerchio DragDrop "${circleHitFallback.triggerId}" → OBJECT_3D`);
+                return {
+                    layer: this.LAYERS.OBJECT_3D,
+                    target: rootModel || circleHitFallback.mesh,
+                    hitPoint: null
+                };
+            } else {
+                if (this.gestureRecognizer) {
+                    this.gestureRecognizer.setInteractiveElement(true);
+                }
+                return {
+                    layer: this.LAYERS.INTERACTIVE_3D,
+                    target: circleHitFallback.mesh,
+                    hitPoint: null
+                };
             }
-            return {
-                layer: this.LAYERS.INTERACTIVE_3D,
-                target: circleHitFallback.mesh,
-                hitPoint: null
-            };
         }
 
         // 3. Nessun elemento - camera control
@@ -310,13 +332,14 @@ window.TouchInputRouter = {
         const centerResult = this.performRaycast(normalizedX, normalizedY);
         if (centerResult) return centerResult;
 
-        // Calcola offset in coordinate normalizzate (circa 20px su schermo tipico mobile)
-        // FIX: Aumentato da 12px a 20px per migliorare selezione touch di oggetti piccoli (viti)
+        // Calcola offset in coordinate normalizzate (circa 35px su schermo tipico mobile)
+        // FIX: Aumentato da 20px a 35px per migliorare selezione touch di oggetti piccoli (viti flangia)
+        // Su schermi touch, le dita coprono ~40-50px, serve un raggio generoso
         const canvas = document.getElementById('canvas3d');
         const cw = canvas ? canvas.clientWidth : 400;
         const ch = canvas ? canvas.clientHeight : 700;
-        const ox = 20 / cw * 2;
-        const oy = 20 / ch * 2;
+        const ox = 35 / cw * 2;
+        const oy = 35 / ch * 2;
 
         // 8 punti attorno al centro (croce + diagonali)
         const offsets = [
@@ -357,8 +380,10 @@ window.TouchInputRouter = {
             // Fallback: controlla se il tocco cade dentro un cerchio evidenziatore
             const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
             if (circleHit && this.gestureRecognizer) {
+                // Cerchi DragDrop: setta flag come draggable (non interactive)
+                // Cerchi pulsanti: setta flag come interactive
                 this.gestureRecognizer.setInteractiveElement(true);
-                console.log('[TouchInputRouter] 🟡 Flag interattivo settato via cerchio evidenziatore:', circleHit.triggerId);
+                console.log(`[TouchInputRouter] 🟡 Flag interattivo settato via cerchio "${circleHit.triggerId}" (dragdrop: ${circleHit.triggerId.startsWith('dragdrop_')})`);
             }
             return;
         }

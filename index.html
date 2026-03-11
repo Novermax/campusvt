@@ -231,6 +231,7 @@
                 </h1>
                 <div id="userBar">
                     <span id="userBarName"></span>
+                    <button id="manageUsersBtn" onclick="openUserManager()" style="display:none;">👥 Gestione Utenti</button>
                     <button id="changeUserBtn" onclick="logoutUser()">🔄 Cambia utente</button>
                 </div>
             </div>
@@ -558,6 +559,7 @@
                             document.getElementById('container').classList.remove('hidden');
                             document.getElementById('init-loader').classList.add('hidden');
                             console.log(`🔄 Sessione ripristinata per: ${userData.name}`);
+                            updateUserBar();
                             return; // Evita di mostrare il form di login
                             }
                         } else {
@@ -572,44 +574,8 @@
                 }
             }
 
-            // ============================================================================
-            // BYPASS LOGIN PER ELECTRON
-            // ============================================================================
             // Rileva se l'app è in esecuzione in Electron
-            const isElectron = () => {
-                // Metodo 1: Verifica user agent
-                if (navigator.userAgent.toLowerCase().indexOf(' electron/') > -1) {
-                    return true;
-                }
-                // Metodo 2: Verifica window.process (solo in Electron con nodeIntegration)
-                if (typeof window.process === 'object' && window.process.type === 'renderer') {
-                    return true;
-                }
-                // Metodo 3: Verifica navigator.userAgentData (Chrome-based)
-                if (navigator.userAgentData && navigator.userAgentData.brands) {
-                    return navigator.userAgentData.brands.some(brand => brand.brand === 'Electron');
-                }
-                return false;
-            };
-
-            // Se siamo in Electron, bypassa automaticamente il login
-            if (isElectron()) {
-                console.log('🖥️ Electron rilevato - Bypass login automatico');
-
-                // Crea un utente virtuale per Electron
-                window.currentUser = {
-                    name: 'Utente Electron',
-                    loginTime: new Date(),
-                    expiration: null // Nessuna scadenza per Electron
-                };
-
-                // Nascondi login e mostra container
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('container').classList.remove('hidden');
-                document.getElementById('init-loader').classList.add('hidden');
-
-                console.log('✅ Accesso automatico abilitato per build Electron');
-            }
+            const isElectron = () => !!window.electronAPI;
 
             const loginForm = document.getElementById('loginForm');
             const loginError = document.getElementById('loginError');
@@ -634,8 +600,15 @@
 
                 try {
                     // Fetch del file users.txt (codificato)
-                    const response = await fetchFile('users.txt');
-                    const rawText = await response.text();
+                    // In Electron usa IPC per leggere anche da fuori l'ASAR (accanto all'exe)
+                    let rawText;
+                    if (isElectron() && window.electronAPI.readConfigFile) {
+                        rawText = await window.electronAPI.readConfigFile('users.txt');
+                        if (!rawText) throw new Error('users.txt non trovato');
+                    } else {
+                        const response = await fetchFile('users.txt');
+                        rawText = await response.text();
+                    }
 
                     // Decodifica: XOR + Base64
                     const _k = 'CVT2025!secure#training';
@@ -657,7 +630,7 @@
                     let userExpiration = null;
                     for (const line of lines) {
                         const parts = line.trim().split(';');
-                        const [fileUsername, filePassword, expirationDate, userLanguage] = parts;
+                        const [fileUsername, filePassword, expirationDate, userLanguage, userRole] = parts;
 
                         if (username === fileUsername && password === filePassword) {
                             // Controllo data scadenza
@@ -674,8 +647,9 @@
                                 }
                                 userExpiration = expDate;
                             }
-                            // Salva lingua utente (lowercase, fallback null)
+                            // Salva lingua e ruolo utente (lowercase, fallback null)
                             window._userLanguage = userLanguage ? userLanguage.trim().toLowerCase() : null;
+                            window._userRole = userRole ? userRole.trim().toLowerCase() : null;
                             authenticated = true;
                             break;
                         }
@@ -687,7 +661,8 @@
                             name: username,
                             loginTime: new Date(),
                             expiration: userExpiration,
-                            language: window._userLanguage || null
+                            language: window._userLanguage || null,
+                            role: window._userRole || null
                         };
 
                         // Salva anche in localStorage per persistenza
@@ -761,6 +736,12 @@
                 if (nameEl && window.currentUser && window.currentUser.name) {
                     nameEl.textContent = '👤 ' + window.currentUser.name;
                 }
+                // Mostra pulsante Gestione Utenti solo ad admin in Electron
+                const manageBtn = document.getElementById('manageUsersBtn');
+                if (manageBtn) {
+                    const isAdmin = window.currentUser && window.currentUser.role === 'admin';
+                    manageBtn.style.display = (isAdmin && isElectron()) ? 'inline-block' : 'none';
+                }
             }
 
             // Osserva quando il container diventa visibile (dopo login) per aggiornare la barra
@@ -773,6 +754,7 @@
         function logoutUser() {
             localStorage.removeItem('currentUser');
             window.currentUser = null;
+            closeUserManager();
             // Torna alla pagina di login senza ricaricare la pagina intera
             document.getElementById('container').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
@@ -780,7 +762,207 @@
             document.getElementById('password').value = '';
             document.getElementById('loginError').classList.add('hidden');
         }
+
+        // ============================================================================
+        // GESTIONE UTENTI (solo Electron, solo admin)
+        // ============================================================================
+
+        const _USERS_FILE = 'users.txt';
+        const _ENC_KEY = 'CVT2025!secure#training';
+
+        function _xorStr(t, k) {
+            let r = '';
+            for (let i = 0; i < t.length; i++)
+                r += String.fromCharCode(t.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+            return r;
+        }
+
+        async function _readUsers() {
+            const raw = await window.electronAPI.readConfigFile(_USERS_FILE);
+            if (!raw) return [];
+            let text;
+            try {
+                const xored = decodeURIComponent(escape(atob(raw.trim())));
+                text = _xorStr(xored, _ENC_KEY);
+            } catch (e) {
+                text = raw; // fallback testo in chiaro
+            }
+            return text.split('\n')
+                .map(l => l.trim()).filter(Boolean)
+                .map(line => {
+                    const [username, password, expiration, language, role] = line.split(';');
+                    return { username: username||'', password: password||'', expiration: expiration||'', language: language||'', role: (role||'').toLowerCase() };
+                });
+        }
+
+        async function _saveUsers(users) {
+            const text = users.map(u =>
+                [u.username, u.password, u.expiration, u.language, u.role].join(';')
+            ).join('\n');
+            const xored = _xorStr(text, _ENC_KEY);
+            const encoded = btoa(unescape(encodeURIComponent(xored)));
+            const result = await window.electronAPI.writeConfigFile(_USERS_FILE, encoded);
+            return result.success;
+        }
+
+        function openUserManager() {
+            document.getElementById('userManagerModal').style.display = 'flex';
+            renderUserManager();
+        }
+
+        function closeUserManager() {
+            const modal = document.getElementById('userManagerModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function renderUserManager() {
+            const content = document.getElementById('userManagerContent');
+            content.innerHTML = '<p style="color:#aaa;">Caricamento...</p>';
+            let users;
+            try {
+                users = await _readUsers();
+            } catch(e) {
+                content.innerHTML = `<p style="color:#e74c3c;">Errore lettura users.txt: ${e.message}</p>`;
+                return;
+            }
+            window._editingUsers = users;
+
+            const langOptions = `
+                <option value="">-- nessuna --</option>
+                <option value="it">Italiano (it)</option>
+                <option value="eng">English (eng)</option>
+            `;
+
+            const rows = users.map((u, i) => `
+                <tr style="border-bottom:1px solid #333;">
+                    <td style="padding:8px 6px;">${_esc(u.username)}</td>
+                    <td style="padding:8px 6px;"><input id="um_pw_${i}" value="${_esc(u.password)}" type="text" style="${_inputStyle}" /></td>
+                    <td style="padding:8px 6px;"><input id="um_exp_${i}" value="${_esc(u.expiration)}" type="date" style="${_inputStyle}" /></td>
+                    <td style="padding:8px 6px;">
+                        <select id="um_lang_${i}" style="${_inputStyle}">
+                            ${_langSelectOptions(u.language)}
+                        </select>
+                    </td>
+                    <td style="padding:8px 6px;">
+                        <select id="um_role_${i}" style="${_inputStyle}">
+                            <option value="" ${u.role===''?'selected':''}>utente</option>
+                            <option value="admin" ${u.role==='admin'?'selected':''}>admin</option>
+                        </select>
+                    </td>
+                    <td style="padding:8px 6px; white-space:nowrap;">
+                        <button onclick="saveUserRow(${i})" style="${_btnStyle('#27ae60')}">💾 Salva</button>
+                        <button onclick="deleteUserRow(${i})" style="${_btnStyle('#e74c3c')}">🗑 Elimina</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            content.innerHTML = `
+                <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead>
+                        <tr style="background:#0d0d1e; color:#7fb3f5; text-align:left;">
+                            <th style="padding:8px 6px;">Utente</th>
+                            <th style="padding:8px 6px;">Password</th>
+                            <th style="padding:8px 6px;">Scadenza</th>
+                            <th style="padding:8px 6px;">Lingua</th>
+                            <th style="padding:8px 6px;">Ruolo</th>
+                            <th style="padding:8px 6px;">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <hr style="border-color:#333; margin:20px 0;" />
+                <h3 style="color:#7fb3f5; margin:0 0 12px;">➕ Nuovo Utente</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:8px; align-items:end;">
+                    <div>
+                        <label style="font-size:12px; color:#aaa;">Utente</label>
+                        <input id="um_new_user" placeholder="nome" style="${_inputStyle}" />
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:#aaa;">Password</label>
+                        <input id="um_new_pw" placeholder="password" style="${_inputStyle}" />
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:#aaa;">Scadenza</label>
+                        <input id="um_new_exp" type="date" style="${_inputStyle}" />
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:#aaa;">Lingua</label>
+                        <select id="um_new_lang" style="${_inputStyle}">
+                            ${langOptions}
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:#aaa;">Ruolo</label>
+                        <select id="um_new_role" style="${_inputStyle}">
+                            <option value="">utente</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="addNewUser()" style="${_btnStyle('#4a90d9')} margin-top:12px; padding:10px 24px;">➕ Aggiungi</button>
+                <div id="um_status" style="margin-top:10px; font-size:13px; color:#2ecc71; min-height:20px;"></div>
+            `;
+        }
+
+        const _inputStyle = 'width:100%; background:#0d0d1e; border:1px solid #444; color:#eee; padding:6px 8px; border-radius:4px; font-size:12px; box-sizing:border-box;';
+        const _btnStyle = (bg) => `background:${bg}; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:12px; margin-right:4px;`;
+
+        function _esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        function _langSelectOptions(current) {
+            const langs = [['','-- nessuna --'],['it','Italiano (it)'],['eng','English (eng)']];
+            return langs.map(([v,l]) => `<option value="${v}" ${current===v?'selected':''}>${l}</option>`).join('');
+        }
+
+        async function saveUserRow(i) {
+            const users = window._editingUsers;
+            users[i].password   = document.getElementById(`um_pw_${i}`).value.trim();
+            users[i].expiration = document.getElementById(`um_exp_${i}`).value.trim();
+            users[i].language   = document.getElementById(`um_lang_${i}`).value;
+            users[i].role       = document.getElementById(`um_role_${i}`).value;
+            const ok = await _saveUsers(users);
+            document.getElementById('um_status').textContent = ok ? '✅ Salvato.' : '❌ Errore scrittura file.';
+            setTimeout(() => { const el = document.getElementById('um_status'); if(el) el.textContent=''; }, 3000);
+        }
+
+        async function deleteUserRow(i) {
+            const users = window._editingUsers;
+            if (!confirm(`Eliminare l'utente "${users[i].username}"?`)) return;
+            users.splice(i, 1);
+            const ok = await _saveUsers(users);
+            if (ok) renderUserManager();
+            else alert('Errore scrittura file.');
+        }
+
+        async function addNewUser() {
+            const username   = document.getElementById('um_new_user').value.trim();
+            const password   = document.getElementById('um_new_pw').value.trim();
+            const expiration = document.getElementById('um_new_exp').value.trim();
+            const language   = document.getElementById('um_new_lang').value;
+            const role       = document.getElementById('um_new_role').value;
+
+            if (!username || !password) { alert('Utente e password sono obbligatori.'); return; }
+
+            const users = window._editingUsers;
+            if (users.find(u => u.username === username)) { alert(`Utente "${username}" già esistente.`); return; }
+
+            users.push({ username, password, expiration, language, role });
+            const ok = await _saveUsers(users);
+            if (ok) renderUserManager();
+            else alert('Errore scrittura file.');
+        }
     </script>
+
+    <!-- MODALE GESTIONE UTENTI -->
+    <div id="userManagerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:100000; align-items:flex-start; justify-content:center; overflow-y:auto;">
+        <div style="background:#1a1a2e; color:#eee; width:90%; max-width:900px; margin:40px auto; border-radius:12px; padding:30px; border:1px solid #4a90d9; box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h2 style="margin:0; color:#4a90d9; font-size:20px;">👥 Gestione Utenti</h2>
+                <button onclick="closeUserManager()" style="background:none; border:1px solid #666; color:#eee; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:14px;">✕ Chiudi</button>
+            </div>
+            <div id="userManagerContent"></div>
+        </div>
+    </div>
 
     <!-- FetchFile Helper - Compatibilità Browser e Electron (DEVE essere caricato PRIMA di tutto) -->
     <script src="js/fetchFile.js?v=1000001"></script>

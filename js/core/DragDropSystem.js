@@ -1380,6 +1380,11 @@ window.DragDropSystem = {
                 assemblySystem.markComponentMounted(componentName, targetPosition);
                 console.log(`[DragDropSystem] 🏗️ Componente "${componentName}" marcato come montato nel sistema assemblaggio`);
 
+                // Rimuovi cerchio evidenziazione DragDrop per questo componente
+                if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+                    window.Scene3D.highlightCircleManager.removeCircle(`dragdrop_${componentName}`);
+                }
+
                 // Verifica se il passo corrente è completato
                 const assemblyStatus = assemblySystem.getAssemblyStatus();
                 console.log(`[DragDropSystem] 📋 Stato Assembly dopo mount:`);
@@ -1421,6 +1426,11 @@ window.DragDropSystem = {
             // Aggiungi oggetto alla lista completati
             this.completedSnapObjects.add(objectName);
             console.log(`[DragDropSystem] ✅ Oggetto "${objectName}" snappato con successo`);
+
+            // Rimuovi cerchio evidenziazione DragDrop per questo oggetto
+            if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+                window.Scene3D.highlightCircleManager.removeCircle(`dragdrop_${objectName}`);
+            }
             console.log(`[DragDropSystem] 📊 Progress: ${this.completedSnapObjects.size}/${this.requiredSnapObjects.size} oggetti snappati`);
 
             // Controlla se tutti gli oggetti richiesti hanno fatto snap
@@ -1433,6 +1443,16 @@ window.DragDropSystem = {
                 // Piccolo delay per permettere all'animazione snap di completarsi
                 setTimeout(() => {
                     this.tryAdvanceTutorialStep('all_snaps_completed');
+                }, 500);
+            }
+        }
+        // FALLBACK: DragDrop semplice senza assembly né autoAdvance
+        // Se nessuno dei sistemi sopra ha gestito l'avanzamento, avanza direttamente
+        else if (!assemblySystem || !assemblySystem.assemblyMode) {
+            if (this.shouldAdvanceAfterSnap()) {
+                console.log(`[DragDropSystem] ⏭️ DragDrop semplice: snap completato, avanzamento step...`);
+                setTimeout(() => {
+                    this.tryAdvanceTutorialStep('simple_dragdrop_snap');
                 }, 500);
             }
         }
@@ -1865,6 +1885,10 @@ window.DragDropSystem = {
                     }
                 }
 
+                // Flag per evitare doppio avanzamento step
+                // (assembly completion + shouldAdvanceAfterSnap possono entrambi triggerare nextStep)
+                let alreadyAdvancedFromSnap = false;
+
                 if (shouldResetDragState && snapContext && snapContext.assemblyIntegration.enabled) {
                     try {
                         console.log(`[DragDropSystem] 🏗️ CHIAMANDO markComponentMounted con:`);
@@ -1954,6 +1978,7 @@ window.DragDropSystem = {
 
                                     // Avanza al prossimo step del tutorial UI usando diversi metodi disponibili
                                     this.tryAdvanceTutorialStep('assembly_step_completed');
+                                    alreadyAdvancedFromSnap = true;
                                 }
                             }
                         } else {
@@ -1985,7 +2010,10 @@ window.DragDropSystem = {
                 }
 
                 // TRIGGER AVANZAMENTO STEP SUCCESSIVO solo se assembly completato
-                if (this.shouldAdvanceAfterSnap()) {
+                // IMPORTANTE: Skip se già avanzato dalla assembly completion (evita doppio avanzamento = step saltato)
+                if (alreadyAdvancedFromSnap) {
+                    console.log(`[DragDropSystem] ⏭️ Skip post-snap advance - già avanzato da assembly completion`);
+                } else if (this.shouldAdvanceAfterSnap()) {
                     this.advanceTutorialStep('post-snap');
                 } else {
                     console.log(`[DragDropSystem] ⏸️ Avanzamento step posticipato - assembly non completo`);
@@ -3242,16 +3270,10 @@ window.DragDropSystem = {
             return false;
         }
 
-        // Verifica che l'oggetto sia draggabile
-        if (!this.enabledObjects.has(model.name)) {
+        // Verifica che l'oggetto sia draggabile (controlla nell'array draggableObjects)
+        const isDraggable = this.draggableObjects.some(obj => obj === model || obj.name === model.name);
+        if (!isDraggable) {
             console.warn(`[DragDropSystem] ⚠️ Oggetto "${model.name}" non è abilitato per drag & drop`);
-            return false;
-        }
-
-        // Trova target snap più vicino
-        const snapSystem = window.SnapSystem || this;
-        if (!snapSystem || !snapSystem.findSnapTarget) {
-            console.error('[DragDropSystem] ⚠️ SnapSystem non disponibile');
             return false;
         }
 
@@ -3260,8 +3282,43 @@ window.DragDropSystem = {
         const boundingBox = new THREE.Box3().setFromObject(model);
         const currentCenter = boundingBox.getCenter(new THREE.Vector3());
 
-        // Trova target snap
-        const snapTarget = snapSystem.findSnapTarget(model, currentCenter);
+        // AUTOSNAP: Trova target snap SENZA limitazione di distanza
+        // (a differenza di findSnapTarget che richiede vicinanza)
+        let snapTarget = null;
+
+        const customTarget = this.customSnapTargets.get(model.uuid);
+        if (customTarget) {
+            if (customTarget.isMultiTarget && customTarget.targets) {
+                // Multi-target: trova il più vicino non occupato
+                let closestDistance = Infinity;
+                customTarget.targets.forEach(target => {
+                    const positionKey = this.createSnapPositionKey(target.targetName, null);
+                    if (this.isSnapPositionOccupied(positionKey, model)) return;
+
+                    const targetPosition = this._resolveTargetPosition(target);
+                    if (targetPosition) {
+                        const distance = currentCenter.distanceTo(targetPosition);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            snapTarget = targetPosition;
+                        }
+                    }
+                });
+            } else if (customTarget.isDirectPosition && customTarget.directPosition) {
+                snapTarget = customTarget.directPosition.clone();
+            } else if (customTarget.targetName) {
+                snapTarget = this._resolveTargetPosition(customTarget);
+            }
+        }
+
+        // Fallback: posizione originale dell'oggetto
+        if (!snapTarget) {
+            const savedOriginalPos = this.originalPositions.get(model.uuid);
+            if (savedOriginalPos) {
+                snapTarget = savedOriginalPos.clone();
+                console.log(`[DragDropSystem] 🤖 AutoSnap: Usando posizione originale come target`);
+            }
+        }
 
         if (!snapTarget) {
             console.warn(`[DragDropSystem] ⚠️ Nessun target snap trovato per "${model.name}"`);
@@ -3275,6 +3332,46 @@ window.DragDropSystem = {
         this.performAutoSnap(model, snapTarget, currentCenter);
 
         return true;
+    },
+
+    /**
+     * Risolve la posizione di un target snap (helper per autoSnap)
+     * @param {Object} target - Configurazione target {targetName, isOriginalRef, ...}
+     * @returns {THREE.Vector3|null} - Posizione risolta o null
+     */
+    _resolveTargetPosition: function(target) {
+        if (!target || !target.targetName) return null;
+
+        // Riferimenti _original
+        if (target.isOriginalRef && window.Scene3D) {
+            const actualModelName = target.targetName.replace(/_original$/, '');
+            const originalRef = window.Scene3D.findModelByName(actualModelName);
+            if (originalRef) {
+                if (originalRef.isOriginalReference && originalRef.position && !originalRef.geometry) {
+                    return originalRef.position.clone();
+                }
+                const savedPos = this.originalPositions.get(originalRef.uuid);
+                if (savedPos) return savedPos.clone();
+                const bb = new THREE.Box3().setFromObject(originalRef);
+                return bb.getCenter(new THREE.Vector3());
+            }
+            // Controlla anche i virtualSnapTargets
+            if (window.Scene3D.virtualSnapTargets) {
+                const virtualTarget = window.Scene3D.virtualSnapTargets.get(target.targetName);
+                if (virtualTarget && virtualTarget.position) {
+                    return virtualTarget.position.clone();
+                }
+            }
+        }
+        // Target standard
+        else if (window.Scene3D) {
+            const targetModel = window.Scene3D.findModelByName(target.targetName);
+            if (targetModel) {
+                const bb = new THREE.Box3().setFromObject(targetModel);
+                return bb.getCenter(new THREE.Vector3());
+            }
+        }
+        return null;
     },
 
     /**
@@ -3369,6 +3466,20 @@ window.DragDropSystem = {
 
                 // Trigger avanzamento step
                 setTimeout(() => this.tryAdvanceTutorialStep('all_snaps_completed'), 500);
+            }
+        }
+
+        // FALLBACK: DragDrop semplice senza assembly né autoAdvance
+        // Se nessuno dei sistemi sopra ha gestito l'avanzamento, avanza direttamente dopo snap
+        if (!this.autoAdvanceEnabled || this.requiredSnapObjects.size === 0) {
+            const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
+            if (!assemblySystem || !assemblySystem.assemblyMode) {
+                if (this.shouldAdvanceAfterSnap()) {
+                    console.log(`[DragDropSystem] ⏭️ DragDrop semplice: snap completato, avanzamento step...`);
+                    setTimeout(() => {
+                        this.tryAdvanceTutorialStep('simple_dragdrop_snap');
+                    }, 500);
+                }
             }
         }
 

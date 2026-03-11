@@ -617,7 +617,8 @@ window.StepController = {
      * FIX: Aggiunta protezione per verificare se lo step è cambiato prima di avanzare
      */
     scheduleAutoAdvance: function() {
-        const expectedStepIndex = this.currentStepIndex;
+        const self = window.StepController; // Riferimento esplicito per evitare problemi di contesto this
+        const expectedStepIndex = self.currentStepIndex;
 
         console.log('[StepController] ⏭️ Auto-avanzamento schedulato per step', expectedStepIndex);
 
@@ -630,9 +631,9 @@ window.StepController = {
         if (window.UI) {
             window.UI.autoAdvanceTimeoutId = setTimeout(() => {
                 // PROTEZIONE: Verifica che lo step non sia cambiato nel frattempo
-                if (this.currentStepIndex !== expectedStepIndex) {
+                if (self.currentStepIndex !== expectedStepIndex) {
                     console.log('[StepController] ⏸️ Step cambiato durante attesa, auto-advance annullato');
-                    console.log(`[StepController]    Atteso: ${expectedStepIndex}, Corrente: ${this.currentStepIndex}`);
+                    console.log(`[StepController]    Atteso: ${expectedStepIndex}, Corrente: ${self.currentStepIndex}`);
                     return;
                 }
 

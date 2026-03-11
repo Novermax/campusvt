@@ -27,7 +27,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * @param {string} filename - Nome del file (es. 'InterfaceConfig.cvtscript')
      * @returns {Promise<string|null>} Contenuto testuale del file, o null se non trovato
      */
-    readConfigFile: (filename) => ipcRenderer.invoke('read-config-file', filename)
+    readConfigFile: (filename) => ipcRenderer.invoke('read-config-file', filename),
+    writeConfigFile: (filename, content) => ipcRenderer.invoke('write-config-file', filename, content)
 });
 
 console.log('[Preload] ✅ electronAPI esposta al renderer process');

@@ -1,0 +1,10 @@
+1. Manutenzione Elettromandrino
+2. Manutenzione pompa del vuoto
+3. Ingrassaggio foratrice
+4. RTCP Automatico
+5. Refeed serbatoio del grasso
+6. Sostituzione batterie encoder
+7. Filtro e rimozione acqua dal gruppo di alimentazione pneumatica
+8. Manutenzione barre matic/Flex-matic
+9. Pulizia delle cremagliere assi
+10. Calibrazione barre Matic/ Flex-matic

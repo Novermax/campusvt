@@ -353,6 +353,12 @@ window.UI = {
             AppConfig.log(3, '[goHome] Evidenziazioni pulsanti rimosse');
         }
 
+        // Rimuovi cerchi evidenziazione DragDrop
+        if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+            window.Scene3D.highlightCircleManager.clearAllCircles();
+            AppConfig.log(3, '[goHome] Cerchi evidenziazione DragDrop rimossi');
+        }
+
         // === CLEANUP FORZATO CERCHI GIALLI ===
         // Rimuovi tutti i cerchi gialli (indicatori highlight) dalla scena
         if (window.Scene3D && window.Scene3D.scene) {
@@ -1154,7 +1160,12 @@ window.UI = {
             const target = this.parseVector3(scenario.cameraTarget);
             if (target) {
                 window.Scene3D.camera.lookAt(target.x, target.y, target.z);
-                AppConfig.log(2, `🎯 Camera target applicato: (${target.x}, ${target.y}, ${target.z})`);
+                // IMPORTANTE: aggiorna anche il pivotPoint usato da zoom e orbita
+                // Senza questo, zoom e rotazione continuano ad usare il pivot del vecchio scenario
+                if (window.Scene3D.mouseControls) {
+                    window.Scene3D.mouseControls.pivotPoint = new THREE.Vector3(target.x, target.y, target.z);
+                }
+                AppConfig.log(2, `🎯 Camera target applicato: (${target.x}, ${target.y}, ${target.z}) - Pivot aggiornato`);
             }
         }
         
@@ -2968,6 +2979,23 @@ window.UI = {
             AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per nuovo tutorial "${this.availableTutorials[tutorialIndex].name}"`);
         }
 
+        // RESET: StepController - pulisci configurazioni trigger da tutorial precedente
+        // Previene che stepConfigs stantie interferiscano con trigger del nuovo tutorial
+        if (window.StepController && window.StepController.reset) {
+            window.StepController.reset();
+            AppConfig.log(2, `🎮 STEP CONTROLLER: Reset per nuovo tutorial`);
+        }
+
+        // RESET: Disabilita AssemblySystem da tutorial precedente
+        // Previene che AssemblySystem.enabled=true interferisca con isDraggableObject() nel nuovo tutorial
+        if (window.AssemblySystem && window.AssemblySystem.disableAssemblyMode) {
+            window.AssemblySystem.disableAssemblyMode();
+            AppConfig.log(2, `🚫 ASSEMBLY: Sistema disabilitato per nuovo tutorial`);
+        }
+        if (window.AssemblySystemSimplified && window.AssemblySystemSimplified.disableAssemblyMode) {
+            window.AssemblySystemSimplified.disableAssemblyMode();
+        }
+
         // RESET: Disattiva tutti i tool e ripristina cursore di default
         if (window.ToolsManager && window.ToolsManager.deactivateAllTools) {
             window.ToolsManager.deactivateAllTools();
@@ -3065,6 +3093,7 @@ window.UI = {
         // Le impostazioni camera del tutorial verranno applicate quando parte il primo step
         
         // Aggiorna la UI - ora che il tutorial è attivato, mostra il primo step
+        this.updateTutorialButtonsState(tutorialIndex);
         this.updateStepSpeechBubble();
         
         // Evidenzia il primo elemento del tutorial appena selezionato
@@ -3453,7 +3482,7 @@ window.UI = {
         // Guard contro chiamate concorrenti: se stiamo già navigando,
         // cancella la navigazione precedente e procedi con la nuova
         if (this.isNavigating) {
-            console.log(`[UI] ⚠️ goToStep(${stepIndex}) interrompe navigazione precedente in corso`);
+            console.log(`[UI] ⚠️ goToStep(${stepIndex}) interrompe navigazione precedente in corso (currentStep=${this.currentStepIndex})`);
             // Chiudi modal se aperto (potrebbe bloccare la navigazione precedente)
             this.hideInfoModal();
         }
@@ -3538,6 +3567,12 @@ window.UI = {
             console.log('[UI] 🧹 Rimosse evidenziazioni pulsanti');
         }
 
+        // 2b. Rimuovi cerchi evidenziazione DragDrop
+        if (window.Scene3D && window.Scene3D.highlightCircleManager) {
+            window.Scene3D.highlightCircleManager.clearAllCircles();
+            console.log('[UI] 🧹 Rimossi cerchi evidenziazione DragDrop');
+        }
+
         // 3. Ripristina materiali DragDropSystem
         window.Scene3D.scene.traverse((object) => {
             if (object.isMesh) {
@@ -3578,6 +3613,28 @@ window.UI = {
         console.log(`[DEBUG] 🚀 EXECUTE STEP chiamata per: "${step.title}"`);
         console.log(`[DEBUG] 🚀 Step properties:`, step.properties);
         AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
+
+        // ═══════════════════════════════════════════════════════════════
+        // AUTOACTION: Flag locale per esecuzione automatica completa
+        // NOTA: NON mutare step.properties per evitare effetti collaterali
+        // su re-esecuzione o jumpToStep. Usa variabili locali.
+        // ═══════════════════════════════════════════════════════════════
+        const isAutoactionStep = step.properties.Autoaction === 'true';
+        // Determina se AutoExecute/AutoAdvance sono attivi (da proprietà o da Autoaction)
+        const effectiveAutoExecute = step.properties.AutoExecute === 'true' || isAutoactionStep;
+        const effectiveAutoAdvance = step.properties.AutoAdvance === 'true' || isAutoactionStep;
+
+        if (isAutoactionStep) {
+            console.log(`[UI] 🤖 Autoaction attivo per step: "${step.title}" — esecuzione completamente automatica`);
+
+            // Equipaggia automaticamente l'utensile richiesto
+            if (step.properties.Utensile) {
+                if (window.ToolsManager && typeof window.ToolsManager.activateToolFromTutorial === 'function') {
+                    window.ToolsManager.activateToolFromTutorial(step.properties.Utensile);
+                    console.log(`[UI] 🔧 Autoaction: Utensile "${step.properties.Utensile}" equipaggiato automaticamente`);
+                }
+            }
+        }
 
         // ═══════════════════════════════════════════════════════════════
         // RESET: Pulisci posizione camera precedente
@@ -3675,7 +3732,9 @@ window.UI = {
             }
 
             // Attendi che l'utente chiuda il modal prima di continuare
+            console.log(`[DEBUG] 📋 MODAL: Attendo chiusura modal per step "${step.title}" (DragDrop=${step.properties.DragDrop}, isNavigating=${this.isNavigating}, _infoModalResolve=${!!this._infoModalResolve})`);
             await this.showInfoModal(step.properties.Message, messageTitle, mediaOptions);
+            console.log(`[DEBUG] ✅ MODAL: Modal chiuso per step "${step.title}" - proseguo con esecuzione`);
             AppConfig.log(2, `[UI] Modal informativo chiuso`);
 
             // Controlla se questo step ha SOLO il messaggio (nessuna altra azione)
@@ -3683,12 +3742,16 @@ window.UI = {
                                    !step.properties.AssemblyMode &&
                                    !step.properties.DragDrop;
 
+            console.log(`[DEBUG] 📋 hasOnlyMessage=${hasOnlyMessage} (Elemento=${!!step.properties.Elemento}, AssemblyMode=${!!step.properties.AssemblyMode}, DragDrop=${step.properties.DragDrop})`);
+
             if (hasOnlyMessage) {
                 AppConfig.log(2, `[UI] Step puramente informativo (solo Message) - nessuna azione successiva`);
 
-                // IMPORTANTE: Non auto-avanzare - lascia che l'utente controlli la navigazione
-                // L'utente può usare i pulsanti "Avanti/Indietro" per navigare
-                // Lo step rimane attivo con il fumetto visibile che mostra la descrizione
+                // Se AutoExecute=true, avanza automaticamente dopo chiusura modal
+                if (effectiveAutoExecute) {
+                    console.log(`[UI] ⏭️ Message-only + AutoExecute → avanzo automaticamente`);
+                    setTimeout(() => this.nextStep(), 300);
+                }
 
                 return; // Esci dalla funzione, non eseguire altre azioni
             }
@@ -3884,6 +3947,7 @@ window.UI = {
         }
 
         // NUOVO: Gestione sistema Drag & Drop se abilitato nello step
+        console.log(`[DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="${step.properties.DragDrop}", DragDropSystem=${!!window.DragDropSystem}, AssemblySystem.enabled=${window.AssemblySystem?.enabled}`);
         if (step.properties.DragDrop === 'true' && window.DragDropSystem) {
             console.log(`[DEBUG] 🎯 DRAG & DROP: Processo abilitazione per step "${step.title}"`);
             AppConfig.log(2, `🎯 DRAG & DROP: Abilitato per step "${step.title}"`);
@@ -4349,10 +4413,12 @@ window.UI = {
                 }
 
                 // NUOVO: Configura auto-avanzamento per step DragDrop puri (senza Elemento)
+                // oppure per step con Autoaction=true (auto-advance forzato)
                 // AssemblyMode è OK per auto-avanzamento se non c'è Elemento
                 const isPureDragDropStep = !step.properties.Elemento;
-                if (isPureDragDropStep && draggableObjects.length > 0) {
-                    console.log(`[UI] 🎯 Step DragDrop puro rilevato (AssemblyMode: ${step.properties.AssemblyMode || 'false'}) - configurazione auto-avanzamento`);
+                const isAutoaction = step.properties.Autoaction === 'true';
+                if ((isPureDragDropStep || isAutoaction) && draggableObjects.length > 0) {
+                    console.log(`[UI] 🎯 Step DragDrop ${isAutoaction ? 'Autoaction' : 'puro'} rilevato - configurazione auto-avanzamento`);
                     window.DragDropSystem.resetSnapTracking();
                     window.DragDropSystem.setRequiredSnapObjects(draggableObjects);
                     window.DragDropSystem.enableAutoAdvance();
@@ -4362,6 +4428,31 @@ window.UI = {
                     window.DragDropSystem.resetSnapTracking();
                     console.log(`[UI] 🎯 Step DragDrop con Elemento - auto-avanzamento disabilitato`);
                 }
+                // EVIDENZIAZIONE CERCHI: Aggiungi cerchi gialli pulsanti sugli oggetti draggabili
+                // Aiuta l'utente a identificare le viti/componenti piccoli da trascinare
+                if (draggableObjects.length > 0 && window.Scene3D && window.Scene3D.highlightCircleManager) {
+                    // Pulisci cerchi precedenti
+                    window.Scene3D.highlightCircleManager.clearAllCircles();
+
+                    draggableObjects.forEach(objectName => {
+                        const obj = window.Scene3D.findModelByName(objectName);
+                        if (obj) {
+                            // Trova la mesh principale dell'oggetto per posizionare il cerchio
+                            let targetMesh = null;
+                            obj.traverse(child => {
+                                if (child.isMesh && !targetMesh) {
+                                    targetMesh = child;
+                                }
+                            });
+                            if (targetMesh) {
+                                const circleId = `dragdrop_${objectName}`;
+                                window.Scene3D.highlightCircleManager.createCircle(circleId, targetMesh, 60, 0.7);
+                                AppConfig.log(3, `🔵 DRAG & DROP: Cerchio evidenziazione per "${objectName}"`);
+                            }
+                        }
+                    });
+                }
+
             } catch (error) {
                 console.error(`❌ DRAG & DROP: Errore abilitazione sistema:`, error);
             }
@@ -4369,6 +4460,57 @@ window.UI = {
             // Disabilita sistema se DragDrop non è esplicitamente 'true' (include 'false', undefined, null, ecc.)
             window.DragDropSystem.disable();
             AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per step "${step.title}" (DragDrop=${step.properties.DragDrop})`);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // AUTOACTION + DRAGDROP: Snap automatico degli oggetti alla posizione finale
+        // Quando Autoaction=true e DragDrop=true, esegui auto-snap di tutti gli
+        // oggetti draggabili senza attendere interazione utente
+        // ═══════════════════════════════════════════════════════════════════════
+        if (step.properties.Autoaction === 'true' && step.properties.DragDrop === 'true' && window.DragDropSystem) {
+            console.log(`[UI] 🤖 Autoaction + DragDrop: avvio auto-snap oggetti per step "${step.title}"`);
+
+            // Raccogli la lista degli oggetti draggabili (stessa logica del blocco DragDrop sopra)
+            const autoSnapObjects = [];
+            if (step.properties.DragDropObjects) {
+                const cleanValue = step.properties.DragDropObjects.split('#')[0].trim();
+                autoSnapObjects.push(...cleanValue.split(',').map(obj => obj.trim()).filter(obj => obj.length > 0));
+            } else if (step.properties.AllowedComponents) {
+                const cleanValue = step.properties.AllowedComponents.split('#')[0].trim();
+                autoSnapObjects.push(...cleanValue.split(',').map(obj => obj.trim()).filter(obj => obj.length > 0));
+            } else if (step.properties.Elemento) {
+                const elementName = step.properties.Elemento.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
+                autoSnapObjects.push(elementName);
+            }
+
+            if (autoSnapObjects.length > 0) {
+                // Delay per permettere al sistema DragDrop di configurare snap targets
+                const autoSnapDelay = 300;
+                setTimeout(() => {
+                    console.log(`[UI] 🤖 Autoaction: esecuzione auto-snap per ${autoSnapObjects.length} oggetti`);
+                    let snapIndex = 0;
+
+                    const snapNext = () => {
+                        if (snapIndex >= autoSnapObjects.length) return;
+
+                        const objName = autoSnapObjects[snapIndex];
+                        console.log(`[UI] 🤖 Autoaction: auto-snap oggetto ${snapIndex + 1}/${autoSnapObjects.length}: "${objName}"`);
+                        const result = window.DragDropSystem.autoSnapToClosestTarget(objName);
+
+                        if (!result) {
+                            console.warn(`[UI] ⚠️ Autoaction: auto-snap fallito per "${objName}"`);
+                        }
+
+                        snapIndex++;
+                        // Snap il prossimo oggetto con un piccolo delay per evitare conflitti
+                        if (snapIndex < autoSnapObjects.length) {
+                            setTimeout(snapNext, 200);
+                        }
+                    };
+
+                    snapNext();
+                }, autoSnapDelay);
+            }
         }
 
         // NUOVO: Gestione sistema Assemblaggio Semplificato
@@ -4443,7 +4585,7 @@ window.UI = {
         // NUOVO: Evidenzia automaticamente l'elemento del tutorial corrente
         // NOTA: Non evidenziare se AutoExecute=true (l'utente non deve interagire)
         if (step.properties.Elemento && window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
-            if (step.properties.AutoExecute !== 'true') {
+            if (!effectiveAutoExecute) {
                 console.log('📷 [UI] CameraTransitionTime:', cameraTransitionTime + 's (' + transitionMs + 'ms)');
 
                 // Piccolo delay per permettere che il modello sia caricato e visibile
@@ -4512,15 +4654,21 @@ window.UI = {
         // ═══════════════════════════════════════════════════════════════════════
         // IMPORTANTE: Salta questo blocco se step ha AutoSetVariant senza Elemento
         // (verrà gestito dal blocco AUTO-SET VARIANT più sotto)
+        // IMPORTANTE: Salta anche se Autoaction + DragDrop (avanzamento gestito dal DragDrop auto-snap)
         const hasAutoSetVariant = !!step.properties.AutoSetVariant;
         const hasElemento = !!step.properties.Elemento;
-        const skipAutoExecute = hasAutoSetVariant && !hasElemento;
+        const skipAutoExecute = (hasAutoSetVariant && !hasElemento) ||
+                                (step.properties.Autoaction === 'true' && step.properties.DragDrop === 'true');
 
-        if (step.properties.AutoExecute === 'true' && skipAutoExecute) {
-            console.log(`[UI] ⏭️ AutoExecute skippato (ha AutoSetVariant senza Elemento) - verrà gestito da blocco SET VARIANT`);
+        if (effectiveAutoExecute && skipAutoExecute) {
+            if (step.properties.Autoaction === 'true' && step.properties.DragDrop === 'true') {
+                console.log(`[UI] ⏭️ AutoExecute skippato (Autoaction + DragDrop) - avanzamento gestito da auto-snap`);
+            } else {
+                console.log(`[UI] ⏭️ AutoExecute skippato (ha AutoSetVariant senza Elemento) - verrà gestito da blocco SET VARIANT`);
+            }
         }
 
-        if (step.properties.AutoExecute === 'true' && window.Scene3D && !skipAutoExecute) {
+        if (effectiveAutoExecute && window.Scene3D && !skipAutoExecute) {
             console.log(`[UI] 🤖 AutoExecute attivo per step: "${step.title}"`);
 
             // Determina il target dell'animazione
@@ -4609,7 +4757,7 @@ window.UI = {
                                     self.autoExecuteIntervalId = null;
                                     console.log(`[UI] 🤖 AutoExecute: Animazione semplice completata`);
 
-                                    if (step.properties.AutoAdvance === 'true') {
+                                    if (effectiveAutoAdvance) {
                                         console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
                                         self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                                     } else {
@@ -4624,7 +4772,7 @@ window.UI = {
                                 self.autoExecuteIntervalId = null;
                                 console.log(`[UI] 🤖 AutoExecute: Sequenza multi-step completata`);
 
-                                if (step.properties.AutoAdvance === 'true') {
+                                if (effectiveAutoAdvance) {
                                     console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
                                     self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                                 } else {
@@ -4639,7 +4787,7 @@ window.UI = {
                                     self.autoExecuteIntervalId = null;
                                     console.warn(`[UI] ⚠️ AutoExecute: Timeout attesa animazione (${maxPollAttempts * 50}ms)`);
 
-                                    if (step.properties.AutoAdvance === 'true') {
+                                    if (effectiveAutoAdvance) {
                                         console.log(`[UI] ⏭️ AutoAdvance=true → avanzo comunque`);
                                         self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                                     } else {
@@ -4653,7 +4801,7 @@ window.UI = {
                         console.log(`[UI] 🤖 AutoExecute: Nessuna animazione da attendere`);
 
                         // Controlla AutoAdvance prima di avanzare
-                        if (step.properties.AutoAdvance === 'true') {
+                        if (effectiveAutoAdvance) {
                             console.log(`[UI] ⏭️ AutoAdvance=true → avanzo subito`);
                             this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 50);
                         } else {
@@ -4675,7 +4823,7 @@ window.UI = {
                             console.log(`[UI] 🤖 AutoExecute: Animazione completata (fallback)`);
 
                             // Controlla AutoAdvance prima di avanzare
-                            if (step.properties.AutoAdvance === 'true') {
+                            if (effectiveAutoAdvance) {
                                 console.log(`[UI] ⏭️ AutoAdvance=true → avanzo allo step successivo`);
                                 self.autoAdvanceTimeoutId = setTimeout(() => self.nextStep(), 50);
                             } else {
@@ -4687,7 +4835,7 @@ window.UI = {
                     console.warn(`[UI] ⚠️ AutoExecute: Nessun target valido per animazione`);
 
                     // Controlla AutoAdvance prima di avanzare
-                    if (step.properties.AutoAdvance === 'true') {
+                    if (effectiveAutoAdvance) {
                         console.log(`[UI] ⏭️ AutoAdvance=true → avanzo comunque`);
                         this.autoAdvanceTimeoutId = setTimeout(() => this.nextStep(), 50);
                     } else {
@@ -4715,8 +4863,8 @@ window.UI = {
             // AUTO-AVANZAMENTO: Se AutoSetVariant con AutoExecute e AutoAdvance
             // ═══════════════════════════════════════════════════════════════════
             // Condizione: AutoExecute=true E AutoAdvance=true MA senza Elemento (quindi nessuna animazione da attendere)
-            const hasAutoExecute = step.properties.AutoExecute === 'true';
-            const hasAutoAdvance = step.properties.AutoAdvance === 'true';
+            const hasAutoExecute = effectiveAutoExecute;
+            const hasAutoAdvance = effectiveAutoAdvance;
             const hasElemento = !!step.properties.Elemento;
 
             if (hasAutoExecute && hasAutoAdvance && !hasElemento) {
@@ -5040,9 +5188,14 @@ window.UI = {
                 return;
             }
 
+            // Salva callback resolve per poterla chiamare da hideInfoModal
+            this._infoModalResolve = resolve;
+            this._infoModalCloseHandler = null;
+
             // Imposta contenuto testuale
             titleElement.textContent = title;
-            messageElement.textContent = message;
+            // Supporta \n come a capo nel messaggio
+            messageElement.innerHTML = message.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
 
             // Pulisci e nascondi contenitore media
             mediaContainer.innerHTML = '';
@@ -5082,9 +5235,11 @@ window.UI = {
             }
 
             // Handler per chiusura
+            const self = this;
             const closeModal = () => {
                 modal.classList.remove('show');
                 okButton.removeEventListener('click', closeModal);
+                self._infoModalCloseHandler = null;
 
                 // Ferma video se presente
                 const videoElement = mediaContainer.querySelector('video');
@@ -5098,9 +5253,16 @@ window.UI = {
                     // Pulisci contenitore media
                     mediaContainer.innerHTML = '';
                     mediaContainer.classList.add('hidden');
-                    resolve();
+                    // Risolvi solo se questa è ancora la promise attiva
+                    if (self._infoModalResolve === resolve) {
+                        self._infoModalResolve = null;
+                        resolve();
+                    }
                 }, 300);
             };
+
+            // Salva handler per poterlo rimuovere da hideInfoModal
+            this._infoModalCloseHandler = closeModal;
 
             // Aggiungi listener al pulsante OK
             okButton.addEventListener('click', closeModal);
@@ -5115,12 +5277,41 @@ window.UI = {
     },
 
     /**
-     * Nasconde modal informativo
+     * Nasconde modal informativo e risolve la promise pendente
      */
     hideInfoModal: function() {
         const modal = document.getElementById('infoModal');
         if (modal) {
             modal.classList.remove('show');
+        }
+
+        // Rimuovi handler click dal pulsante OK per evitare listener orfani
+        if (this._infoModalCloseHandler) {
+            const okButton = document.getElementById('infoModalOkBtn');
+            if (okButton) {
+                okButton.removeEventListener('click', this._infoModalCloseHandler);
+            }
+            this._infoModalCloseHandler = null;
+        }
+
+        // Ferma video e pulisci media
+        const mediaContainer = document.getElementById('infoModalMedia');
+        if (mediaContainer) {
+            const videoElement = mediaContainer.querySelector('video');
+            if (videoElement) {
+                videoElement.pause();
+                videoElement.currentTime = 0;
+            }
+            mediaContainer.innerHTML = '';
+            mediaContainer.classList.add('hidden');
+        }
+
+        // CRITICO: Risolvi la promise pendente per sbloccare executeStep
+        if (this._infoModalResolve) {
+            console.log('[UI] ⚠️ hideInfoModal: Risoluzione forzata promise modal pendente');
+            const pendingResolve = this._infoModalResolve;
+            this._infoModalResolve = null;
+            pendingResolve();
         }
     },
 

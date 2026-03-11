@@ -1606,6 +1606,24 @@ const Scene3D = {
                         }
                     }
                 }
+
+                // FALLBACK PULSANTI EVIDENZIATI: Se nessun pulsante interattivo è stato colpito
+                // direttamente, ma ci sono pulsanti evidenziati (ActiveButtons), prova un raycast
+                // diretto su ciascuno di essi. Risolve il problema di pulsanti piccoli (es. pstart0)
+                // che sono difficili da colpire con precisione pixel-perfect.
+                if (window.InteractiveObject3D.highlightedButtons && window.InteractiveObject3D.highlightedButtons.size > 0) {
+                    for (const [triggerId, mesh] of window.InteractiveObject3D.highlightedButtons) {
+                        const directHits = this.raycaster.intersectObject(mesh, true);
+                        if (directHits.length > 0) {
+                            console.log(`[Scene3D] 🎮 FALLBACK: Click su pulsante evidenziato "${mesh.name}" tramite raycast diretto`);
+                            const handled = window.InteractiveObject3D.handleClick(mesh);
+                            if (handled) {
+                                console.log(`[Scene3D] ✅ FALLBACK: Click gestito da InteractiveObject3D`);
+                                return;
+                            }
+                        }
+                    }
+                }
             }
             // PRIORITA' OGGETTO EVIDENZIATO: Se c'è un modello con silhouette gialla attiva,
             // cerca tra TUTTI gli intersects se uno di essi appartiene a quel modello.
@@ -1679,6 +1697,24 @@ const Scene3D = {
             }
         } else {
             // Nessun intersect normale (clic in area vuota).
+
+            // FALLBACK PULSANTI EVIDENZIATI IN AREA VUOTA:
+            // Se nessun modello colpito ma ci sono pulsanti ActiveButtons evidenziati,
+            // prova raycast diretto su ciascuno (il pulsante potrebbe essere piccolo e occludato)
+            if (window.InteractiveObject3D && window.InteractiveObject3D.highlightedButtons && window.InteractiveObject3D.highlightedButtons.size > 0) {
+                for (const [triggerId, mesh] of window.InteractiveObject3D.highlightedButtons) {
+                    const directHits = this.raycaster.intersectObject(mesh, true);
+                    if (directHits.length > 0) {
+                        console.log(`[Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "${mesh.name}" tramite raycast diretto`);
+                        const handled = window.InteractiveObject3D.handleClick(mesh);
+                        if (handled) {
+                            console.log(`[Scene3D] ✅ FALLBACK VUOTO: Click gestito da InteractiveObject3D`);
+                            return;
+                        }
+                    }
+                }
+            }
+
             // Verifica se il modello evidenziato è geometricamente sotto il cursore:
             // succede quando la silhouette gialla (depthTest=false) si estende oltre
             // la geometria dei modelli davanti, ed è l'unica cosa visibile in quel punto.
@@ -3250,10 +3286,11 @@ const Scene3D = {
         const currentIndex = window.UI.currentStepIndex;
         const currentStep = window.UI.tutorialSteps[currentIndex];
 
-        // IMPORTANTE: Se lo step corrente ha AutoExecute=true, l'avanzamento è gestito da UI.js
+        // IMPORTANTE: Se lo step corrente ha AutoExecute=true o Autoaction=true, l'avanzamento è gestito da UI.js
         // NON chiamare goToStep() qui per evitare doppio avanzamento che causa skip di step
-        if (currentStep && currentStep.properties && currentStep.properties.AutoExecute === 'true') {
-            console.log(`[Scene3D] 🤖 advanceToNextTutorialStep: Skip - step ha AutoExecute=true, avanzamento gestito da UI.js`);
+        if (currentStep && currentStep.properties &&
+            (currentStep.properties.AutoExecute === 'true' || currentStep.properties.Autoaction === 'true')) {
+            console.log(`[Scene3D] 🤖 advanceToNextTutorialStep: Skip - step ha AutoExecute/Autoaction=true, avanzamento gestito da UI.js`);
             return;
         }
 
@@ -3889,7 +3926,7 @@ const Scene3D = {
         let cameraChanged = false;
         
         // Controlla se ci sono effettivamente parametri camera in questo step
-        const hasCameraSettings = props.CameraPos || props.CameraTarget || props.CameraZoom || props.CameraTransitionTime;
+        const hasCameraSettings = props.CameraPos || props.CameraTarget || props.CameraZoom || props.CameraTransitionTime || props.CameraDistance || props.CameraFOV;
         if (!hasCameraSettings) {
             console.log(`📹 CAMERA: Nessun parametro camera nello step, camera rimane ferma`);
             return;
@@ -3907,6 +3944,14 @@ const Scene3D = {
             startZoom: null,
             targetZoom: null
         };
+
+        // Reset campi opzionali per evitare contaminazione dallo step precedente
+        this.cameraAnimation.targetDistance = null;
+        this.cameraAnimation.targetFOV = undefined;
+        this.cameraAnimation.startFOV = undefined;
+        this.cameraAnimation.targetPosition = null;
+        this.cameraAnimation.targetTarget = null;
+        this.cameraAnimation.targetZoom = null;
         
         // Parsing CameraPos=(x, y, z) o CameraPos=elemento:offset
         if (props.CameraPos) {
@@ -3986,7 +4031,28 @@ const Scene3D = {
                 console.log(`📹 CAMERA: Zoom = ${zoom}`);
             }
         }
-        
+
+        // Parsing CameraDistance - distanza assoluta dal target
+        // Se specificato, ricalcola targetPosition sulla direzione CameraPos->CameraTarget alla distanza voluta
+        if (props.CameraDistance) {
+            const distance = parseFloat(props.CameraDistance);
+            if (!isNaN(distance)) {
+                cameraChanged = true;
+                this.cameraAnimation.targetDistance = distance;
+                console.log(`📹 CAMERA: Distance = ${distance}`);
+            }
+        }
+
+        // Parsing CameraFOV
+        if (props.CameraFOV) {
+            const fov = parseFloat(props.CameraFOV);
+            if (!isNaN(fov)) {
+                cameraChanged = true;
+                this.cameraAnimation.targetFOV = fov;
+                console.log(`📹 CAMERA: FOV = ${fov}`);
+            }
+        }
+
         // Parsing CameraTransitionTime
         if (props.CameraTransitionTime) {
             const duration = parseFloat(props.CameraTransitionTime);
@@ -3995,7 +4061,7 @@ const Scene3D = {
                 console.log(`📹 CAMERA: Durata transizione = ${duration}s`);
             }
         }
-        
+
         // Avvia animazione camera se ci sono cambiamenti
         if (cameraChanged) {
             this.startCameraAnimation();
@@ -4007,14 +4073,29 @@ const Scene3D = {
         this.cameraAnimation.startTime = performance.now();
         this.cameraAnimation.startPosition = this.camera.position.clone();
         this.cameraAnimation.startTarget = this.mouseControls.pivotPoint.clone();
-        
+
         // Calcola distanza se è richiesto zoom
         if (this.cameraAnimation.targetZoom) {
             const currentDistance = this.camera.position.distanceTo(this.mouseControls.pivotPoint);
             this.cameraAnimation.startZoom = currentDistance;
-            this.cameraAnimation.targetZoom = this.cameraAnimation.targetZoom;
         }
-        
+
+        // Ricalcola targetPosition se è specificata CameraDistance
+        // Posiziona la camera alla distanza esatta dal target, lungo la direzione CameraPos
+        if (this.cameraAnimation.targetDistance && this.cameraAnimation.targetTarget && this.cameraAnimation.targetPosition) {
+            const dir = new THREE.Vector3()
+                .subVectors(this.cameraAnimation.targetPosition, this.cameraAnimation.targetTarget)
+                .normalize();
+            this.cameraAnimation.targetPosition = new THREE.Vector3()
+                .copy(this.cameraAnimation.targetTarget)
+                .addScaledVector(dir, this.cameraAnimation.targetDistance);
+        }
+
+        // Salva FOV iniziale per interpolazione
+        if (this.cameraAnimation.targetFOV !== undefined) {
+            this.cameraAnimation.startFOV = this.camera.fov;
+        }
+
         console.log(`📹 CAMERA: Avvio animazione camera (durata: ${this.cameraAnimation.duration}s)`);
     },
 
@@ -4254,16 +4335,27 @@ const Scene3D = {
         
         // Interpola zoom (distanza)
         if (this.cameraAnimation.targetZoom && this.cameraAnimation.startZoom) {
-            const currentZoom = this.cameraAnimation.startZoom + 
+            const currentZoom = this.cameraAnimation.startZoom +
                 (this.cameraAnimation.targetZoom - this.cameraAnimation.startZoom) * progress;
-            
+
             const direction = this.camera.position.clone().sub(this.mouseControls.pivotPoint).normalize();
             this.camera.position.copy(this.mouseControls.pivotPoint).add(direction.multiplyScalar(currentZoom));
         }
-        
+
+        // Interpola FOV
+        if (this.cameraAnimation.targetFOV !== undefined && this.cameraAnimation.startFOV !== undefined) {
+            this.camera.fov = this.cameraAnimation.startFOV +
+                (this.cameraAnimation.targetFOV - this.cameraAnimation.startFOV) * progress;
+            this.camera.updateProjectionMatrix();
+        }
+
         // Termina animazione
         if (progress >= 1.0) {
             this.cameraAnimation.isAnimating = false;
+            // Pulizia valori transitori per evitare riapplicazione su step successivo
+            this.cameraAnimation.targetDistance = null;
+            this.cameraAnimation.targetFOV = undefined;
+            this.cameraAnimation.startFOV = undefined;
             console.log(`📹 CAMERA: Animazione completata`);
         }
     },

@@ -1,0 +1,42 @@
+Problema osservato nel sistema di gestione degli scenari
+
+Ho notato un comportamento anomalo nella gestione della telecamera quando si passa da uno scenario ad un altro.
+
+1. Mancato reset della telecamera tra scenari
+
+Quando cambio scenario, la telecamera non viene reimpostata nella posizione iniziale prevista per il nuovo scenario.
+
+Esempio riproducibile:
+
+Avvio lo scenario Pompa_Becker.
+
+Successivamente passo allo scenario Manutenzione_Elettromandrino.
+
+La telecamera mantiene la distanza e l'inquadratura dello scenario precedente invece di essere riposizionata secondo i parametri iniziali del nuovo scenario.
+
+Comportamento atteso:
+Al caricamento di ogni scenario la telecamera dovrebbe essere reset alla posizione, rotazione e distanza definite per quello scenario.
+
+2. Comportamento dello zoom con rotellina del mouse
+
+Vorrei anche una conferma sul comportamento dello zoom.
+
+Attualmente sembra che:
+
+Lo zoom con la rotellina del mouse non modifichi il campo visivo (FOV).
+
+Lo zoom invece trasla fisicamente la telecamera lungo il vettore che va dalla camera verso il target.
+
+In altre parole:
+
+la camera si avvicina o si allontana dal target,
+
+mantenendo invariata l'ottica.
+
+Vorrei sapere se questo è il comportamento previsto oppure se lo zoom dovrebbe essere implementato modificando il Field Of View (FOV).
+
+Domande finali
+
+È corretto che il cambio di scenario non resetti automaticamente la camera, oppure è un bug?
+
+Lo zoom con rotellina è implementato come movimento della camera verso il target oppure dovrebbe essere una modifica del FOV?

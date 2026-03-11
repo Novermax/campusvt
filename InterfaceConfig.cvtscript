@@ -38,7 +38,7 @@ InvertScrollZoom=false
 # --- Limiti Zoom ---
 # Distanza minima camera dal pivot (quanto ci si puo' avvicinare)
 # default: 0.15  |  valori tipici: 0.05 (vicinissimo) - 1.0 (distante)
-ZoomMin=0.4
+ZoomMin=0.15
 # Distanza massima camera dal pivot (quanto ci si puo' allontanare)
 # default: 15    |  valori tipici: 5 (vicino) - 50 (lontano)
 ZoomMax=1.3

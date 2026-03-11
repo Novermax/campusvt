@@ -142,16 +142,20 @@ DrivenObjects=flangia.glb,traslazione:(0,0,0.1,0.5);tubo.glb,traslazione:(0,0,0.
 
 > Solo il master controlla l'avanzamento step. I driven non bloccano il tutorial.
 
-#### AutoExecute / AutoSetVariant
+#### AutoExecute / AutoSetVariant / Autoaction
 
 ```ini
 AutoExecute=true         # Avvia animazione automaticamente senza click utente
 AutoSetVariant=led=on    # Cambia variante StateGroup (sincrono, poi avanza dopo 300ms)
 AutoSetVariant=g1=v1;g2=v2  # Multipli cambi
+Autoaction=true          # Esecuzione completamente automatica: equipaggia Utensile,
+                         # esegue tutte le Azioni, avanza allo step successivo
 ```
 
 > Step con AutoExecute: animazione parte a T+300ms, avanza a T+animazione+200ms.
 > Step solo AutoSetVariant: avanza a T+300ms.
+> Step con Autoaction: equivale a `AutoExecute=true` + `AutoAdvance=true` + auto-equip Utensile. Utile per sequenze ripetitive (es. rimozione viti consecutive).
+> Step con Autoaction + DragDrop: gli oggetti vengono automaticamente snappati alla posizione target (auto-snap senza trascinamento utente), poi avanza allo step successivo.
 
 #### StepController — trigger da sorgenti diverse
 

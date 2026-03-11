@@ -1,0 +1,106 @@
+Obiettivo
+
+Aggiungere al sistema di tutorial una modalità che permetta di eseguire automaticamente uno step, senza che l’utente debba interagire manualmente con l’elemento della scena.
+
+Questa modalità deve essere attivata tramite un flag opzionale nello step.
+
+Nuovo parametro nello step
+Autoaction=true
+
+Se presente, il motore del tutorial deve eseguire automaticamente le azioni dello step, simulando il comportamento che normalmente verrebbe attivato dall'interazione dell’utente con l’oggetto.
+
+Se il flag non è presente, lo step continua a funzionare normalmente (attesa dell'interazione utente).
+
+Comportamento richiesto
+
+Quando il motore del tutorial carica uno step:
+
+Legge il contenuto dello step.
+
+Verifica se è presente Autoaction=true.
+
+Caso 1 — Step normale (default)
+
+Se Autoaction non esiste:
+
+lo step si comporta come ora
+
+viene evidenziato l’elemento
+
+il sistema attende l’interazione dell’utente
+
+l’utente esegue l’azione con l’utensile
+
+vengono eseguite Azione1, Azione2, ecc.
+
+Caso 2 — Step automatico
+
+Se Autoaction=true:
+
+lo step non attende input dell’utente
+
+il sistema deve:
+
+selezionare automaticamente l’Elemento
+
+equipaggiare l’Utensile
+
+eseguire in sequenza tutte le azioni (Azione1, Azione2, ecc.)
+
+rispettare eventuali parametri temporali presenti nelle azioni
+
+al termine passare automaticamente allo step successivo
+
+In pratica lo step deve comportarsi come se l’utente avesse cliccato l’oggetto e usato l’utensile correttamente.
+
+Esempio step normale
+[Next Step - Rimuovi vite 2 flangia]
+
+HighlightDescription=false
+Elemento=models/vite_flangia_2.glb
+Descrizione=Rimuovi la seconda vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+Esempio step automatico
+[Next Step - Rimuovi vite 2 flangia]
+
+HighlightDescription=false
+Elemento=models/vite_flangia_2.glb
+Descrizione=Rimuovi la seconda vite a testa esagonale con la chiave aperta da 10 mm
+Utensile=ChiaveInglese
+
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+
+Autoaction=true
+Caso d’uso principale
+
+Serve per automatizzare sequenze ripetitive, ad esempio la rimozione di più viti consecutive:
+
+vite_flangia_2
+vite_flangia_3
+vite_flangia_4
+...
+vite_flangia_8
+
+Ogni step contiene Autoaction=true, quindi il sistema:
+
+esegue automaticamente le azioni
+
+completa lo step
+
+passa al successivo
+
+senza richiedere intervento dell’utente.
+
+Vincoli di implementazione
+
+Autoaction deve essere opzionale
+
+il comportamento attuale degli step non deve cambiare
+
+il sistema deve supportare più azioni per step
+
+le azioni devono essere eseguite nell’ordine dichiarato

@@ -1,0 +1,340 @@
+================================================================================
+   CAMPUS VIRTUAL TRAINING - TESTO PRESENTAZIONE DEMO
+   Il fiore all'occhiello digitale del Gruppo SCM
+================================================================================
+
+NOTA PER IL PRESENTATORE:
+- Tempo stimato: 8-10 minuti (presentazione) + 5 minuti (demo live)
+- Tono: entusiasta ma professionale, corporativo, orgoglioso
+- Parole chiave da enfatizzare: SEMPLICITA', VELOCITA', ZERO CODICE, INTERNO
+- Pause strategiche segnate con [PAUSA]
+- Momenti demo segnati con [DEMO]
+
+================================================================================
+PARTE 1 - L'APERTURA (2 minuti)
+================================================================================
+
+Buongiorno a tutti.
+
+Vi faccio una domanda: quanto costa oggi formare un tecnico
+sulla manutenzione di una macchina industriale?
+
+Non parlo solo dei costi diretti - il viaggio, l'albergo, il docente.
+Parlo del VERO costo: la macchina ferma in produzione, il tecnico
+senior che lascia il suo lavoro per fare da tutor, il cliente che
+aspetta. Parlo di settimane. A volte mesi.
+
+[PAUSA]
+
+E se vi dicessi che esiste un modo per creare un tutorial
+interattivo 3D - completo di animazioni, strumenti virtuali,
+effetti speciali e feedback in tempo reale - in CINQUE MINUTI?
+
+Non da un team di sviluppatori.
+Non con Unity o Unreal Engine.
+Non con mesi di programmazione.
+
+Con un file di testo. Scritto in Blocco Note.
+
+[PAUSA]
+
+Questo e' Campus Virtual Training.
+E' nato qui, dentro SCM. Sviluppato internamente.
+Ed e' il nostro vantaggio competitivo piu' significativo
+nel campo della formazione tecnica digitale.
+
+
+================================================================================
+PARTE 2 - IL CONTESTO DI MERCATO (2 minuti)
+================================================================================
+
+Prima di mostrarvi cosa fa, lasciate che vi dia un po' di contesto.
+
+Il mercato della formazione 3D industriale oggi e' dominato da
+piattaforme enterprise come VE Studio di DiSTI Corporation,
+iQ3Connect, Heartwood 3D, ForgeFX Simulations.
+
+Sono tutte soluzioni valide. Ma hanno un problema fondamentale:
+
+PRIMO - I COSTI.
+Una singola piattaforma enterprise come VE Studio o iQ3Connect
+parte da migliaia di euro al mese in licenze. iQ3Connect dichiara
+un entry point di 200 dollari al mese, ma le funzionalita' enterprise
+- quelle che servono davvero nell'industria - richiedono piani
+personalizzati con costi che si moltiplicano rapidamente.
+Il costo di sviluppo di un singolo modulo di training con strumenti
+tradizionali come Unity? Dai 60.000 ai 100.000 euro,
+contando 400 ore di sviluppo a 150-250 euro l'ora.
+
+SECONDO - LA DIPENDENZA.
+Con queste piattaforme, ogni volta che serve un nuovo tutorial
+o una modifica, bisogna rivolgersi al fornitore. O assumere
+sviluppatori specializzati. Il contenuto e' LORO, non vostro.
+Siete clienti, non proprietari.
+
+TERZO - LA COMPLESSITA'.
+Anche le piattaforme "no-code" come iQ3Connect richiedono
+formazione specifica sulla piattaforma stessa, interfacce
+proprietarie, workflow complessi. "No-code" non significa
+"semplice". Significa solo che il codice lo nascondono.
+
+[PAUSA]
+
+Campus Virtual Training ribalta completamente questo paradigma.
+
+
+================================================================================
+PARTE 3 - LA NOSTRA SOLUZIONE (2 minuti)
+================================================================================
+
+Campus Virtual Training e' un sistema di formazione 3D interattivo
+che gira interamente nel browser. Nessuna installazione.
+Nessun plugin. Nessun download.
+
+Il tecnico apre un link, sceglie lo scenario, e inizia il tutorial
+guidato. Passo dopo passo, con:
+
+- Modelli 3D reali delle nostre macchine, esportati da Blender
+- Strumenti virtuali: chiavi a brugola, chiavi inglesi, aria compressa
+- Animazioni fisicamente realistiche: svita, avvita, estrai, inserisci
+- Camera cinematografica che si posiziona automaticamente
+- Drag and drop con snap magnetico intelligente
+- Schermi interattivi che replicano i pannelli operatore reali
+- Pulsanti fisici 3D con feedback visivo
+- Supporto completo touch per tablet e smartphone
+- Funziona su qualsiasi dispositivo con un browser moderno
+
+Ma la vera rivoluzione non e' cosa FA.
+E' come si CREA.
+
+[PAUSA]
+
+Per creare un tutorial completo, un tecnico - non un programmatore,
+un TECNICO - scrive un file di testo.
+
+Non codice. Non script. Non XML.
+Un file di testo con righe come:
+
+    Elemento = vite.glb
+    Utensile = ChiaveBrugola
+    Azione = svita
+    Descrizione = Svita la vite del coperchio
+
+Quattro righe. E il tutorial funziona gia'.
+
+Volete la camera che zooma sull'oggetto?
+Aggiungete UNA riga: CameraTarget = vite
+
+Volete il drag and drop magnetico?
+DragDrop = true
+
+Volete effetti particellari di aria compressa?
+Utensile = Aria
+
+[PAUSA]
+
+Questo e' il nostro linguaggio. Si chiama CVTScript.
+E' stato progettato per essere letto e scritto da esseri umani,
+non da macchine. Ogni riga e' una istruzione chiara, in italiano.
+
+
+================================================================================
+PARTE 4 - IL CONFRONTO DEVASTANTE (1.5 minuti)
+================================================================================
+
+Permettetemi di fare un confronto diretto.
+
+CON UNA PIATTAFORMA TRADIZIONALE:
+- Team necessario: 1 sviluppatore Unity/Unreal + 1 3D artist + 1 ID
+- Tempo per un tutorial di 6 step: 2-4 settimane
+- Costo stimato: 15.000 - 40.000 euro
+- Modifiche successive: richiedono lo sviluppatore
+- Proprieta' del contenuto: vincolata alla piattaforma
+
+CON CAMPUS VIRTUAL TRAINING:
+- Team necessario: 1 tecnico con Blocco Note
+- Tempo per un tutorial di 6 step: 5 minuti
+- Costo: ZERO (sviluppato internamente, nostro al 100%)
+- Modifiche successive: il tecnico modifica il file di testo
+- Proprieta' del contenuto: completamente nostra
+
+[PAUSA]
+
+Non sto parlando di un prototipo.
+Non sto parlando di una versione semplificata.
+
+Sto parlando dello STESSO risultato finale:
+un tutorial 3D interattivo professionale, con animazioni,
+strumenti, camera cinematografica e feedback in tempo reale.
+
+La differenza? Settimane contro minuti. Migliaia di euro contro zero.
+
+
+================================================================================
+PARTE 5 - LA DEMO LIVE (3-5 minuti)
+================================================================================
+
+Ma le parole contano poco. Vi faccio vedere.
+
+[DEMO - Aprire Blocco Note con file vuoto]
+
+Quello che vedete e' un file di testo vuoto. Blocco Note di Windows.
+Nessun software speciale. Nessun ambiente di sviluppo.
+
+[DEMO - Scrivere Blocco 1: 4 righe base]
+
+Ecco. Quattro righe. Salvo. Vado nel browser. Aggiorno.
+
+[DEMO - Mostrare Step 1 funzionante]
+
+Guardate: il sistema ha gia' trovato il modello 3D, lo evidenzia,
+mi chiede di selezionare lo strumento giusto, e quando clicco...
+la vite si svita. Con quattro righe di testo.
+
+[DEMO - Aggiungere Blocco 2: camera cinematografica]
+
+Adesso aggiungo tre righe per la camera. CameraTarget, CameraDistance,
+CameraTransitionTime. Salvo. Aggiorno.
+
+[DEMO - Mostrare zoom cinematografico]
+
+Vedete? La camera fa uno zoom fluido, cinematografico, direttamente
+sulla vite. Come in un film. Tre righe.
+
+[DEMO - Aggiungere Blocco 3: animazione complessa]
+
+Ora il pezzo forte. Rimuoviamo il coperchio della pompa.
+Traslazione, rotazione, e "appoggia" - che calcola automaticamente
+dove posare l'oggetto a terra. Tre azioni in tre righe.
+
+[DEMO - Mostrare coperchio che vola, ruota e si appoggia]
+
+Il coperchio si stacca, ruota in aria, e si appoggia delicatamente
+sul pavimento. Tre righe di testo.
+
+[DEMO - Aggiungere Blocco 4: aria compressa]
+
+Cambiamo strumento: Utensile = Aria.
+Una parola. Guardate cosa succede.
+
+[DEMO - Mostrare jet d'aria con particelle]
+
+Il cursore cambia, diventa una pistola ad aria, e quando clicco...
+getto di particelle. Effetto aria compressa. Una parola chiave.
+
+[DEMO - Aggiungere Blocco 5: drag & drop]
+
+E adesso il drag and drop. DragDrop = true.
+L'utente prende il coperchio, lo trascina, e...
+
+[DEMO - Mostrare snap magnetico]
+
+...SNAP. Si aggancia magneticamente alla posizione corretta.
+Tre righe.
+
+[DEMO - Aggiungere Blocco 6: messaggio finale]
+
+E per chiudere, un messaggio professionale. Message, MessageTitle,
+AutoExecute. Il tutorial e' completo.
+
+[DEMO - Mostrare messaggio finale]
+
+[PAUSA LUNGA]
+
+Sei step. Venti righe di testo. Cinque minuti.
+Un tutorial 3D interattivo professionale completo.
+
+Fatto in Blocco Note.
+
+
+================================================================================
+PARTE 6 - LA VISIONE STRATEGICA (1.5 minuti)
+================================================================================
+
+Campus Virtual Training non e' solo uno strumento tecnico.
+E' un asset strategico per il Gruppo SCM.
+
+PRIMO - VALORE PER I CLIENTI.
+Possiamo offrire tutorial interattivi 3D come parte del pacchetto
+post-vendita. Il cliente riceve non solo la macchina, ma la
+formazione digitale integrata. Accessibile 24 ore su 24,
+da qualsiasi dispositivo, in qualsiasi parte del mondo.
+
+SECONDO - SCALABILITA'.
+Con la semplicita' del formato CVTScript, ogni reparto tecnico
+puo' creare i propri tutorial. Non serve un team IT dedicato.
+Il tecnico che conosce la macchina e' la stessa persona che
+crea il tutorial. La conoscenza resta dove deve restare.
+
+TERZO - PROPRIETA' INTELLETTUALE.
+Tutto il sistema e' sviluppato internamente. Non dipendiamo
+da nessun fornitore esterno. Non paghiamo licenze. Non siamo
+vincolati a nessuna piattaforma. Il codice e' nostro.
+I contenuti sono nostri. Il know-how e' nostro.
+
+QUARTO - MULTILINGUA E GLOBALE.
+Lo stesso tutorial puo' essere tradotto semplicemente
+duplicando il file di testo e traducendo le descrizioni.
+Nessuna ricompilazione, nessun re-deploy.
+
+QUINTO - INNOVAZIONE CONTINUA.
+Il sistema evolve costantemente: supporto touch completo,
+schermi interattivi, oggetti impugnabili, sistemi di assemblaggio
+guidato, effetti particellari. Ogni nuova funzionalita'
+diventa disponibile a TUTTI i tutorial esistenti automaticamente.
+
+
+================================================================================
+PARTE 7 - LA CHIUSURA (30 secondi)
+================================================================================
+
+In un mercato dove i competitor chiedono decine di migliaia di euro
+e settimane di sviluppo per un singolo tutorial...
+
+...noi lo facciamo in cinque minuti, in Blocco Note, gratis.
+
+E lo facciamo meglio.
+
+Campus Virtual Training.
+Sviluppato da SCM. Per SCM. Per i nostri clienti.
+
+Il futuro della formazione tecnica industriale
+non e' complesso. E' semplice.
+
+E noi lo stiamo gia' costruendo.
+
+Grazie.
+
+
+================================================================================
+APPENDICE - DATI CHIAVE PER Q&A
+================================================================================
+
+COMPETITOR E PREZZI (da citare se richiesto):
+- iQ3Connect: da $200/mese, enterprise su richiesta
+  (iq3connect.com)
+- VE Studio (DiSTI): licenza enterprise, pricing non pubblico
+  Richiede formazione specifica (disti.com/ve-studio)
+- ForgeFX Simulations: sviluppo custom, $60k-$100k per modulo
+  (forgefx.com)
+- Heartwood 3D: piattaforma enterprise, riduzione training 60%
+  ma costi di licenza significativi (hwd3d.com)
+
+VANTAGGI CAMPUS VIRTUAL TRAINING:
+- Costo sviluppo: zero (interno)
+- Costo licenze: zero (proprietario)
+- Tempo creazione tutorial: 5-15 minuti
+- Competenze richieste: nessuna programmazione
+- Piattaforma: browser web (zero installazione)
+- Dispositivi: desktop, tablet, smartphone
+- Formato contenuti: testo puro (.cvtscript)
+- Modifiche: immediate, senza ricompilazione
+
+STACK TECNICO (se richiesto):
+- Three.js r155 (rendering 3D, open source)
+- JavaScript ES6 nativo (nessun framework)
+- CSS modulare
+- Modelli GLB (standard industriale, da Blender)
+- Nessun backend richiesto (file server semplice)
+
+================================================================================

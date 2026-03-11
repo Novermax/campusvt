@@ -32,7 +32,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Descrizione=Rimuovi la seconda vite del coperchio        // Descrizione per l''utente
   Azione1=svita
   Azione2=appoggia(0.2)
-
+Autoaction=true
   [Next Step - Terza vite]                                    // Terzo step: vite angolo inferiore sinistro
   HighlightDescription=false
   Elemento=models/vite_coperchio_3.glb                            // Modello della terza vite
@@ -41,7 +41,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione1=svita
   Azione2=traslazione:( 0,0,-0.1,0.2) 
   Azione3=appoggia(0.2)
-
+Autoaction=true
   [Next Step - Quarta vite]                                   // Quarto step: ultima vite angolo inferiore destro
   HighlightDescription=false
   Elemento=models/vite_coperchio_4.glb                            // Modello dell''ultima vite del coperchio
@@ -50,7 +50,7 @@ Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona model
   Azione1=svita
   Azione2=traslazione:( 0,0,-0.1,0.2) 
   Azione3=appoggia(0.2)
-
+Autoaction=true
   [Next Step- Coperchio]                                     // Quinto step: rimozione coperchio completo
   HighlightDescription=true
   Elemento=models/coperchio.glb                                   // Modello del coperchio della pompa
@@ -363,7 +363,7 @@ Descrizione=Rimuovi la seconda vite a brugola della culatta con la chiave a brug
 Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=appoggia(0.2)
-
+Autoaction=true
 
 [Next Step - Rimuovi vite 3 culatta]
 HighlightDescription=false
@@ -373,7 +373,7 @@ Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
-
+Autoaction=true
 [Next Step - Rimuovi vite 4 culatta]
 HighlightDescription=false
 Elemento=models/vite_culatta_4.glb
@@ -382,7 +382,7 @@ Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
-
+Autoaction=true
 [Next Step - Rimuovi la culatta]
 HighlightDescription=false
 Elemento=models/culatta.glb
@@ -408,6 +408,7 @@ Descrizione=Rimuovi la seconda vite a testa esagonale con la chiave aperta da 10
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
+Autoaction=true
 
 [Next Step - Rimuovi vite 3 flangia]
 HighlightDescription=false
@@ -416,7 +417,7 @@ Descrizione=Rimuovi la terza vite a testa esagonale con la chiave aperta da 10 m
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
-
+Autoaction=true
 [Next Step - Rimuovi vite 4 flangia]
 HighlightDescription=false
 Elemento=models/vite_flangia_4.glb
@@ -424,7 +425,7 @@ Descrizione=Rimuovi la quarta vite a testa esagonale con la chiave aperta da 10 
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
-
+Autoaction=true
 [Next Step - Rimuovi vite 5 flangia]
 HighlightDescription=false
 Elemento=models/vite_flangia_5.glb
@@ -433,7 +434,7 @@ Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
-
+Autoaction=true
 [Next Step - Rimuovi vite 6 flangia]
 HighlightDescription=false
 Elemento=models/vite_flangia_6.glb
@@ -442,7 +443,7 @@ Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
-
+Autoaction=true
 
 [Next Step - Rimuovi vite 7 flangia]
 HighlightDescription=false
@@ -452,7 +453,7 @@ Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
-
+Autoaction=true
 
 [Next Step - Rimuovi vite 8 flangia]
 HighlightDescription=false
@@ -462,11 +463,12 @@ Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2) 
 Azione3=appoggia(0.2)
+Autoaction=true
 
 [Next Step - Istruzioni smontaggio flangia]
 HighlightDescription=true
-  Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
-  MessageTitle=⚠️ Importante
+  #Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
+  #MessageTitle=⚠️ Importante
   MessageVideo=media/estrattore.mp4
   Descrizione=Fase estrazione flangia con viti estrattore
   CameraPos=(0,0.45,0.89)
@@ -491,7 +493,7 @@ CameraPos=(0, 0.37, 0.44)                                   // Posizione assolut
  Elemento=models/vite_culatta_1.glb
  Azione1=avvita(0.005)
  DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Entrambi si muovono in base all'avvitamento
-[Next Step - stringi viti estrattore]
+[Next Step - stringi viti estrattore2]
 HighlightDescription=false
  Descrizione=Stringi la vite culatta 2 con la chiave a brugola
  Utensile=ChiaveBrugola
@@ -558,6 +560,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-108,0.5)
 Azione3=traslazione:(-0.7,0,0.2,0.5)
 Azione4=appoggia(0.2)
+Autoaction=true
 [Next Step - estrarre la paletta3]
 HighlightDescription=false
 Elemento=models/paletta3.glb
@@ -569,6 +572,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,0,0.5)
 Azione3=traslazione:(-0.9,0,0.2,0.5)
 Azione4=appoggia(0.2)
+Autoaction=true
 [Next Step - estrarre la paletta4]
 HighlightDescription=false
 Elemento=models/paletta4.glb
@@ -578,6 +582,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-72,0.5)
 Azione3=traslazione:(-1.1,0,0.2,0.5)
 Azione4=appoggia(0.2)
+Autoaction=true
 [Next Step - estrarre la paletta5]
 HighlightDescription=false
 Elemento=models/paletta5.glb
@@ -587,7 +592,7 @@ Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,32,0.5)
 Azione3=traslazione:(-1.3,0,0.2,0.5)
 Azione4=appoggia(0.2)
-
+Autoaction=true
 [Sostituzione Palette Reverse]  
                          // Tutorial inverso palette
 // Da implementare: procedura per rimontaggio palette
@@ -738,7 +743,7 @@ Rotazione=corpo:(0.0,0.0,0.0)
 # Usa DragDrop + AssemblyMode per posizionamento
 # Avvitamento manuale vite per vite
 
-TutorialSteps=23
+TutorialSteps=30
 
 [Step 1 - Rimonta paletta 1]
 HighlightDescription=true
@@ -765,7 +770,7 @@ Elemento=models/paletta2.glb
 Rotazione=paletta2:(0.0,0.0,0.0)
 Azione1=traslazione:(0.958,-0.124,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
-
+Autoaction=true
 [Next Step - Rimonta paletta 3]
 HighlightDescription=false
 Descrizione=Prendi la paletta 3 e rimontala nella sua sede originale. La paletta verrà posizionata automaticamente.
@@ -773,7 +778,7 @@ Utensile=Mani
 Elemento=models/paletta3.glb
 Azione1=traslazione:(0.900,0.273,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
-
+Autoaction=true
 [Next Step - Rimonta paletta 4]
 HighlightDescription=false
 Descrizione=Prendi la paletta 4 e rimontala nella sua sede originale. La paletta verrà ruotata e posizionata automaticamente.
@@ -782,7 +787,7 @@ Elemento=models/paletta4.glb
 Rotazione=paletta4:(0.0,0.0,0.0)
 Azione1=traslazione:(1.337,0.082,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
-
+Autoaction=true
 [Next Step - Rimonta paletta 5]
 HighlightDescription=false
 Descrizione=Prendi la paletta 5 e rimontala nella sua sede originale. La paletta verrà ruotata e posizionata automaticamente.
@@ -791,7 +796,7 @@ Elemento=models/paletta5.glb
 Rotazione=paletta5:(0.0,0.0,0.0)
 Azione1=traslazione:(1.188,0.151,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
-
+Autoaction=true
 [Next Step - Posiziona la flangia]
 HighlightDescription=false
 Descrizione=Trascina la flangia e posizionala sopra la sua sede (si aggancerà automaticamente sollevata di 0.3m).
@@ -817,22 +822,101 @@ Azione1=traslazione:(0.0,0.0,-0.3,0.8)
 
 
 
-[Next Step - Posiziona Viti Flangia]
-HighlightDescription=true
-Descrizione=Posiziona le 8 viti della flangia nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
-Utensile=Mani
-CameraPos=(0, 0.5, 1)
-CameraTarget=(0, 0, 0)
-CameraZoom=1.3
-CameraTransitionTime=1.5
+[Next Step - Posiziona vite flangia 1]
 
+HighlightDescription=true
+Descrizione=Posiziona la prima vite della flangia nella sua sede.
+Utensile=Mani
+CameraPos=(0.01,0.45,0.65)
+CameraTarget=(0,0.15,0.19)
+CameraPivot=(0,0.15,0.19)
+CameraDistance=0.5
+CameraFOV=60
+CameraTransitionTime=1.0
 DragDrop=true
 AssemblyMode=true
-AllowedComponents=vite_flangia_1,vite_flangia_2,vite_flangia_3,vite_flangia_4,vite_flangia_5,vite_flangia_6,vite_flangia_7,vite_flangia_8
+AllowedComponents=vite_flangia_1
 DragDropDistance=1.5
 ShowSnapIndicators=false
 SnapOffset=(0,0,0.02)
 
+[Next Step - Posiziona vite flangia 2]
+HighlightDescription=false
+Descrizione=Posiziona la seconda vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_2
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Posiziona vite flangia 3]
+HighlightDescription=false
+Descrizione=Posiziona la terza vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_3
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Posiziona vite flangia 4]
+HighlightDescription=false
+Descrizione=Posiziona la quarta vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_4
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Posiziona vite flangia 5]
+HighlightDescription=false
+Descrizione=Posiziona la quinta vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_5
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Posiziona vite flangia 6]
+HighlightDescription=false
+Descrizione=Posiziona la sesta vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_6
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Posiziona vite flangia 7]
+HighlightDescription=false
+Descrizione=Posiziona la settima vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_7
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Posiziona vite flangia 8]
+HighlightDescription=false
+Descrizione=Posiziona l'ottava vite della flangia nella sua sede.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_8
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
 
 [Next Step - Avvita vite flangia 1]
 HighlightDescription=true
@@ -847,49 +931,49 @@ Elemento=models/vite_flangia_2.glb
 Descrizione=Stringi la seconda vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite flangia 3]
 HighlightDescription=false
 Elemento=models/vite_flangia_3.glb
 Descrizione=Stringi la terza vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite flangia 4]
 HighlightDescription=false
 Elemento=models/vite_flangia_4.glb
 Descrizione=Stringi la quarta vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite flangia 5]
 HighlightDescription=false
 Elemento=models/vite_flangia_5.glb
 Descrizione=Stringi la quinta vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite flangia 6]
 HighlightDescription=false
 Elemento=models/vite_flangia_6.glb
 Descrizione=Stringi la sesta vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite flangia 7]
 HighlightDescription=false
 Elemento=models/vite_flangia_7.glb
 Descrizione=Stringi la settima vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite flangia 8]
 HighlightDescription=false
 Elemento=models/vite_flangia_8.glb
 Descrizione=Stringi l'ottava vite della flangia con la chiave inglese da 10mm.
 Utensile=ChiaveInglese
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Riattacca il tubo del grasso]
 HighlightDescription=false
 Descrizione=Collega il tubo del grasso alla flangia. Richiede che la flangia sia già montata.
@@ -904,6 +988,13 @@ ShowSnapIndicators=false
 
 [Next Step - Rimonta la culatta]
 HighlightDescription=true
+CameraPos=(-0.35,0.42,0.92)
+CameraTarget=(0.3,0.12,0.1)
+CameraRotation=(-0.35,-0.64,-0.22)
+CameraPivot=(0.3,0.12,0.1)
+CameraDistance=1.08
+CameraFOV=75
+CameraTransitionTime=1.0
 Descrizione=Posiziona la culatta sul corpo pompa. Richiede che tutte le viti della flangia siano state avvitate.
 Utensile=Mani
 
@@ -958,14 +1049,14 @@ Elemento=models/vite_culatta_2.glb
 Descrizione=Stringi la seconda vite della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite culatta 3]
 HighlightDescription=false
 Elemento=models/vite_culatta_3.glb
 Descrizione=Stringi la terza vite della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
-
+Autoaction=true
 [Next Step - Avvita vite culatta 4]
 HighlightDescription=false
 Elemento=models/vite_culatta_4.glb
@@ -973,3 +1064,4 @@ Descrizione=Stringi la quarta vite della culatta con la chiave a brugola da 6mm.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 ValidateAssembly=true
+Autoaction=true

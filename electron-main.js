@@ -120,17 +120,56 @@ function createWindow() {
  * IPC: Leggi file di configurazione dall'esterno del pacchetto ASAR.
  *
  * Logica di ricerca (in ordine):
- * 1. Modalità packaged: cerca accanto all'exe (extraFiles dalla build)
- * 2. Fallback / modalità sviluppo: cerca nella directory del progetto (__dirname)
+ * 1. Portable exe: cerca nella directory del portable (es. chiavetta USB)
+ *    → process.env.PORTABLE_EXECUTABLE_DIR è impostato da electron-builder
+ * 2. App installata/win-unpacked: cerca accanto all'exe (extraFiles dalla build)
+ * 3. Fallback / dev mode: cerca nella directory del progetto (__dirname / ASAR)
  *
- * Questo permette all'utente di modificare InterfaceConfig.cvtscript accanto all'exe
- * installato e di rilanciare il programma per applicare le modifiche.
+ * Questo permette all'utente di modificare InterfaceConfig.cvtscript
+ * accanto al portable exe (anche su chiavetta USB) senza dover ricompilare.
  */
+/**
+ * IPC: Scrivi file di configurazione all'esterno del pacchetto ASAR.
+ *
+ * Logica di scrittura:
+ * - Portable exe: scrive nella directory del portable (PORTABLE_EXECUTABLE_DIR)
+ * - App installata: scrive accanto all'exe (extraFiles)
+ * - Dev mode: scrive nella directory del progetto (__dirname)
+ */
+ipcMain.handle('write-config-file', async (event, filename, content) => {
+    let targetPath;
+
+    if (app.isPackaged) {
+        if (process.env.PORTABLE_EXECUTABLE_DIR) {
+            targetPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, filename);
+        } else {
+            targetPath = path.join(path.dirname(app.getPath('exe')), filename);
+        }
+    } else {
+        targetPath = path.join(__dirname, filename);
+    }
+
+    try {
+        fs.writeFileSync(targetPath, content, 'utf-8');
+        console.log(`✅ Config scritto in: ${targetPath}`);
+        return { success: true, path: targetPath };
+    } catch (e) {
+        console.error(`❌ Errore scrittura: ${targetPath} - ${e.message}`);
+        return { success: false, error: e.message };
+    }
+});
+
 ipcMain.handle('read-config-file', async (event, filename) => {
     const searchPaths = [];
 
     if (app.isPackaged) {
-        // App compilata: cerca prima nella directory dell'exe (file editabile dall'utente)
+        // Portable exe: PORTABLE_EXECUTABLE_DIR punta alla dir del .exe portable (es. chiavetta)
+        // app.getPath('exe') punta all'exe estratto in TEMP — non alla chiavetta
+        if (process.env.PORTABLE_EXECUTABLE_DIR) {
+            searchPaths.push(path.join(process.env.PORTABLE_EXECUTABLE_DIR, filename));
+        }
+
+        // App installata / win-unpacked: cerca accanto all'exe nella dir di installazione
         const exeDir = path.dirname(app.getPath('exe'));
         searchPaths.push(path.join(exeDir, filename));
     }

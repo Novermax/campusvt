@@ -30,6 +30,8 @@ direction=0,0,1                                           // Movement direction:
 model=models/pavimento.glb                                // Base/floor 3D model (static)
 direction=0,0,1                                           // Movement direction: towards Z+ (if needed)
 
+
+
 [Manutenzione pompa del vuoto]                            // Main scenario with complete tutorial
 // === CAMERA AND LIGHTS CONFIGURATION ===
 CameraPos=(-1.5, 0.5,-0.2)                               // Camera positioned farther for complete framing
@@ -123,7 +125,7 @@ BackLight=0xffffff,1.0,(-7, 12, 6)                       // Light to eliminate s
 // === SCENARIO INFORMATION ===
 description=Non Attivato
 description_key=Drilling_grease_description         // i18n key for suction management system
-image=menuimages/placeholder.png                                                                 // Vacuum zones diagram
+image=menuimages/foratrice.png                                                                 // Vacuum zones diagram
 
 [RTCP Automatico]                                         // RTCP System (Rotation Tool Center Point)
 // === CAMERA AND LIGHTS CONFIGURATION ===
