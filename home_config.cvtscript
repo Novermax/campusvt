@@ -125,7 +125,7 @@ BackLight=0xffffff,1.0,(-7, 12, 6)                       // Light to eliminate s
 // === SCENARIO INFORMATION ===
 description=Non Attivato
 description_key=Drilling_grease_description         // i18n key for suction management system
-image=menuimages/foratrice.png                                                                 // Vacuum zones diagram
+image=menuimages/placeholder.png                                                                 // Vacuum zones diagram
 
 [RTCP Automatico]                                         // RTCP System (Rotation Tool Center Point)
 // === CAMERA AND LIGHTS CONFIGURATION ===

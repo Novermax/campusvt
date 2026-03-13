@@ -32,6 +32,11 @@
       "!*.md",
       "!distribuzione.txt"
     ],
+    "asarUnpack": [
+      "**/*.mp4",
+      "**/*.webm",
+      "**/*.ogg"
+    ],
     "extraFiles": [
       {
         "from": "InterfaceConfig.cvtscript",

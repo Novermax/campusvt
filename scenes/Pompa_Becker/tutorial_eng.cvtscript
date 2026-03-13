@@ -466,8 +466,8 @@ Autoaction=true
 
 [Next Step - Flange disassembly instructions]
 HighlightDescription=true
-  #Message=Take two 8mm screws and insert them into the appropriate seats to use them as an extractor.
-  #MessageTitle=⚠️ Important
+  Message=Take two 8mm screws and insert them into the appropriate seats to use them as an extractor.
+  MessageTitle=⚠️ Important
   MessageVideo=media/estrattore.mp4
   Descrizione=Flange extraction phase with extractor screws
   CameraPos=(0,0.45,0.89)

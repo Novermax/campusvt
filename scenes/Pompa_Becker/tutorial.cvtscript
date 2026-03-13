@@ -467,8 +467,8 @@ Autoaction=true
 
 [Next Step - Istruzioni smontaggio flangia]
 HighlightDescription=true
-  #Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
-  #MessageTitle=⚠️ Importante
+  Message=Prendi due viti da 8mm e inseriscile nelle apposite sedi per utilizzarle come estrattore.
+  MessageTitle=⚠️ Importante
   MessageVideo=media/estrattore.mp4
   Descrizione=Fase estrazione flangia con viti estrattore
   CameraPos=(0,0.45,0.89)
