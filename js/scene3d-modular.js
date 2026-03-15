@@ -1726,6 +1726,35 @@ const Scene3D = {
                     if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
                         this.handleModelAction(highlightedModel);
                     }
+                    return;
+                }
+            }
+
+            // CONVERGERE.TXT: Ultima validazione tramite cerchio di selezione giallo.
+            // Se il click cade dentro il cerchio dell'Elemento (anche senza raycast),
+            // l'interazione è valida. Risolve il caso del cerchio che si estende oltre
+            // la silhouette 3D in zone geometricamente vuote.
+            if (this.highlightCircleManager && this.highlightCircleManager.circles.size > 0) {
+                for (const [triggerId, circleData] of this.highlightCircleManager.circles) {
+                    if (!triggerId.startsWith('elemento_')) continue;
+                    const { element, mesh } = circleData;
+                    if (!mesh || !element || element.style.display === 'none') continue;
+                    const cx = parseFloat(element.style.left);
+                    const cy = parseFloat(element.style.top);
+                    if (isNaN(cx) || isNaN(cy)) continue;
+                    const radius = circleData.size / 2;
+                    const dx = event.clientX - cx;
+                    const dy = event.clientY - cy;
+                    if (Math.sqrt(dx * dx + dy * dy) <= radius) {
+                        const rootModel = this.findRootModel(mesh);
+                        if (rootModel && this.isModelSelectable(rootModel)) {
+                            console.log(`[Scene3D] 🟡 CERCHIO SELEZIONE: Click dentro cerchio elemento "${rootModel.name}"`);
+                            if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
+                                this.handleModelAction(rootModel);
+                            }
+                        }
+                        return;
+                    }
                 }
             }
         }

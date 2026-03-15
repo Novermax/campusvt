@@ -1,42 +1,44 @@
-Problema osservato nel sistema di gestione degli scenari
+Regola di interazione per gli elementi azionabili
 
-Ho notato un comportamento anomalo nella gestione della telecamera quando si passa da uno scenario ad un altro.
+Nell'applicazione tutti gli elementi che richiedono un'azione da parte dell'utente (non solo i trigger) devono essere dotati di un cerchio di selezione giallo che definisce l'area valida di interazione.
 
-1. Mancato reset della telecamera tra scenari
+Questa area deve essere utilizzata come zona di tolleranza per il touch/click.
 
-Quando cambio scenario, la telecamera non viene reimpostata nella posizione iniziale prevista per il nuovo scenario.
+Comportamento richiesto
 
-Esempio riproducibile:
+Quando un elemento è azionabile:
 
-Avvio lo scenario Pompa_Becker.
+Deve essere visualizzato un cerchio giallo di selezione centrato sull'elemento.
 
-Successivamente passo allo scenario Manutenzione_Elettromandrino.
+Il sistema deve considerare l'interazione valida se il punto di touch/click cade all'interno del raggio del cerchio.
 
-La telecamera mantiene la distanza e l'inquadratura dello scenario precedente invece di essere riposizionata secondo i parametri iniziali del nuovo scenario.
+Questo controllo deve essere eseguito anche se il raycast o il hit-test non intercetta direttamente la silhouette gialla dell'oggetto.
 
-Comportamento atteso:
-Al caricamento di ogni scenario la telecamera dovrebbe essere reset alla posizione, rotazione e distanza definite per quello scenario.
+Logica di validazione del touch
 
-2. Comportamento dello zoom con rotellina del mouse
+L'evento di interazione deve essere considerato completato se vale almeno una delle seguenti condizioni:
 
-Vorrei anche una conferma sul comportamento dello zoom.
+il raycast colpisce direttamente la mesh/silhouette dell'elemento
 
-Attualmente sembra che:
+oppure il punto di touch è all'interno del cerchio di selezione giallo
 
-Lo zoom con la rotellina del mouse non modifichi il campo visivo (FOV).
+Scopo
 
-Lo zoom invece trasla fisicamente la telecamera lungo il vettore che va dalla camera verso il target.
+Questo comportamento serve a:
 
-In altre parole:
+aumentare la tolleranza del touch
 
-la camera si avvicina o si allontana dal target,
+migliorare l'usabilità su touchscreen o dispositivi VR
 
-mantenendo invariata l'ottica.
+evitare che piccoli errori di precisione impediscano l'esecuzione dell'azione
 
-Vorrei sapere se questo è il comportamento previsto oppure se lo zoom dovrebbe essere implementato modificando il Field Of View (FOV).
+Logica concettuale
+if RaycastHit(element) == true
+    actionCompleted = true
+else if TouchPoint inside SelectionCircle(element)
+    actionCompleted = true
+else
+    actionCompleted = false
+Nota progettuale
 
-Domande finali
-
-È corretto che il cambio di scenario non resetti automaticamente la camera, oppure è un bug?
-
-Lo zoom con rotellina è implementato come movimento della camera verso il target oppure dovrebbe essere una modifica del FOV?
+Il cerchio giallo non è solo un elemento grafico, ma rappresenta una vera area di interazione che deve essere utilizzata dal sistema per validare il gesto dell'utente.

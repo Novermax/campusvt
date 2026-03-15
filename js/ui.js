@@ -4592,6 +4592,22 @@ window.UI = {
                 setTimeout(() => {
                     window.Scene3D.highlightCurrentTutorialElement();
 
+                    // CERCHIO SELEZIONE GIALLO per Elemento azionabile (convergere.txt)
+                    // Il cerchio definisce l'area di interazione valida: il touch/click è
+                    // accettato se cade dentro il cerchio, anche se il raycast manca la mesh.
+                    if (window.Scene3D.highlightCircleManager && step.properties.DragDrop !== 'true') {
+                        const cleanName = step.properties.Elemento.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
+                        const obj = window.Scene3D.findModelByName(cleanName);
+                        if (obj) {
+                            let targetMesh = null;
+                            obj.traverse(child => { if (child.isMesh && !targetMesh) targetMesh = child; });
+                            if (targetMesh) {
+                                window.Scene3D.highlightCircleManager.createCircle(`elemento_${cleanName}`, targetMesh, 60, 0.7);
+                                console.log(`[UI] 🟡 Cerchio selezione creato per Elemento "${cleanName}"`);
+                            }
+                        }
+                    }
+
                     // ═══════════════════════════════════════════════════════════
                     // CAMERA: Memorizza posizione camera DOPO che è stata impostata
                     // ═══════════════════════════════════════════════════════════

@@ -99,10 +99,11 @@ window.TouchInputRouter = {
 
             // 2b. PRIORITÀ CERCHIO: se il tocco cade dentro un cerchio giallo lampeggiante,
             // trattalo come tap sull'elemento associato ANCHE se il raycast ha colpito un altro oggetto.
+            // Supporta: dragdrop_* (DragDrop), elemento_* (Elemento azionabile), altri (pulsanti interattivi)
             const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
             if (circleHit) {
-                // Distingui cerchi DragDrop (dragdrop_*) da cerchi pulsanti interattivi
-                if (circleHit.triggerId.startsWith('dragdrop_')) {
+                // Distingui cerchi OBJECT_3D (dragdrop_* e elemento_*) da cerchi pulsanti interattivi
+                if (circleHit.triggerId.startsWith('dragdrop_') || circleHit.triggerId.startsWith('elemento_')) {
                     // CERCHIO DRAGDROP: instrada al layer OBJECT_3D per il TouchDragHandler
                     const rootModel = this.findRootModel(circleHit.mesh);
                     console.log(`[TouchInputRouter] 🟡 Cerchio DragDrop "${circleHit.triggerId}" → OBJECT_3D (root: ${rootModel ? rootModel.name : 'N/A'})`);
@@ -149,10 +150,10 @@ window.TouchInputRouter = {
         // ma il raycast non ha colpito nulla (es. tocco sul bordo del cerchio fuori dal modello)
         const circleHitFallback = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
         if (circleHitFallback) {
-            if (circleHitFallback.triggerId.startsWith('dragdrop_')) {
-                // CERCHIO DRAGDROP senza raycast: instrada a OBJECT_3D
+            if (circleHitFallback.triggerId.startsWith('dragdrop_') || circleHitFallback.triggerId.startsWith('elemento_')) {
+                // CERCHIO DRAGDROP o ELEMENTO senza raycast: instrada a OBJECT_3D
                 const rootModel = this.findRootModel(circleHitFallback.mesh);
-                console.log(`[TouchInputRouter] 🟡 Fallback cerchio DragDrop "${circleHitFallback.triggerId}" → OBJECT_3D`);
+                console.log(`[TouchInputRouter] 🟡 Fallback cerchio "${circleHitFallback.triggerId}" → OBJECT_3D`);
                 return {
                     layer: this.LAYERS.OBJECT_3D,
                     target: rootModel || circleHitFallback.mesh,
