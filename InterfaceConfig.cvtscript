@@ -46,4 +46,4 @@ ZoomMax=1.3
 [SpeechBubble]
 # Durata dell'animazione drammatica del fumetto (ms) quando HighlightDescription=true
 # default: 1000 | range consigliato: 500 - 3000
-DramaticAnimationDuration=1300
+DramaticAnimationDuration=2000

@@ -145,12 +145,12 @@ AutoAdvance=true
 [Next Step - Scarica l'utensile]
 HighlightDescription=true
 Descrizione=Premi il pulsante a video per eseguire lo scarico dell'utensile T=1000.
-CameraPos=(0.97,1.22,3.8)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.25, -0.01, 0)
+CameraPos=(0.97, 1.25, 3.92)
+CameraTarget=(0.97, 1.15, 3.52)
+CameraRotation=(-0.24, 0, 0)
 CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=1.24
-CameraFOV=55.0
+CameraDistance=0.42
+CameraFOV=75.0
 CameraTransitionTime=2.0
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_tool

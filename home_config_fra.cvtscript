@@ -1,0 +1,210 @@
+# Configuration Page d'Accueil - Campus Virtual Training Morbidelli X400
+# Ce fichier définit les scénarios disponibles et leurs configurations
+# VERSION REFACTORISÉE avec variables en anglais et clés i18n
+
+title=Campus Virtual Training Morbidelli X400
+subtitle=Sélectionnez un scénario de simulation pour démarrer la démonstration
+
+[Maintenance Électrobroche]                                 // Nom du scénario (affiché comme titre de la carte)
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(-1.11, 1.44, 3.97)                               // Caméra positionnée plus loin pour un cadrage complet
+CameraTarget=(0, 0, 0)                                    // La caméra pointe vers le centre de la scène
+AmbientLight=0xffffff,1.05                                 // Lumière ambiante pour l'éclairage général
+DirectionalLight=0xffffff,1.05,(-8, 15, 0)               // Lumière directionnelle principale depuis le haut à droite
+BackLight=0xffffff,2,(-8, 15,  5 )                      // Contre-jour pour éliminer les ombres dures
+
+// === INFORMATIONS DU SCÉNARIO ===
+description=Contrôle et maintenance de l'électrobroche avec cônes HSK : nettoyage de la pince, lubrification, déverrouillage/verrouillage manuel de la pince.
+description_key=scenario_spindle_maintenance_description   // Clé i18n pour la description
+image=menuimages/1.png                                    // Image d'aperçu du scénario
+tutorial=scenes/Manutenzione_Elettromandrino/tutorial_fra.cvtscript
+Configuration=scenes/Manutenzione_Elettromandrino/config.cvtscript
+// === MODÈLES 3D ET DIRECTIONS DE MOUVEMENT ===
+model=models/pulpito.glb                                  // Modèle 3D du pupitre
+direction=0,0,1                                           // Direction de mouvement : vers Z+ (si nécessaire)
+// === MODÈLES 3D ET DIRECTIONS DE MOUVEMENT ===
+model=models/remote.glb                                  // Modèle 3D de la télécommande
+direction=0,0,1                                           // Direction de mouvement : vers Z+ (si nécessaire)
+model=models/a500.glb                                  // Modèle 3D de la machine
+direction=0,0,1                                           // Direction de mouvement : vers Z+ (si nécessaire)
+model=models/pavimento.glb                                // Modèle 3D de la base/sol (statique)
+direction=0,0,1                                           // Direction de mouvement : vers Z+ (si nécessaire)
+
+[Maintenance Pompe à Vide]                                  // Scénario principal avec tutoriel complet
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(-1.5, 0.5,-0.2)                               // Caméra positionnée plus loin pour un cadrage complet
+CameraTarget=(0, 0, 0)                                    // La caméra pointe vers le centre de la scène
+AmbientLight=0x404040,1.5                                 // Lumière ambiante pour l'éclairage général
+DirectionalLight=0xffffff,2.5,(-8, 15, 10)               // Lumière directionnelle principale depuis le haut à droite
+BackLight=0xffffff,1.0,(-8, 15, 10)                      // Contre-jour pour éliminer les ombres dures
+// === INFORMATIONS DU SCÉNARIO ===
+description=Démontage complet et maintenance de la pompe à vide Becker avec remplacement du filtre à air et des composants internes.
+description_key=scenario_pump_maintenance_description      // Clé i18n pour la description de l'opération technique
+image=menuimages/pompavuoto.png                           // Image spécifique de la pompe à vide
+tutorial=scenes/Pompa_Becker/tutorial_fra.cvtscript                // Fichier tutoriel avec étapes guidées
+Configuration=scenes/Pompa_Becker/config.cvtscript
+// === MODÈLES 3D ET DIRECTIONS DE MOUVEMENT ===
+model=models/culatta.glb                                  // Modèle 3D de la culasse
+direction=0,0,1                                           // Direction de mouvement : vers Z+ (extraction verticale)
+model=models/corpo.glb                                    // Modèle 3D du corps de la pompe
+direction=0,0,1                                           // Direction de mouvement : vers Z+
+model=models/coperchio.glb                                // Modèle 3D du couvercle
+direction=-1,0,1                                          // Direction de mouvement : vers X- et Z+ (diagonal)
+model=models/filtro.glb                                   // Modèle 3D du filtre à remplacer
+direction=-1,0,0                                          // Direction de mouvement : vers X- (extraction latérale)
+model=models/pavimento.glb                                // Modèle 3D de la base/sol (statique)
+direction=0,0,1                                           // Direction de mouvement : vers Z+ (si nécessaire)
+model=models/planaxis.glb                                     // Axes
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/vite_coperchio_1.glb                         // Première vis du couvercle
+direction=-1,0,0                                          // Direction de mouvement : vers X- (dévissage et extraction)
+model=models/vite_coperchio_2.glb                         // Deuxième vis du couvercle
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/vite_coperchio_3.glb                         // Troisième vis du couvercle
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/vite_coperchio_4.glb                         // Quatrième vis du couvercle
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/tappino_grasso_sx.glb                        // Bouchon de graissage gauche
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/tappino_grasso_dx.glb                        // Bouchon de graissage droit
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/ingrassatore.glb                             // Graisseur
+direction=-1,0,0                                          // Direction de mouvement : vers X-
+model=models/vite_culatta_1.glb                         // Première vis de culasse
+direction=0,0,1                                          // Direction de mouvement : vers X-
+model=models/vite_culatta_2.glb                         // Deuxième vis de culasse
+direction=0,0,1                                          // Direction de mouvement : vers X-
+model=models/vite_culatta_3.glb                         // Troisième vis de culasse
+direction=0,0,1                                          // Direction de mouvement : vers X-
+model=models/vite_culatta_4.glb                         // Quatrième vis de culasse
+direction=0,0,1                                          // Direction de mouvement : vers X-
+model=models/estrattoredx.glb                         // Extracteur droit
+direction=0,0,1                                          // Direction de mouvement : vers X-
+model=models/estrattoresx.glb                         // Extracteur gauche
+direction=0,0,1                                          // Direction de mouvement : vers X-
+model=models/flangia.glb                                    // Modèle 3D du corps de la pompe
+direction=0,0,1
+model=models/vite_flangia_1.glb                         // Première vis de bride
+direction=0,0,1
+model=models/vite_flangia_2.glb                         // Deuxième vis de bride
+direction=0,0,1
+model=models/vite_flangia_3.glb                         // Troisième vis de bride
+direction=0,0,1
+model=models/vite_flangia_4.glb                         // Quatrième vis de bride
+direction=0,0,1
+model=models/vite_flangia_5.glb                         // Cinquième vis de bride
+direction=0,0,1
+model=models/vite_flangia_6.glb                         // Sixième vis de bride
+direction=0,0,1
+model=models/vite_flangia_7.glb                         // Septième vis de bride
+direction=0,0,1
+model=models/vite_flangia_8.glb                         // Huitième vis de bride
+direction=0,0,1                                      // Direction de mouvement : vers Z+
+model=models/paletta1.glb                                    // Palette 1 de la pompe
+direction=0,0,1                                        // Direction de mouvement : vers Z+
+model=models/paletta2.glb                                    // Palette 2 de la pompe
+direction=0,0,1                                        // Direction de mouvement : vers Z+
+model=models/paletta3.glb                                    // Palette 3 de la pompe
+direction=0,0,1                                        // Direction de mouvement : vers Z+
+model=models/paletta4.glb                                    // Palette 4 de la pompe
+direction=0,0,1                                        // Direction de mouvement : vers Z+
+model=models/paletta5.glb                                    // Palette 5 de la pompe
+direction=0,0,1                                        // Direction de mouvement : vers Z+
+model=models/tubograsso.glb                                    // Tube de graisse de la pompe
+direction=0,0,1                                        // Direction de mouvement : vers Z+
+
+[Graissage Unité de Perçage]                                   // Graissage du perçage
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(6, 4, 8)                                      // Vue latérale pour visualiser les zones de vide
+CameraTarget=(0, 0, 0)                                   // Focus sur le plan de travail
+AmbientLight=0x404040,1.5                                // Lumière pour identifier les zones
+DirectionalLight=0xffffff,2.5,(7, 12, 6)                // Éclairage principal du plan
+BackLight=0xffffff,1.0,(-7, 12, 6)                       // Lumière pour éliminer les ombres sur le plan
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=Drilling_grease_description         // Clé i18n pour le système de gestion d'aspiration
+image=menuimages/placeholder.png                                                                 // Diagramme des zones de vide
+
+[RTCP Automatique]                                           // Système RTCP (Rotation Tool Center Point)
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(4, 6, 8)                                      // Vue optimale pour la Tête Prisma
+CameraTarget=(0, 0, 0)                                   // Centre sur la tête d'usinage
+AmbientLight=0x404040,1.5                                // Éclairage pour les détails mécaniques
+DirectionalLight=0xffffff,2.5,(5, 12, 6)                // Lumière pour mettre en évidence la cinématique
+BackLight=0xffffff,1.0,(-5, 12, 6)                       // Lumière d'appoint pour la visibilité
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=scenario_automatic_rtcp_description       // Clé i18n pour le calibrage automatique de rotation d'outil
+image=menuimages/placeholder.png
+[Rechargement Réservoir de Graisse]                                       // Alimentation du réservoir de graisse
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(7, 5, 9)                                      // Vue isométrique pour voir tous les axes
+CameraTarget=(0, 0, 0)                                   // Centre de la machine comme référence
+AmbientLight=0x404040,1.5                                // Lumière uniforme pour des mesures précises
+DirectionalLight=0xffffff,2.5,(8, 12, 7)                // Éclairage pour mettre en évidence les axes
+BackLight=0xffffff,1.0,(-8, 12, 7)                       // Lumière pour réduire les contrastes excessifs
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=Grease_tank_feed_description        // Clé i18n pour le calibrage géométrique de la machine
+image=menuimages/placeholder.png                                                                 // Schéma des axes cartésiens
+
+[Remplacement Batteries Encodeur]                              // Remplacement des batteries d'encodeur
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(9, 6, 11)                                     // Vue optimale pour l'accès à la broche
+CameraTarget=(0, 0, 0)                                   // Focus sur la zone de la broche
+AmbientLight=0x404040,1.5                                // Éclairage pour les détails techniques
+DirectionalLight=0xffffff,2.5,(10, 15, 8)               // Lumière intense pour les opérations de précision
+BackLight=0xffffff,1.0,(-10, 15, 8)                      // Lumière de remplissage pour la sécurité opérationnelle
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=Replacing_encoder_batteries_description  // Clé i18n pour la procédure de remplacement complète
+image=menuimages/placeholder.png                                                              // Image de l'électrobroche
+
+[Filtre et Séparateur d'Eau Alimentation Pneumatique]                   // Filtrage et séparation de l'eau de l'ensemble d'alimentation pneumatique
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(8, 8, 10)                                     // Vue de dessus pour un alignement précis
+CameraTarget=(0, 0, 0)                                   // Centre de la zone d'usinage
+AmbientLight=0x404040,1.5                                // Lumière uniforme pour les mesures
+DirectionalLight=0xffffff,2.5,(9, 15, 8)                // Éclairage principal pour l'offset
+BackLight=0xffffff,1.0,(-9, 15, 8)                       // Lumière auxiliaire pour la précision
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=scenario_pneumatic_feed_description       // Clé i18n pour le calibrage offset X-Y-Z
+image=menuimages/placeholder.png                                                                 // Schéma offset broche-perceuse
+
+[Maintenance Barre Matic/Flex-matic]                         // Maintenance de la barre Matic/Flex-matic
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(6, 7, 9)                                      // Vue latérale pour l'accès à la broche
+CameraTarget=(0, 0, 0)                                   // Focus sur l'unité de perçage
+AmbientLight=0x404040,1.5                                // Éclairage pour les détails mécaniques
+DirectionalLight=0xffffff,2.5,(7, 15, 7)                // Lumière directionnelle pour les opérations
+BackLight=0xffffff,1.0,(-7, 15, 7)                       // Contre-jour pour la visibilité
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=scenario_Matic_Flex-matic_bar_maintenance_description // Clé i18n pour le changement et recalibrage de broche
+image=menuimages/placeholder.png                                                                // Image de la broche perceuse
+
+[Nettoyage Crémaillères des Axes]                                       // Nettoyage des crémaillères des axes
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(7, 9, 8)                                      // Vue de dessus pour l'accès à la perceuse
+CameraTarget=(0, 0, 0)                                   // Centre du groupe perceuse
+AmbientLight=0x404040,1.5                                // Lumière pour les détails des petits composants
+DirectionalLight=0xffffff,2.5,(8, 15, 6)                // Éclairage intense pour la précision
+BackLight=0xffffff,1.0,(-8, 15, 6)                       // Lumière d'appoint
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=scenario_Cleaning_of_axe_racks_description // Clé i18n pour le remplacement et la programmation des mèches
+image=menuimages/placeholder.png                                                                // Groupe mèches perceuse
+
+[Calibrage Barre Matic/Flex-matic]                         // Calibrage de la Barre Matic/Flex-matic
+// === CONFIGURATION CAMÉRA ET LUMIÈRES ===
+CameraPos=(5, 6, 12)                                     // Vue frontale pour le contrôle d'équerrage
+CameraTarget=(0, 0, 0)                                   // Focus sur le boîtier de la perceuse
+AmbientLight=0x404040,1.5                                // Lumière uniforme pour les mesures
+DirectionalLight=0xffffff,2.5,(6, 15, 10)               // Éclairage pour mettre en évidence les angles
+BackLight=0xffffff,1.0,(-6, 15, 10)                      // Lumière pour éliminer les ombres
+// === INFORMATIONS DU SCÉNARIO ===
+description=Non-activé
+description_key=scenario_Matic_Flex-matic_Bar_Calibration_description    // Clé i18n pour la vérification de la perpendicularité du boîtier
+image=menuimages/placeholder.png                                  // Schéma d'équerrage du boîtier
+

@@ -1,0 +1,1067 @@
+
+# Tutoriel de Maintenance de la Pompe à Vide
+# Ce fichier définit la séquence guidée pour le remplacement du filtre
+# et la lubrification de la pompe à vide Becker U5.40
+# Chaque section représente une étape avec des actions et animations spécifiques
+
+CameraPos=(-1.5, 0.5,-0.2)                                       // Position absolue pour test
+CameraTarget=(0, 0, 0)                                    // Focus sur le centre de scène légèrement surélevé
+CameraZoom=1.2                                                // Zoom léger pour une vue d'ensemble
+CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+Posizione=planaxis:(-0.5,0.01,-0.5)                           // Positionne un modèle spécifique
+
+[Nettoyage du filtre et lubrification]                                            // Tutoriel principal - séquence de démontage
+  CameraPos=(-1.5, 0.5,-0.2)                                       // Position absolue pour test
+  CameraTarget=(0, 0, 0)                                    // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=1.2                                                // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+  Azione1=resetCenteredOriginal
+  [Step 1 - Première vis]
+  HighlightDescription=true                                 // Première étape : retrait de la première vis
+  Elemento=models/vite_coperchio_1.glb                         // Modèle 3D de la première vis à animer
+  Utensile=Mani                                            // Outil requis : travail manuel
+  Descrizione=Sélectionnez l'outil "Main" et retirez la première vis du couvercle          // Texte affiché dans la bulle latérale
+  Azione1=svita
+  Azione2=appoggia(0.2)
+
+
+  [Next Step - Deuxième vis]                                  // Deuxième étape : vis angle supérieur droit
+  HighlightDescription=false                                 // Met en évidence la description pour la deuxième étape
+  Elemento=models/vite_coperchio_2.glb                            // Modèle de la deuxième vis
+  Utensile=Mani                                            // Outil : toujours manuel pour les vis
+  Descrizione=Retirez la deuxième vis du couvercle        // Description pour l'utilisateur
+  Azione1=svita
+  Azione2=appoggia(0.2)
+Autoaction=true
+  [Next Step - Troisième vis]                                    // Troisième étape : vis angle inférieur gauche
+  HighlightDescription=false
+  Elemento=models/vite_coperchio_3.glb                            // Modèle de la troisième vis
+  Utensile=Mani                                            // Outil : opération manuelle
+  Descrizione=Retirez la troisième vis du couvercle          // Instruction pour l'opérateur
+  Azione1=svita
+  Azione2=traslazione:( 0,0,-0.1,0.2)
+  Azione3=appoggia(0.2)
+Autoaction=true
+  [Next Step - Quatrième vis]                                   // Quatrième étape : dernière vis angle inférieur droit
+  HighlightDescription=false
+  Elemento=models/vite_coperchio_4.glb                            // Modèle de la dernière vis du couvercle
+  Utensile=Mani                                            // Outil : opération manuelle
+  Descrizione=Retirez la quatrième vis du couvercle         // Instruction finale pour les vis
+  Azione1=svita
+  Azione2=traslazione:( 0,0,-0.1,0.2)
+  Azione3=appoggia(0.2)
+Autoaction=true
+  [Next Step- Couvercle]                                     // Cinquième étape : retrait du couvercle complet
+  HighlightDescription=true
+  Elemento=models/coperchio.glb                                   // Modèle du couvercle de la pompe
+  Utensile=Mani                                            // Outil : soulèvement manuel
+  Descrizione=Retirez le couvercle du filtre              // Instruction pour le retrait du couvercle
+  Azione1=traslazione:(-0.5,0,0.5,0.8)
+  Azione2=centro:(0,0.1,0);rotazione:(0,0,-90,0.8)                       // Extraction du couvercle 0.4 unités en 1.5 secondes
+  Azione3=appoggia(0.5)
+
+
+
+
+[Next Step - Filtre]                                        // Sixième étape : extraction du filtre usé
+HighlightDescription=true
+Elemento=models/filtro.glb                                     // Modèle 3D du filtre à remplacer
+  Utensile=Mani                                           // Outil : extraction manuelle
+  Descrizione=Retirez le filtre                           // Instruction pour le retrait du filtre
+  Azione1=traslazione:(-0.3,0,0,1.5)
+  Azione2=traslazione:(0,0,0.5,1.5)
+  Azione3=appoggia(1.5)
+  //Azione=estrai                                           // Animation : extraction linéaire sans rotation
+  //Distanza=0.4                                            // Distance d'extraction (filtre compact)
+  //Durata=1.5                                              // Durée personnalisée : extraction rapide
+
+ [Next Step - Air comprimé]
+ HighlightDescription=true
+ Elemento=models/filtro.glb
+  Descrizione=Nettoyez le filtre avec de l'air comprimé
+  CameraPos=(-0.2,0.33,0.74)                                      // Position absolue pour test
+  CameraTarget=filtro                                  // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=0.5                                               // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+  Utensile=Aria
+  Azione1=traslazione:(0,0.01,0,0.5)
+  Azione2=appoggia(0.5)
+
+[Next Step- Bouchon droit]                                        // Sixième étape : extraction du filtre usé
+HighlightDescription=true
+CameraPos=(-1.5, 0.5,-0.2)                                       // Position absolue pour test
+  CameraTarget=tappino_grasso_dx                                    // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=0.5                                           // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+
+  Elemento=models/tappino_grasso_dx.glb                                     // Modèle 3D du filtre à remplacer
+  Utensile=Mani                                           // Outil : extraction manuelle
+  Descrizione=Retirez le bouchon de protection du raccord de graissage droit       // Instruction pour le retrait du filtre
+  Azione1=traslazione:(-0.3,0,0,1.0)                       // Extraction du bouchon 0.3 unités
+  Azione2=appoggia(0.5)
+
+
+[Next Step - Bouchon gauche]                                        // Sixième étape : extraction du filtre usé
+HighlightDescription=true
+CameraPos=(-1.5, 0.5,-0.2)                                       // Position absolue pour test
+  CameraTarget=tappino_grasso_sx                                    // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=0.5                                           // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+  Elemento=models/tappino_grasso_sx.glb                                     // Modèle 3D du filtre à remplacer
+  Utensile=Mani                                           // Outil : extraction manuelle
+  Descrizione=Retirez le bouchon de protection du raccord de graissage gauche       // Instruction pour le retrait du filtre
+  Azione1=traslazione:(-0.3,0,0,1.0)                       // Extraction du bouchon 0.3 unités
+  Azione2=appoggia(0.5)
+
+
+[Next Step - Pompe à graisse]                                        // Neuvième étape : déplacement du graisseur
+HighlightDescription=false
+Elemento=models/ingrassatore.glb                                     // Modèle 3D du graisseur à animer
+  Utensile=Mani                                           // Outil : extraction manuelle
+  Descrizione=Prenez la pompe à graisse        // Instruction pour le déplacement
+  Azione1=traslazione:(0,0.1,0,0.8)
+  Azione2=centro:(-0.1,0,0);rotazione:(0,0,90,0.8)
+  Azione3=traslazione:(-0.2,0.0,0,0.8)
+  Azione4=appoggia(0.5)
+  //CameraPos=ingrassatore:(-1, 0, 0)                    // Position relative au graisseur
+  //CameraTarget=ingrassatore                               // Focus direct sur le graisseur
+  //CameraZoom=2.2                                          // Zoom élevé pour opération de précision
+  //CameraTransitionTime=1.2                                // Transition avec transition douce
+
+[Next Step - Pompe à graisse 2]                                        // Dixième étape : déplacement du graisseur
+HighlightDescription=true
+CameraPos=(-0.42, 0.33,  0.3 )
+  CameraTarget=(-0.28, 0.25,-0.16)                                       // Position absolue pour test
+  CameraZoom=0.5                                           // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+
+
+  Elemento=models/ingrassatore.glb                                     // Modèle 3D du graisseur à animer
+  Utensile=Mani                                           // Outil : extraction manuelle
+  Descrizione=Appliquez de la graisse au raccord de graissage droit en pompant 10 fois     // Instruction pour le déplacement
+  Azione1=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+  Azione2=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione3=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione4=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione5=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione6=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione7=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione8=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione9=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione10=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione11=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione12=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione13=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione14=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione15=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione16=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione17=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  Azione18=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione19=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+ Azione20=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+
+  Azione21=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+
+
+  //Azione22=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione22=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+
+[Next Step - Pompe à graisse 3]                                        // Dixième étape : déplacement du graisseur
+HighlightDescription=false
+
+  Elemento=models/ingrassatore.glb                                     // Modèle 3D du graisseur à animer
+  Utensile=Mani                                           // Outil : extraction manuelle
+  Descrizione=Appliquez de la graisse au raccord de graissage gauche en pompant 10 fois     // Instruction pour le déplacement
+  Azione1=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  Azione2=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione3=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione4=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione5=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione6=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione7=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione8=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione9=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione10=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione11=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione12=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione13=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione14=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione15=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione16=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione17=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione18=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione19=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+  Azione20=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione21=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
+ //Azione22=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
+  Azione22=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  Azione23=traslazione:ingrassatore_original,(-0.2,0.0,0,0.5)
+  Azione24=appoggia(0.5)
+
+
+[Remontage]
+HighlightDescription=true
+# Tutoriel inversé - séquence de remontage
+# Séquence pour réinstaller le filtre et fermer la pompe
+
+# Configuration caméra
+CameraPos=(-1.5, 0.5, -0.2)
+CameraTarget=(0, 0, 0)
+CameraZoom=1.2
+CameraTransitionTime=2.5
+
+# IMPORTANT : Désactiver la complétion automatique pour le tutoriel multi-étapes
+//AutoComplete=false
+TutorialSteps=5
+
+# Positionnement des modèles pour le montage - Positions personnalisées correctes
+# IMPORTANT : Les pièces commencent "démontées" comme à la fin du nettoyage
+
+# Modèle 1 : coperchio
+Posizione=coperchio:(-1.148,-0.261,0.500)
+Rotazione=coperchio:(0.0,0.0,-90.0)
+
+# Modèle 2 : filtro
+Posizione=filtro:(-0.300,-0.142,0.500)
+Rotazione=filtro:(0.0,0.0,0.0)
+
+# Modèle 3 : pavimento
+Posizione=pavimento:(0.000,0.000,0.000)
+Rotazione=pavimento:(0.0,0.0,0.0)
+
+# Modèle 4 : vite_coperchio_1
+Posizione=vite_coperchio_1:(-0.500,-0.349,0.000)
+Rotazione=vite_coperchio_1:(-360.0,0.0,0.0)
+
+# Modèle 5 : vite_coperchio_2
+Posizione=vite_coperchio_2:(-0.500,-0.349,0.000)
+Rotazione=vite_coperchio_2:(-360.0,0.0,0.0)
+
+# Modèle 6 : vite_coperchio_3
+Posizione=vite_coperchio_3:(-0.500,-0.117,-0.100)
+Rotazione=vite_coperchio_3:(-360.0,0.0,0.0)
+
+# Modèle 7 : vite_coperchio_4
+Posizione=vite_coperchio_4:(-0.500,-0.117,-0.100)
+Rotazione=vite_coperchio_4:(-360.0,0.0,0.0)
+
+# Modèle 8 : tappino_grasso_sx
+Posizione=tappino_grasso_sx:(-0.300,-0.243,0.000)
+Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
+
+# Modèle 9 : tappino_grasso_dx
+Posizione=tappino_grasso_dx:(-0.300,-0.243,0.000)
+Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
+
+# Modèle 10 : ingrassatore
+Posizione=ingrassatore:(-0.208,0.243,0)
+Rotazione=ingrassatore:(0.0,0.0,90.0)
+
+
+[Step 1 - Bouchons de raccord de graissage]
+HighlightDescription=true
+Descrizione=Installez les bouchons de raccord de graissage dans n'importe quel ordre. Vous pouvez commencer par le droit ou le gauche.
+Utensile=Mani
+
+# Nœud interchangeable - ordre libre pour les bouchons (SANS Élément spécifique)
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=tappino_grasso_dx,tappino_grasso_sx
+DragDropDistance=0.2
+
+
+
+[Next Step - Filtre]
+HighlightDescription=true
+Descrizione=Insérez le filtre dans son logement.
+Utensile=Mani
+
+# Système d'assemblage séquentiel - filtre
+DragDrop=true
+AssemblyMode=true
+# Seul le filtre peut être assemblé dans cette étape
+AllowedComponents=filtro
+DragDropDistance=0.3
+
+
+[Next Step - Couvercle]
+HighlightDescription=true
+
+Descrizione=Positionnez le couvercle sur le dessus du filtre.
+Utensile=Mani
+
+# Continuation de l'assemblage séquentiel - couvercle
+DragDrop=true
+AssemblyMode=true
+
+
+AllowedComponents=coperchio
+DragDropDistance=0.3
+
+
+
+[Next Step - Groupe de vis du couvercle]
+HighlightDescription=true
+
+Descrizione=Installez les 4 vis du couvercle dans n'importe quel ordre.
+Utensile=Mani
+
+# Nœud interchangeable - ordre libre pour les vis
+DragDrop=true
+AssemblyMode=true
+
+
+
+AllowedComponents=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+
+
+DragDropDistance=0.2
+
+ValidateAssembly=true
+
+
+
+[Next Step - Pompe à graisse finale]
+HighlightDescription=true
+
+Descrizione=Enfin, replacez la pompe à graisse dans sa position de repos. Nécessite que toutes les vis soient installées.
+Utensile=Mani
+
+# Étape finale - nécessite tous les prérequis
+DragDrop=true
+AssemblyMode=true
+
+
+AllowedComponents=ingrassatore
+DragDropDistance=0.3
+
+
+
+
+[Démontage Remplacement Palettes]
+HighlightDescription=true                                 // Tutoriel futur pour le remplacement des palettes de la pompe
+CameraPos=(0, 0.5,1)                                       // Position absolue pour test
+  CameraTarget=(0, 0, 0)                                    // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=1.2                                                // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=2.5                                      // Mouvement fluide avec transition douce
+  Azione1=resetCenteredOriginal
+
+
+[Step 1 - Retirer la vis de culasse 1]
+HighlightDescription=true
+Elemento=models/vite_culatta_1.glb
+Descrizione=Retirez la première vis à tête hexagonale de la culasse du cylindre avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=svita(0.3)
+Azione2=appoggia(0.2)
+
+[Next Step - Retirer la vis de culasse 2]
+HighlightDescription=false
+Elemento=models/vite_culatta_2.glb
+Descrizione=Retirez la deuxième vis à tête hexagonale de la culasse du cylindre avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=svita(0.3)
+Azione2=appoggia(0.2)
+Autoaction=true
+
+[Next Step - Retirer la vis de culasse 3]
+HighlightDescription=false
+Elemento=models/vite_culatta_3.glb
+Descrizione=Retirez la troisième vis à tête hexagonale de la culasse du cylindre avec la clé Allen 6mm. Notez que les vis inférieures sont plus courtes.
+Utensile=ChiaveBrugola
+Azione1=svita(0.3)
+Azione2=traslazione:( -0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Autoaction=true
+[Next Step - Retirer la vis de culasse 4]
+HighlightDescription=false
+Elemento=models/vite_culatta_4.glb
+Descrizione=Retirez la quatrième vis à tête hexagonale de la culasse du cylindre avec la clé Allen 6mm. Notez que les vis inférieures sont plus courtes.
+Utensile=ChiaveBrugola
+Azione1=svita(0.3)
+Azione2=traslazione:( -0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Autoaction=true
+[Next Step - Retirer la culasse]
+HighlightDescription=false
+Elemento=models/culatta.glb
+Descrizione=Retirez la culasse du cylindre de la pompe avec l'outil "Main".
+Utensile=Mani
+Azione1=traslazione:( 0.5,0,0.5,0.5)
+Azione2=rotazione:(-90,0,0,0.8)
+Azione3=appoggia(0.2)
+
+[Next Step - Retirer la vis de bride 1]
+HighlightDescription=true
+Elemento=models/vite_flangia_1.glb
+Descrizione=Retirez la première vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+
+[Next Step - Retirer la vis de bride 2]
+HighlightDescription=false
+
+Elemento=models/vite_flangia_2.glb
+Descrizione=Retirez la deuxième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+Autoaction=true
+
+[Next Step - Retirer la vis de bride 3]
+HighlightDescription=false
+Elemento=models/vite_flangia_3.glb
+Descrizione=Retirez la troisième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+Autoaction=true
+[Next Step - Retirer la vis de bride 4]
+HighlightDescription=false
+Elemento=models/vite_flangia_4.glb
+Descrizione=Retirez la quatrième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+Autoaction=true
+[Next Step - Retirer la vis de bride 5]
+HighlightDescription=false
+Elemento=models/vite_flangia_5.glb
+Descrizione=Retirez la cinquième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Autoaction=true
+[Next Step - Retirer la vis de bride 6]
+HighlightDescription=false
+Elemento=models/vite_flangia_6.glb
+Descrizione=Retirez la sixième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Autoaction=true
+
+[Next Step - Retirer la vis de bride 7]
+HighlightDescription=false
+Elemento=models/vite_flangia_7.glb
+Descrizione=Retirez la septième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Autoaction=true
+
+[Next Step - Retirer la vis de bride 8]
+HighlightDescription=false
+Elemento=models/vite_flangia_8.glb
+Descrizione=Retirez la huitième vis à tête hexagonale avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=svita(0.1)
+Azione2=traslazione:( -0.1,0,0,0.2)
+Azione3=appoggia(0.2)
+Autoaction=true
+
+[Next Step - Instructions de démontage de la bride]
+HighlightDescription=true
+  Message=Prenez deux vis 8mm et insérez-les dans les logements appropriés pour les utiliser comme extracteur.
+  MessageTitle=⚠️ Important
+  MessageVideo=media/estrattore.mp4
+  Descrizione=Phase d'extraction de la bride avec les vis extractrices
+  CameraPos=(0,0.45,0.89)
+  CameraTarget=(0,0,0)
+  CameraZoom=1
+  DragDrop=true
+  DragDropObjects=vite_culatta_1,vite_culatta_2  # Les deux sont déplaçables
+  DragDropDistance=1.5                     # Distance de snap en unités 3D (augmentée pour couvrir la distance pivot-cible ~1.4)
+  SnapTargets=estrattoresx_original,estrattoredx_original # SYNTAXE SIMPLIFIÉE : tous les objets peuvent utiliser toutes les cibles
+  Utensile=Mani
+
+
+[Next Step - Serrer les vis extractrices]
+HighlightDescription=true
+  DragDrop=false
+CameraPos=(0, 0.37, 0.44)                                   // Position absolue pour test
+  CameraTarget=(0, 0, 0)                                    // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=0.5                                                // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=1.0
+ Descrizione=Serrez la vis de culasse 1 avec la clé Allen
+ Utensile=ChiaveBrugola
+ Elemento=models/vite_culatta_1.glb
+ Azione1=avvita(0.005)
+ DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Les deux se déplacent selon le serrage
+[Next Step - Serrer les vis extractrices 2]
+HighlightDescription=false
+ Descrizione=Serrez la vis de culasse 2 avec la clé Allen
+ Utensile=ChiaveBrugola
+ Elemento=models/vite_culatta_2.glb
+ Azione1=avvita(0.005)
+ DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Les deux se déplacent selon le serrage
+[Next Step - Retirer vite_culatta_2]
+HighlightDescription=false
+Elemento=models/vite_culatta_2.glb
+Descrizione=Retirez la vis utilisée comme extracteur avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+[Next Step - Retirer vite_culatta_1]
+HighlightDescription=false
+Elemento=models/vite_culatta_1.glb
+Descrizione=Retirez la vis utilisée comme extracteur avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=svita(0.1)
+Azione2=appoggia(0.2)
+
+[Next Step - Translation de la bride]
+HighlightDescription=true
+CameraPos=(0, 0.37, 0.44)                                   // Position absolue pour test
+  CameraTarget=(0, 0, 0)                                    // Focus sur le centre de scène légèrement surélevé
+  CameraZoom=1                                               // Zoom léger pour une vue d'ensemble
+  CameraTransitionTime=1.0
+Elemento=models/flangia.glb
+Descrizione=Éloignez la bride avec les Mains. Le tube de graisse se déplace avec elle.
+Utensile=Mani
+SlaveObjects=tubograsso.glb  # Le tube suit avec un mouvement esclave
+Azione1=traslazione:(0,0,0.2,0.5)
+
+[Next Step - Déconnecter le tube de graisse]
+HighlightDescription=true
+Elemento=models/tubograsso.glb
+Descrizione=Déconnectez le tube de graisse de la bride.
+Utensile=Mani
+Azione1=traslazione:( 0,0,-0.2,0.5)
+
+[Next Step - Extraire la bride]
+HighlightDescription=true
+Elemento=models/flangia.glb
+Descrizione=Posez la bride au sol avec les Mains.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(90,0,0,0.5)
+Azione3=appoggia(0.2)
+
+[Next Step - Extraire la palette 1]
+HighlightDescription=true
+Elemento=models/paletta1.glb
+Descrizione=Posez la palette 1 au sol.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,-32,0.5)
+Azione3=traslazione:(-0.5,0,0.2,0.5)
+Azione4=appoggia(0.2)
+[Next Step - Extraire la palette 2]
+HighlightDescription=false
+Elemento=models/paletta2.glb
+Descrizione=Posez la palette 2 au sol.
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,-108,0.5)
+Azione3=traslazione:(-0.7,0,0.2,0.5)
+Azione4=appoggia(0.2)
+Autoaction=true
+[Next Step - Extraire la palette 3]
+HighlightDescription=false
+Elemento=models/paletta3.glb
+Descrizione=Posez la palette 3 au sol.
+Utensile=Mani
+Elemento=models/paletta3.glb
+Descrizione=Posez la palette 3 au sol.
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,0,0.5)
+Azione3=traslazione:(-0.9,0,0.2,0.5)
+Azione4=appoggia(0.2)
+Autoaction=true
+[Next Step - Extraire la palette 4]
+HighlightDescription=false
+Elemento=models/paletta4.glb
+Descrizione=Posez la palette 4 au sol.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,-72,0.5)
+Azione3=traslazione:(-1.1,0,0.2,0.5)
+Azione4=appoggia(0.2)
+Autoaction=true
+[Next Step - Extraire la palette 5]
+HighlightDescription=false
+Elemento=models/paletta5.glb
+Descrizione=Posez la palette 5 au sol.
+Utensile=Mani
+Azione1=traslazione:( 0,0,0.5,0.5)
+Azione2=rotazione:(0,0,32,0.5)
+Azione3=traslazione:(-1.3,0,0.2,0.5)
+Azione4=appoggia(0.2)
+Autoaction=true
+
+
+[Remontage Remplacement Palettes]
+                         // Tutoriel inverse palettes
+// À implémenter : procédure pour le remontage des palettes
+CameraPos=(0.06,0.8, 1.19)
+CameraTarget=(0, 0, 0)
+CameraZoom=1.44
+CameraTransitionTime=2.5
+
+# Positions et Rotations des Modèles - Exportées automatiquement
+# Généré le : 28/10/2025, 09:01:11
+# Syntaxe : Posizione=nomModèle:(x,y,z) et Rotazione=nomModèle:(rx,ry,rz)
+
+
+# Modèle 2 : vite_coperchio_1
+Posizione=vite_coperchio_1:(0.000,0.000,0.000)
+Rotazione=vite_coperchio_1:(0.0,0.0,0.0)
+
+# Modèle 3 : vite_coperchio_3
+Posizione=vite_coperchio_3:(0.000,0.000,0.000)
+Rotazione=vite_coperchio_3:(0.0,0.0,0.0)
+
+# Modèle 4 : vite_coperchio_2
+Posizione=vite_coperchio_2:(0.000,0.000,0.000)
+Rotazione=vite_coperchio_2:(0.0,0.0,0.0)
+
+# Modèle 5 : tappino_grasso_sx
+Posizione=tappino_grasso_sx:(0.000,0.000,0.000)
+Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
+
+# Modèle 6 : ingrassatore
+Posizione=ingrassatore:(0.000,0.000,0.000)
+Rotazione=ingrassatore:(0.0,0.0,0.0)
+
+# Modèle 7 : tappino_grasso_dx
+Posizione=tappino_grasso_dx:(0.000,0.000,0.000)
+Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
+
+# Modèle 8 : vite_coperchio_4
+Posizione=vite_coperchio_4:(0.000,0.000,0.000)
+Rotazione=vite_coperchio_4:(0.0,0.0,0.0)
+
+# Modèle 9 : vite_culatta_3
+Posizione=vite_culatta_3:(-0.100,-0.116,0.300)
+Rotazione=vite_culatta_3:(0.0,0.0,1800.0)
+
+# Modèle 10 : estrattoredx
+Posizione=estrattoredx:(0.000,0.000,0.000)
+Rotazione=estrattoredx:(0.0,0.0,0.0)
+
+# Modèle 11 : vite_culatta_4
+Posizione=vite_culatta_4:(-0.100,-0.116,0.300)
+Rotazione=vite_culatta_4:(0.0,0.0,1800.0)
+
+# Modèle 12 : vite_culatta_1
+Posizione=vite_culatta_1:(0.000,-0.378,0.091)
+Rotazione=vite_culatta_1:(0.0,0.0,0.0)
+
+# Modèle 13 : vite_culatta_2
+Posizione=vite_culatta_2:(0.000,-0.378,0.091)
+Rotazione=vite_culatta_2:(0.0,0.0,0.0)
+
+# Modèle 14 : flangia
+Posizione=flangia:(0.000,0.261,0.493)
+Rotazione=flangia:(90.0,0.0,0.0)
+
+# Modèle 15 : vite_flangia_4
+Posizione=vite_flangia_4:(-0.000,-0.267,0.100)
+Rotazione=vite_flangia_4:(0.0,0.0,1800.0)
+
+# Modèle 16 : vite_flangia_2
+Posizione=vite_flangia_2:(-0.000,-0.321,0.100)
+Rotazione=vite_flangia_2:(0.0,0.0,1800.0)
+
+# Modèle 17 : vite_flangia_5
+Posizione=vite_flangia_5:(-0.100,-0.191,0.100)
+Rotazione=vite_flangia_5:(0.0,0.0,1800.0)
+
+# Modèle 18 : vite_flangia_1
+Posizione=vite_flangia_1:(-0.000,-0.267,0.100)
+Rotazione=vite_flangia_1:(0.0,0.0,1800.0)
+
+# Modèle 19 : vite_flangia_6
+Posizione=vite_flangia_6:(-0.100,-0.137,0.100)
+Rotazione=vite_flangia_6:(0.0,0.0,1800.0)
+
+# Modèle 20 : vite_flangia_8
+Posizione=vite_flangia_8:(-0.100,-0.191,0.100)
+Rotazione=vite_flangia_8:(0.0,0.0,1800.0)
+
+# Modèle 21 : estrattoresx
+Posizione=estrattoresx:(0.000,0.000,0.000)
+Rotazione=estrattoresx:(0.0,0.0,0.0)
+
+# Modèle 22 : vite_flangia_7
+Posizione=vite_flangia_7:(-0.100,-0.137,0.100)
+Rotazione=vite_flangia_7:(0.0,0.0,1800.0)
+
+# Modèle 23 : vite_flangia_3
+Posizione=vite_flangia_3:(-0.000,-0.321,0.100)
+Rotazione=vite_flangia_3:(0.0,0.0,1800.0)
+
+# Modèle 24 : paletta5
+Posizione=paletta5:(-1.188,-0.151,0.700)
+Rotazione=paletta5:(0.0,0.0,32.0)
+
+# Modèle 25 : paletta1
+Posizione=paletta1:(-0.625,-0.156,0.700)
+Rotazione=paletta1:(0.0,0.0,-32.0)
+
+# Modèle 26 : paletta3
+Posizione=paletta3:(-0.900,-0.273,0.700)
+Rotazione=paletta3:(0.0,0.0,0.0)
+
+# Modèle 27 : paletta2
+Posizione=paletta2:(-0.958,0.124,0.700)
+Rotazione=paletta2:(0.0,0.0,-108.0)
+
+# Modèle 28 : filtro
+Posizione=filtro:(0.000,0.000,0.000)
+Rotazione=filtro:(0.0,0.0,0.0)
+
+# Modèle 29 : paletta4
+Posizione=paletta4:(-1.337,-0.082,0.700)
+Rotazione=paletta4:(0.0,0.0,-72.0)
+
+# Modèle 30 : tubograsso
+Posizione=tubograsso:(0.000,0.000,0.010)
+Rotazione=tubograsso:(0.0,0.0,0.0)
+
+# Modèle 31 : culatta
+Posizione=culatta:(0.500,-0.110,0.954)
+Rotazione=culatta:(-90.0,0.0,0.0)
+
+# Modèle 32 : pavimento
+Posizione=pavimento:(0.000,0.000,0.000)
+Rotazione=pavimento:(0.0,0.0,0.0)
+
+# Modèle 33 : coperchio
+Posizione=coperchio:(0.000,0.000,0.000)
+Rotazione=coperchio:(0.0,0.0,0.0)
+
+# Modèle 34 : corpo
+Posizione=corpo:(0.000,0.000,0.000)
+Rotazione=corpo:(0.0,0.0,0.0)
+
+# Tutoriel Remplacement Palettes - Remontage (Inverse)
+# Séquence inverse par rapport au démontage
+# Utilise DragDrop + AssemblyMode pour le positionnement
+# Serrage manuel vis par vis
+
+TutorialSteps=30
+
+[Step 1 - Réinstaller la palette 1]
+HighlightDescription=true
+Descrizione=Prenez la palette 1 et réinstallez-la dans sa position d'origine. La palette sera tournée et positionnée automatiquement.
+Utensile=Mani
+Elemento=models/paletta1.glb
+Rotazione=paletta1:(0.0,0.0,0.0)
+Azione1=traslazione:(0.625,0.156,-0.300,1.2)
+Azione2=traslazione:(0,0,-0.4,1.2)
+
+[Next Step - Réinstaller la palette 2]
+HighlightDescription=false
+CameraPos=(-0.45,0.45,1.3)
+CameraTarget=(-0.7,0.05,0.61)
+CameraRotation=(-0.53,0.31,0.18)
+CameraPivot=(-0.7,0.05,0.61)
+CameraDistance=0.83
+CameraFOV=75
+CameraTransitionTime=1.0
+CameraZoom=1
+Descrizione=Prenez la palette 2 et réinstallez-la dans sa position d'origine. La palette sera tournée et positionnée automatiquement.
+Utensile=Mani
+Elemento=models/paletta2.glb
+Rotazione=paletta2:(0.0,0.0,0.0)
+Azione1=traslazione:(0.958,-0.124,-0.300,1.2)
+Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
+Autoaction=true
+[Next Step - Réinstaller la palette 3]
+HighlightDescription=false
+Descrizione=Prenez la palette 3 et réinstallez-la dans sa position d'origine. La palette sera positionnée automatiquement.
+Utensile=Mani
+Elemento=models/paletta3.glb
+Azione1=traslazione:(0.900,0.273,-0.300,1.2)
+Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
+Autoaction=true
+[Next Step - Réinstaller la palette 4]
+HighlightDescription=false
+Descrizione=Prenez la palette 4 et réinstallez-la dans sa position d'origine. La palette sera tournée et positionnée automatiquement.
+Utensile=Mani
+Elemento=models/paletta4.glb
+Rotazione=paletta4:(0.0,0.0,0.0)
+Azione1=traslazione:(1.337,0.082,-0.300,1.2)
+Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
+Autoaction=true
+[Next Step - Réinstaller la palette 5]
+HighlightDescription=false
+Descrizione=Prenez la palette 5 et réinstallez-la dans sa position d'origine. La palette sera tournée et positionnée automatiquement.
+Utensile=Mani
+Elemento=models/paletta5.glb
+Rotazione=paletta5:(0.0,0.0,0.0)
+Azione1=traslazione:(1.188,0.151,-0.300,1.2)
+Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
+Autoaction=true
+[Next Step - Positionner la bride]
+HighlightDescription=false
+Descrizione=Faites glisser la bride et positionnez-la au-dessus de son logement (elle s'enclenche automatiquement quand elle est soulevée de 0.3m).
+Utensile=Mani
+CameraPos=(0, 0.45, 0.89)
+CameraTarget=(0, 0, 0)
+CameraZoom=1.2
+CameraTransitionTime=1.5
+DragDrop=true
+DragDropObjects=flangia
+SnapPointPivot=(0.000,0.0,0.3)
+DragDropDistance=0.3
+ShowSnapIndicators=false
+
+[Next Step - Abaisser la bride]
+HighlightDescription=true
+Descrizione=La bride va maintenant être déplacée automatiquement vers sa position finale.
+Utensile=Mani
+Elemento=models/flangia.glb
+Azione1=traslazione:(0.0,0.0,-0.3,0.8)
+
+
+
+
+[Next Step - Positionner la vis de bride 1]
+HighlightDescription=true
+Descrizione=Positionnez la première vis de bride dans son logement.
+Utensile=Mani
+CameraPos=(0.01,0.45,0.65)
+CameraTarget=(0,0.15,0.19)
+CameraPivot=(0,0.15,0.19)
+CameraDistance=0.5
+CameraFOV=60
+CameraTransitionTime=1.0
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_1
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+
+[Next Step - Positionner la vis de bride 2]
+HighlightDescription=false
+Descrizione=Positionnez la deuxième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_2
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Positionner la vis de bride 3]
+HighlightDescription=false
+Descrizione=Positionnez la troisième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_3
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Positionner la vis de bride 4]
+HighlightDescription=false
+Descrizione=Positionnez la quatrième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_4
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Positionner la vis de bride 5]
+HighlightDescription=false
+Descrizione=Positionnez la cinquième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_5
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Positionner la vis de bride 6]
+HighlightDescription=false
+Descrizione=Positionnez la sixième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_6
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Positionner la vis de bride 7]
+HighlightDescription=false
+Descrizione=Positionnez la septième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_7
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+[Next Step - Positionner la vis de bride 8]
+HighlightDescription=false
+Descrizione=Positionnez la huitième vis de bride dans son logement.
+Utensile=Mani
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_flangia_8
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+Autoaction=true
+
+[Next Step - Serrer la vis de bride 1]
+HighlightDescription=true
+Elemento=models/vite_flangia_1.glb
+Descrizione=Serrez la première vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+
+[Next Step - Serrer la vis de bride 2]
+HighlightDescription=false
+Elemento=models/vite_flangia_2.glb
+Descrizione=Serrez la deuxième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de bride 3]
+HighlightDescription=false
+Elemento=models/vite_flangia_3.glb
+Descrizione=Serrez la troisième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de bride 4]
+HighlightDescription=false
+Elemento=models/vite_flangia_4.glb
+Descrizione=Serrez la quatrième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de bride 5]
+HighlightDescription=false
+Elemento=models/vite_flangia_5.glb
+Descrizione=Serrez la cinquième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de bride 6]
+HighlightDescription=false
+Elemento=models/vite_flangia_6.glb
+Descrizione=Serrez la sixième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de bride 7]
+HighlightDescription=false
+Elemento=models/vite_flangia_7.glb
+Descrizione=Serrez la septième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de bride 8]
+HighlightDescription=false
+Elemento=models/vite_flangia_8.glb
+Descrizione=Serrez la huitième vis de bride avec la clé plate 10mm.
+Utensile=ChiaveInglese
+Azione1=avvita(0.02)
+Autoaction=true
+
+[Next Step - Reconnecter le tube de graisse]
+HighlightDescription=false
+Descrizione=Connectez le tube de graisse à la bride. La bride doit déjà être installée.
+Utensile=Mani
+
+# Suite du montage séquentiel - tube de graisse
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=tubograsso
+DragDropDistance=0.3
+ShowSnapIndicators=false
+
+[Next Step - Réinstaller la culasse]
+HighlightDescription=true
+CameraPos=(-0.35,0.42,0.92)
+CameraTarget=(0.3,0.12,0.1)
+CameraRotation=(-0.35,-0.64,-0.22)
+CameraPivot=(0.3,0.12,0.1)
+CameraDistance=1.08
+CameraFOV=75
+CameraTransitionTime=1.0
+Descrizione=Positionnez la culasse du cylindre sur le corps de la pompe. Toutes les vis de bride doivent avoir été serrées.
+Utensile=Mani
+
+# Suite du montage séquentiel - culasse du cylindre
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=culatta
+DragDropDistance=0.3
+ShowSnapIndicators=false
+
+
+[Next Step - Positionner les longues vis de culasse]
+HighlightDescription=true
+Descrizione=Positionnez les 2 longues vis de culasse dans leurs logements dans n'importe quel ordre. Les vis ne sont pas encore serrées.
+Utensile=Mani
+
+# Nœud interchangeable - ordre libre pour positionner 2 longues vis de culasse
+
+
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_culatta_1,vite_culatta_2
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+
+[Next Step - Positionner les courtes vis de culasse]
+HighlightDescription=true
+Descrizione=Positionnez les 2 courtes vis de culasse dans leurs logements dans n'importe quel ordre. Les vis ne sont pas encore serrées.
+Utensile=Mani
+
+# Nœud interchangeable - ordre libre pour positionner 2 courtes vis de culasse
+
+
+DragDrop=true
+AssemblyMode=true
+AllowedComponents=vite_culatta_3,vite_culatta_4
+DragDropDistance=1.5
+ShowSnapIndicators=false
+SnapOffset=(0,0,0.02)
+
+[Next Step - Serrer la vis de culasse 1]
+HighlightDescription=true
+Elemento=models/vite_culatta_1.glb
+Descrizione=Serrez la première vis de culasse avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+
+[Next Step - Serrer la vis de culasse 2]
+HighlightDescription=false
+Elemento=models/vite_culatta_2.glb
+Descrizione=Serrez la deuxième vis de culasse avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de culasse 3]
+HighlightDescription=false
+Elemento=models/vite_culatta_3.glb
+Descrizione=Serrez la troisième vis de culasse avec la clé Allen 6mm.
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+Autoaction=true
+[Next Step - Serrer la vis de culasse 4]
+HighlightDescription=false
+Elemento=models/vite_culatta_4.glb
+Descrizione=Serrez la quatrième vis de culasse avec la clé Allen 6mm. Ceci complète le remontage de la pompe.
+Utensile=ChiaveBrugola
+Azione1=avvita(0.02)
+ValidateAssembly=true
+Autoaction=true

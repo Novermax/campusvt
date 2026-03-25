@@ -3614,6 +3614,9 @@ window.UI = {
         console.log(`[DEBUG] 🚀 Step properties:`, step.properties);
         AppConfig.log(2, `Esecuzione step: ${step.title}`, step.properties);
 
+        // Cattura l'indice corrente per rilevare navigazione concorrente durante await
+        const expectedStepIndex = this.currentStepIndex;
+
         // ═══════════════════════════════════════════════════════════════
         // AUTOACTION: Flag locale per esecuzione automatica completa
         // NOTA: NON mutare step.properties per evitare effetti collaterali
@@ -3736,6 +3739,13 @@ window.UI = {
             await this.showInfoModal(step.properties.Message, messageTitle, mediaOptions);
             console.log(`[DEBUG] ✅ MODAL: Modal chiuso per step "${step.title}" - proseguo con esecuzione`);
             AppConfig.log(2, `[UI] Modal informativo chiuso`);
+
+            // GUARD: controlla se la navigazione è cambiata mentre il modal era aperto
+            // (es. l'utente ha cliccato → durante la visualizzazione del video)
+            if (this.currentStepIndex !== expectedStepIndex) {
+                console.warn(`[UI] ⚠️ Step cambiato durante modal (era ${expectedStepIndex}, ora ${this.currentStepIndex}) - interruzione executeStep per "${step.title}"`);
+                return;
+            }
 
             // Controlla se questo step ha SOLO il messaggio (nessuna altra azione)
             const hasOnlyMessage = !step.properties.Elemento &&
@@ -4600,10 +4610,26 @@ window.UI = {
                         const obj = window.Scene3D.findModelByName(cleanName);
                         if (obj) {
                             let targetMesh = null;
-                            obj.traverse(child => { if (child.isMesh && !targetMesh) targetMesh = child; });
+                            const targetChild = step.properties.TargetChild;
+                            if (targetChild) {
+                                // Se TargetChild specificato, usa quella mesh specifica
+                                obj.traverse(child => {
+                                    if (!targetMesh && child.name === targetChild && child.isMesh) targetMesh = child;
+                                });
+                                // Fallback: prima mesh figlia del child trovato (anche se non è Mesh diretta)
+                                if (!targetMesh) {
+                                    let childNode = null;
+                                    obj.traverse(child => { if (!childNode && child.name === targetChild) childNode = child; });
+                                    if (childNode) childNode.traverse(child => { if (!targetMesh && child.isMesh) targetMesh = child; });
+                                }
+                            }
+                            if (!targetMesh) {
+                                // Nessun TargetChild o non trovato: usa prima mesh del modello
+                                obj.traverse(child => { if (child.isMesh && !targetMesh) targetMesh = child; });
+                            }
                             if (targetMesh) {
                                 window.Scene3D.highlightCircleManager.createCircle(`elemento_${cleanName}`, targetMesh, 60, 0.7);
-                                console.log(`[UI] 🟡 Cerchio selezione creato per Elemento "${cleanName}"`);
+                                console.log(`[UI] 🟡 Cerchio selezione creato per Elemento "${cleanName}"${targetChild ? ` (TargetChild: ${targetChild})` : ''}`);
                             }
                         }
                     }
@@ -5118,7 +5144,7 @@ window.UI = {
             if (currentStep.properties.Descrizione) {
                 stepDescription.textContent = currentStep.properties.Descrizione;
             } else {
-                stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
+                stepDescription.textContent = currentStep?.name || `Step ${this.currentStepIndex + 1}`;
             }
 
             content.classList.remove('entering');
@@ -5150,7 +5176,7 @@ window.UI = {
             if (currentStep && currentStep.properties && currentStep.properties.Descrizione) {
                 stepDescription.textContent = currentStep.properties.Descrizione;
             } else {
-                stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
+                stepDescription.textContent = currentStep?.name || `Step ${this.currentStepIndex + 1}`;
             }
             this.showStepSpeechBubble();
             // Attende un frame per applicare lo stato "entering", poi rimuove per animare l'ingresso
@@ -5171,7 +5197,7 @@ window.UI = {
                 if (currentStep && currentStep.properties && currentStep.properties.Descrizione) {
                     stepDescription.textContent = currentStep.properties.Descrizione;
                 } else {
-                    stepDescription.textContent = `Step ${this.currentStepIndex + 1} - ${currentStep?.name || 'Senza descrizione'}`;
+                    stepDescription.textContent = currentStep?.name || `Step ${this.currentStepIndex + 1}`;
                 }
                 // Fade-in con nuovo contenuto
                 requestAnimationFrame(() => {
@@ -5208,6 +5234,9 @@ window.UI = {
             this._infoModalResolve = resolve;
             this._infoModalCloseHandler = null;
 
+            // Resetta inline style eventualmente impostato da goHome()
+            modal.style.display = '';
+
             // Imposta contenuto testuale
             titleElement.textContent = title;
             // Supporta \n come a capo nel messaggio
@@ -5238,16 +5267,15 @@ window.UI = {
                 const video = document.createElement('video');
                 video.src = options.video;
                 video.controls = true;
-                video.preload = 'metadata';
+                video.autoplay = true;
+                video.preload = 'auto';
                 video.onerror = () => {
                     AppConfig.log(1, `[UI] Errore caricamento video: ${options.video}`);
                     mediaContainer.classList.add('hidden');
                 };
-                video.onloadedmetadata = () => {
-                    mediaContainer.classList.remove('hidden');
-                    AppConfig.log(2, `[UI] Video caricato: ${options.video}`);
-                };
                 mediaContainer.appendChild(video);
+                mediaContainer.classList.remove('hidden');
+                AppConfig.log(2, `[UI] Video aggiunto: ${options.video}`);
             }
 
             // Handler per chiusura

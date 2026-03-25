@@ -291,13 +291,27 @@ window.DragDropSystem = {
             this.detectDraggableObjects();
         }
         
-        // Controlla se le posizioni originali sono già state memorizzate
-        // (dovrebbero essere state salvate dopo il caricamento modelli)
+        // Salva posizioni originali di TUTTI i modelli caricati (non solo i draggable)
+        // così i riferimenti _original (es. estrattoresx_original) funzionano correttamente
+        // anche quando l'oggetto referenziato non è nella whitelist draggable
+        const allModels = window.Scene3D?.loadedModels || [];
         if (this.originalPositions.size === 0) {
-            console.log('[DragDropSystem] ⚠️ Posizioni originali non trovate, salvataggio di backup');
+            console.log('[DragDropSystem] ⚠️ Posizioni originali non trovate, salvataggio di backup per tutti i modelli');
+            const prevDraggable = this.draggableObjects;
+            this.draggableObjects = allModels;
             this.storeOriginalPositions();
+            this.draggableObjects = prevDraggable;
         } else {
-            console.log(`[DragDropSystem] ✅ Posizioni originali già memorizzate (${this.originalPositions.size} oggetti)`);
+            // Aggiungi eventuali modelli mancanti (caricati dopo il primo salvataggio)
+            allModels.forEach(obj => {
+                if (!this.originalPositions.has(obj.uuid)) {
+                    const boundingBox = new THREE.Box3().setFromObject(obj);
+                    const center = boundingBox.getCenter(new THREE.Vector3());
+                    this.originalPositions.set(obj.uuid, center.clone());
+                    console.log(`[DragDropSystem] 📍 Aggiunta posizione originale mancante: ${obj.name}`);
+                }
+            });
+            console.log(`[DragDropSystem] ✅ Posizioni originali verificate (${this.originalPositions.size} oggetti)`);
         }
         
         // DISABILITATO: Non creiamo più indicatori snap (sfere verdi)
