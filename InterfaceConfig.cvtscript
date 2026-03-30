@@ -7,7 +7,7 @@
 [ResetCameraButton]
 # Posizione del pulsante di reset vista camera
 # Valori: top-right | top-left | top-center | bottom-right | bottom-left | bottom-center
-Position=bottom-right
+Position=bottom-left
 
 [CameraControls]
 # Inverti la direzione verticale della rotazione camera (su/giu)

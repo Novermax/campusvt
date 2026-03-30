@@ -129,13 +129,6 @@ CameraTransitionTime=2.0
 [Step 1 - Go to the MDI screen]
 HighlightDescription=true
 Descrizione=Press the MDI button on the control panel to access the manual control mode.
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Trigger: click on the modified MDI button
 ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
@@ -145,13 +138,6 @@ AutoAdvance=true
 [Next Step - Unload the tool]
 HighlightDescription=true
 Descrizione=Press the on-screen button to unload tool T=1000.
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Trigger: click on the Tool button
 ActiveButtons=Pulsante_tool
 AcceptTrigger_Physical=pulpito.Pulsante_tool
@@ -267,13 +253,6 @@ AutoAdvance=true
 [Next Step - electrospindle button]
 HighlightDescription=true
 Descrizione=Press the on-screen button to select the electrospindle
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
 # Trigger: click on the Tool button
 ActiveButtons=Pulsante_electrospindle
 AcceptTrigger_Physical=pulpito.Pulsante_electrospindle
@@ -286,13 +265,6 @@ AutoAdvance=true
 [Next Step - unlock enable]
 HighlightDescription=true
 Descrizione=Press the on-screen button to enable the unlocking of the electrospindle collet
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
 # Trigger: click on the Tool button
 ActiveButtons=Pulsante_LU
 AcceptTrigger_Physical=pulpito.Pulsante_LU
@@ -444,13 +416,6 @@ OnPhysicalTrigger=setVariant:chiave=chiave0
 HighlightDescription=true
 Descrizione=Press the power button to restart the machine.
 Utensile=Mani
-CameraPos=(0.94, 1.29, 4.07)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.25, -0.04, -0.01)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.56
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Trigger: click on the start button (only pstart0 because it is the one visible after turning the key)
 ActiveButtons=pstart0
 AcceptTrigger_Physical=pulpito.pstart0

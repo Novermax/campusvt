@@ -129,13 +129,6 @@ CameraTransitionTime=2.0
 [Step 1 - Vai alla schermata MDI]
 HighlightDescription=true
 Descrizione=Premi il pulsante MDI sul pulpito per accedere alla modalità di controllo manuale.
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Trigger: click sul pulsante MDI modificato
 ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
@@ -145,13 +138,6 @@ AutoAdvance=true
 [Next Step - Scarica l'utensile]
 HighlightDescription=true
 Descrizione=Premi il pulsante a video per eseguire lo scarico dell'utensile T=1000.
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_tool
 AcceptTrigger_Physical=pulpito.Pulsante_tool
@@ -267,13 +253,6 @@ AutoAdvance=true
 [Next Step - pulsante elettromandrino]
 HighlightDescription=true
 Descrizione=Premi il pulsante a video per selezionare l'elettromandrino
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_electrospindle
 AcceptTrigger_Physical=pulpito.Pulsante_electrospindle
@@ -286,13 +265,6 @@ AutoAdvance=true
 [Next Step - abilitazione sblocco]
 HighlightDescription=true
 Descrizione=Premi il pulsante a video per abilitare lo sblocco della pinza dell'elettromandrino
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_LU
 AcceptTrigger_Physical=pulpito.Pulsante_LU
@@ -444,13 +416,6 @@ OnPhysicalTrigger=setVariant:chiave=chiave0
 HighlightDescription=true
 Descrizione=Premi il pulsante di accensione per riaccendere la macchina.
 Utensile=Mani
-CameraPos=(0.94, 1.29, 4.07)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.25, -0.04, -0.01)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.56
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Trigger: click sul pulsante di start (solo pstart0 perché è quello visibile dopo aver girato la chiave)
 ActiveButtons=pstart0
 AcceptTrigger_Physical=pulpito.pstart0

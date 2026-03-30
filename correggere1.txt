@@ -1,0 +1,76 @@
+Contesto
+
+Scenario: pompa_becker
+Tutorial coinvolti:
+
+Pulizia filtri e ingrassaggio
+Riassemblaggio
+Problemi e correzioni richieste
+1) Tutorial: Pulizia filtri e ingrassaggio
+Step 8–9 (rimozione tappi con doppio click)
+
+Problema
+
+La telecamera è troppo distante durante l’interazione.
+
+Correzione richiesta
+
+Forzare uno zoom/posizionamento ravvicinato della camera sugli elementi interattivi (tappi).
+Il framing deve garantire:
+oggetti centrati
+distanza tale da facilitare il doppio click
+Suggerito:
+reset camera → focus target → zoom predefinito per micro-interazioni
+Step 11–12 (animazione oscillazione)
+
+Problema
+
+L’animazione prevista non viene eseguita.
+
+Correzione richiesta
+
+Verificare trigger/associazione animazione → step
+Sostituire il concetto di:
+oscillazione
+con:
+ripetizione (loop controllato o azione iterativa)
+
+Nota tecnica
+
+Se l’animazione è event-driven:
+verificare binding evento → clip
+Se è timeline:
+verificare autoplay o trigger manuale
+2) Tutorial: Riassemblaggio
+Step 1 (posizione camera)
+
+Problema
+
+La camera mantiene lo stato finale del tutorial precedente.
+
+Correzione richiesta
+
+A ogni inizio tutorial:
+reset completo della camera (posizione + target + zoom)
+
+Definire uno stato iniziale esplicito:
+
+OnTutorialStart:
+    Camera.Reset()
+    Camera.SetPosition(default_position)
+    Camera.LookAt(main_object_center)
+    Camera.SetZoom(default_zoom)
+Step 1 (gestione tappini)
+
+Problema
+
+Solo uno dei due tappini viene considerato correttamente.
+Il secondo risulta non interagibile (bloccato).
+Attualmente è possibile usare uno qualsiasi → comportamento ambiguo.
+
+Correzione richiesta
+
+Rimuovere la libertà di scelta tra i due tappini.
+Rendere la sequenza deterministica
+Approccio consigliato
+Step separati per ogni tappino

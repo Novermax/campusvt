@@ -84,7 +84,11 @@ Azione1=estrai                         # Traslazione lungo direction (default 0.
 Azione1=estrai(0.6)
 Azione1=inserisci                      # Inverso di estrai (default 0.4)
 Azione1=inserisci(0.6)
-Azione2=...                            # Fino a Azione9
+Azione1=oscillazione:ref,(posAx,posAy,posAz,posBx,posBy,posBz,cicli,durata_ciclo)
+                                       # Movimento oscillante ripetitivo (es. pompaggio)
+                                       # Genera N cicli di traslazione alternata tra posA e posB
+                                       # ref = riferimento posizione (es. tappino_grasso_dx_original)
+Azione2=...                            # Fino a AzioneN (senza limite)
 ```
 
 > La direzione di svita/estrai viene letta da `home_config.cvtscript` → sezione del modello → `direction=x,y,z`
@@ -96,10 +100,15 @@ CameraPos=(x,y,z)
 CameraTarget=nome_oggetto       # Punta al centro del bounding box
 CameraPivot=(x,y,z)
 CameraRotation=(rx,ry,rz)
-CameraDistance=1.5
+CameraDistance=1.5               # Distanza assoluta dal target (ricalcola posizione)
+CameraZoom=1.2                   # Distanza dal pivot (interpola senza richiedere CameraPos)
 CameraFOV=75
 CameraTransitionTime=1.2        # Durata transizione camera (secondi)
 ```
+
+> **Ereditarietà camera**: gli step ereditano le proprietà camera dalla sezione tutorial o dallo step precedente. Specificare camera nello step solo se cambia rispetto al contesto precedente. Questo elimina la necessità di copiare le stesse righe camera in ogni step consecutivo.
+>
+> **CameraDistance vs CameraZoom**: sono diversi. `CameraDistance` ricalcola `targetPosition` lungo la direzione CameraPos→CameraTarget alla distanza esatta. `CameraZoom` interpola la distanza dal pivot senza richiedere CameraPos/CameraTarget. Usare `CameraDistance` quando si specificano CameraPos+CameraTarget, `CameraZoom` quando si vuole solo cambiare la distanza mantenendo l'angolazione corrente.
 
 #### Posizionamento modelli
 
@@ -112,13 +121,17 @@ Rotazione=modello:(rx,ry,rz)    # Ruota modello (gradi)
 
 ```ini
 DragDrop=true
-DragDropObjects=obj1,obj2
+DragDropObjects=obj1,obj2       # Oggetti trascinabili (sostituisce AllowedComponents)
 DragDropDistance=0.3            # Soglia snap
 
 # Snap a coordinate fisse (globale: tutti gli oggetti usano tutti i punti)
 SnapPoint=(0.5,0.2,0.3),(-0.1,0,0.5)
 # Snap per-oggetto (formato vecchio, con :)
 SnapPoint=filtro:(0.5,0.2,0.3);vite:(-0.1,0,0.5)
+# Snap usando pivot point (invece del centro bounding box)
+SnapPoint=pivot:(0.5,0.2,0.3)
+# Snap a posizione originale + offset
+SnapPoint=offset:(0,0,0.02)
 
 # Snap a posizioni originali di altri oggetti (globale)
 SnapTargets=estrattoresx_original,estrattoredx_original
@@ -129,18 +142,24 @@ ShowSnapIndicators=false        # Nascondi sfere verdi snap (default: false)
 ```
 
 > `modello_original` è un riferimento virtuale alla posizione iniziale di caricamento del modello.
+>
+> **Comandi deprecati** (ancora supportati per retrocompatibilità): `AssemblyMode=true`, `AllowedComponents=` (usare `DragDropObjects=`), `ValidateAssembly=true`, `SnapPointPivot=` (usare `SnapPoint=pivot:`), `SnapOffset=` (usare `SnapPoint=offset:`).
 
 #### DrivenObjects — movimenti secondari paralleli
 
 ```ini
-# Singolo oggetto driven (si muove in parallelo al master, durata/direzione indipendenti)
-DrivenObject=tubo.glb,traslazione:(x,y,z,durata)
+# Oggetto con azione propria (si muove in parallelo al master)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.1,0.5)
+
+# Oggetto slave (segue rigidamente il master 1:1)
+DrivenObjects=tubograsso.glb,follow
 
 # Multipli (separati da ;)
-DrivenObjects=flangia.glb,traslazione:(0,0,0.1,0.5);tubo.glb,traslazione:(0,0,0.05,0.5)
+DrivenObjects=flangia.glb,traslazione:(0,0,0.1,0.5);tubo.glb,follow
 ```
 
 > Solo il master controlla l'avanzamento step. I driven non bloccano il tutorial.
+> **Comando deprecato**: `SlaveObjects=` (usare `DrivenObjects=xxx,follow`).
 
 #### AutoExecute / AutoSetVariant / Autoaction
 
@@ -446,3 +465,7 @@ TouchSystem.setEnabled(false)
 **Camera reset step**: il pulsante reset camera memorizza la posizione DOPO che l'animazione di highlight è completata. Il delay è dinamico: `CameraTransitionTime * 1000 + 300ms`. Vedere `js/ui.js` metodo `saveStepCameraState()`.
 
 **SnapTargets globale vs per-oggetto**: sistema auto-rileva il formato. Presenza di `:` nel valore = formato vecchio per-oggetto. Assenza = formato nuovo globale (tutti gli oggetti usano tutti i target).
+
+**Ereditarietà camera**: il parser (`TutorialManager.js`) applica ereditarietà automatica delle proprietà camera. Le proprietà camera definite nella sezione tutorial vengono ereditate da tutti gli step. Ogni step può sovrascrivere singole proprietà camera. Se uno step non specifica camera, eredita tutto dal contesto precedente (sezione o step precedente). Proprietà ereditabili: CameraPos, CameraTarget, CameraRotation, CameraPivot, CameraDistance, CameraFOV, CameraTransitionTime, CameraZoom.
+
+**Oscillazione**: il comando `oscillazione:ref,(posAx,posAy,posAz,posBx,posBy,posBz,cicli,durata_ciclo)` viene espanso dal `MovementParser` in N coppie di traslazione alternata (posA→posB). L'AnimationSystem lo esegue come step multipli normali.

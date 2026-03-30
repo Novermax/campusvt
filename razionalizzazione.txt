@@ -1,0 +1,646 @@
+leggi il file @CLAUDE.md per capire che tipo di progetto è questo. individua i vari file  
+tutorial (cvtscript), che sono funzionanti. voglio razionalizzare il più possibile i        
+comandi che sono presenti all'interno di qesti files. Quindi devi fare una analisi molto    
+approfondita per capire cosa fanno tutti i comandi, e provare a semplificarli al massimo    
+per evitare doppioni o cose simili (trigger, azioni). comincia facendo una lista dei        
+comandi che trovi nei files tutorial.cvtscript. cerca di capire come funzionano e 
+razlionalizza il loro comportamento. lo scopo di tutto questo è rendere il più possibile    
+facile la creazione degli script (quindi las memorizzazione dei comandi) per poter fare in  
+modo da rendere facile per un essere umano implementare nuovi tutorial. il secondo task è   
+quello di creare un editor di tutorial in che ha due finistre , una a sinistra che contiene 
+ il codice cvtscript, e una a destra che contiene il risultato 3d  in tempo reale degli     
+effetti dei comendi appena scritti nello script .cvtscript.
+  ⎿  Read CLAUDE.md (449 lines)
+
+● Partiamo dall'analisi. Prima trovo tutti i file tutorial e ne analizzo il contenuto.      
+
+  Searched for 3 patterns, read 3 files (ctrl+o to expand)
+
+● Ora leggo il tutorial Pompa_Becker (più lungo) in sezioni.
+
+  Read 1 file (ctrl+o to expand)
+
+● Ora ho letto tutti i file. Ecco la mia analisi completa.
+
+  ---
+  Analisi Comandi Tutorial .cvtscript
+
+  Tutti i comandi trovati nei tutorial esistenti
+
+  Li organizzo per categoria funzionale:
+
+  ---
+  1. STRUTTURA / INTESTAZIONE
+
+  ┌──────────────────────┬─────────────────────────────────────────┬──────────────┐
+  │       Comando        │                   Uso                   │ Dove trovato │
+  ├──────────────────────┼─────────────────────────────────────────┼──────────────┤
+  │ [NomeTutorial]       │ Sezione tutorial (macro-gruppo di step) │ Entrambi     │
+  ├──────────────────────┼─────────────────────────────────────────┼──────────────┤
+  │ [Step N - Titolo]    │ Primo step di una sezione               │ Entrambi     │
+  ├──────────────────────┼─────────────────────────────────────────┼──────────────┤
+  │ [Next Step - Titolo] │ Step successivi                         │ Entrambi     │
+  └──────────────────────┴─────────────────────────────────────────┴──────────────┘
+
+  2. CAMERA (6 proprietà + ridondanza)
+
+  ┌───────────────────────────────────────────┬─────────────────────────────────────────┐   
+  │                  Comando                  │                   Uso                   │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraPos=(x,y,z)                         │ Posizione camera                        │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraTarget=(x,y,z) oppure               │ Punto di mira                           │   
+  │ CameraTarget=nome_oggetto                 │                                         │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraRotation=(rx,ry,rz)                 │ Rotazione camera                        │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraPivot=(x,y,z)                       │ Pivot orbita                            │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraDistance=N                          │ Distanza dal pivot                      │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraFOV=N                               │ Field of view                           │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraTransitionTime=N                    │ Durata transizione (secondi)            │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraZoom=N                              │ Alternativa a CameraDistance (usato     │   
+  │                                           │ solo in Pompa_Becker)                   │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraUnlocked=true                       │ Sblocca rotazione libera                │   
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┤   
+  │ CameraLimits=(min,max)                    │ Limiti rotazione                        │   
+  └───────────────────────────────────────────┴─────────────────────────────────────────┘   
+
+  Problema: CameraZoom e CameraDistance fanno la stessa cosa.
+  CameraPos+CameraRotation+CameraPivot+CameraDistance sono tutti ripetuti identici in molti 
+  step consecutivi (copia-incolla massivo).
+
+  3. ELEMENTO E UTENSILE
+
+  ┌──────────────────────────────────────────────────────┬───────────────────────────┐      
+  │                       Comando                        │            Uso            │      
+  ├──────────────────────────────────────────────────────┼───────────────────────────┤      
+  │ Elemento=models/xxx.glb                              │ Modello target            │      
+  ├──────────────────────────────────────────────────────┼───────────────────────────┤      
+  │ TargetChild=NomeChild                                │ Nodo figlio dentro il GLB │      
+  ├──────────────────────────────────────────────────────┼───────────────────────────┤      
+  │ Utensile=Mani|Aria|Spray|ChiaveBrugola|ChiaveInglese │ Strumento richiesto       │      
+  ├──────────────────────────────────────────────────────┼───────────────────────────┤      
+  │ Descrizione=Testo                                    │ Testo fumetto             │      
+  ├──────────────────────────────────────────────────────┼───────────────────────────┤      
+  │ HighlightDescription=true|false                      │ Evidenzia fumetto         │      
+  └──────────────────────────────────────────────────────┴───────────────────────────┘      
+
+  4. AZIONI ANIMATE (Azione1..AzioneN)
+
+  ┌────────────────────────────────────────────┬─────────────────────────────────────────┐  
+  │                   Azione                   │               Significato               │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ traslazione:(x,y,z,durata)                 │ Sposta                                  │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ traslazione:ref_original,(x,y,z,durata)    │ Sposta verso posizione di riferimento   │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ rotazione:(rx,ry,rz,durata)                │ Ruota (gradi)                           │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ centro:(x,y,z);rotazione:(rx,ry,rz,durata) │ Cambia pivot + ruota                    │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ svita / svita(dist)                        │ Rotazione + traslazione lungo direction │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ avvita / avvita(dist)                      │ Inverso di svita                        │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ estrai / estrai(dist)                      │ Solo traslazione lungo direction        │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ inserisci / inserisci(dist)                │ Inverso di estrai                       │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ appoggia(durata)                           │ Posa a Y=0                              │  
+  ├────────────────────────────────────────────┼─────────────────────────────────────────┤  
+  │ resetCenteredOriginal                      │ Reset posizioni centrate                │  
+  └────────────────────────────────────────────┴─────────────────────────────────────────┘  
+
+  Problema critico: L'ingrassatore in Pompa_Becker usa Azione1..Azione22 per simulare un    
+  pompaggio ripetitivo (20+ micro-traslazioni alternate). Questo potrebbe essere un singolo 
+  comando tipo pompa(10, ampiezza, durata).
+
+  5. AUTOMAZIONE
+
+  ┌────────────────────────────────┬────────────────────────────────────────┐
+  │            Comando             │              Significato               │
+  ├────────────────────────────────┼────────────────────────────────────────┤
+  │ AutoExecute=true               │ Esegui animazione senza click          │
+  ├────────────────────────────────┼────────────────────────────────────────┤
+  │ AutoAdvance=true               │ Avanza automaticamente                 │
+  ├────────────────────────────────┼────────────────────────────────────────┤
+  │ Autoaction=true                │ AutoExecute + AutoAdvance + auto-equip │
+  ├────────────────────────────────┼────────────────────────────────────────┤
+  │ AutoSetVariant=gruppo=variante │ Cambia variant automaticamente         │
+  └────────────────────────────────┴────────────────────────────────────────┘
+
+  Ridondanza: Autoaction=true equivale a AutoExecute=true + AutoAdvance=true + auto-equip.  
+  Potrebbe bastare un solo comando.
+
+  6. TRIGGER / PULSANTI INTERATTIVI
+
+  ┌───────────────────────────────────────┬────────────────────────────┐
+  │                Comando                │        Significato         │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ AcceptTrigger_Physical=modello.mesh   │ Pulsante 3D come trigger   │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ AcceptTrigger_Screen=pannello.hotspot │ Hotspot schermo            │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ AcceptTrigger_Holdable=oggetto.use    │ Oggetto in mano            │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ OnPhysicalTrigger=setVariant:g=v      │ Azione al trigger fisico   │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ OnScreenTrigger=Animation:...         │ Azione al trigger schermo  │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ OnAnyTrigger=Sound:file.mp3           │ Azione a qualsiasi trigger │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ OnPhysicalTrigger_SetView=mod.vista   │ Cambia vista dopo trigger  │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ ActiveButtons=btn1,btn2               │ Pulsanti attivi nello step │
+  ├───────────────────────────────────────┼────────────────────────────┤
+  │ HighlightOpacity=0.5                  │ Intensità evidenziazione   │
+  └───────────────────────────────────────┴────────────────────────────┘
+
+  7. DRAG & DROP / ASSEMBLAGGIO
+
+  ┌───────────────────────────┬────────────────────────────┐
+  │          Comando          │        Significato         │
+  ├───────────────────────────┼────────────────────────────┤
+  │ DragDrop=true|false       │ Abilita drag&drop          │
+  ├───────────────────────────┼────────────────────────────┤
+  │ DragDropObjects=obj1,obj2 │ Oggetti trascinabili       │
+  ├───────────────────────────┼────────────────────────────┤
+  │ DragDropDistance=N        │ Soglia snap                │
+  ├───────────────────────────┼────────────────────────────┤
+  │ SnapPoint=(x,y,z),...     │ Punti snap fissi           │
+  ├───────────────────────────┼────────────────────────────┤
+  │ SnapTargets=ref1,ref2     │ Snap a posizioni originali │
+  ├───────────────────────────┼────────────────────────────┤
+  │ ShowSnapIndicators=false  │ Mostra/nascondi indicatori │
+  ├───────────────────────────┼────────────────────────────┤
+  │ AssemblyMode=true         │ Modalità assemblaggio      │
+  ├───────────────────────────┼────────────────────────────┤
+  │ AllowedComponents=a,b,c   │ Componenti consentiti      │
+  ├───────────────────────────┼────────────────────────────┤
+  │ ValidateAssembly=true     │ Validazione assemblaggio   │
+  └───────────────────────────┴────────────────────────────┘
+
+  Ridondanza: DragDropObjects e AllowedComponents sono quasi la stessa cosa. AssemblyMode   
+  sembra solo un flag che abilita AllowedComponents.
+
+  8. OGGETTI SECONDARI
+
+  ┌─────────────────────────────┬──────────────────────────────────────────────────┐        
+  │           Comando           │                   Significato                    │        
+  ├─────────────────────────────┼──────────────────────────────────────────────────┤        
+  │ DrivenObject=model,azione   │ Oggetto slave singolo                            │        
+  ├─────────────────────────────┼──────────────────────────────────────────────────┤        
+  │ DrivenObjects=m1,az1;m2,az2 │ Oggetti slave multipli                           │        
+  ├─────────────────────────────┼──────────────────────────────────────────────────┤        
+  │ SlaveObjects=model.glb      │ Oggetto che segue il master (diverso da Driven!) │        
+  └─────────────────────────────┴──────────────────────────────────────────────────┘        
+
+  Ridondanza: DrivenObjects e SlaveObjects sono concettualmente simili ma con meccaniche    
+  diverse.
+
+  9. POSIZIONAMENTO
+
+  ┌──────────────────────────────┬───────────────────┐
+  │           Comando            │    Significato    │
+  ├──────────────────────────────┼───────────────────┤
+  │ Posizione=modello:(x,y,z)    │ Posiziona modello │
+  ├──────────────────────────────┼───────────────────┤
+  │ Rotazione=modello:(rx,ry,rz) │ Ruota modello     │
+  └──────────────────────────────┴───────────────────┘
+
+  10. HOLDABLE (oggetti in mano)
+
+  ┌─────────────────────────┬──────────────────────────┐
+  │         Comando         │       Significato        │
+  ├─────────────────────────┼──────────────────────────┤
+  │ HoldAction=pick|release │ Prendi/rilascia          │
+  ├─────────────────────────┼──────────────────────────┤
+  │ HoldState=held          │ Richiede oggetto in mano │
+  ├─────────────────────────┼──────────────────────────┤
+  │ Holdable=true           │ Oggetto impugnabile      │
+  ├─────────────────────────┼──────────────────────────┤
+  │ HoldPosition=(x,y,z)    │ Posizione in mano        │
+  ├─────────────────────────┼──────────────────────────┤
+  │ HoldRotation=(rx,ry,rz) │ Rotazione in mano        │
+  ├─────────────────────────┼──────────────────────────┤
+  │ DefaultView=nome        │ Vista iniziale oggetto   │
+  └─────────────────────────┴──────────────────────────┘
+
+  11. MESSAGGI / MEDIA
+
+  ┌─────────────────────┬─────────────────────┐
+  │       Comando       │     Significato     │
+  ├─────────────────────┼─────────────────────┤
+  │ Message=testo       │ Modale informativo  │
+  ├─────────────────────┼─────────────────────┤
+  │ MessageTitle=titolo │ Titolo modale       │
+  ├─────────────────────┼─────────────────────┤
+  │ MessageImage=path   │ Immagine nel modale │
+  ├─────────────────────┼─────────────────────┤
+  │ MessageVideo=path   │ Video nel modale    │
+  └─────────────────────┴─────────────────────┘
+
+  12. ANIMATED WINDOW
+
+  ┌───────────────────────────────┬─────────────────────────────────┐
+  │            Comando            │           Significato           │
+  ├───────────────────────────────┼─────────────────────────────────┤
+  │ AnimatedImages=img1,img2,...  │ Sequenza immagini               │
+  ├───────────────────────────────┼─────────────────────────────────┤
+  │ AnimatedImagesFolder=path     │ Cartella immagini (alternativa) │
+  ├───────────────────────────────┼─────────────────────────────────┤
+  │ AnimatedPosition=center|(x,y) │ Posizione finestra              │
+  ├───────────────────────────────┼─────────────────────────────────┤
+  │ AnimatedMaxTriggers=N         │ Trigger prima di chiusura       │
+  ├───────────────────────────────┼─────────────────────────────────┤
+  │ AnimatedFrameDelay=N          │ Delay tra frame                 │
+  └───────────────────────────────┴─────────────────────────────────┘
+
+  ---
+  Problemi Identificati e Proposte di Razionalizzazione
+
+  P1. Ripetizione massiva dei parametri Camera
+
+  Nello scenario Elettromandrino, lo stesso blocco camera di 6 righe viene copiato in ~15   
+  step consecutivi. Proposta: ereditarietà — la camera dell'intestazione di sezione viene   
+  ereditata dagli step, si specifica solo se cambia.
+
+  P2. CameraZoom vs CameraDistance
+
+  Sono la stessa cosa. Eliminare CameraZoom, usare solo CameraDistance.
+
+  P3. Azione1..Azione22 per pompaggio ripetitivo
+
+  22 azioni per un movimento oscillante. Proposta:
+  Azione1=oscillazione:(ampiezza,ripetizioni,durata) o
+  Azione1=pompa:ref,(ampiezza,cicli,durata).
+
+  P4. DragDropObjects vs AllowedComponents + AssemblyMode
+
+  Tre comandi per un concetto. Proposta: unificare in DragDrop=obj1,obj2 (con snap
+  automatico a _original).
+
+  P5. DrivenObjects vs SlaveObjects
+
+  Due meccaniche simili. Proposta: unificare in DrivenObjects con opzione sync (slave =     
+  driven senza azione propria, segue 1:1).
+
+  P6. Autoaction = AutoExecute + AutoAdvance
+
+  Tenere solo Autoaction=true come shortcut, ma documentare chiaramente l'equivalenza.      
+
+  ---
+  Questo è il Task 1 completato. Vuoi che proceda con il Task 2 (editor split-view con      
+  codice a sinistra e preview 3D a destra)? Prima di farlo, vorrei entrare in plan mode per 
+  progettare l'architettura dell'editor, dato che è un task non banale.
+
+✻ Worked for 1m 24s
+
+❯ leggi il file @CLAUDE.md per capire che tipo di progetto è questo. individua i vari file  
+tutorial (cvtscript), che sono funzionanti. voglio razionalizzare il più possibile i        
+comandi che sono presenti all'interno di qesti files. Quindi devi fare una analisi molto    
+approfondita per capire cosa fanno tutti i comandi, e provare a semplificarli al massimo    
+per evitare doppioni o cose simili (trigger, azioni). comincia facendo una lista dei        
+comandi che trovi nei files tutorial.cvtscript. cerca di capire come funzionano e 
+razlionalizza il loro comportamento. lo scopo di tutto questo è rendere il più possibile    
+facile la creazione degli script (quindi las memorizzazione dei comandi) per poter fare in  
+modo da rendere facile per un essere umano implementare nuovi tutorial. il secondo task è   
+quello di creare un editor di tutorial in che ha due finistre , una a sinistra che contiene 
+ il codice cvtscript, e una a destra che contiene il risultato 3d  in tempo reale degli     
+effetti dei comendi appena scritti nello script .cvtscript.
+  ⎿  Read CLAUDE.md (449 lines)
+
+● Rileggo i tutorial per fare un'analisi approfondita.
+
+  Read 2 files (ctrl+o to expand)
+
+● Ora ho un quadro completo. Cerco anche come il parser interpreta questi comandi per capire   quali sono realmente diversi vs sinonimi.
+
+● Explore(Find tutorial parser code)
+  ⎿  Done (18 tool uses · 111.8k tokens · 2m 23s)
+  (ctrl+o to expand)
+
+● Eccellente, ora ho un quadro tecnico completo. Ecco l'analisi approfondita con proposta di   razionalizzazione.
+
+  ---
+  ANALISI COMPLETA COMANDI TUTORIAL .cvtscript
+
+  Inventario Comandi Attuali (47 proprietà distinte)
+
+  Organizzati per frequenza d'uso reale nei 2 tutorial:
+
+  ---
+  CATEGORIA 1: COMANDI BASE (usati in quasi ogni step)
+
+  ┌─────┬─────────────────────────────────────────────────────┬────────────┬───────────┐    
+  │  #  │                       Comando                       │ Uso reale  │   Note    │    
+  ├─────┼─────────────────────────────────────────────────────┼────────────┼───────────┤    
+  │ 1   │ Elemento=models/xxx.glb                             │ Target     │ OK, neces │    
+  │     │                                                     │ animazione │ sario     │    
+  ├─────┼─────────────────────────────────────────────────────┼────────────┼───────────┤    
+  │ 2   │ Utensile=Mani|Aria|Spray|ChiaveBrugola|ChiaveIngles │ Tool       │ OK        │    
+  │     │ e                                                   │ richiesto  │           │    
+  ├─────┼─────────────────────────────────────────────────────┼────────────┼───────────┤    
+  │ 3   │ Descrizione=testo                                   │ Fumetto    │ OK        │    
+  │     │                                                     │ istruzioni │           │    
+  ├─────┼─────────────────────────────────────────────────────┼────────────┼───────────┤    
+  │ 4   │ HighlightDescription=true|false                     │ Evidenzia  │ OK        │    
+  │     │                                                     │ fumetto    │           │    
+  ├─────┼─────────────────────────────────────────────────────┼────────────┼───────────┤    
+  │     │                                                     │ Animazioni │ Problema: │    
+  │ 5   │ Azione1..AzioneN=comando                            │  sequenzia │  fino a   │    
+  │     │                                                     │ li         │ Azione24! │    
+  └─────┴─────────────────────────────────────────────────────┴────────────┴───────────┘    
+
+  CATEGORIA 2: CAMERA (7 proprietà, massimo copia-incolla)
+
+  ┌─────┬───────────────────────────┬────────────────────────────────────────────────────┐  
+  │  #  │          Comando          │                      Problema                      │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 6   │ CameraPos=(x,y,z)         │ Copiato identico in 10+ step consecutivi           │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 7   │ CameraTarget=(x,y,z)|nome │ Idem                                               │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 8   │ CameraRotation=(rx,ry,rz) │ Idem                                               │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 9   │ CameraPivot=(x,y,z)       │ Idem                                               │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 10  │ CameraDistance=N          │ Duplicato con CameraZoom                           │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 11  │ CameraFOV=N               │ Quasi sempre 75                                    │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 12  │ CameraZoom=N              │ Solo in Pompa_Becker, è un alias di CameraDistance │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 13  │ CameraTransitionTime=N    │ Quasi sempre 2.0 o 2.5                             │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 14  │ CameraUnlocked=true       │ Raro (1 step)                                      │  
+  ├─────┼───────────────────────────┼────────────────────────────────────────────────────┤  
+  │ 15  │ CameraLimits=(min,max)    │ Raro (1 step)                                      │  
+  └─────┴───────────────────────────┴────────────────────────────────────────────────────┘  
+
+  Quantificazione spreco: Nell'Elettromandrino, il blocco camera (6 righe) viene ripetuto   
+  identico in 15 step. Sono 90 righe che potrebbero essere 0 con ereditarietà dalla sezione.
+  CATEGORIA 3: AUTOMAZIONE (4 comandi, ridondanza)
+
+  ┌─────┬────────────────────┬───────────────────────────────────────────────────────────┐  
+  │  #  │      Comando       │                   Implementazione reale                   │  
+  ├─────┼────────────────────┼───────────────────────────────────────────────────────────┤  
+  │ 16  │ AutoExecute=true   │ Esegue animazione senza click                             │  
+  ├─────┼────────────────────┼───────────────────────────────────────────────────────────┤  
+  │ 17  │ AutoAdvance=true   │ Avanza senza click dopo animazione                        │  
+  ├─────┼────────────────────┼───────────────────────────────────────────────────────────┤  
+  │ 18  │ Autoaction=true    │ = AutoExecute=true + AutoAdvance=true + auto-equip        │  
+  │     │                    │ Utensile                                                  │  
+  ├─────┼────────────────────┼───────────────────────────────────────────────────────────┤  
+  │ 19  │ AutoSetVariant=g=v │ Cambia variante e (con AutoAdvance) avanza                │  
+  └─────┴────────────────────┴───────────────────────────────────────────────────────────┘  
+
+  Problema: 3 comandi fanno cose sovrapposte. Autoaction è letteralmente nel codice:        
+  const effectiveAutoExecute = AutoExecute === 'true' || Autoaction === 'true';
+  const effectiveAutoAdvance = AutoAdvance === 'true' || Autoaction === 'true';
+
+  CATEGORIA 4: AZIONI ANIMATE (dentro AzioneN)
+
+  ┌─────┬──────────────────────────────────────┬─────────────────────────────┬───────────┐  
+  │  #  │            Sotto-comando             │         Significato         │ Frequenza │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 20  │ traslazione:(x,y,z,dur)              │ Sposta                      │ Altissima │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 21  │ traslazione:ref_original,(x,y,z,dur) │ Sposta verso riferimento    │ Media     │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 22  │ rotazione:(rx,ry,rz,dur)             │ Ruota                       │ Alta      │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 23  │ centro:(x,y,z);rotazione:(...)       │ Cambia pivot+ruota          │ Bassa     │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 24  │ svita / svita(dist)                  │ Rotazione+traslazione su    │ Altissima │  
+  │     │                                      │ direction                   │           │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 25  │ avvita / avvita(dist)                │ Inverso svita               │ Alta      │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 26  │ estrai / estrai(dist)                │ Solo traslazione su         │ Bassa     │  
+  │     │                                      │ direction                   │           │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 27  │ inserisci / inserisci(dist)          │ Inverso estrai              │ Bassa     │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 28  │ appoggia(dur)                        │ Posa a Y=0                  │ Altissima │  
+  ├─────┼──────────────────────────────────────┼─────────────────────────────┼───────────┤  
+  │ 29  │ resetCenteredOriginal                │ Reset posizioni             │ Rara      │  
+  └─────┴──────────────────────────────────────┴─────────────────────────────┴───────────┘  
+
+  CATEGORIA 5: DRAG & DROP / ASSEMBLAGGIO (10 comandi, confusi)
+
+  ┌─────┬──────────────────────────┬─────────────────────────────────────────────────┐      
+  │  #  │         Comando          │                    Problema                     │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 30  │ DragDrop=true            │ Abilita sistema                                 │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 31  │ DragDropObjects=a,b      │ Lista oggetti trascinabili                      │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 32  │ AllowedComponents=a,b    │ ALIAS di DragDropObjects (fallback nel codice!) │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 33  │ AssemblyMode=true        │ Flag che... non fa quasi niente di diverso      │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 34  │ DragDropDistance=N       │ Soglia snap                                     │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 35  │ SnapTargets=ref1,ref2    │ Snap a posizioni originali                      │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 36  │ SnapPoint=(x,y,z)        │ Snap a coordinate fisse                         │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 37  │ SnapPointPivot=(x,y,z)   │ Come SnapPoint ma basato su pivot               │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 38  │ SnapOffset=(x,y,z)       │ Offset dalla posizione originale                │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 39  │ ShowSnapIndicators=false │ Visibilità debug                                │      
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┤      
+  │ 40  │ ValidateAssembly=true    │ Validazione fine assemblaggio                   │      
+  └─────┴──────────────────────────┴─────────────────────────────────────────────────┘      
+
+  Problema: DragDropObjects e AllowedComponents sono lo stesso comando. AssemblyMode=true   
+  senza AllowedComponents non ha effetto pratico. SnapPoint, SnapPointPivot, SnapOffset sono   3 varianti per lo stesso concetto.
+
+  CATEGORIA 6: TRIGGER / INTERATTIVI
+
+  ┌─────┬───────────────────────────────────────┐
+  │  #  │                Comando                │
+  ├─────┼───────────────────────────────────────┤
+  │ 41  │ AcceptTrigger_Physical=modello.mesh   │
+  ├─────┼───────────────────────────────────────┤
+  │ 42  │ AcceptTrigger_Screen=pannello.hotspot │
+  ├─────┼───────────────────────────────────────┤
+  │ 43  │ AcceptTrigger_Holdable=oggetto.use    │
+  ├─────┼───────────────────────────────────────┤
+  │ 44  │ OnPhysicalTrigger=azione              │
+  ├─────┼───────────────────────────────────────┤
+  │ 45  │ OnScreenTrigger=azione                │
+  ├─────┼───────────────────────────────────────┤
+  │ 46  │ OnAnyTrigger=azione                   │
+  ├─────┼───────────────────────────────────────┤
+  │ 47  │ OnPhysicalTrigger_SetView=mod.vista   │
+  ├─────┼───────────────────────────────────────┤
+  │ 48  │ ActiveButtons=btn1,btn2               │
+  ├─────┼───────────────────────────────────────┤
+  │ 49  │ HighlightOpacity=N                    │
+  └─────┴───────────────────────────────────────┘
+
+  CATEGORIA 7: OGGETTI PARALLELI (3 comandi, confusi)
+
+  ┌─────┬─────────────────────────────┬───────────────────────────────┐
+  │  #  │           Comando           │       Differenza reale        │
+  ├─────┼─────────────────────────────┼───────────────────────────────┤
+  │ 50  │ DrivenObject=m,azione       │ Singolo, con azione propria   │
+  ├─────┼─────────────────────────────┼───────────────────────────────┤
+  │ 51  │ DrivenObjects=m1,az1;m2,az2 │ Multipli, con azione propria  │
+  ├─────┼─────────────────────────────┼───────────────────────────────┤
+  │ 52  │ SlaveObjects=m1,m2          │ Seguono rigidamente il master │
+  └─────┴─────────────────────────────┴───────────────────────────────┘
+
+  CATEGORIA 8: HOLDABLE, SCREEN, MESSAGE, ANIMATED, POSIZIONAMENTO
+
+  ┌───────┬──────────────────────────────────────────────────────────────────────────────┐  
+  │   #   │                                   Comando                                    │  
+  ├───────┼──────────────────────────────────────────────────────────────────────────────┤  
+  │ 53-57 │ HoldAction, Holdable, HoldPosition, HoldRotation, HoldState                  │  
+  ├───────┼──────────────────────────────────────────────────────────────────────────────┤  
+  │ 58-60 │ ScreenMode, ScreenView, RequiredHotspot, RequiredSequence                    │  
+  ├───────┼──────────────────────────────────────────────────────────────────────────────┤  
+  │ 61-64 │ Message, MessageTitle, MessageImage, MessageVideo                            │  
+  ├───────┼──────────────────────────────────────────────────────────────────────────────┤  
+  │ 65-72 │ AnimatedImages/Folder, AnimatedPosition, AnimatedMaxTriggers,                │  
+  │       │ AnimatedFrameDelay, etc.                                                     │  
+  ├───────┼──────────────────────────────────────────────────────────────────────────────┤  
+  │ 73-74 │ Posizione=mod:(x,y,z), Rotazione=mod:(rx,ry,rz)                              │  
+  ├───────┼──────────────────────────────────────────────────────────────────────────────┤  
+  │ 75    │ TargetChild=nome                                                             │  
+  └───────┴──────────────────────────────────────────────────────────────────────────────┘  
+
+  ---
+  PROBLEMI CRITICI E PROPOSTE DI RAZIONALIZZAZIONE
+
+  PROBLEMA 1: Camera copiata 90+ volte inutilmente
+
+  Attuale (15 step con camera identica):
+  [Step 1 - Vai alla schermata MDI]
+  CameraPos=(0.97, 1.25, 3.92)
+  CameraTarget=(0.97, 1.15, 3.52)
+  CameraRotation=(-0.24, 0, 0)
+  CameraPivot=(0.97, 1.15, 3.52)
+  CameraDistance=0.42
+  CameraFOV=75.0
+  CameraTransitionTime=2.0
+  ...
+
+  [Next Step - Scarica l'utensile]
+  CameraPos=(0.97, 1.25, 3.92)        # IDENTICO!
+  CameraTarget=(0.97, 1.15, 3.52)     # IDENTICO!
+  CameraRotation=(-0.24, 0, 0)        # IDENTICO!
+  ...
+
+  Proposta: Ereditarietà dalla sezione tutorial. Lo step eredita la camera della
+  sezione/step precedente. Si specifica solo se cambia.
+
+  [Manutenzione Elettromandrino - lubrificazione]
+  CameraPos=(0.97, 1.25, 3.92)
+  CameraTarget=(0.97, 1.15, 3.52)
+  CameraDistance=0.42
+
+  [Step 1 - Vai alla schermata MDI]
+  # Camera ereditata dalla sezione! Zero righe camera necessarie
+  ActiveButtons=Pulsante_mdi
+  AcceptTrigger_Physical=pulpito.Pulsante_mdi
+  OnPhysicalTrigger=setVariant:schermo=schermo002
+  AutoAdvance=true
+
+  PROBLEMA 2: CameraZoom vs CameraDistance
+
+  Nel codice, CameraZoom viene convertito in FOV: 75 / zoom. È usato solo in Pompa_Becker.  
+
+  Proposta: Eliminare CameraZoom, usare solo CameraDistance. Meno confusione.
+
+  PROBLEMA 3: 22 Azioni per un pompaggio ripetitivo
+
+  Attuale (44 righe per 2 step di pompaggio):
+  Azione1=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+  Azione2=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione3=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
+  ... # altre 19 righe identiche alternate
+
+  Proposta: Nuovo comando oscillazione:
+  Azione1=traslazione:tappino_grasso_dx_original,(-0.2,0,0,0.5)
+  Azione2=oscillazione:tappino_grasso_dx_original,(-0.08,-0.09,0,0,10,0.1)
+  # oscillazione:(ref, ampA, ampB, axisY, axisZ, cicli, durata_ciclo)
+  Azione3=traslazione:tappino_grasso_dx_original,(-0.2,0,0,0.5)
+  Da 22 righe a 3.
+
+  PROBLEMA 4: DragDropObjects = AllowedComponents = stessa cosa
+
+  Nel codice (linea 3981): se DragDropObjects non è presente, usa AllowedComponents come    
+  fallback.
+
+  Proposta: Tenere solo DragDropObjects. Eliminare AllowedComponents e AssemblyMode=true    
+  (che non aggiunge comportamento reale).
+
+  Attuale (6 righe):
+  DragDrop=true
+  AssemblyMode=true
+  AllowedComponents=vite_flangia_1
+  DragDropDistance=1.5
+  ShowSnapIndicators=false
+  SnapOffset=(0,0,0.02)
+
+  Proposta (2 righe):
+  DragDrop=vite_flangia_1
+  DragDropDistance=1.5
+  Con ShowSnapIndicators=false come default e SnapOffset integrato nel DragDrop.
+
+  PROBLEMA 5: Autoaction vs AutoExecute+AutoAdvance
+
+  Tre comandi per due concetti.
+
+  Proposta: Tenere solo Auto=execute|advance|full|variant:
+  Auto=full          # equivale a Autoaction=true
+  Auto=execute       # solo animazione automatica
+  Auto=advance       # solo avanzamento automatico
+  Auto=variant:g=v   # cambia variante
+
+  PROBLEMA 6: DrivenObjects vs SlaveObjects
+
+  Due meccaniche simili con nomi diversi.
+
+  Proposta: Unificare in DrivenObjects con opzione follow:
+  DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5)    # con azione propria
+  DrivenObjects=tubograsso.glb,follow                        # segue il master 1:1
+
+  PROBLEMA 7: SnapPoint vs SnapPointPivot vs SnapOffset
+
+  Tre varianti per posizionare un punto di snap.
+
+  Proposta: Unificare in SnapPoint con opzioni:
+  SnapPoint=(0.5,0.2,0.3)                    # coordinate fisse
+  SnapPoint=pivot:(0.5,0.2,0.3)              # basato su pivot
+  SnapPoint=original+offset:(0,0,0.02)       # posizione originale + offset
+
+  ---
+  RIEPILOGO: COMANDI PRIMA vs DOPO RAZIONALIZZAZIONE
+
+  ┌──────────────────────────────────────┬──────────┬──────┐
+  │               Metrica                │  Prima   │ Dopo │
+  ├──────────────────────────────────────┼──────────┼──────┤
+  │ Proprietà distinte                   │ ~47      │ ~32  │
+  ├──────────────────────────────────────┼──────────┼──────┤
+  │ Righe camera per step (se invariata) │ 6-7      │ 0    │
+  ├──────────────────────────────────────┼──────────┼──────┤
+  │ Righe per pompaggio 10x              │ 22       │ 3    │
+  ├──────────────────────────────────────┼──────────┼──────┤
+  │ Righe per DragDrop assemblaggio      │ 5-6      │ 2    │
+  ├──────────────────────────────────────┼──────────┼──────┤
+  │ Sinonimi/alias                       │ 4 coppie │ 0    │
+  └──────────────────────────────────────┴──────────┴──────┘
+
+  ---
+  Vuoi che ora proceda con il Task 2 (l'editor split-view con codice a sinistra e preview 3D   a destra)? Per quello entro in plan mode dato che richiede progettazione architetturale  
+  seria — deve integrarsi con il rendering Three.js esistente e il parser di .cvtscript.    

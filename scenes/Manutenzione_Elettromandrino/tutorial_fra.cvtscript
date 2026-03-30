@@ -129,13 +129,6 @@ CameraTransitionTime=2.0
 [Step 1 - Aller à l'écran MDI]
 HighlightDescription=true
 Descrizione=Appuyez sur le bouton MDI du pupitre de commande pour accéder au mode de contrôle manuel.
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Déclencheur : clic sur le bouton MDI modifié
 ActiveButtons=Pulsante_mdi
 AcceptTrigger_Physical=pulpito.Pulsante_mdi
@@ -145,13 +138,6 @@ AutoAdvance=true
 [Next Step - Décharger l'outil]
 HighlightDescription=true
 Descrizione=Appuyez sur le bouton à l'écran pour décharger l'outil T=1000.
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Déclencheur : clic sur le bouton Tool
 ActiveButtons=Pulsante_tool
 AcceptTrigger_Physical=pulpito.Pulsante_tool
@@ -267,13 +253,6 @@ AutoAdvance=true
 [Next Step - Bouton électrobroche]
 HighlightDescription=true
 Descrizione=Appuyez sur le bouton à l'écran pour sélectionner l'électrobroche
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
 # Déclencheur : clic sur le bouton Tool
 ActiveButtons=Pulsante_electrospindle
 AcceptTrigger_Physical=pulpito.Pulsante_electrospindle
@@ -286,13 +265,6 @@ AutoAdvance=true
 [Next Step - Activer le déverrouillage]
 HighlightDescription=true
 Descrizione=Appuyez sur le bouton à l'écran pour activer le déverrouillage de la pince de l'électrobroche
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
 # Déclencheur : clic sur le bouton Tool
 ActiveButtons=Pulsante_LU
 AcceptTrigger_Physical=pulpito.Pulsante_LU
@@ -444,13 +416,6 @@ OnPhysicalTrigger=setVariant:chiave=chiave0
 HighlightDescription=true
 Descrizione=Appuyez sur le bouton d'alimentation pour redémarrer la machine.
 Utensile=Mani
-CameraPos=(0.94, 1.29, 4.07)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.25, -0.04, -0.01)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.56
-CameraFOV=75.0
-CameraTransitionTime=2.0
 # Déclencheur : clic sur le bouton démarrage (seulement pstart0 car c'est celui visible après avoir tourné la clé)
 ActiveButtons=pstart0
 AcceptTrigger_Physical=pulpito.pstart0

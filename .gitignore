@@ -42,4 +42,5 @@ logs/
 
 # CVTScript Editor (tool locale, non pubblicato)
 editor/
+neweditor/
 admin.html

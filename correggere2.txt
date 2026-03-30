@@ -1,0 +1,11 @@
+Context:
+I'm working on a step-by-step 3D interactive tutorial system (Campus Virtual Training). The current step is step 24/31 of a tutorial called "sostituzione palette reverse" (reverse blade replacement).
+Current behavior (bug):
+In this step, the user must tighten screws onto a flange. Currently, when the screws are tightened, they go completely behind/through the flange (excessive screwing animation — the 3D objects overshoot their target position).
+Expected behavior:
+The screws should be tightened following a cross pattern (like tightening wheel bolts): screw 1 → screw 3 (opposite) → screw 2 → screw 4 (opposite), etc. Each screw should stop flush against the flange surface, not pass through it.
+What needs to be fixed:
+
+The screw animation must stop at the correct Z depth (flush with the flange, not past it)
+The tightening sequence must follow a cross/star pattern, not sequential order
+The interaction should enforce the correct order — wrong sequence = error or visual feedback

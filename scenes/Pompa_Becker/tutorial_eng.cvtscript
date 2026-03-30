@@ -1,337 +1,297 @@
-
 # Tutorial for Vacuum Pump Maintenance
 # This file defines the guided sequence for filter replacement
-# and lubrication of the Becker U5.40 vacuum pump
+# and greasing of the Becker U5.40 vacuum pump
 # Each section represents a step with specific actions and animations
 
-CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
-CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-CameraZoom=1.2                                                // Zoom leggero per visione d''insieme
-CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona modello specifico
+CameraPos=(-1.5, 0.5,-0.2)                                       // Absolute position for testing
+CameraTarget=(0, 0, 0)                                    // Focus on scene center slightly raised
+CameraZoom=1.2                                                // Slight zoom for overview
+CameraTransitionTime=2.5                                      // Smooth movement with gentle easing
+Posizione=planaxis:(-0.5,0.01,-0.5)                           // Position specific model
 
-[Filter Cleaning and Lubrication]                                            // Tutorial principale - sequenza di smontaggio
-  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
-  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=1.2                                                // Zoom leggero per visione d''insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+[Filter Cleaning and Greasing]                                            // Main tutorial - disassembly sequence
   Azione1=resetCenteredOriginal
-  [Step 1 - First screw]
-  HighlightDescription=true                                 // Primo step: rimozione prima vite
-  Elemento=models/vite_coperchio_1.glb                         // Modello 3D della prima vite da animare
-  Utensile=Mani                                            // Strumento richiesto: lavoro manuale
-  Descrizione=Select the "Hand" tool and remove the first cover screw          // Testo mostrato nel fumetto laterale
+  [Step 1 - First Screw]
+  HighlightDescription=true                                 // First step: removal of first screw
+  Elemento=models/vite_coperchio_1.glb                         // 3D model of the first screw to animate
+  Utensile=Mani                                            // Required tool: manual work
+  Descrizione=Select the "Hand" tool and remove the first lid screw          // Text shown in the side speech bubble
   Azione1=svita
   Azione2=appoggia(0.2)
 
 
-  [Next Step - Second screw]                                  // Secondo step: vite angolo superiore destro
-  HighlightDescription=false                                 // Evidenzia la descrizione per il secondo step
-  Elemento=models/vite_coperchio_2.glb                            // Modello della seconda vite
-  Utensile=Mani                                            // Strumento: sempre manuale per le viti
-  Descrizione=Remove the second cover screw        // Descrizione per l''utente
+  [Next Step - Second Screw]                                  // Second step: upper right corner screw
+  HighlightDescription=false                                 // Highlight the description for the second step
+  Elemento=models/vite_coperchio_2.glb                            // Model of the second screw
+  Utensile=Mani                                            // Tool: always manual for screws
+  Descrizione=Remove the second lid screw        // Description for the user
   Azione1=svita
   Azione2=appoggia(0.2)
 Autoaction=true
-  [Next Step - Third screw]                                    // Terzo step: vite angolo inferiore sinistro
+  [Next Step - Third Screw]                                    // Third step: lower left corner screw
   HighlightDescription=false
-  Elemento=models/vite_coperchio_3.glb                            // Modello della terza vite
-  Utensile=Mani                                            // Utensile: operazione manuale
-  Descrizione=Remove the third cover screw          // Istruzione per l''operatore
+  Elemento=models/vite_coperchio_3.glb                            // Model of the third screw
+  Utensile=Mani                                            // Tool: manual operation
+  Descrizione=Remove the third lid screw          // Instruction for the operator
   Azione1=svita
   Azione2=traslazione:( 0,0,-0.1,0.2)
   Azione3=appoggia(0.2)
 Autoaction=true
-  [Next Step - Fourth screw]                                   // Quarto step: ultima vite angolo inferiore destro
+  [Next Step - Fourth Screw]                                   // Fourth step: last screw lower right corner
   HighlightDescription=false
-  Elemento=models/vite_coperchio_4.glb                            // Modello dell''ultima vite del coperchio
-  Utensile=Mani                                            // Strumento: operazione manuale
-  Descrizione=Remove the fourth cover screw         // Istruzione finale per le viti
+  Elemento=models/vite_coperchio_4.glb                            // Model of the last lid screw
+  Utensile=Mani                                            // Tool: manual operation
+  Descrizione=Remove the fourth lid screw         // Final instruction for the screws
   Azione1=svita
   Azione2=traslazione:( 0,0,-0.1,0.2)
   Azione3=appoggia(0.2)
 Autoaction=true
-  [Next Step- Cover]                                     // Quinto step: rimozione coperchio completo
+  [Next Step- Lid]                                     // Fifth step: complete lid removal
   HighlightDescription=true
-  Elemento=models/coperchio.glb                                   // Modello del coperchio della pompa
-  Utensile=Mani                                            // Strumento: sollevamento manuale
-  Descrizione=Remove the filter cover              // Istruzione per rimozione coperchio
+  Elemento=models/coperchio.glb                                   // Model of the pump lid
+  Utensile=Mani                                            // Tool: manual lifting
+  Descrizione=Remove the filter lid              // Instruction for lid removal
   Azione1=traslazione:(-0.5,0,0.5,0.8)
-  Azione2=centro:(0,0.1,0);rotazione:(0,0,-90,0.8)                       // Estrazione coperchio 0.4 unità in 1.5 secondi
+  Azione2=centro:(0,0.1,0);rotazione:(0,0,-90,0.8)                       // Lid extraction 0.4 units in 1.5 seconds
   Azione3=appoggia(0.5)
 
 
 
-
-[Next Step - Filter]                                        // Sesto step: estrazione filtro usurato
+[Next Step - Filter]                                        // Sixth step: worn filter extraction
 HighlightDescription=true
-Elemento=models/filtro.glb                                     // Modello 3D del filtro da sostituire
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Remove the filter                           // Istruzione per rimozione filtro
+Elemento=models/filtro.glb                                     // 3D model of the filter to replace
+  Utensile=Mani                                           // Tool: manual extraction
+  Descrizione=Remove the filter                           // Instruction for filter removal
   Azione1=traslazione:(-0.3,0,0,1.5)
   Azione2=traslazione:(0,0,0.5,1.5)
   Azione3=appoggia(1.5)
-  //Azione=estrai                                           // Animazione: estrazione lineare senza rotazione
-  //Distanza=0.4                                            // Distanza di estrazione (filtro compatto)
-  //Durata=1.5                                              // Durata personalizzata: estrazione rapida
+  //Action=extract                                           // Animation: linear extraction without rotation
+  //Distance=0.4                                            // Extraction distance (compact filter)
+  //Duration=1.5                                              // Custom duration: quick extraction
 
- [Next Step - Compressed air]
+ [Next Step - Compressed Air]
  HighlightDescription=true
  Elemento=models/filtro.glb
   Descrizione=Clean the filter with compressed air
-  CameraPos=(-0.2,0.33,0.74)                                      // Posizione assoluta per test
-  CameraTarget=filtro                                  // Focus su centro scena leggermente rialzato
-  CameraZoom=0.5                                               // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  CameraPos=(-0.2,0.33,0.74)                                      // Absolute position for testing
+  CameraTarget=filtro                                  // Focus on scene center slightly raised
+  CameraZoom=0.5                                               // Slight zoom for overview
   Utensile=Aria
   Azione1=traslazione:(0,0.01,0,0.5)
   Azione2=appoggia(0.5)
 
-[Next Step- Right cap]                                        // Sesto step: estrazione filtro usurato
+[Next Step- Right Cap]                                        // Sixth step: worn filter extraction
 HighlightDescription=true
-CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
-  CameraTarget=tappino_grasso_dx                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+CameraPos=(-1.5, 0.5,-0.2)                                       // Absolute position for testing
+  CameraTarget=tappino_grasso_dx                                    // Focus on scene center slightly raised
+  CameraZoom=0.5                                           // Close-up zoom for cap interaction
+  CameraTransitionTime=2.5                                      // Smooth movement with gentle easing
 
-  Elemento=models/tappino_grasso_dx.glb                                     // Modello 3D del filtro da sostituire
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Remove the protection cap from the right grease fitting       // Istruzione per rimozione filtro
-  Azione1=traslazione:(-0.3,0,0,1.0)                       // Estrazione tappino 0.3 unità
+  Elemento=models/tappino_grasso_dx.glb                                     // 3D model of the filter to replace
+  Utensile=Mani                                           // Tool: manual extraction
+  Descrizione=Remove the right greaser protective cap       // Instruction for filter removal
+  Azione1=traslazione:(-0.3,0,0,1.0)                       // Cap extraction 0.3 units
   Azione2=appoggia(0.5)
 
 
-[Next Step - Left cap]                                        // Sesto step: estrazione filtro usurato
+[Next Step - Left Cap]                                        // Sixth step: worn filter extraction
 HighlightDescription=true
-CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
-  CameraTarget=tappino_grasso_sx                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
-  Elemento=models/tappino_grasso_sx.glb                                     // Modello 3D del filtro da sostituire
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Remove the protection cap from the left grease fitting       // Istruzione per rimozione filtro
-  Azione1=traslazione:(-0.3,0,0,1.0)                       // Estrazione tappino 0.3 unità
+CameraPos=(-1.5, 0.5,-0.2)                                       // Absolute position for testing
+  CameraTarget=tappino_grasso_sx                                    // Focus on scene center slightly raised
+  CameraZoom=0.5                                           // Close-up zoom for cap interaction
+  CameraTransitionTime=2.5                                      // Smooth movement with gentle easing
+  Elemento=models/tappino_grasso_sx.glb                                     // 3D model of the filter to replace
+  Utensile=Mani                                           // Tool: manual extraction
+  Descrizione=Remove the left greaser protective cap       // Instruction for filter removal
+  Azione1=traslazione:(-0.3,0,0,1.0)                       // Cap extraction 0.3 units
   Azione2=appoggia(0.5)
 
 
-[Next Step - Grease pump]                                        // Nono step: movimento ingrassatore
+[Next Step - Greaser]                                        // Ninth step: greaser movement
 HighlightDescription=false
-Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Take the grease pump        // Istruzione per movimento
+Elemento=models/ingrassatore.glb                                     // 3D model of the greaser to animate
+  Utensile=Mani                                           // Tool: manual extraction
+  Descrizione=Pick up the grease pump        // Instruction for movement
   Azione1=traslazione:(0,0.1,0,0.8)
   Azione2=centro:(-0.1,0,0);rotazione:(0,0,90,0.8)
   Azione3=traslazione:(-0.2,0.0,0,0.8)
   Azione4=appoggia(0.5)
-  //CameraPos=ingrassatore:(-1, 0, 0)                    // Posizione relativa all'ingrassatore
-  //CameraTarget=ingrassatore                               // Focus diretto sull'ingrassatore
-  //CameraZoom=2.2                                          // Zoom alto per operazione di precisione
-  //CameraTransitionTime=1.2                                // Transizione con easing dolce
+  //CameraPos=greaser:(-1, 0, 0)                    // Position relative to the greaser
+  //CameraTarget=greaser                               // Direct focus on the greaser
+  //CameraZoom=2.2                                          // High zoom for precision operation
+  //CameraTransitionTime=1.2                                // Transition with gentle easing
 
-[Next Step - Grease pump 2]                                        // Decimo step: movimento ingrassatore
+[Next Step - Greaser2]                                        // Tenth step: greaser movement
 HighlightDescription=true
 CameraPos=(-0.42, 0.33,  0.3 )
-  CameraTarget=(-0.28, 0.25,-0.16)                                       // Posizione assoluta per test
-  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  CameraTarget=(-0.28, 0.25,-0.16)                                       // Absolute position for testing
 
 
-  Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Apply grease to the right grease fitting by pumping 10 times     // Istruzione per movimento
+  Elemento=models/ingrassatore.glb                                     // 3D model of the greaser to animate
+  Utensile=Mani                                           // Tool: manual extraction
+  Descrizione=Apply grease to the right greaser by pumping 10 times     // Instruction for movement
   Azione1=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
-  Azione2=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione3=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione4=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione5=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione6=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione7=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione8=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione9=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione10=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione11=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione12=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione13=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione14=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione15=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione16=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione17=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione18=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione19=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
- Azione20=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
+  Azione2=oscillazione:tappino_grasso_dx_original,(-0.08,0,0,-0.09,0,0,10,0.1)
+  Azione3=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
 
-  Azione21=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-
-
-  //Azione22=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione22=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
-
-[Next Step - Grease pump 3]                                        // Decimo step: movimento ingrassatore
+[Next Step - Greaser3]                                        // Tenth step: greaser movement
 HighlightDescription=false
 
-  Elemento=models/ingrassatore.glb                                     // Modello 3D dell'ingrassatore da animare
-  Utensile=Mani                                           // Strumento: estrazione manuale
-  Descrizione=Apply grease to the left grease fitting by pumping 10 times     // Istruzione per movimento
+  Elemento=models/ingrassatore.glb                                     // 3D model of the greaser to animate
+  Utensile=Mani                                           // Tool: manual extraction
+  Descrizione=Apply grease to the left greaser by pumping 10 times     // Instruction for movement
   Azione1=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
-  Azione2=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione3=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione4=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione5=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione6=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione7=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione8=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione9=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione10=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione11=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione12=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione13=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione14=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione15=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione16=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione17=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione18=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione19=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione20=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione21=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
- //Azione22=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione22=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
-  Azione23=traslazione:ingrassatore_original,(-0.2,0.0,0,0.5)
-  Azione24=appoggia(0.5)
+  Azione2=oscillazione:tappino_grasso_sx_original,(-0.08,0,0,-0.09,0,0,10,0.1)
+  Azione3=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  Azione4=traslazione:ingrassatore_original,(-0.2,0.0,0,0.5)
+  Azione5=appoggia(0.5)
 
 [Reassembly]
 HighlightDescription=true
 # Reverse tutorial - reassembly sequence
-# Sequence to reinstall the filter and close the pump
+# Sequence to reassemble the filter and close the pump
 
-# Camera configuration
-CameraPos=(-1.5, 0.5, -0.2)
-CameraTarget=(0, 0, 0)
-CameraZoom=1.2
-CameraTransitionTime=2.5
+# Camera reset at the beginning of the tutorial
+
 
 # IMPORTANT: Disable auto-completion for multi-step tutorial
 //AutoComplete=false
 TutorialSteps=5
 
-# Model positioning for assembly - Correct custom positions
-# IMPORTANT: Parts start "disassembled" as at the end of the cleaning
+# Model positioning for assembly - Corrected custom positions
+# IMPORTANT: Parts start "disassembled" as at the end of cleaning
 
-# Model 1: coperchio
+# Model 1: lid
 Posizione=coperchio:(-1.148,-0.261,0.500)
 Rotazione=coperchio:(0.0,0.0,-90.0)
 
-# Model 2: filtro
+# Model 2: filter
 Posizione=filtro:(-0.300,-0.142,0.500)
 Rotazione=filtro:(0.0,0.0,0.0)
 
-# Model 3: pavimento
+# Model 3: floor
 Posizione=pavimento:(0.000,0.000,0.000)
 Rotazione=pavimento:(0.0,0.0,0.0)
 
-# Model 4: vite_coperchio_1
+# Model 4: lid_screw_1
 Posizione=vite_coperchio_1:(-0.500,-0.349,0.000)
 Rotazione=vite_coperchio_1:(-360.0,0.0,0.0)
 
-# Model 5: vite_coperchio_2
+# Model 5: lid_screw_2
 Posizione=vite_coperchio_2:(-0.500,-0.349,0.000)
 Rotazione=vite_coperchio_2:(-360.0,0.0,0.0)
 
-# Model 6: vite_coperchio_3
+# Model 6: lid_screw_3
 Posizione=vite_coperchio_3:(-0.500,-0.117,-0.100)
 Rotazione=vite_coperchio_3:(-360.0,0.0,0.0)
 
-# Model 7: vite_coperchio_4
+# Model 7: lid_screw_4
 Posizione=vite_coperchio_4:(-0.500,-0.117,-0.100)
 Rotazione=vite_coperchio_4:(-360.0,0.0,0.0)
 
-# Model 8: tappino_grasso_sx
+# Model 8: left_grease_cap
 Posizione=tappino_grasso_sx:(-0.300,-0.243,0.000)
 Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
 
-# Model 9: tappino_grasso_dx
+# Model 9: right_grease_cap
 Posizione=tappino_grasso_dx:(-0.300,-0.243,0.000)
 Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
 
-# Model 10: ingrassatore
+# Model 10: greaser
 Posizione=ingrassatore:(-0.208,0.243,0)
 Rotazione=ingrassatore:(0.0,0.0,90.0)
 
 
-[Step 1 - Grease fitting caps]
+[Step 1 - Right Cap]
 HighlightDescription=true
-Descrizione=Install the grease fitting caps in any order. You can start with the right or left one.
+CameraPos=(-1.03,0.27,0.03)
+CameraTarget=(-0.17,0.14,-0.01)
+CameraRotation=(-1.3,-1.41,-1.3)
+CameraPivot=(-0.17,0.14,-0.01)
+CameraDistance=0.86
+CameraFOV=75
+CameraTransitionTime=1.0
+Descrizione=Mount the right greaser cap.
 Utensile=Mani
 
-# Interchangeable node - free order for caps (NO specific Element)
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=tappino_grasso_dx,tappino_grasso_sx
+DragDropObjects=tappino_grasso_dx
+DragDropDistance=0.2
+
+[Next Step - Left Cap]
+HighlightDescription=true
+CameraTarget=tappino_grasso_sx
+Descrizione=Mount the left greaser cap.
+Utensile=Mani
+
+DragDrop=true
+DragDropObjects=tappino_grasso_sx
 DragDropDistance=0.2
 
 
 
 [Next Step - Filter]
+CameraPos=(-1.38,0.5,0.27)
+CameraTarget=(-0.58,0.01,-0.16)
+CameraRotation=(-0.86,-0.88,-0.73)
+CameraPivot=(-0.58,0.01,-0.16)
+CameraDistance=1.03
+CameraFOV=75
+CameraTransitionTime=1.0
 HighlightDescription=true
-Descrizione=Insert the filter into its housing.
+Descrizione=Insert the filter into its seat.
 Utensile=Mani
 
 # Sequential assembly system - filter
 DragDrop=true
-AssemblyMode=true
-# Only the filter can be assembled in this step
-AllowedComponents=filtro
+# Only the filter can be mounted in this step
+DragDropObjects=filtro
 DragDropDistance=0.3
 
 
-[Next Step - Cover]
+[Next Step - Lid]
 HighlightDescription=true
 
-Descrizione=Position the cover on top of the filter.
+Descrizione=Place the lid over the filter.
 Utensile=Mani
 
-# Continue sequential assembly - cover
+# Continue sequential assembly - lid
 DragDrop=true
-AssemblyMode=true
-
-
-AllowedComponents=coperchio
+DragDropObjects=coperchio
 DragDropDistance=0.3
 
 
 
-[Next Step - Cover screws group]
+[Next Step - Lid Screws Group]
+CameraPos=(-1.14,0.27,-0.04)
+CameraTarget=(-0.32,0,-0.01)
+CameraRotation=(-1.67,-1.25,-1.67)
+CameraPivot=(-0.32,0,-0.01)
+CameraDistance=0.86
+CameraFOV=75
+CameraTransitionTime=1.0
 HighlightDescription=true
 
-Descrizione=Install the 4 cover screws in any order.
+Descrizione=Mount the 4 lid screws in any order.
 Utensile=Mani
 
 # Interchangeable node - free order for screws
 DragDrop=true
-AssemblyMode=true
-
-
-
-AllowedComponents=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
-
+DragDropObjects=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
 
 DragDropDistance=0.2
 
-ValidateAssembly=true
 
 
-
-[Next Step - Final grease pump]
+[Next Step - Final Greaser]
 HighlightDescription=true
 
-Descrizione=Finally, place the grease pump back in its rest position. Requires all screws to be installed.
+Descrizione=Finally, place the greaser back in its resting position. Requires all screws to be mounted.
 Utensile=Mani
 
 # Final step - requires all prerequisites
 DragDrop=true
-AssemblyMode=true
-
-
-AllowedComponents=ingrassatore
+DragDropObjects=ingrassatore
 DragDropDistance=0.3
 
 
@@ -339,53 +299,56 @@ DragDropDistance=0.3
 
 
 [Vane Replacement Disassembly]
-HighlightDescription=true                                 // Tutorial futuro per sostituzione palette pompa
-CameraPos=(0, 0.5,1)                                       // Posizione assoluta per test
-  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=1.2                                                // Zoom leggero per visione d''insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+HighlightDescription=true                                 // Future tutorial for pump vane replacement
+CameraPos=(-0.08,0.34,0.8)
+CameraTarget=(-0.03,0.24,0.27)
+CameraRotation=(-0.2,-0.09,-0.02)
+CameraPivot=(-0.03,0.24,0.27)
+CameraDistance=0.54
+CameraFOV=75
+CameraTransitionTime=1.0                                    // Absolute position for testing
   Azione1=resetCenteredOriginal
 
 
-[Step 1 - Remove head screw 1]
+[Step 1 - Remove breech screw 1]
 HighlightDescription=true
 Elemento=models/vite_culatta_1.glb
-Descrizione=Remove the first Allen head screw from the cylinder head using the 6mm Allen key.
+Descrizione=Remove the first Allen screw from the breech using the 6mm Allen key.
 Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=appoggia(0.2)
 
-[Next Step - Remove head screw 2]
+[Next Step - Remove breech screw 2]
 HighlightDescription=false
 Elemento=models/vite_culatta_2.glb
-Descrizione=Remove the second Allen head screw from the cylinder head using the 6mm Allen key.
+Descrizione=Remove the second Allen screw from the breech using the 6mm Allen key.
 Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=appoggia(0.2)
 Autoaction=true
 
-[Next Step - Remove head screw 3]
+[Next Step - Remove breech screw 3]
 HighlightDescription=false
 Elemento=models/vite_culatta_3.glb
-Descrizione=Remove the third Allen head screw from the cylinder head using the 6mm Allen key. Note that the lower screws are shorter.
+Descrizione=Remove the third Allen screw from the breech using the 6mm Allen key. Note that the lower screws are shorter
 Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=traslazione:( -0.1,0,0,0.2)
 Azione3=appoggia(0.2)
 Autoaction=true
-[Next Step - Remove head screw 4]
+[Next Step - Remove breech screw 4]
 HighlightDescription=false
 Elemento=models/vite_culatta_4.glb
-Descrizione=Remove the fourth Allen head screw from the cylinder head using the 6mm Allen key. Note that the lower screws are shorter.
+Descrizione=Remove the fourth Allen screw from the breech using the 6mm Allen key. Note that the lower screws are shorter
 Utensile=ChiaveBrugola
 Azione1=svita(0.3)
 Azione2=traslazione:( -0.1,0,0,0.2)
 Azione3=appoggia(0.2)
 Autoaction=true
-[Next Step - Remove the head]
+[Next Step - Remove the breech]
 HighlightDescription=false
 Elemento=models/culatta.glb
-Descrizione=Remove the pump cylinder head using the "Hand" tool.
+Descrizione=Remove the pump breech using the "Hand" tool.
 Utensile=Mani
 Azione1=traslazione:( 0.5,0,0.5,0.5)
 Azione2=rotazione:(-90,0,0,0.8)
@@ -394,7 +357,7 @@ Azione3=appoggia(0.2)
 [Next Step - Remove flange screw 1]
 HighlightDescription=true
 Elemento=models/vite_flangia_1.glb
-Descrizione=Remove the first hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the first hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
@@ -403,7 +366,7 @@ Azione2=appoggia(0.2)
 HighlightDescription=false
 
 Elemento=models/vite_flangia_2.glb
-Descrizione=Remove the second hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the second hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
@@ -412,7 +375,7 @@ Autoaction=true
 [Next Step - Remove flange screw 3]
 HighlightDescription=false
 Elemento=models/vite_flangia_3.glb
-Descrizione=Remove the third hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the third hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
@@ -420,7 +383,7 @@ Autoaction=true
 [Next Step - Remove flange screw 4]
 HighlightDescription=false
 Elemento=models/vite_flangia_4.glb
-Descrizione=Remove the fourth hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the fourth hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
@@ -428,7 +391,7 @@ Autoaction=true
 [Next Step - Remove flange screw 5]
 HighlightDescription=false
 Elemento=models/vite_flangia_5.glb
-Descrizione=Remove the fifth hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the fifth hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2)
@@ -437,7 +400,7 @@ Autoaction=true
 [Next Step - Remove flange screw 6]
 HighlightDescription=false
 Elemento=models/vite_flangia_6.glb
-Descrizione=Remove the sixth hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the sixth hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2)
@@ -447,7 +410,7 @@ Autoaction=true
 [Next Step - Remove flange screw 7]
 HighlightDescription=false
 Elemento=models/vite_flangia_7.glb
-Descrizione=Remove the seventh hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the seventh hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2)
@@ -457,7 +420,7 @@ Autoaction=true
 [Next Step - Remove flange screw 8]
 HighlightDescription=false
 Elemento=models/vite_flangia_8.glb
-Descrizione=Remove the eighth hexagonal head screw with the 10mm open-end wrench.
+Descrizione=Remove the eighth hex head screw with the 10mm open-end wrench
 Utensile=ChiaveInglese
 Azione1=svita(0.1)
 Azione2=traslazione:( -0.1,0,0,0.2)
@@ -466,12 +429,11 @@ Autoaction=true
 
 [Next Step - Flange disassembly instructions]
 HighlightDescription=true
-  Message=Take two 8mm screws and insert them into the appropriate seats to use them as an extractor.
+  Message=Take two 8mm screws and insert them into the dedicated seats to use them as an extractor.
   MessageTitle=⚠️ Important
   MessageVideo=media/estrattore.mp4
   Descrizione=Flange extraction phase with extractor screws
   CameraPos=(0,0.45,0.89)
-  CameraTarget=(0,0,0)
   CameraZoom=1
   DragDrop=true
   DragDropObjects=vite_culatta_1,vite_culatta_2  # Both draggable
@@ -483,50 +445,50 @@ HighlightDescription=true
 [Next Step - Tighten extractor screws]
 HighlightDescription=true
   DragDrop=false
-CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
-  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=0.5                                                // Zoom leggero per visione d'insieme
-  CameraTransitionTime=1.0
- Descrizione=Tighten head screw 1 with the Allen key
+CameraPos=(-0.01,0.33,0.39)
+CameraTarget=(-0.03,0.24,0.27)
+CameraRotation=(-0.65,0.14,0.11)
+CameraPivot=(-0.03,0.24,0.27)
+CameraDistance=0.15
+CameraFOV=75
+CameraTransitionTime=1.0
+ Descrizione=Tighten breech screw 1 with the Allen key
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_1.glb
  Azione1=avvita(0.005)
- DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Both move according to tightening
-[Next Step - Tighten extractor screws 2]
+ DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Both move based on screw tightening
+[Next Step - Tighten extractor screws2]
 HighlightDescription=false
- Descrizione=Tighten head screw 2 with the Allen key
+ Descrizione=Tighten breech screw 2 with the Allen key
  Utensile=ChiaveBrugola
  Elemento=models/vite_culatta_2.glb
  Azione1=avvita(0.005)
- DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Both move according to tightening
-[Next Step - Remove vite_culatta_2]
+ DrivenObjects=flangia.glb,traslazione:(0,0,0.005,0.5);tubograsso.glb,traslazione:(0,0,0.005,0.5)  # Both move based on screw tightening
+[Next Step - Remove breech_screw_2]
 HighlightDescription=false
 Elemento=models/vite_culatta_2.glb
-Descrizione=Remove the screw used as extractor with the 6mm Allen key.
+Descrizione=Remove the screw used as extractor with the 6mm Allen key
 Utensile=ChiaveBrugola
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
-[Next Step - Remove vite_culatta_1]
+[Next Step - Remove breech_screw_1]
 HighlightDescription=false
 Elemento=models/vite_culatta_1.glb
-Descrizione=Remove the screw used as extractor with the 6mm Allen key.
+Descrizione=Remove the screw used as extractor with the 6mm Allen key
 Utensile=ChiaveBrugola
 Azione1=svita(0.1)
 Azione2=appoggia(0.2)
 
 [Next Step - Flange translation]
 HighlightDescription=true
-CameraPos=(0, 0.37, 0.44)                                   // Posizione assoluta per test
-  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=1                                               // Zoom leggero per visione d''insieme
-  CameraTransitionTime=1.0
+CameraZoom=1                                               // Slight zoom for overview
 Elemento=models/flangia.glb
-Descrizione=Move the flange away using Hands. The grease tube moves together with it.
+Descrizione=Move the flange away with your Hands. The grease tube moves together with it.
 Utensile=Mani
-SlaveObjects=tubograsso.glb  # Tube follows with slave movement
+DrivenObjects=tubograsso.glb,follow  # Tube follows with follow movement
 Azione1=traslazione:(0,0,0.2,0.5)
 
-[Next Step - Detach grease tube]
+[Next Step - Detach the grease tube]
 HighlightDescription=true
 Elemento=models/tubograsso.glb
 Descrizione=Detach the grease tube from the flange.
@@ -536,16 +498,23 @@ Azione1=traslazione:( 0,0,-0.2,0.5)
 [Next Step - Extract the flange]
 HighlightDescription=true
 Elemento=models/flangia.glb
-Descrizione=Set the flange down on the ground using Hands.
+Descrizione=Place the flange on the ground.
 Utensile=Mani
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(90,0,0,0.5)
 Azione3=appoggia(0.2)
 
 [Next Step - Extract vane 1]
+CameraPos=(0.14,0.96,1.21)
+CameraTarget=(-0.03,0.24,0.27)
+CameraRotation=(-0.65,0.14,0.11)
+CameraPivot=(-0.03,0.24,0.27)
+CameraDistance=1.2
+CameraFOV=75
+CameraTransitionTime=1.0
 HighlightDescription=true
 Elemento=models/paletta1.glb
-Descrizione=Set vane 1 down on the ground.
+Descrizione=Place vane 1 on the ground.
 Utensile=Mani
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-32,0.5)
@@ -554,7 +523,7 @@ Azione4=appoggia(0.2)
 [Next Step - Extract vane 2]
 HighlightDescription=false
 Elemento=models/paletta2.glb
-Descrizione=Set vane 2 down on the ground.
+Descrizione=Place vane 2 on the ground.
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-108,0.5)
 Azione3=traslazione:(-0.7,0,0.2,0.5)
@@ -563,10 +532,10 @@ Autoaction=true
 [Next Step - Extract vane 3]
 HighlightDescription=false
 Elemento=models/paletta3.glb
-Descrizione=Set vane 3 down on the ground.
+Descrizione=Place vane 3 on the ground.
 Utensile=Mani
 Elemento=models/paletta3.glb
-Descrizione=Set vane 3 down on the ground.
+Descrizione=Place vane 3 on the ground.
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,0,0.5)
 Azione3=traslazione:(-0.9,0,0.2,0.5)
@@ -575,7 +544,7 @@ Autoaction=true
 [Next Step - Extract vane 4]
 HighlightDescription=false
 Elemento=models/paletta4.glb
-Descrizione=Set vane 4 down on the ground.
+Descrizione=Place vane 4 on the ground.
 Utensile=Mani
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,-72,0.5)
@@ -585,7 +554,7 @@ Autoaction=true
 [Next Step - Extract vane 5]
 HighlightDescription=false
 Elemento=models/paletta5.glb
-Descrizione=Set vane 5 down on the ground.
+Descrizione=Place vane 5 on the ground.
 Utensile=Mani
 Azione1=traslazione:( 0,0,0.5,0.5)
 Azione2=rotazione:(0,0,32,0.5)
@@ -593,167 +562,169 @@ Azione3=traslazione:(-1.3,0,0.2,0.5)
 Azione4=appoggia(0.2)
 Autoaction=true
 [Vane Replacement Reverse]
-                         // Tutorial inverso palette
-// Da implementare: procedura per rimontaggio palette
-CameraPos=(0.06,0.8, 1.19)
-CameraTarget=(0, 0, 0)
-CameraZoom=1.44
-CameraTransitionTime=2.5
+                         // Reverse vane tutorial
+CameraPos=(-0.65,0.2,1.11)
+CameraTarget=(0,0,0)
+CameraRotation=(-0.18,-0.52,-0.09)
+CameraPivot=(0,0,0)
+CameraDistance=1.3
+CameraFOV=75
+CameraTransitionTime=1.0
 
 # Model Positions and Rotations - Automatically exported
-# Generato il: 28/10/2025, 09:01:11
+# Generated on: 28/10/2025, 09:01:11
 # Syntax: Posizione=modelName:(x,y,z) and Rotazione=modelName:(rx,ry,rz)
 
 
-# Model 2: vite_coperchio_1
+# Model 2: lid_screw_1
 Posizione=vite_coperchio_1:(0.000,0.000,0.000)
 Rotazione=vite_coperchio_1:(0.0,0.0,0.0)
 
-# Model 3: vite_coperchio_3
+# Model 3: lid_screw_3
 Posizione=vite_coperchio_3:(0.000,0.000,0.000)
 Rotazione=vite_coperchio_3:(0.0,0.0,0.0)
 
-# Model 4: vite_coperchio_2
+# Model 4: lid_screw_2
 Posizione=vite_coperchio_2:(0.000,0.000,0.000)
 Rotazione=vite_coperchio_2:(0.0,0.0,0.0)
 
-# Model 5: tappino_grasso_sx
+# Model 5: left_grease_cap
 Posizione=tappino_grasso_sx:(0.000,0.000,0.000)
 Rotazione=tappino_grasso_sx:(0.0,0.0,0.0)
 
-# Model 6: ingrassatore
+# Model 6: greaser
 Posizione=ingrassatore:(0.000,0.000,0.000)
 Rotazione=ingrassatore:(0.0,0.0,0.0)
 
-# Model 7: tappino_grasso_dx
+# Model 7: right_grease_cap
 Posizione=tappino_grasso_dx:(0.000,0.000,0.000)
 Rotazione=tappino_grasso_dx:(0.0,0.0,0.0)
 
-# Model 8: vite_coperchio_4
+# Model 8: lid_screw_4
 Posizione=vite_coperchio_4:(0.000,0.000,0.000)
 Rotazione=vite_coperchio_4:(0.0,0.0,0.0)
 
-# Model 9: vite_culatta_3
+# Model 9: breech_screw_3
 Posizione=vite_culatta_3:(-0.100,-0.116,0.300)
 Rotazione=vite_culatta_3:(0.0,0.0,1800.0)
 
-# Model 10: estrattoredx
+# Model 10: right_extractor
 Posizione=estrattoredx:(0.000,0.000,0.000)
 Rotazione=estrattoredx:(0.0,0.0,0.0)
 
-# Model 11: vite_culatta_4
+# Model 11: breech_screw_4
 Posizione=vite_culatta_4:(-0.100,-0.116,0.300)
 Rotazione=vite_culatta_4:(0.0,0.0,1800.0)
 
-# Model 12: vite_culatta_1
+# Model 12: breech_screw_1
 Posizione=vite_culatta_1:(0.000,-0.378,0.091)
 Rotazione=vite_culatta_1:(0.0,0.0,0.0)
 
-# Model 13: vite_culatta_2
+# Model 13: breech_screw_2
 Posizione=vite_culatta_2:(0.000,-0.378,0.091)
 Rotazione=vite_culatta_2:(0.0,0.0,0.0)
 
-# Model 14: flangia
+# Model 14: flange
 Posizione=flangia:(0.000,0.261,0.493)
 Rotazione=flangia:(90.0,0.0,0.0)
 
-# Model 15: vite_flangia_4
-Posizione=vite_flangia_4:(-0.000,-0.267,0.100)
+# Model 15: flange_screw_4
+Posizione=vite_flangia_4:(-0.000,-0.267,0.200)
 Rotazione=vite_flangia_4:(0.0,0.0,1800.0)
 
-# Model 16: vite_flangia_2
-Posizione=vite_flangia_2:(-0.000,-0.321,0.100)
+# Model 16: flange_screw_2
+Posizione=vite_flangia_2:(-0.000,-0.321,0.200)
 Rotazione=vite_flangia_2:(0.0,0.0,1800.0)
 
-# Model 17: vite_flangia_5
-Posizione=vite_flangia_5:(-0.100,-0.191,0.100)
+# Model 17: flange_screw_5
+Posizione=vite_flangia_5:(-0.100,-0.191,0.200)
 Rotazione=vite_flangia_5:(0.0,0.0,1800.0)
 
-# Model 18: vite_flangia_1
-Posizione=vite_flangia_1:(-0.000,-0.267,0.100)
+# Model 18: flange_screw_1
+Posizione=vite_flangia_1:(-0.000,-0.267,0.200)
 Rotazione=vite_flangia_1:(0.0,0.0,1800.0)
 
-# Model 19: vite_flangia_6
-Posizione=vite_flangia_6:(-0.100,-0.137,0.100)
+# Model 19: flange_screw_6
+Posizione=vite_flangia_6:(-0.100,-0.137,0.200)
 Rotazione=vite_flangia_6:(0.0,0.0,1800.0)
 
-# Model 20: vite_flangia_8
-Posizione=vite_flangia_8:(-0.100,-0.191,0.100)
+# Model 20: flange_screw_8
+Posizione=vite_flangia_8:(-0.100,-0.191,0.200)
 Rotazione=vite_flangia_8:(0.0,0.0,1800.0)
 
-# Model 21: estrattoresx
+# Model 21: left_extractor
 Posizione=estrattoresx:(0.000,0.000,0.000)
 Rotazione=estrattoresx:(0.0,0.0,0.0)
 
-# Model 22: vite_flangia_7
+# Model 22: flange_screw_7
 Posizione=vite_flangia_7:(-0.100,-0.137,0.100)
 Rotazione=vite_flangia_7:(0.0,0.0,1800.0)
 
-# Model 23: vite_flangia_3
+# Model 23: flange_screw_3
 Posizione=vite_flangia_3:(-0.000,-0.321,0.100)
 Rotazione=vite_flangia_3:(0.0,0.0,1800.0)
 
-# Model 24: paletta5
+# Model 24: vane5
 Posizione=paletta5:(-1.188,-0.151,0.700)
 Rotazione=paletta5:(0.0,0.0,32.0)
 
-# Model 25: paletta1
+# Model 25: vane1
 Posizione=paletta1:(-0.625,-0.156,0.700)
 Rotazione=paletta1:(0.0,0.0,-32.0)
 
-# Model 26: paletta3
+# Model 26: vane3
 Posizione=paletta3:(-0.900,-0.273,0.700)
 Rotazione=paletta3:(0.0,0.0,0.0)
 
-# Model 27: paletta2
+# Model 27: vane2
 Posizione=paletta2:(-0.958,0.124,0.700)
 Rotazione=paletta2:(0.0,0.0,-108.0)
 
-# Model 28: filtro
+# Model 28: filter
 Posizione=filtro:(0.000,0.000,0.000)
 Rotazione=filtro:(0.0,0.0,0.0)
 
-# Model 29: paletta4
+# Model 29: vane4
 Posizione=paletta4:(-1.337,-0.082,0.700)
 Rotazione=paletta4:(0.0,0.0,-72.0)
 
-# Model 30: tubograsso
+# Model 30: grease_tube
 Posizione=tubograsso:(0.000,0.000,0.010)
 Rotazione=tubograsso:(0.0,0.0,0.0)
 
-# Model 31: culatta
+# Model 31: breech
 Posizione=culatta:(0.500,-0.110,0.954)
 Rotazione=culatta:(-90.0,0.0,0.0)
 
-# Model 32: pavimento
+# Model 32: floor
 Posizione=pavimento:(0.000,0.000,0.000)
 Rotazione=pavimento:(0.0,0.0,0.0)
 
-# Model 33: coperchio
+# Model 33: lid
 Posizione=coperchio:(0.000,0.000,0.000)
 Rotazione=coperchio:(0.0,0.0,0.0)
 
-# Model 34: corpo
+# Model 34: body
 Posizione=corpo:(0.000,0.000,0.000)
 Rotazione=corpo:(0.0,0.0,0.0)
 
 # Vane Replacement Tutorial - Reassembly (Reverse)
 # Reverse sequence compared to disassembly
 # Uses DragDrop + AssemblyMode for positioning
-# Manual tightening screw by screw
+# Manual screw tightening one by one
 
 TutorialSteps=30
 
-[Step 1 - Reinstall vane 1]
+[Step 1 - Reassemble vane 1]
 HighlightDescription=true
-Descrizione=Take vane 1 and reinstall it in its original position. The vane will be rotated and positioned automatically.
+Descrizione=Pick up vane 1 and reassemble it in its original seat. The vane will be rotated and positioned automatically.
 Utensile=Mani
 Elemento=models/paletta1.glb
 Rotazione=paletta1:(0.0,0.0,0.0)
 Azione1=traslazione:(0.625,0.156,-0.300,1.2)
 Azione2=traslazione:(0,0,-0.4,1.2)
 
-[Next Step - Reinstall vane 2]
+[Next Step - Reassemble vane 2]
 HighlightDescription=false
 CameraPos=(-0.45,0.45,1.3)
 CameraTarget=(-0.7,0.05,0.61)
@@ -763,33 +734,33 @@ CameraDistance=0.83
 CameraFOV=75
 CameraTransitionTime=1.0
 CameraZoom=1
-Descrizione=Take vane 2 and reinstall it in its original position. The vane will be rotated and positioned automatically.
+Descrizione=Pick up vane 2 and reassemble it in its original seat. The vane will be rotated and positioned automatically.
 Utensile=Mani
 Elemento=models/paletta2.glb
 Rotazione=paletta2:(0.0,0.0,0.0)
 Azione1=traslazione:(0.958,-0.124,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 Autoaction=true
-[Next Step - Reinstall vane 3]
+[Next Step - Reassemble vane 3]
 HighlightDescription=false
-Descrizione=Take vane 3 and reinstall it in its original position. The vane will be positioned automatically.
+Descrizione=Pick up vane 3 and reassemble it in its original seat. The vane will be positioned automatically.
 Utensile=Mani
 Elemento=models/paletta3.glb
 Azione1=traslazione:(0.900,0.273,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 Autoaction=true
-[Next Step - Reinstall vane 4]
+[Next Step - Reassemble vane 4]
 HighlightDescription=false
-Descrizione=Take vane 4 and reinstall it in its original position. The vane will be rotated and positioned automatically.
+Descrizione=Pick up vane 4 and reassemble it in its original seat. The vane will be rotated and positioned automatically.
 Utensile=Mani
 Elemento=models/paletta4.glb
 Rotazione=paletta4:(0.0,0.0,0.0)
 Azione1=traslazione:(1.337,0.082,-0.300,1.2)
 Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 Autoaction=true
-[Next Step - Reinstall vane 5]
+[Next Step - Reassemble vane 5]
 HighlightDescription=false
-Descrizione=Take vane 5 and reinstall it in its original position. The vane will be rotated and positioned automatically.
+Descrizione=Pick up vane 5 and reassemble it in its original seat. The vane will be rotated and positioned automatically.
 Utensile=Mani
 Elemento=models/paletta5.glb
 Rotazione=paletta5:(0.0,0.0,0.0)
@@ -798,7 +769,7 @@ Azione2=traslazione:(0.0,-0.0,-0.400,1.2)
 Autoaction=true
 [Next Step - Position the flange]
 HighlightDescription=false
-Descrizione=Drag the flange and position it above its housing (it will snap automatically when lifted by 0.3m).
+Descrizione=Drag the flange and position it over its seat (it will snap automatically raised by 0.3m).
 Utensile=Mani
 CameraPos=(0, 0.45, 0.89)
 CameraTarget=(0, 0, 0)
@@ -806,13 +777,13 @@ CameraZoom=1.2
 CameraTransitionTime=1.5
 DragDrop=true
 DragDropObjects=flangia
-SnapPointPivot=(0.000,0.0,0.3)
+SnapPoint=pivot:(0.000,0.0,0.3)
 DragDropDistance=0.3
 ShowSnapIndicators=false
 
 [Next Step - Lower the flange]
 HighlightDescription=true
-Descrizione=The flange will now be automatically moved into its final position.
+Descrizione=The flange will now be automatically lowered into its final seat.
 Utensile=Mani
 Elemento=models/flangia.glb
 Azione1=traslazione:(0.0,0.0,-0.3,0.8)
@@ -820,171 +791,168 @@ Azione1=traslazione:(0.0,0.0,-0.3,0.8)
 
 
 
+
 [Next Step - Position flange screw 1]
 
 HighlightDescription=true
-Descrizione=Position the first flange screw in its housing.
+Descrizione=Position the first flange screw in its seat.
 Utensile=Mani
-CameraPos=(0.01,0.45,0.65)
+CameraPos=(0.01,0.54,0.79)
 CameraTarget=(0,0.15,0.19)
+CameraRotation=(-0.58,0.02,0.01)
 CameraPivot=(0,0.15,0.19)
-CameraDistance=0.5
+CameraDistance=0.72
 CameraFOV=60
 CameraTransitionTime=1.0
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_1
+DragDropObjects=vite_flangia_1
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 
 [Next Step - Position flange screw 2]
 HighlightDescription=false
-Descrizione=Position the second flange screw in its housing.
+Descrizione=Position the second flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_2
+DragDropObjects=vite_flangia_2
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 [Next Step - Position flange screw 3]
 HighlightDescription=false
-Descrizione=Position the third flange screw in its housing.
+Descrizione=Position the third flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_3
+DragDropObjects=vite_flangia_3
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 [Next Step - Position flange screw 4]
 HighlightDescription=false
-Descrizione=Position the fourth flange screw in its housing.
+Descrizione=Position the fourth flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_4
+DragDropObjects=vite_flangia_4
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 [Next Step - Position flange screw 5]
 HighlightDescription=false
-Descrizione=Position the fifth flange screw in its housing.
+Descrizione=Position the fifth flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_5
+DragDropObjects=vite_flangia_5
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 [Next Step - Position flange screw 6]
 HighlightDescription=false
-Descrizione=Position the sixth flange screw in its housing.
+Descrizione=Position the sixth flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_6
+DragDropObjects=vite_flangia_6
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 [Next Step - Position flange screw 7]
 HighlightDescription=false
-Descrizione=Position the seventh flange screw in its housing.
+Descrizione=Position the seventh flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_7
+DragDropObjects=vite_flangia_7
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 [Next Step - Position flange screw 8]
 HighlightDescription=false
-Descrizione=Position the eighth flange screw in its housing.
+Descrizione=Position the eighth flange screw in its seat.
 Utensile=Mani
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_8
+DragDropObjects=vite_flangia_8
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.01)
 Autoaction=true
 
 [Next Step - Tighten flange screw 1]
 HighlightDescription=true
 Elemento=models/vite_flangia_1.glb
-Descrizione=Tighten the first flange screw with the 10mm wrench.
+Descrizione=Cross pattern (1/8): tighten screw 1 with the 10mm open-end wrench.
 Utensile=ChiaveInglese
-Azione1=avvita(0.02)
+Azione1=avvita(0.01)
+
+[Next Step - Tighten flange screw 5]
+HighlightDescription=false
+Elemento=models/vite_flangia_5.glb
+Descrizione=Cross pattern (2/8): tighten screw 5 — opposite to screw 1.
+Utensile=ChiaveInglese
+Azione1=avvita(0.01)
+
+[Next Step - Tighten flange screw 3]
+HighlightDescription=false
+Elemento=models/vite_flangia_3.glb
+Descrizione=Cross pattern (3/8): tighten screw 3.
+Utensile=ChiaveInglese
+Azione1=avvita(0.01)
+
+[Next Step - Tighten flange screw 7]
+HighlightDescription=false
+Elemento=models/vite_flangia_7.glb
+Descrizione=Cross pattern (4/8): tighten screw 7 — opposite to screw 3.
+Utensile=ChiaveInglese
+Azione1=avvita(0.01)
+
 
 [Next Step - Tighten flange screw 2]
 HighlightDescription=false
 Elemento=models/vite_flangia_2.glb
-Descrizione=Tighten the second flange screw with the 10mm wrench.
+Descrizione=Cross pattern (5/8): tighten screw 2.
 Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
-[Next Step - Tighten flange screw 3]
-HighlightDescription=false
-Elemento=models/vite_flangia_3.glb
-Descrizione=Tighten the third flange screw with the 10mm wrench.
-Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
-[Next Step - Tighten flange screw 4]
-HighlightDescription=false
-Elemento=models/vite_flangia_4.glb
-Descrizione=Tighten the fourth flange screw with the 10mm wrench.
-Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
-[Next Step - Tighten flange screw 5]
-HighlightDescription=false
-Elemento=models/vite_flangia_5.glb
-Descrizione=Tighten the fifth flange screw with the 10mm wrench.
-Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
+Azione1=avvita(0.01)
+
+
 [Next Step - Tighten flange screw 6]
 HighlightDescription=false
 Elemento=models/vite_flangia_6.glb
-Descrizione=Tighten the sixth flange screw with the 10mm wrench.
+Descrizione=Cross pattern (6/8): tighten screw 6 — opposite to screw 2.
 Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
-[Next Step - Tighten flange screw 7]
+Azione1=avvita(0.01)
+
+
+[Next Step - Tighten flange screw 4]
 HighlightDescription=false
-Elemento=models/vite_flangia_7.glb
-Descrizione=Tighten the seventh flange screw with the 10mm wrench.
+Elemento=models/vite_flangia_4.glb
+Descrizione=Cross pattern (7/8): tighten screw 4.
 Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
+Azione1=avvita(0.01)
+
+
 [Next Step - Tighten flange screw 8]
 HighlightDescription=false
 Elemento=models/vite_flangia_8.glb
-Descrizione=Tighten the eighth flange screw with the 10mm wrench.
+Descrizione=Cross pattern (8/8): tighten screw 8 — opposite to screw 4.
 Utensile=ChiaveInglese
-Azione1=avvita(0.02)
-Autoaction=true
+Azione1=avvita(0.01)
+
 [Next Step - Reattach the grease tube]
 HighlightDescription=false
-Descrizione=Connect the grease tube to the flange. Requires the flange to already be installed.
+Descrizione=Connect the grease tube to the flange. Requires the flange to be already mounted.
 Utensile=Mani
 
 # Continue sequential assembly - grease tube
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=tubograsso
+DragDropObjects=tubograsso
 DragDropDistance=0.3
 ShowSnapIndicators=false
 
-[Next Step - Reinstall the head]
+[Next Step - Reassemble the breech]
 HighlightDescription=true
 CameraPos=(-0.35,0.42,0.92)
 CameraTarget=(0.3,0.12,0.1)
@@ -992,74 +960,69 @@ CameraRotation=(-0.35,-0.64,-0.22)
 CameraPivot=(0.3,0.12,0.1)
 CameraDistance=1.08
 CameraFOV=75
-CameraTransitionTime=1.0
-Descrizione=Position the cylinder head on the pump body. Requires all flange screws to have been tightened.
+Descrizione=Position the breech on the pump body. Requires all flange screws to have been tightened.
 Utensile=Mani
 
-# Continue sequential assembly - cylinder head
+# Continue sequential assembly - breech
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=culatta
+DragDropObjects=culatta
 DragDropDistance=0.3
 ShowSnapIndicators=false
 
 
-[Next Step - Position long head screws]
+[Next Step - Position long Breech Screws]
 HighlightDescription=true
-Descrizione=Position the 2 long cylinder head screws in their seats in any order. The screws are not yet tightened.
+Descrizione=Position the 2 long breech screws in their seats in any order. The screws are not yet tightened.
 Utensile=Mani
 
-# Interchangeable node - free order for positioning 4 cylinder head screws
+# Interchangeable node - free order for positioning 4 breech screws
 
 
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_culatta_1,vite_culatta_2
+DragDropObjects=vite_culatta_1,vite_culatta_2
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.02)
 
-[Next Step - Position short head screws]
+[Next Step - Position short Breech Screws]
 HighlightDescription=true
-Descrizione=Position the 2 short cylinder head screws in their seats in any order. The screws are not yet tightened.
+Descrizione=Position the 2 short breech screws in their seats in any order. The screws are not yet tightened.
 Utensile=Mani
 
-# Interchangeable node - free order for positioning 2 short cylinder head screws
+# Interchangeable node - free order for positioning 2 short breech screws
 
 
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_culatta_3,vite_culatta_4
+DragDropObjects=vite_culatta_3,vite_culatta_4
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.02)
 
-[Next Step - Tighten head screw 1]
+[Next Step - Tighten breech screw 1]
 HighlightDescription=true
 Elemento=models/vite_culatta_1.glb
-Descrizione=Tighten the first cylinder head screw with the 6mm Allen key.
+Descrizione=Tighten the first breech screw with the 6mm Allen key.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 
-[Next Step - Tighten head screw 2]
+[Next Step - Tighten breech screw 2]
 HighlightDescription=false
 Elemento=models/vite_culatta_2.glb
-Descrizione=Tighten the second cylinder head screw with the 6mm Allen key.
+Descrizione=Tighten the second breech screw with the 6mm Allen key.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 Autoaction=true
-[Next Step - Tighten head screw 3]
+[Next Step - Tighten breech screw 3]
 HighlightDescription=false
 Elemento=models/vite_culatta_3.glb
-Descrizione=Tighten the third cylinder head screw with the 6mm Allen key.
+Descrizione=Tighten the third breech screw with the 6mm Allen key.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
 Autoaction=true
-[Next Step - Tighten head screw 4]
+[Next Step - Tighten breech screw 4]
 HighlightDescription=false
 Elemento=models/vite_culatta_4.glb
-Descrizione=Tighten the fourth cylinder head screw with the 6mm Allen key. This completes the pump reassembly.
+Descrizione=Tighten the fourth breech screw with the 6mm Allen key. This completes the pump reassembly.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
-ValidateAssembly=true
 Autoaction=true

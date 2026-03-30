@@ -199,7 +199,54 @@ class TutorialManager {
             tutorials.push(currentTutorial);
         }
 
-        this.safeLog(2, `[TutorialManager] Parsing completato: ${tutorials.length} tutorial trovati`);
+        // ═══════════════════════════════════════════════════════════════
+        // EREDITARIETÀ CAMERA: Gli step ereditano le proprietà camera
+        // dalla sezione tutorial o dallo step precedente se non specificate.
+        // Questo elimina la necessità di copiare le stesse righe camera
+        // in ogni step consecutivo.
+        // ═══════════════════════════════════════════════════════════════
+        const cameraProperties = [
+            'CameraPos', 'CameraTarget', 'CameraRotation', 'CameraPivot',
+            'CameraDistance', 'CameraFOV', 'CameraTransitionTime', 'CameraZoom'
+        ];
+
+        for (const tutorial of tutorials) {
+            // Le proprietà camera della sezione tutorial sono il "default"
+            let inheritedCamera = {};
+            for (const prop of cameraProperties) {
+                if (tutorial.properties[prop]) {
+                    inheritedCamera[prop] = tutorial.properties[prop];
+                }
+            }
+
+            for (const step of tutorial.steps) {
+                // Controlla se lo step ha ALMENO UNA proprietà camera esplicita
+                const hasAnyExplicitCamera = cameraProperties.some(prop => step.properties[prop] !== undefined);
+
+                if (hasAnyExplicitCamera) {
+                    // Lo step ha camera esplicita: aggiorna inheritedCamera con i valori dello step
+                    // e eredita solo le proprietà camera NON specificate dallo step
+                    for (const prop of cameraProperties) {
+                        if (step.properties[prop] !== undefined) {
+                            // Lo step sovrascrive questa proprietà
+                            inheritedCamera[prop] = step.properties[prop];
+                        } else if (inheritedCamera[prop] !== undefined) {
+                            // Eredita dal contesto precedente
+                            step.properties[prop] = inheritedCamera[prop];
+                        }
+                    }
+                } else if (Object.keys(inheritedCamera).length > 0) {
+                    // Lo step NON ha camera: eredita TUTTO dal contesto precedente
+                    for (const prop of cameraProperties) {
+                        if (inheritedCamera[prop] !== undefined) {
+                            step.properties[prop] = inheritedCamera[prop];
+                        }
+                    }
+                }
+            }
+        }
+
+        this.safeLog(2, `[TutorialManager] Parsing completato: ${tutorials.length} tutorial trovati (con ereditarietà camera)`);
         return tutorials;
     }
 

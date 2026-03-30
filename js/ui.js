@@ -3923,6 +3923,19 @@ window.UI = {
             const drivenEntries = drivenObjectsClean.split(';').map(entry => entry.trim()).filter(entry => entry.length > 0);
 
             drivenEntries.forEach(entry => {
+                // Supporto "follow": oggetto.glb,follow (segue il master 1:1, equivale a SlaveObjects)
+                const followMatch = entry.match(/^([^,]+),\s*follow\s*$/);
+                if (followMatch) {
+                    const objectName = followMatch[1].trim();
+                    // Aggiungi come slave object (segue il master rigidamente)
+                    if (!step.properties.SlaveObjectsList) {
+                        step.properties.SlaveObjectsList = [];
+                    }
+                    step.properties.SlaveObjectsList.push(objectName);
+                    console.log(`[UI] 🚗 DRIVEN OBJECT (follow/slave): "${objectName}" → segue il master 1:1`);
+                    return;
+                }
+
                 // Parsing formato: oggetto.glb,traslazione:(x,y,z,durata)
                 const match = entry.match(/^([^,]+),traslazione:\(([^,]+),([^,]+),([^,]+),([^)]+)\)$/);
 
@@ -3945,7 +3958,7 @@ window.UI = {
                         AppConfig.log(1, `⚠️ DRIVEN OBJECT: Coordinate o durata non valide: ${entry}`);
                     }
                 } else {
-                    AppConfig.log(1, `⚠️ DRIVEN OBJECT: Formato non valido: ${entry} (usare formato: oggetto.glb,traslazione:(x,y,z,durata))`);
+                    AppConfig.log(1, `⚠️ DRIVEN OBJECT: Formato non valido: ${entry} (usare formato: oggetto.glb,traslazione:(x,y,z,durata) oppure oggetto.glb,follow)`);
                 }
             });
 
@@ -4000,6 +4013,19 @@ window.UI = {
                 }
             }
 
+            // Pre-redirect: se SnapPoint usa sintassi unificata offset:/pivot:, popola le proprietà
+            // legacy PRIMA che vengano processate nei blocchi successivi
+            if (step.properties.SnapPoint && !step.properties.SnapOffset && !step.properties.SnapPointPivot) {
+                const spClean = step.properties.SnapPoint.split('#')[0].trim();
+                if (spClean.startsWith('offset:')) {
+                    step.properties.SnapOffset = spClean.substring(7).trim();
+                    console.log(`[UI] 📍 SnapPoint→SnapOffset pre-redirect: "${step.properties.SnapOffset}"`);
+                } else if (spClean.startsWith('pivot:')) {
+                    step.properties.SnapPointPivot = spClean.substring(6).trim();
+                    console.log(`[UI] 📍 SnapPoint→SnapPointPivot pre-redirect: "${step.properties.SnapPointPivot}"`);
+                }
+            }
+
             // NUOVO: SnapOffset - calcola automaticamente posizione snap come "posizione originale + offset"
             // Sintassi: SnapOffset=(x,y,z) - applica offset a TUTTI gli oggetti draggabili
             if (step.properties.SnapOffset && draggableObjects.length > 0) {
@@ -4036,8 +4062,10 @@ window.UI = {
                                     const snapY = originalPos.y + offsetY;
                                     const snapZ = originalPos.z + offsetZ;
                                     
-                                    // Imposta come custom snap position pivot per questo oggetto
-                                    window.DragDropSystem.setCustomSnapPositionPivot(objectName, snapX, snapY, snapZ);
+                                    // Imposta come custom snap position (BB center) per questo oggetto
+                                    // NOTA: usa setCustomSnapPosition (non Pivot) perché il target è calcolato
+                                    // dal centro BB originale + offset, quindi la distanza va misurata dal centro BB
+                                    window.DragDropSystem.setCustomSnapPosition(objectName, snapX, snapY, snapZ);
                                     
                                     console.log(`[UI] 📐 SnapOffset per "${objectName}": originale (${originalPos.x.toFixed(3)}, ${originalPos.y.toFixed(3)}, ${originalPos.z.toFixed(3)}) + offset → snap (${snapX.toFixed(3)}, ${snapY.toFixed(3)}, ${snapZ.toFixed(3)})`);
                                 }
@@ -4104,14 +4132,35 @@ window.UI = {
             }
 
             // NUOVO: Configura punti di snap a coordinate arbitrarie
+            // Supporta anche sintassi unificata:
+            //   SnapPoint=pivot:(x,y,z)    → equivale a SnapPointPivot=(x,y,z)
+            //   SnapPoint=offset:(x,y,z)   → equivale a SnapOffset=(x,y,z)
             if (step.properties.SnapPoint) {
                 const snapPointClean = step.properties.SnapPoint.split('#')[0].trim();
                 console.log(`[UI] 📍 Parsing SnapPoint: "${snapPointClean}"`);
 
-                // RILEVA FORMATO: se contiene ":" → formato vecchio (per-oggetto), altrimenti formato nuovo (globale)
+                // Rileva sintassi unificata: pivot:(...) o offset:(...)
+                if (snapPointClean.startsWith('pivot:')) {
+                    // Redireziona a SnapPointPivot
+                    const pivotValue = snapPointClean.substring(6).trim();
+                    step.properties.SnapPointPivot = pivotValue;
+                    console.log(`[UI] 📍 SnapPoint→SnapPointPivot redirect: "${pivotValue}"`);
+                } else if (snapPointClean.startsWith('offset:')) {
+                    // Redireziona a SnapOffset
+                    const offsetValue = snapPointClean.substring(7).trim();
+                    step.properties.SnapOffset = offsetValue;
+                    console.log(`[UI] 📍 SnapPoint→SnapOffset redirect: "${offsetValue}"`);
+                }
+
+                // RILEVA FORMATO: se contiene ":" → formato vecchio (per-oggetto) O redirect già gestito, altrimenti formato nuovo (globale)
+                // Escludi i redirect pivot:/offset: che sono già stati gestiti
+                const isRedirected = snapPointClean.startsWith('pivot:') || snapPointClean.startsWith('offset:');
                 const isGlobalFormat = !snapPointClean.includes(':');
 
-                if (isGlobalFormat) {
+                if (isRedirected) {
+                    // Il valore è stato spostato in SnapPointPivot o SnapOffset, verranno processati sotto
+                    console.log(`[UI] 📍 SnapPoint redirect completato, skip processing diretto`);
+                } else if (isGlobalFormat) {
                     // FORMATO NUOVO (GLOBALE): (x,y,z),(x2,y2,z2),(x3,y3,z3)
                     // Applica questi punti a TUTTI gli oggetti in DragDropObjects
                     const globalPoints = [];

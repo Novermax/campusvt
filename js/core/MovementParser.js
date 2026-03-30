@@ -48,8 +48,44 @@ window.MovementParser = {
             const parsedStep = this.parseMovementStepString(stepString, stepIndex, modelFilename);
 
             if (parsedStep) {
-                console.log(`🔍 [PARSE_STEPS] Step ${stepIndex} parsato con successo:`, parsedStep);
-                movementSteps.push(parsedStep);
+                // Se contiene oscillazione, espandila in step multipli di traslazione
+                if (parsedStep.oscillazione) {
+                    const osc = parsedStep.oscillazione;
+                    console.log(`🔍 [PARSE_STEPS] Espansione oscillazione: ${osc.cicli} cicli`);
+                    for (let i = 0; i < osc.cicli; i++) {
+                        // Step A: traslazione a posA
+                        movementSteps.push({
+                            index: movementSteps.length + 1,
+                            traslazione: {
+                                x: osc.posA.x, y: osc.posA.y, z: osc.posA.z,
+                                durata: osc.durataCiclo,
+                                targetElement: osc.targetElement,
+                                isAbsoluteToOriginal: osc.isAbsoluteToOriginal
+                            },
+                            rotazione: null, appoggia: null, resetCenteredOriginal: null,
+                            svita: null, avvita: null, estrai: null, inserisci: null,
+                            oscillazione: null, centro: null,
+                            durata: osc.durataCiclo
+                        });
+                        // Step B: traslazione a posB
+                        movementSteps.push({
+                            index: movementSteps.length + 1,
+                            traslazione: {
+                                x: osc.posB.x, y: osc.posB.y, z: osc.posB.z,
+                                durata: osc.durataCiclo,
+                                targetElement: osc.targetElement,
+                                isAbsoluteToOriginal: osc.isAbsoluteToOriginal
+                            },
+                            rotazione: null, appoggia: null, resetCenteredOriginal: null,
+                            svita: null, avvita: null, estrai: null, inserisci: null,
+                            oscillazione: null, centro: null,
+                            durata: osc.durataCiclo
+                        });
+                    }
+                } else {
+                    console.log(`🔍 [PARSE_STEPS] Step ${stepIndex} parsato con successo:`, parsedStep);
+                    movementSteps.push(parsedStep);
+                }
             } else {
                 console.warn(`⚠️ [PARSE_STEPS] Step ${stepIndex} NON parsato!`);
             }
@@ -80,6 +116,7 @@ window.MovementParser = {
                 avvita: null,
                 estrai: null,
                 inserisci: null,
+                oscillazione: null,
                 centro: null,
                 durata: 1.0
             };
@@ -105,6 +142,8 @@ window.MovementParser = {
                     step.estrai = this.parseMovementOperation(trimmed, 'estrai', modelFilename);
                 } else if (trimmed.startsWith('inserisci')) {
                     step.inserisci = this.parseMovementOperation(trimmed, 'inserisci', modelFilename);
+                } else if (trimmed.startsWith('oscillazione:')) {
+                    step.oscillazione = this._parseOscillazione(trimmed, modelFilename);
                 } else if (trimmed.startsWith('centro:')) {
                     step.centro = this.parseMovementOperation(trimmed, 'centro', modelFilename);
                 }
@@ -120,6 +159,7 @@ window.MovementParser = {
             if (step.avvita) durateOperazioni.push(step.avvita.durata);
             if (step.estrai) durateOperazioni.push(step.estrai.durata);
             if (step.inserisci) durateOperazioni.push(step.inserisci.durata);
+            if (step.oscillazione) durateOperazioni.push(step.oscillazione.durata);
             if (step.centro && step.centro.durata) durateOperazioni.push(step.centro.durata);
 
             if (durateOperazioni.length > 0) {
@@ -421,6 +461,69 @@ window.MovementParser = {
         } else {
             throw new Error(`Formato resetCenteredOriginal non valido: ${operationString}`);
         }
+    },
+
+    /**
+     * Parse comando oscillazione (interno)
+     * Simula movimento oscillante ripetitivo (es. pompaggio ingrassatore)
+     *
+     * Formato: oscillazione:ref,(posA_x,posA_y,posA_z,posB_x,posB_y,posB_z,cicli,durata_ciclo)
+     * Esempio: oscillazione:tappino_grasso_dx_original,(-0.08,0,0,-0.09,0,0,10,0.1)
+     *
+     * Genera internamente N cicli di traslazione alternata tra posA e posB
+     * rispetto al riferimento (tipicamente _original)
+     *
+     * @param {string} operationString - Stringa del comando oscillazione
+     * @param {string} modelFilename - Nome modello per direzione
+     * @returns {Object} Oggetto oscillazione parsato
+     */
+    _parseOscillazione: function(operationString, modelFilename) {
+        // Formato: oscillazione:ref,(posA_x,posA_y,posA_z,posB_x,posB_y,posB_z,cicli,durata_ciclo)
+        const colonIndex = operationString.indexOf(':');
+        const afterColon = operationString.substring(colonIndex + 1);
+
+        let targetElement = null;
+        let params = null;
+
+        const commaIndex = afterColon.indexOf(',');
+        if (commaIndex !== -1) {
+            targetElement = afterColon.substring(0, commaIndex).trim();
+            const paramPart = afterColon.substring(commaIndex + 1);
+
+            const paramMatch = paramPart.match(/\(([^)]+)\)/);
+            if (paramMatch) {
+                const values = paramMatch[1].split(',').map(v => parseFloat(v.trim()));
+                if (values.length === 8) {
+                    params = {
+                        posA: { x: values[0], y: values[1], z: values[2] },
+                        posB: { x: values[3], y: values[4], z: values[5] },
+                        cicli: Math.round(values[6]),
+                        durataCiclo: values[7]
+                    };
+                } else {
+                    throw new Error(`oscillazione richiede 8 valori (posA_x,posA_y,posA_z,posB_x,posB_y,posB_z,cicli,durata_ciclo): ${operationString}`);
+                }
+            } else {
+                throw new Error(`Formato parametri oscillazione non valido: ${operationString}`);
+            }
+        } else {
+            throw new Error(`oscillazione richiede un riferimento e parametri: ${operationString}`);
+        }
+
+        const totalDuration = params.cicli * params.durataCiclo * 2; // Andata + ritorno per ciclo
+
+        console.log(`🔄 OSCILLAZIONE: target=${targetElement}, cicli=${params.cicli}, durata_ciclo=${params.durataCiclo}s, durata_totale=${totalDuration}s`);
+
+        return {
+            tipo: 'oscillazione',
+            targetElement: targetElement,
+            isAbsoluteToOriginal: false,
+            posA: params.posA,
+            posB: params.posB,
+            cicli: params.cicli,
+            durataCiclo: params.durataCiclo,
+            durata: totalDuration
+        };
     },
 
     /**

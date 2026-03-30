@@ -11,10 +11,6 @@ CameraTransitionTime=2.5                                      // Movimento fluid
 Posizione=planaxis:(-0.5,0.01,-0.5)                           // Posiziona modello specifico
 
 [Filter Cleaning and Lubrication]                                            // Tutorial principale - sequenza di smontaggio
-  CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
-  CameraTarget=(0, 0, 0)                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=1.2                                                // Zoom leggero per visione d''insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
   Azione1=resetCenteredOriginal
   [Step 1 - First screw]
   HighlightDescription=true                                 // Primo step: rimozione prima vite
@@ -81,7 +77,6 @@ Elemento=models/filtro.glb                                     // Modello 3D del
   CameraPos=(-0.2,0.33,0.74)                                      // Posizione assoluta per test
   CameraTarget=filtro                                  // Focus su centro scena leggermente rialzato
   CameraZoom=0.5                                               // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
   Utensile=Aria
   Azione1=traslazione:(0,0.01,0,0.5)
   Azione2=appoggia(0.5)
@@ -90,8 +85,8 @@ Elemento=models/filtro.glb                                     // Modello 3D del
 HighlightDescription=true
 CameraPos=(-1.5, 0.5,-0.2)                                       // Posizione assoluta per test
   CameraTarget=tappino_grasso_dx                                    // Focus su centro scena leggermente rialzato
-  CameraZoom=0.5                                           // Zoom leggero per visione d'insieme
-  CameraTransitionTime=2.5                                      // Movimento fluido con easing dolce
+  CameraZoom=0.5                                           // Close zoom for cap interaction
+  CameraTransitionTime=2.5                                      // Smooth transition
 
   Elemento=models/tappino_grasso_dx.glb                                     // Modello 3D del filtro da sostituire
   Utensile=Mani                                           // Strumento: estrazione manuale
@@ -139,31 +134,8 @@ CameraPos=(-0.42, 0.33,  0.3 )
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Apply grease to the right grease fitting by pumping 10 times     // Istruzione per movimento
   Azione1=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
-  Azione2=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione3=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione4=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione5=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione6=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione7=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione8=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione9=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione10=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione11=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione12=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione13=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione14=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione15=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione16=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione17=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-  Azione18=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione19=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
- Azione20=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-
-  Azione21=traslazione:tappino_grasso_dx_original,(-0.09,0.0,0,0.1)
-
-
-  //Azione22=traslazione:tappino_grasso_dx_original,(-0.08,0.0,0,0.1)
-  Azione22=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
+  Azione2=oscillazione:tappino_grasso_dx_original,(-0.08,0,0,-0.09,0,0,10,0.1)
+  Azione3=traslazione:tappino_grasso_dx_original,(-0.2,0.0,0,0.5)
 
 [Next Step - Grease pump 3]                                        // Decimo step: movimento ingrassatore
 HighlightDescription=false
@@ -172,30 +144,10 @@ HighlightDescription=false
   Utensile=Mani                                           // Strumento: estrazione manuale
   Descrizione=Apply grease to the left grease fitting by pumping 10 times     // Istruzione per movimento
   Azione1=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
-  Azione2=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione3=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione4=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione5=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione6=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione7=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione8=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione9=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione10=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione11=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione12=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione13=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione14=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione15=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione16=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione17=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione18=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione19=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
-  Azione20=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione21=traslazione:tappino_grasso_sx_original,(-0.09,0.0,0,0.1)
- //Azione22=traslazione:tappino_grasso_sx_original,(-0.08,0.0,0,0.1)
-  Azione22=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
-  Azione23=traslazione:ingrassatore_original,(-0.2,0.0,0,0.5)
-  Azione24=appoggia(0.5)
+  Azione2=oscillazione:tappino_grasso_sx_original,(-0.08,0,0,-0.09,0,0,10,0.1)
+  Azione3=traslazione:tappino_grasso_sx_original,(-0.2,0.0,0,0.5)
+  Azione4=traslazione:ingrassatore_original,(-0.2,0.0,0,0.5)
+  Azione5=appoggia(0.5)
 
 [Reassembly]
 HighlightDescription=true
@@ -256,15 +208,25 @@ Posizione=ingrassatore:(-0.208,0.243,0)
 Rotazione=ingrassatore:(0.0,0.0,90.0)
 
 
-[Step 1 - Grease caps]
+[Step 1 - Right grease cap]
 HighlightDescription=true
-Descrizione=Mount the grease fitting caps in any order. You can start from the right or the left.
+CameraTarget=tappino_grasso_dx
+CameraZoom=0.5
+Descrizione=Install the right grease fitting cap.
 Utensile=Mani
 
-# Interchangeable node - free order for the caps (NO specific Element)
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=tappino_grasso_dx,tappino_grasso_sx
+DragDropObjects=tappino_grasso_dx
+DragDropDistance=0.2
+
+[Next Step - Left grease cap]
+HighlightDescription=true
+CameraTarget=tappino_grasso_sx
+Descrizione=Install the left grease fitting cap.
+Utensile=Mani
+
+DragDrop=true
+DragDropObjects=tappino_grasso_sx
 DragDropDistance=0.2
 
 
@@ -276,9 +238,8 @@ Utensile=Mani
 
 # Sequential assembly system - filter
 DragDrop=true
-AssemblyMode=true
 # Only the filter can be assembled in this step
-AllowedComponents=filtro
+DragDropObjects=filtro
 DragDropDistance=0.3
 
 
@@ -290,10 +251,9 @@ Utensile=Mani
 
 # Continue sequential assembly - cover
 DragDrop=true
-AssemblyMode=true
 
 
-AllowedComponents=coperchio
+DragDropObjects=coperchio
 DragDropDistance=0.3
 
 
@@ -306,16 +266,14 @@ Utensile=Mani
 
 # Interchangeable node - free order for the screws
 DragDrop=true
-AssemblyMode=true
 
 
 
-AllowedComponents=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
+DragDropObjects=vite_coperchio_1,vite_coperchio_2,vite_coperchio_3,vite_coperchio_4
 
 
 DragDropDistance=0.2
 
-ValidateAssembly=true
 
 
 
@@ -327,10 +285,9 @@ Utensile=Mani
 
 # Final step - requires all prerequisites
 DragDrop=true
-AssemblyMode=true
 
 
-AllowedComponents=ingrassatore
+DragDropObjects=ingrassatore
 DragDropDistance=0.3
 
 
@@ -523,7 +480,7 @@ CameraPos=(0, 0.37, 0.44)                                   // Posizione assolut
 Elemento=models/flangia.glb
 Descrizione=Move the flange away with your Hands. The grease tube moves together with it.
 Utensile=Mani
-SlaveObjects=tubograsso.glb  # Tube follows with slave movement
+DrivenObjects=tubograsso.glb,follow  # Tube follows with slave movement
 Azione1=traslazione:(0,0,0.2,0.5)
 
 [Next Step - detach the grease tube]
@@ -803,7 +760,7 @@ CameraZoom=1.2
 CameraTransitionTime=1.5
 DragDrop=true
 DragDropObjects=flangia
-SnapPointPivot=(0.000,0.0,0.3)
+SnapPoint=pivot:(0.000,0.0,0.3)
 DragDropDistance=0.3
 ShowSnapIndicators=false
 
@@ -828,11 +785,10 @@ CameraZoom=1.3
 CameraTransitionTime=1.5
 
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_flangia_1,vite_flangia_2,vite_flangia_3,vite_flangia_4,vite_flangia_5,vite_flangia_6,vite_flangia_7,vite_flangia_8
+DragDropObjects=vite_flangia_1,vite_flangia_2,vite_flangia_3,vite_flangia_4,vite_flangia_5,vite_flangia_6,vite_flangia_7,vite_flangia_8
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.02)
 
 
 [Next Step - Tighten flange screw 1]
@@ -898,8 +854,7 @@ Utensile=Mani
 
 # Continue sequential assembly - grease tube
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=tubograsso
+DragDropObjects=tubograsso
 DragDropDistance=0.3
 ShowSnapIndicators=false
 
@@ -917,8 +872,7 @@ Utensile=Mani
 
 # Continue sequential assembly - head
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=culatta
+DragDropObjects=culatta
 DragDropDistance=0.3
 ShowSnapIndicators=false
 
@@ -932,11 +886,10 @@ Utensile=Mani
 
 
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_culatta_1,vite_culatta_2
+DragDropObjects=vite_culatta_1,vite_culatta_2
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.02)
 
 [Next Step - Position short head screws]
 HighlightDescription=true
@@ -947,11 +900,10 @@ Utensile=Mani
 
 
 DragDrop=true
-AssemblyMode=true
-AllowedComponents=vite_culatta_3,vite_culatta_4
+DragDropObjects=vite_culatta_3,vite_culatta_4
 DragDropDistance=1.5
 ShowSnapIndicators=false
-SnapOffset=(0,0,0.02)
+SnapPoint=offset:(0,0,0.02)
 
 [Next Step - Tighten head screw 1]
 HighlightDescription=true
@@ -980,4 +932,3 @@ Elemento=models/vite_culatta_4.glb
 Descrizione=Tighten the fourth head screw with the 6mm Allen key. This completes the pump reassembly.
 Utensile=ChiaveBrugola
 Azione1=avvita(0.02)
-ValidateAssembly=true

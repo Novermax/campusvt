@@ -1,0 +1,107 @@
+Obiettivo
+
+Progettare un editor visuale per la creazione di tutorial interattivi, con generazione assistita del codice e preview live sincronizzata.
+
+Architettura generale
+
+Layout a due pannelli:
+
+Sinistra → Code Editor + Wizard
+Destra → Runtime Preview (live execution)
+Requisiti funzionali
+1. Editor (pannello sinistro)
+Editor strutturato (non solo testo libero)
+Supporto a:
+syntax highlighting (JSON / YAML / DSL proprietaria)
+validazione schema in tempo reale
+autocomplete guidato
+Modalità doppia:
+Wizard mode (principale)
+Code mode (avanzata)
+Wizard Mode
+
+Sistema guidato per costruire step senza scrivere codice:
+
+Creazione step tramite form:
+id
+title
+description
+element_target
+action_type (click, drag, input, wait, ecc.)
+highlight (true/false)
+autoAction (true/false)
+validation (opzionale)
+Generazione automatica del codice corrispondente
+Code Mode
+Editing diretto del JSON/DSL
+Sync bidirezionale con Wizard
+2. Preview Engine (pannello destro)
+Runtime che interpreta il tutorial in tempo reale
+Aggiornamento live a ogni modifica (debounced)
+Funzioni principali:
+Rendering scena (mock o reale)
+Evidenziazione elementi (cerchio giallo, overlay, ecc.)
+Simulazione interazioni:
+click
+hover
+drag
+Gestione step sequenziali
+Supporto autoAction=true:
+esecuzione automatica dello step senza input utente
+Modello dati (esempio)
+{
+  "tutorial": {
+    "id": "pompa_becker_01",
+    "steps": [
+      {
+        "id": "step_01",
+        "title": "Rimuovi vite",
+        "element": "vite_1",
+        "action": "click",
+        "highlight": true,
+        "autoAction": false
+      }
+    ]
+  }
+}
+Sincronizzazione editor ↔ preview
+Ogni modifica nel codice:
+→ parsing
+→ validazione
+→ re-render preview
+Errori:
+mostrati nel pannello sinistro
+fallback preview stato precedente valido
+Componenti principali
+Frontend
+Code editor (es. Monaco)
+Wizard UI (form dinamici)
+Preview canvas (DOM o WebGL)
+Engine
+Parser DSL/JSON
+State machine per step tutorial
+Interaction engine (hit detection + gesture handling)
+Logica di esecuzione
+
+Stato globale:
+
+currentStepIndex
+tutorialState
+
+Loop:
+
+load step → render highlight → wait input OR autoAction → validate → next step
+Feature avanzate (opzionali ma consigliate)
+Timeline degli step
+Drag & drop reorder
+Registrazione azioni utente → generazione step automatica
+Libreria componenti riutilizzabili
+Simulazione device (desktop / touch)
+Vincoli UX
+Feedback immediato (≤ 200ms update preview)
+Nessuna necessità di reload manuale
+Separazione chiara tra editing e runtime
+Output atteso
+Applicazione web (preferibile React)
+Modularità (editor, engine, renderer separati)
+Estendibile per nuovi tipi di step/action
