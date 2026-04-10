@@ -63,7 +63,10 @@
       "WebSearch",
       "Bash(git checkout:*)",
       "Bash(__NEW_LINE_81ec51540869d5df__ diff:*)",
-      "Bash(__NEW_LINE_0fd02d40fc4614f0__ sed:*)"
+      "Bash(__NEW_LINE_0fd02d40fc4614f0__ sed:*)",
+      "Bash(pip show:*)",
+      "Bash(rm:*)",
+      "Bash(sort -t: -k2)"
     ],
     "deny": [],
     "ask": [],
