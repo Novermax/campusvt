@@ -251,7 +251,7 @@ OnPhysicalTrigger=setVariant:schermo=schermo008
 AutoAdvance=true
 
 [Next Step - pulsante elettromandrino]
-HighlightDescription=true
+HighlightDescription=false
 Descrizione=Premi il pulsante a video per selezionare l'elettromandrino
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_electrospindle
@@ -263,7 +263,7 @@ AutoAdvance=true
 
 
 [Next Step - abilitazione sblocco]
-HighlightDescription=true
+HighlightDescription=false
 Descrizione=Premi il pulsante a video per abilitare lo sblocco della pinza dell'elettromandrino
 # Trigger: click sul pulsante Tool
 ActiveButtons=Pulsante_LU
