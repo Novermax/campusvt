@@ -1,0 +1,143 @@
+TASK: Refactoring struttura file + parser
+Obiettivo
+
+Riorganizzare naming, estensioni e contenuto dei file .cvtscript, introducendo file .ini e separando configurazione, oggetti e tutorial. Aggiornare di conseguenza parser, loader e riferimenti nel codice.
+
+1. Ristrutturazione file e naming
+
+Stato attuale
+
+
+interfaceconfig.cvtscript
+homeconfig.cvtscript
+homeconfig_fra.cvtscript
+homeconfig_eng.cvtscript
+
+scenes/
+├──Manutenzione_Elettromandrino/
+	├── config.cvtscript
+	└── tutorial.cvtscript 
+
+scenes/
+├──Pompa_Becker/
+	├── config.cvtscript
+	└── tutorial.cvtscript
+
+Stato desiderato
+
+Cartella scenes/:
+
+interfaceconfig.ini
+homeconfig.ini
+homeconfig_fra.ini
+homeconfig_eng.ini
+
+├──Manutenzione_Elettromandrino/
+	├── tool.ini                  (ex config.cvtscript)
+	├── objects.ini               (estratto da tutorial.cvtscript)
+	└── tutorial.cvtscript        (solo logica tutorial)
+
+├──Pompa_Becker/
+	├── tool.ini                  (ex config.cvtscript)
+	├── objects.ini               (estratto da tutorial.cvtscript)
+	└── tutorial.cvtscript        (solo logica tutorial)
+
+2. Modifiche richieste
+2.1 Conversione .cvtscript → .ini
+I seguenti file devono cambiare estensione:
+interfaceconfig.cvtscript → interfaceconfig.ini
+homeconfig*.cvtscript → homeconfig*.ini
+Devono essere spostati in scenes/
+Il parser deve supportare:
+formato INI (sezioni [section], key=value)
+stessa semantica attuale (non perdere compatibilità logica)
+2.2 Rename config principale
+config.cvtscript → scenes/tool.ini
+
+Aggiornare:
+
+loader file
+hardcoded paths
+eventuali riferimenti runtime
+2.3 Estrazione da tutorial.cvtscript
+
+Separare la prima parte del file (definizioni di stato + oggetti) in:
+
+scenes/scene_name/objects.ini
+2.4 Contenuto da estrarre in objects.ini
+
+Include: (esempio)
+
+STATE GROUPS
+[state chiave]
+[state start]
+[state emergenza]
+[state schermo]
+[state schermo_remote]
+[state tool]
+OBJECT DEFINITIONS
+[object pulpito]
+[object remote]
+[object a500]
+Blocchi speciali (da preservare invariati)
+Elemento=...
+Posizione=...
+Rotazione=...
+
+⚠️ Vincolo importante:
+
+NON modificare semantica parser su Elemento
+NON normalizzare naming (Elemento ≠ Element)
+mantenere compatibilità v1/v2
+2.5 tutorial.cvtscript finale
+
+Deve contenere SOLO:
+
+logica tutorial
+sequenze
+eventuali script runtime
+
+NON deve più contenere:
+
+[state ...]
+[object ...]
+3. Modifiche al parser
+3.1 Multi-file loading
+
+Il sistema deve ora caricare:
+
+tool.ini
+objects.ini
+interfaceconfig.ini
+homeconfig*.ini
+tutorial.cvtscript
+3.2 Parsing differenziato
+.ini → configurazione/statica
+.cvtscript → logica/esecuzione
+3.3 Dependency order
+
+Ordine corretto:
+
+tool.ini
+objects.ini
+config UI (interfaceconfig, homeconfig*)
+tutorial.cvtscript
+3.4 Backward compatibility (opzionale ma consigliato)
+Supportare ancora .cvtscript legacy
+Se objects.ini non esiste → fallback a parsing interno di tutorial.cvtscript
+4. Refactoring richiesto nel codice
+Centralizzare path scenes/
+Eliminare hardcoded .cvtscript
+Introdurre loader modulare:
+loadConfigINI()
+loadObjectsINI()
+loadTutorialScript()
+5. Obiettivo finale
+
+Separazione netta:
+
+Tipo	File	Ruolo
+Config tool	tool.ini	setup macchina
+Oggetti + stati	objects.ini	scena + interazioni
+UI config	*.ini	configurazione interfaccia
+Logica	tutorial.cvtscript	comportamento

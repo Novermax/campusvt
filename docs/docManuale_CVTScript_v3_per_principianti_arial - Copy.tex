@@ -1,0 +1,2852 @@
+﻿\documentclass[a4paper,12pt,oneside]{book}
+
+\usepackage{fontspec}
+\setmainfont[
+    BoldFont = Arial Bold,
+    ItalicFont = Arial Italic,
+    BoldItalicFont = Arial Bold Italic
+]{Arial}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+%--- Encoding & Language --------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+%--- Typography -----------------------------------------------------------
+\usepackage{lmodern}
+\usepackage{microtype}
+%--- Immagini-----------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+%--- Page Layout ----------------------------------------------------------
+\usepackage[a4paper, top=2.5cm, bottom=2.8cm, left=3cm, right=2.5cm,
+            headheight=15pt]{geometry}
+
+%--- Colors (deve essere caricato prima di fancyhdr) ----------------------
+\usepackage{xcolor}
+\definecolor{cvtblue}{RGB}{14,73,143}
+\definecolor{cvtlightblue}{RGB}{228,238,255}
+\definecolor{cvtgray}{RGB}{80,80,80}
+\definecolor{cvtgreen}{RGB}{0,120,50}
+\definecolor{cvtred}{RGB}{160,30,30}
+\definecolor{cvtamber}{RGB}{180,120,0}
+\definecolor{codebg}{RGB}{246,248,250}
+\definecolor{codeline}{RGB}{14,73,143}
+\definecolor{keycolor}{RGB}{0,0,180}
+\definecolor{sectioncolor}{RGB}{140,30,30}
+\definecolor{commentcolor}{RGB}{110,110,110}
+
+%--- Headers & Footers ----------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\textcolor{cvtgray}{\nouppercase{\leftmark}}}
+\fancyhead[R]{\footnotesize\textcolor{cvtgray}{CVTScript v3}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%--- Listings -------------------------------------------------------------
+\usepackage{listings}
+
+\lstdefinelanguage{CVTScript}{
+  sensitive=true,
+  morecomment=[l]{\#},
+  moredelim=[s][\color{sectioncolor}\bfseries]{[}{]},
+}
+
+\lstdefinestyle{cvt}{
+  language=CVTScript,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  frame=l,
+  framerule=3pt,
+  rulecolor=\color{codeline},
+  commentstyle=\color{commentcolor}\itshape,
+  breaklines=true,
+  keepspaces=true,
+  columns=flexible,
+  xleftmargin=10pt,
+  xrightmargin=4pt,
+  aboveskip=6pt,
+  belowskip=6pt,
+  showstringspaces=false,
+  extendedchars=true,
+  literate=
+    {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {é}{{\'e}}1 {á}{{\'a}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1,
+}
+\lstset{style=cvt}
+
+%--- Boxes ----------------------------------------------------------------
+\usepackage[most,breakable]{tcolorbox}
+
+\newtcolorbox{esempiocvt}[1][Esempio]{
+  enhanced, breakable,
+  colback=codebg, colframe=cvtblue,
+  coltitle=white, fonttitle=\bfseries\small,
+  title={#1}, arc=3pt, boxrule=0.8pt,
+  left=2pt, right=2pt, top=0pt, bottom=2pt,
+  toptitle=3pt, bottomtitle=3pt,
+}
+
+\newtcolorbox{notablu}[1][Nota]{
+  enhanced, breakable,
+  colback=cvtlightblue, colframe=cvtblue!50,
+  fonttitle=\bfseries\small, title={#1},
+  arc=3pt, boxrule=0.6pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+\newtcolorbox{attenzione}[1][Attenzione]{
+  enhanced, breakable,
+  colback=orange!8, colframe=cvtamber,
+  fonttitle=\bfseries\small\color{cvtamber}, title={#1},
+  arc=3pt, boxrule=0.8pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+\newtcolorbox{regola}[1][Regola d'oro]{
+  enhanced, breakable,
+  colback=green!5, colframe=cvtgreen,
+  fonttitle=\bfseries\small\color{cvtgreen}, title={#1},
+  arc=3pt, boxrule=0.8pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+\newtcolorbox{trucchetto}[1][Trucchetto]{
+  enhanced, breakable,
+  colback=yellow!10, colframe=cvtamber!70,
+  fonttitle=\bfseries\small\color{cvtamber}, title={#1},
+  arc=3pt, boxrule=0.6pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+\newtcolorbox{sbagliato}[1][Sbagliato]{
+  enhanced, breakable,
+  colback=red!5, colframe=cvtred,
+  fonttitle=\bfseries\small\color{cvtred}, title={#1},
+  arc=3pt, boxrule=0.8pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+\newtcolorbox{giusto}[1][Giusto]{
+  enhanced, breakable,
+  colback=green!5, colframe=cvtgreen,
+  fonttitle=\bfseries\small\color{cvtgreen}, title={#1},
+  arc=3pt, boxrule=0.8pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+%--- Tables ---------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+
+%--- Misc -----------------------------------------------------------------
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{float}
+\usepackage{caption}
+
+%--- Chapter & Section style ----------------------------------------------
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{cvtblue}}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{cvtblue}}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{cvtgray}}{\thesubsection}{1em}{}
+
+%--- Hyperlinks -----------------------------------------------------------
+\usepackage[colorlinks=true, linkcolor=cvtblue,
+            urlcolor=cvtblue, citecolor=cvtblue]{hyperref}
+
+%--- Utility commands -----------------------------------------------------
+\newcommand{\kw}[1]{\texttt{\color{keycolor}#1}}
+\newcommand{\val}[1]{\texttt{\color{cvtgreen}#1}}
+\newcommand{\sez}[1]{\texttt{\color{sectioncolor}\textbf{#1}}}
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\siok}{\textcolor{cvtgreen}{\textbf{\checkmark}}}
+\newcommand{\sino}{\textcolor{cvtred}{\textbf{$\times$}}}
+
+%--- Placeholder per immagini da inserire in seguito ----------------------
+% Uso: \imgph{larghezza}{descrizione del soggetto da disegnare}
+% Quando l'immagine sarà pronta, sostituire la chiamata con:
+%   \includegraphics[width=...]{immagini/capN/nomefile.png}
+\newcommand{\imgph}[2]{%
+  \begin{tcolorbox}[colback=cvtlightblue!30,colframe=cvtblue!40,%
+    width=#1,halign=center,valign=center,height=5cm,boxrule=0.5pt,arc=3pt]%
+    \textcolor{cvtgray}{\itshape\footnotesize\textbf{[Immagine da inserire]}\\[3pt]#2}%
+  \end{tcolorbox}}
+
+%==========================================================================
+\begin{document}
+%==========================================================================
+
+\frontmatter
+\pagestyle{plain}
+
+%--- Cover page ------------------------------------------------------------
+\begin{titlepage}
+  \pagecolor{cvtblue}\color{white}
+  \vspace*{1.5cm}
+  \begin{center}
+    {\large\textsf{\textbf{CAMPUS VIRTUAL TRAINING}}}\\[0.4cm]
+    \textcolor{white!60!cvtblue}{\rule{\textwidth}{0.6pt}}\\[2cm]
+    {\fontsize{30}{36}\selectfont\textbf{CVTScript v3}}\\[0.5cm]
+    {\fontsize{18}{22}\selectfont Manuale per Principianti}\\[0.3cm]
+    {\fontsize{13}{16}\selectfont Come scrivere un tutorial passo-passo,\\spiegato semplice}\\[2.5cm]
+    \textcolor{white!60!cvtblue}{\rule{\textwidth}{0.4pt}}\\[1cm]
+    \begin{tabular}{@{}ll@{}}
+      \textbf{Versione del linguaggio:} & 3.0 (completa) \\[5pt]
+      \textbf{Data:}                    & Maggio 2026 \\[5pt]
+      \textbf{A chi serve:}             & A chi non sa programmare \\[5pt]
+      \textbf{Tempo di lettura:}        & 50--60 minuti
+    \end{tabular}
+  \end{center}
+  \vfill
+  \begin{center}
+    {\footnotesize Leggi una volta, prova subito, divertiti.}
+  \end{center}
+\end{titlepage}
+\pagecolor{white}\color{black}
+
+\chapter*{Per cominciare}
+
+Questo manuale ti insegna a scrivere un \textbf{tutorial 3D} per Campus Virtual Training
+\textbf{senza saper programmare}. Lo leggi una volta, ti diverti, e alla fine sei
+capace di creare le tue lezioni interattive.
+
+\medskip
+\textbf{Cosa NON serve.} Non serve conoscere nessun linguaggio di programmazione.
+Non serve saper usare strumenti tecnici. Non serve avere studiato informatica.
+
+\medskip
+\textbf{Cosa serve invece.} Serve sapere \emph{cosa} vuoi insegnare allo studente,
+passo dopo passo. Esattamente come quando spieghi a un amico come fare una torta:
+prima si prende la ciotola, poi si rompono le uova, poi si aggiunge la farina\ldots
+
+\medskip
+\textbf{Come è organizzato il manuale.} Sono \textbf{capitoli brevi}, divisi in
+tre parti. La \textbf{prima parte} (cap.\ 1--10) spiega le \textbf{basi}: ti
+basta per scrivere un tutorial completo. La \textbf{seconda parte}
+(cap.\ 11--17) spiega le \textbf{cose avanzate} (oggetti in mano, finestre con
+messaggi, animazioni, oggetti interattivi). La \textbf{terza parte}
+(cap.\ 18) spiega i \textbf{file di configurazione} che vivono attorno al
+tutorial. Alla fine c'è un \textbf{glossario} con tutte le parole importanti
+tradotte in italiano semplice. Se ti perdi, torna al glossario.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/frontmatter/mappa_manuale.png}
+  \imgph{12cm}{Mappa visiva del manuale: tre blocchi orizzontali colorati ``Basi 1--10'', ``Avanzato 11--17'', ``Configurazione 18'', con frecce di lettura e icone tematiche.}
+  \caption{Le tre parti del manuale: leggile in ordine la prima volta, poi consulta a salti.}
+  \label{fig:mappa-manuale}
+\end{figure}
+
+\vfill
+\begin{center}
+\textit{Buona lettura!}
+\end{center}
+\clearpage
+
+\tableofcontents
+
+%==========================================================================
+\mainmatter
+\pagestyle{fancy}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\chapter{Cos'è un tutorial?}
+\label{ch:intro}
+%--------------------------------------------------------------------------
+
+Pensa a quando insegni a un amico \textbf{come fare una torta}. Non gli dici tutto
+in una volta. Vai per piccoli passi:
+
+\begin{itemize}
+  \item \textbf{Passo 1}: prendi una ciotola.
+  \item \textbf{Passo 2}: rompi due uova dentro.
+  \item \textbf{Passo 3}: aggiungi la farina.
+  \item \ldots
+\end{itemize}
+
+Un tutorial nel programma Campus Virtual Training funziona \textbf{esattamente così},
+ma invece della torta lo studente sta imparando a \textbf{smontare una pompa},
+\textbf{cambiare un filtro} o \textbf{lubrificare un elettromandrino}.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap01/torta_vs_pompa.png}
+  \imgph{13cm}{Confronto a due colonne: a sinistra una sequenza ``ciotola $\rightarrow$ uova $\rightarrow$ farina $\rightarrow$ forno'' (la torta), a destra ``vite $\rightarrow$ coperchio $\rightarrow$ filtro $\rightarrow$ rimontaggio'' (la pompa). Sopra: la scritta ``stessa logica, mondi diversi''.}
+  \caption{Stessa logica, due mondi diversi: la metafora della ricetta funziona perché ogni tutorial è una sequenza di passi semplici.}
+  \label{fig:torta-vs-pompa}
+\end{figure}
+
+Tu, nel file \file{tutorial.cvtscript}, scrivi la lista dei passi. Il programma
+li esegue uno alla volta e fa muovere i pezzi sullo schermo.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap01/interfaccia_annotata.png}
+  \imgph{12cm}{Screenshot del tutorial in esecuzione con quattro callout numerati: 1=modello 3D al centro, 2=fumetto della spiegazione, 3=barra strumenti in basso, 4=freccia ``avanti'' a destra.}
+  \caption{L'interfaccia che vede lo studente: i quattro elementi che si ripetono in ogni step.}
+  \label{fig:interfaccia-annotata}
+\end{figure}
+
+\begin{notablu}[In poche parole]
+Tu sei l'\textbf{autore di una ricetta}. Lo studente è un \textbf{cuoco apprendista}.
+Il programma è il \textbf{cuoco esperto} che dimostra ogni passaggio. Tu scrivi la
+ricetta in modo chiaro, e il programma ci pensa a far vedere tutto.
+\end{notablu}
+
+%--------------------------------------------------------------------------
+\chapter{I modelli 3D: la scena dove tutto accade}
+\label{ch:modelli3d}
+%--------------------------------------------------------------------------
+
+Adesso che sai cos'è un tutorial, c'è una cosa da capire prima di
+iniziare a scrivere il tuo primo file: i pezzi che lo studente
+\textbf{vede e manipola} sullo schermo sono \textbf{modelli 3D}, ovvero
+oggetti tridimensionali caricati dal programma. Non li crei tu scrivendo
+il tutorial --- esistono già come file separati. Tu nel tutorial dici
+solo \emph{``prendi quella vite, svitala, mettila giù''} e il programma
+sa già come è fatta la vite perché l'ha caricata all'avvio.
+
+\begin{notablu}[Puoi saltare questo capitolo?]
+Se qualcun altro ha già preparato i modelli 3D e sai solo che si trovano
+nella cartella \file{models/}, puoi passare direttamente al
+Capitolo~\ref{ch:struttura}. Torna qui quando vuoi capire come vengono
+creati o se devi aggiungerli tu.
+\end{notablu}
+
+\section{Il formato richiesto: \texttt{.glb}}
+
+Campus Virtual Training usa \textbf{Three.js} come motore di rendering
+e carica esclusivamente modelli in formato \textbf{glTF Binary}
+(\file{.glb}). È uno standard aperto e offre tre vantaggi pratici:
+
+\begin{itemize}
+  \item \textbf{File singolo}: geometria, materiali e texture sono
+        contenuti in un unico file binario.
+  \item \textbf{Compatto}: la codifica binaria riduce le dimensioni
+        rispetto a formati testuali come OBJ o COLLADA.
+  \item \textbf{Compatibilità web}: è il formato nativo di Three.js e
+        non richiede conversioni a runtime.
+\end{itemize}
+
+\begin{notablu}[Ricorda]
+Se hai modelli in altri formati (\file{.step}, \file{.stl}, \file{.obj},
+\file{.fbx}), devi convertirli in \file{.glb} prima di poterli usare.
+\textbf{Blender} è lo strumento consigliato per la conversione.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap02/formati_confronto.png}
+  \imgph{12cm}{Confronto visivo formati 3D: quattro icone-file in fila (STEP, OBJ, FBX, GLB) con badge di idoneità. Solo GLB ha la spunta verde; sotto ogni formato tre micro-icone (file singolo / compatto / web-ready) accese o spente.}
+  \caption{Perché GLB: un solo file, dimensioni ridotte, nessuna conversione a runtime.}
+  \label{fig:formati-confronto}
+\end{figure}
+
+\section{Esportazione da Blender}
+
+Blender è il software consigliato per preparare i modelli 3D. La
+procedura tipica è:
+
+\begin{enumerate}
+  \item \textbf{Importa} il modello CAD originale (STEP, IGES o STL sono
+        i più comuni nelle officine meccaniche).
+  \item \textbf{Pulisci la mesh}: elimina facce duplicate, correggi le
+        normali invertite e riduci la complessità poligonale dove
+        possibile.
+  \item \textbf{Assegna i materiali}: ogni materiale definito in Blender
+        verrà esportato nel GLB. Usa nomi significativi.
+  \item \textbf{Posiziona l'origine}: l'origine dell'oggetto in Blender
+        corrisponde al \textbf{pivot} attorno al quale Campus Virtual
+        Training calcolerà rotazioni e traslazioni.
+  \item \textbf{Esporta} con \emph{File $\rightarrow$ Export $\rightarrow$
+        glTF 2.0 (.glb/.gltf)}, selezionando il formato \file{.glb}.
+        Nel pannello di esportazione, sotto la sezione \emph{Geometry},
+        abilita l'opzione \emph{Compression} (compressione \textbf{Draco}).
+        Riduce le dimensioni dei file fino al 60--80\,\% --- molto utile
+        per scenari con molti modelli come la Pompa Becker (oltre 40 file
+        GLB). Impostazioni consigliate:
+    \begin{itemize}
+      \item \emph{Compression Level}: 6 --- buon compromesso tra
+            dimensione e velocità di decodifica.
+      \item \emph{Quantization Position}: 14 bit --- precisione sufficiente
+            per componenti meccanici.
+      \item \emph{Quantization Normal}: 10 bit.
+    \end{itemize}
+\end{enumerate}
+
+\begin{trucchetto}
+Per i materiali \textbf{emissivi} (LED, spie luminose), usa nomi che
+contengano \texttt{luminoso}, \texttt{emissive} oppure \texttt{glow}:
+il sistema li rileverà automaticamente e ne potenzierà la luminosità
+(\texttt{emissiveIntensity = 3.0}).
+\end{trucchetto}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap02/blender_export.png}
+  \imgph{12cm}{Screenshot del pannello di esportazione di Blender (File $\rightarrow$ Export $\rightarrow$ glTF 2.0). Sezione \emph{Geometry} aperta con la voce \emph{Compression} cerchiata in rosso e i tre slider Position/Normal/UV visibili.}
+  \caption{Il pannello di esportazione di Blender. La compressione Draco si trova sotto Geometry $\rightarrow$ Compression.}
+  \label{fig:blender-export}
+\end{figure}
+
+\subsection{Convenzioni di denominazione}
+
+La denominazione dei file è fondamentale. Ogni file GLB deve avere un
+nome \textbf{univoco}, \textbf{tutto in minuscolo} e \textbf{senza spazi}.
+Per gli scenari della Pompa Becker, ad esempio:
+
+\begin{itemize}
+  \item \textbf{Componente principale}: \file{corpo.glb} --- il corpo
+        della pompa, elemento statico di riferimento.
+  \item \textbf{Coperchio}: \file{coperchio.glb} --- il coperchio che
+        verrà smontato e rimontato durante il tutorial.
+  \item \textbf{Parti interne}: \file{filtro.glb}, \file{culatta.glb},
+        \file{flangia.glb} --- componenti accessibili dopo lo smontaggio.
+  \item \textbf{Viteria}: \file{vite\_coperchio\_1.glb},
+        \file{vite\_coperchio\_2.glb}\ldots{} --- ogni vite è un file
+        separato per poterla animare indipendentemente.
+  \item \textbf{Ambiente}: \file{pavimento.glb} --- base statica della
+        scena per dare contesto visivo.
+\end{itemize}
+
+\begin{attenzione}
+Ogni oggetto che lo studente deve manipolare direttamente (svitare,
+estrarre, trascinare) deve essere esportato come file \file{.glb}
+autonomo. I sotto-assiemi che si muovono \emph{automaticamente} (per
+esempio gli assi di una macchina) possono invece restare come figli
+all'interno del GLB principale e venire animati tramite la notazione
+puntata \kw{element = a500.porta}.
+\end{attenzione}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap02/cartella_models.png}
+  \imgph{11cm}{Screenshot dell'Esplora risorse (o Finder) aperto sulla cartella \file{models/} della Pompa Becker. Si vedono i file GLB con nomi minuscoli: \file{corpo.glb}, \file{coperchio.glb}, \file{filtro.glb}, varie \file{vite\_*.glb}, \file{pavimento.glb}.}
+  \caption{La cartella \file{models/} della Pompa Becker: ogni componente smontabile è un file GLB autonomo.}
+  \label{fig:cartella-models}
+\end{figure}
+
+\subsection{Oggetti compositi con figli interattivi}
+
+Non tutti i modelli devono essere file separati. Quando un oggetto è
+un'unità logica con più parti interattive interne, si usa un
+\textbf{singolo GLB con figli} (\emph{children}). Nello scenario
+Manutenzione Elettromandrino, ad esempio:
+
+\begin{itemize}
+  \item \file{pulpito.glb} --- contiene il pannello di controllo con
+        tutti i pulsanti (\texttt{Pulsante\_mdi}, \texttt{chiave0},
+        \texttt{emergenza\_off}, ecc.) come oggetti figli nella gerarchia
+        GLB.
+  \item \file{a500.glb} --- contiene l'intera macchina con i
+        sotto-assiemi mobili (\texttt{porta}, \texttt{naso}) animabili
+        tramite \kw{element = a500.porta}.
+  \item \file{remote.glb} --- il telecomando con i pulsanti figli
+        (\texttt{pulsante\_r\_play}, \texttt{Pulsante\_r\_unlock}).
+\end{itemize}
+
+\begin{notablu}[Aspetti tecnici]
+Per ottenere i nomi dei figli di un modello composito, carica la scena
+nel browser e usa la console di debug:
+\begin{lstlisting}
+Scene3D.listChildNames(Scene3D.findModelByName('pulpito'))
+\end{lstlisting}
+Blender mostra la stessa gerarchia nel pannello \emph{Outliner}.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap02/blender_outliner_pulpito.png}
+  \imgph{11cm}{Screenshot del pannello \emph{Outliner} di Blender con la gerarchia di \file{pulpito.glb} espansa: nodo radice \texttt{pulpito} con figli \texttt{Pulsante\_mdi}, \texttt{Pulsante\_tool}, \texttt{chiave0}, \texttt{chiave1}, \texttt{emergenza\_off}, \texttt{pstart0}, \texttt{pstart1}.}
+  \caption{L'Outliner di Blender mostra la gerarchia interna del modello \file{pulpito.glb}: ogni figlio diventa un elemento interattivo.}
+  \label{fig:blender-outliner}
+\end{figure}
+
+\section{Origine, direzione e posizione iniziale}
+
+Ogni modello ha tre proprietà spaziali fondamentali che influenzano il
+comportamento nel tutorial.
+
+\subsection{Origine (pivot)}
+
+L'origine definita in Blender è il punto attorno al quale l'oggetto
+ruota e rispetto al quale vengono calcolate le traslazioni. Per una
+vite, l'origine dovrebbe trovarsi sulla \textbf{testa della vite}
+(il punto di presa), non al centro geometrico.
+
+\begin{trucchetto}
+In Blender usa \emph{Object $\rightarrow$ Set Origin $\rightarrow$
+Origin to 3D Cursor} dopo aver posizionato il cursore 3D nel punto
+desiderato. Per le viti, il punto ideale è il centro della testa.
+\end{trucchetto}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap02/origine_vite.png}
+  \imgph{11cm}{Confronto a due viti identiche: a sinistra origine al centro geometrico (marcata con una X rossa, con didascalia ``sbagliato''), a destra origine sulla testa della vite (marcata con un punto verde, didascalia ``giusto''). Una freccia curva mostra la rotazione attorno al pivot.}
+  \caption{L'origine giusta per una vite: sulla testa, non al centro. Il pivot determina come ruota l'oggetto.}
+  \label{fig:origine-vite}
+\end{figure}
+
+\subsection{Direzione di movimento}
+
+Ogni modello ha una \textbf{direzione di movimento} associata nel file
+\file{scenes/homeconfig.ini}. Questa direzione viene usata da
+\val{unscrew}, \val{screw}, \val{extract} e \val{insert} per sapere
+lungo quale asse spostare l'oggetto:
+
+\begin{lstlisting}
+[models/vite_coperchio_1.glb]
+direction = -1, 0, 0    # svitamento verso X negativo
+
+[models/filtro.glb]
+direction = -1, 0, 0    # estrazione laterale verso X negativo
+
+[models/vite_culatta_1.glb]
+direction = 0, 0, 1     # svitamento verso Z positivo
+\end{lstlisting}
+
+\begin{notablu}[Ricorda]
+La direzione è un vettore \texttt{(x,~y,~z)} che indica verso dove
+l'oggetto si muove quando viene estratto o svitato. Se non viene
+specificata, il programma non saprà in che direzione animare l'azione.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=10cm]{immagini/cap02/sistema_xyz.png}
+  \imgph{10cm}{Sistema di assi 3D ortogonali: X rosso (orizzontale), Y verde (verticale), Z blu (profondità). Una vite stilizzata posta nell'origine con freccia che esce lungo $-X$, etichettata ``\texttt{direction = -1, 0, 0}''.}
+  \caption{Le tre direzioni dello spazio. Il vettore \texttt{direction} indica dove va l'oggetto quando lo sviti.}
+  \label{fig:sistema-xyz}
+\end{figure}
+
+\subsection{Posizione iniziale}
+
+La posizione iniziale di ogni modello viene definita in
+\file{scenes/homeconfig.ini}. Il sistema crea automaticamente un
+riferimento virtuale chiamato \texttt{nomemodello\_original} che
+memorizza questa posizione di partenza. Questo riferimento torna utile:
+
+\begin{itemize}
+  \item Per riportare un oggetto alla sua posizione iniziale dopo un
+        movimento.
+  \item Come punto di snap nel Drag \& Drop
+        (es.\ \texttt{snap targets filtro\_original}).
+  \item Per calcolare traslazioni relative con
+        \kw{do : move from filtro\_original by (0,0,0.1)}.
+\end{itemize}
+
+%--------------------------------------------------------------------------
+\chapter{Organizzare il progetto: cartelle e file}
+\label{ch:progetto}
+%--------------------------------------------------------------------------
+
+Una volta esportati i modelli 3D, prima di mettere mano al
+\file{tutorial.cvtscript} è utile fare il punto sulla struttura del
+progetto: dove vanno i file, come si dichiarano gli scenari, quali
+controlli effettuare. Sono passaggi rapidi ma fondamentali --- senza una
+disposizione corretta dei file, il programma non riesce a trovare nulla.
+
+Questo capitolo è una mini guida ``operativa'' che chiude la fase
+preparatoria. I file di configurazione qui introdotti
+(\file{homeconfig.ini}, \file{tool.ini}, \file{objects.ini},
+\file{interfaceconfig.ini}) hanno una trattazione completa nel
+Capitolo~\ref{ch:config}; qui ne diamo solo la panoramica strettamente
+necessaria a far girare il tuo primo scenario.
+
+\section{Struttura delle cartelle del progetto}
+
+Le cartelle che contano per scrivere un tutorial sono organizzate in due
+livelli. Al \textbf{root del progetto} ci sono le cartelle ``\textbf{globali}''
+condivise da tutti gli scenari (modelli 3D, video, immagini per display,
+icone della home), mentre dentro \file{scenes/} ci sono i \textbf{file di
+configurazione} e una \textbf{sottocartella per ogni scenario}.
+
+\begin{lstlisting}
+campus_virtual_training/   # root del progetto
+  models/                  # modelli 3D (.glb) — condivisi tra scenari
+  media/                   # video e immagini per i message dei tutorial
+  screens/                 # frame per le animazioni dei display
+  menuimages/              # immagini di anteprima della home page
+
+  scenes/
+    homeconfig.ini         # vetrina scenari (home page)
+    interfaceconfig.ini    # personalizzazione mouse e camera
+
+    Pompa_Becker/          # un sotto-cartella per ogni scenario
+      tutorial.cvtscript   #   sequenza guidata degli step
+      tool.ini             #   definizione degli utensili
+      objects.ini          #   stati e oggetti interattivi
+
+    Manutenzione_Elettromandrino/
+      tutorial.cvtscript
+      tool.ini
+      objects.ini
+\end{lstlisting}
+
+\begin{notablu}[Una volta sola, in alto]
+\file{homeconfig.ini} e \file{interfaceconfig.ini} si scrivono \textbf{una
+volta sola} dentro \file{scenes/} e valgono per tutti gli scenari. Quando
+aggiungi un nuovo scenario, crei una nuova \emph{sottocartella} dentro
+\file{scenes/} con i suoi tre file (\file{tutorial.cvtscript},
+\file{tool.ini}, \file{objects.ini}) e poi aggiungi una voce
+\sez{[Nome scenario]} dentro \file{homeconfig.ini}.
+\end{notablu}
+
+\begin{notablu}[Aspetti tecnici]
+Il percorso del modello nel tutorial è sempre relativo alla root del
+progetto. Scrivendo \texttt{element = vite\_coperchio\_1}, il sistema
+cerca automaticamente \file{models/vite\_coperchio\_1.glb} nella cartella
+globale al root del progetto. I video citati con \kw{video =} stanno in
+\file{media/}, i frame delle animazioni in \file{screens/}.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap02/struttura_cartelle.png}
+  \imgph{12cm}{Albero ad icone della struttura del progetto su due livelli: al root le cartelle globali (\file{models/} arancione, \file{media/} viola, \file{screens/} viola, \file{menuimages/} viola) e la cartella \file{scenes/}. Dentro \file{scenes/} i due file \file{.ini} (\file{homeconfig.ini}, \file{interfaceconfig.ini}) e le sottocartelle scenario (\file{Pompa\_Becker/}, \file{Manutenzione\_Elettromandrino/}), ognuna con esattamente tre file: \file{tutorial.cvtscript}, \file{tool.ini}, \file{objects.ini}.}
+  \caption{La struttura completa: cartelle globali al root, configurazione e scenari dentro \file{scenes/}.}
+  \label{fig:struttura-cartelle}
+\end{figure}
+
+\section{Registrare i modelli in \texttt{homeconfig.ini}}
+
+Affinché i modelli vengano caricati all'avvio dello scenario, devono
+essere elencati in \file{scenes/homeconfig.ini}. Per ogni modello
+servono due righe: il percorso e la direzione di uscita.
+
+\begin{esempiocvt}[Estratto di homeconfig.ini]
+\begin{lstlisting}
+[Manutenzione pompa del vuoto]
+CameraPos    = (-1.5, 0.5, -0.2)
+CameraTarget = (0, 0, 0)
+tutorial     = scenes/Pompa_Becker/tutorial.cvtscript
+tool         = scenes/Pompa_Becker/tool.ini
+
+model     = models/corpo.glb
+direction = 0, 0, 1
+
+model     = models/coperchio.glb
+direction = -1, 0, 1
+
+model     = models/filtro.glb
+direction = -1, 0, 0
+
+model     = models/vite_coperchio_1.glb
+direction = -1, 0, 0
+# ...altri modelli...
+\end{lstlisting}
+\end{esempiocvt}
+
+Ogni riga \texttt{model =} dichiara un file GLB da caricare; la riga
+\texttt{direction =} immediatamente successiva ne definisce la direzione
+di uscita. L'ordine di elencazione non influisce sul risultato finale.
+
+\begin{attenzione}
+Se dimentichi di registrare un modello in \file{scenes/homeconfig.ini},
+il tutorial potrà riferirsi ad esso con \kw{element =}, ma il modello
+non verrà caricato e lo step risulterà vuoto.
+\end{attenzione}
+
+\section{Checklist prima di iniziare a scrivere}
+
+Prima di passare alla scrittura del tutorial, verifica che ogni modello
+soddisfi questi requisiti:
+
+\begin{enumerate}
+  \item[$\square$] Il file è in formato \file{.glb}.
+  \item[$\square$] Il nome è in minuscolo, senza spazi, descrittivo.
+  \item[$\square$] L'origine è posizionata nel punto logico di
+        manipolazione (es.\ testa della vite).
+  \item[$\square$] Per i modelli compositi, i figli hanno nomi univoci e
+        riconoscibili nell'Outliner di Blender.
+  \item[$\square$] I materiali emissivi contengono \texttt{luminoso},
+        \texttt{emissive} o \texttt{glow} nel nome.
+  \item[$\square$] Il modello è registrato in \file{scenes/homeconfig.ini}
+        con la corretta \texttt{direction}.
+  \item[$\square$] Il file è copiato nella cartella \file{models/}
+        (o nella sottocartella dello scenario).
+\end{enumerate}
+
+\begin{trucchetto}
+Per verificare che tutti i modelli siano stati caricati correttamente,
+avvia lo scenario nel browser e usa il comando di debug
+\texttt{Scene3D.listAvailableObjects()} nella console: elencherà tutti
+gli oggetti presenti nella scena 3D.
+\end{trucchetto}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap02/checklist_visuale.png}
+  \imgph{12cm}{Checklist a 7 voci con icone simboliche per ognuna: file GLB, lettere minuscole, pivot sulla testa di una vite, gerarchia ad albero, etichetta ``glow'' luminosa, registro \file{homeconfig.ini}, cartella \file{models/}. Ogni voce ha una casella $\square$ a sinistra.}
+  \caption{Sette punti da spuntare prima di passare alla scrittura del tutorial.}
+  \label{fig:checklist-modelli}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{Come è organizzato un file \texttt{cvtscript}}
+\label{ch:struttura}
+%--------------------------------------------------------------------------
+
+Un file \file{tutorial.cvtscript} è composto da \textbf{blocchi}, ciascuno
+delimitato da un'intestazione tra parentesi quadre \texttt{[~]}. È la stessa
+forma del classico \emph{file INI} usato in molti file di configurazione, con
+due peculiarità: i blocchi sono organizzati in una \textbf{gerarchia a tre
+livelli} e all'interno di uno step accettano, oltre alle normali coppie
+\texttt{chiave = valore}, righe speciali introdotte da \texttt{do :} per
+descrivere le animazioni.
+
+\section{La forma di una riga}
+
+Dentro ogni blocco, le righe seguono sempre la stessa forma. Nessuna
+eccezione, nessun caso particolare:
+
+\begin{lstlisting}
+chiave = valore
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=10cm]{immagini/cap03/anatomia_riga.png}
+  \imgph{10cm}{Zoom su una singola riga ``\texttt{chiave = valore}'' con tre etichette colorate sopra: ``CHIAVE'' (sopra \texttt{chiave}, blu), ``UGUALE'' (sopra \texttt{=}, arancione), ``VALORE'' (sopra \texttt{valore}, verde). Una freccia che evidenzia gli spazi attorno all'uguale.}
+  \caption{Le tre parti di una riga: chiave, uguale, valore. Sempre la stessa struttura, ovunque nel file.}
+  \label{fig:anatomia-riga}
+\end{figure}
+
+L'unica forma diversa che incontrerai è la riga d'azione \kw{do : verbo \ldots},
+trattata nel Capitolo~\ref{ch:do}: il separatore è \texttt{:} invece di
+\texttt{=} per evidenziare che si tratta di un \emph{ordine}, non di una
+proprietà.
+
+\section{La gerarchia a tre livelli}
+
+Il file è organizzato come la struttura di un libro: \textbf{una cornice
+globale}, dentro la quale stanno \textbf{più capitoli}, ciascuno composto da
+\textbf{più passi}. I tre livelli si contengono uno dentro l'altro e
+corrispondono a tre tipi di blocco:
+
+\begin{longtable}{@{}p{2.4cm}p{3.6cm}p{8cm}@{}}
+\toprule
+\textbf{Livello} & \textbf{Blocco} & \textbf{Ruolo} \\
+\midrule
+1 & \sez{[scene]} & La cornice globale: condizioni iniziali della scena 3D, una sola volta all'inizio del file. \\
+2 & \sez{[section "Titolo"]} & Un capitolo del tutorial. Un file ne può contenere uno o molti, in sequenza. \\
+3 & \sez{[step "Titolo" flag]} & Il singolo passo che compone una sezione. Ogni sezione ne ha tipicamente da 5 a 30. \\
+\bottomrule
+\end{longtable}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap03/gerarchia_blocchi.png}
+  \imgph{12cm}{Diagramma a tre livelli verticali: in alto un riquadro grande \sez{[scene]} (cornice della stanza, con icona stanza vuota), al centro tre riquadri \sez{[section "..."]} affiancati (capitoli del libro, con icona libro), in basso tanti riquadri piccoli \sez{[step "..."]} (passi singoli, con icona orma). Frecce di contenimento tra i livelli.}
+  \caption{I tre livelli della gerarchia: dalla cornice globale al singolo passo.}
+  \label{fig:gerarchia-blocchi}
+\end{figure}
+
+\subsection{Livello 1 -- \texttt{[scene]}: la cornice globale}
+
+\sez{[scene]} è il blocco di apertura del file. Vi si dichiarano le condizioni
+iniziali condivise da tutto il tutorial:
+
+\begin{itemize}
+  \item la posizione di partenza della telecamera (\kw{camera = \ldots});
+  \item le posizioni iniziali dei modelli 3D che non si trovano già nel
+        loro punto naturale (\kw{position = \ldots}, \kw{rotation = \ldots}).
+\end{itemize}
+
+Si scrive \textbf{una sola volta}, all'inizio del file:
+
+\begin{lstlisting}
+[scene]
+camera = position (-1.5, 0.5, -0.2), target (0, 0, 0), zoom 1.2, fade 2.5
+\end{lstlisting}
+
+Significa: ``\emph{Telecamera, mettiti in quel punto, guarda verso il centro,
+zoomata 1.2, e quando ti sposti impiega 2.5 secondi}''.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap03/scena_iniziale.png}
+  \imgph{11cm}{Render schematico di una scena 3D vuota con la telecamera (a forma di cinepresa) in primo piano e una linea di mira tratteggiata che punta verso il centro della scena. Coordinate \texttt{position (-1.5, 0.5, -0.2)} e \texttt{target (0, 0, 0)} annotate a fianco.}
+  \caption{Il blocco \sez{[scene]} fissa la telecamera all'avvio: posizione, target, zoom.}
+  \label{fig:scena-iniziale}
+\end{figure}
+
+\subsection{Livello 2 -- \texttt{[section "Titolo"]}: il capitolo}
+
+Una \sez{section} raggruppa una sequenza di step affini sotto un titolo
+descrittivo. Esempio: il file della pompa Becker contiene quattro sezioni
+che corrispondono a quattro tutorial distinti caricabili dalla home:
+
+\begin{enumerate}
+  \item Pulizia Filtro
+  \item Riassemblaggio
+  \item Sostituzione Palette -- Smontaggio
+  \item Sostituzione Palette -- Reverse
+\end{enumerate}
+
+Ognuna si apre così:
+
+\begin{lstlisting}
+[section "Pulizia Filtro"]
+\end{lstlisting}
+
+\begin{attenzione}[Le virgolette sono obbligatorie]
+Il titolo va sempre fra \textbf{virgolette} \texttt{"\ldots"} perché contiene
+spazi. Senza virgolette il parser interpreterebbe ogni parola del titolo
+come una bandierina e ti restituirebbe un errore.
+\end{attenzione}
+
+\subsection{Livello 3 -- \texttt{[step "Titolo" flag]}: il singolo passo}
+
+Uno \sez{step} è l'unità minima del tutorial: corrisponde a un singolo
+passaggio che lo studente deve compiere (svitare una vite, premere un
+pulsante, trascinare un filtro). Esempio:
+
+\begin{lstlisting}
+[step "Prima vite" highlight]
+\end{lstlisting}
+
+L'intestazione contiene il \textbf{titolo} fra virgolette e, opzionalmente,
+una o più \textbf{bandierine} che ne modificano il comportamento (in questo
+caso \val{highlight} fa pulsare il fumetto della spiegazione). Le bandierine
+sono trattate nel Capitolo~\ref{ch:bandierine}; se non te ne servono, ometti
+del tutto la parte dopo il titolo:
+
+\begin{lstlisting}
+[step "Prima vite"]
+\end{lstlisting}
+
+I campi che si possono scrivere dentro lo step (l'\kw{element}, l'eventuale
+\kw{tool}, la \kw{description}, le righe \kw{do :}, ecc.) sono il cuore del
+linguaggio e occupano i prossimi capitoli, a partire dal
+Capitolo~\ref{ch:righe-magiche}.
+
+\section{Altri blocchi accessori}
+
+Oltre ai tre livelli principali, CVTScript prevede alcuni blocchi
+\textbf{dichiarativi} per descrivere componenti riutilizzabili:
+\sez{[state nome]} per le varianti visive di un oggetto (es. uno schermo
+digitale che mostra pagine diverse) e \sez{[object nome]} per i modelli 3D
+con parti interattive (pulsanti del pulpito, leve, schermi).
+
+Per igiene di progetto questi blocchi non si scrivono nel
+\file{tutorial.cvtscript}: vivono in un file separato chiamato
+\file{objects.ini} che il programma carica automaticamente prima del
+tutorial. Il Capitolo~\ref{ch:state-object} ne descrive la sintassi; per ora
+basti sapere che \emph{esistono} e che è grazie a loro che, dentro lo step,
+puoi scrivere semplicemente \kw{element = pulpito.Pulsante\_mdi} e il
+programma sa già di che pulsante si tratta.
+
+%--------------------------------------------------------------------------
+\chapter{Dentro uno step}
+\label{ch:righe-magiche}
+%--------------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap05/anatomia_step.png}
+  \imgph{13cm}{Blocco \texttt{[step "Prima vite" highlight]} esploso, con frecce colorate che escono da ogni riga (\texttt{element}, \texttt{tool}, \texttt{description}, \texttt{do:}, \texttt{camera}, ecc.) e puntano a etichette che spiegano il ruolo di ognuna in linguaggio naturale.}
+  \caption{Tutte le righe di uno step: scegli quali ti servono di volta in volta.}
+  \label{fig:anatomia-step}
+\end{figure}
+
+Ogni step può contenere queste istruzioni (tutte in \textbf{minuscolo} con \texttt{=}):
+
+\begin{longtable}{@{}p{3.3cm}p{4.8cm}p{6.2cm}@{}}
+\toprule
+\textbf{Riga} & \textbf{Cosa fa} & \textbf{Esempio} \\
+\midrule
+\kw{element =} & Il pezzo 3D dello step: vite, porta, pulsante, leva, qualsiasi cosa & \texttt{element = vite\_coperchio\_1} \newline \texttt{element = pulpito.Pulsante\_mdi} \\
+\kw{tool =} & Quale attrezzo serve allo studente & \texttt{tool = hand} \\
+\kw{description =} & Il testo del fumetto & \texttt{description = Rimuovi la prima vite} \\
+\kw{do :} & Un'azione (vedi capitolo 5) & \texttt{do : unscrew} \\
+\kw{camera =} & Dove guarda la telecamera & \texttt{camera = target filtro, zoom 0.5} \\
+\kw{drag =} & Lo studente trascina con il mouse & \texttt{drag = filtro distance 0.3} \\
+\kw{after :} & Cosa succede dopo che lo studente clicca l'\kw{element} & \texttt{after : schermo = schermo002} \\
+\kw{message =} & Mostra una finestra con un messaggio & \texttt{message = Attenzione, leggi qui!} \\
+\kw{title =} & Il titolo della finestra (con \kw{message}) & \texttt{title = Leggi prima di continuare} \\
+\kw{video =} & Mostra un video nella finestra & \texttt{video = media/spiegazione.mp4} \\
+\kw{image =} & Mostra un'immagine nella finestra & \texttt{image = scenes/X/foto.jpg} \\
+\kw{hold =} & Lo studente prende/tiene/lascia un oggetto & \texttt{hold = pick remote at \ldots} \\
+\kw{view =} & Cambia la schermata di un display 3D & \texttt{view = main} \\
+\kw{position =} & Sposta un pezzo in un punto preciso & \texttt{position = filtro at (0, 0, 0)} \\
+\kw{rotation =} & Ruota un pezzo di tot gradi & \texttt{rotation = filtro by (0, 0, 90)} \\
+\kw{companion =} & Un pezzo che si muove insieme a quello principale & \texttt{companion = tubo follows master} \\
+\kw{animation =} & Mostra una sequenza di immagini animate 2D & \texttt{animation = folder x at (60\%,60\%) frame 20ms} \\
+\bottomrule
+\end{longtable}
+
+\begin{regola}
+Scrivi le righe \textbf{tutte in minuscolo}. Niente \texttt{Element=}, niente
+\texttt{TOOL=}. Solo \texttt{element =} e \texttt{tool =}. È il modo per dire al
+programma: ``Sto usando la sintassi nuova v3''.
+\end{regola}
+
+%--------------------------------------------------------------------------
+\chapter{Gli ordini, l'istruzione \texttt{do :}}
+\label{ch:do}
+%--------------------------------------------------------------------------
+
+\kw{do :} è l'istruzione più importante. Significa \textbf{``fai questa cosa
+adesso''}. La riga \kw{do :} può apparire \textbf{più volte} in uno step. Le
+azioni vengono fatte \textbf{una dopo l'altra}, nell'ordine in cui le scrivi.
+
+\section{Quando parte un \texttt{do :} ?}
+
+\begin{regola}[La cosa più importante da capire]
+Le azioni \kw{do : \ldots} \textbf{non partono da sole all'inizio dello step}.
+Partono \textbf{quando lo studente clicca l'\kw{element}} dello step. È
+l'interazione dello studente che mette in moto l'animazione.
+\end{regola}
+
+In altre parole: ogni step ha un protagonista (l'\kw{element}) e una serie di
+cose che gli devono accadere (i \kw{do :}). Lo studente sceglie il momento:
+\textbf{cliccando sul protagonista} dà il via alla scena.
+
+\textbf{Esempio.} Vediamo lo step della porta:
+
+\begin{lstlisting}
+[step "Apri la porta"]
+element = a500.porta
+do      : rotate around (0.615, 0, 0) by (0, 90, 0) duration 1.0
+\end{lstlisting}
+
+Cosa succede dal punto di vista dello studente:
+
+\begin{enumerate}
+  \item Lo step si carica. La porta (\texttt{a500.porta}) si \textbf{illumina
+        di giallo} per dire ``cliccami''.
+  \item Lo studente \textbf{clicca la porta}.
+  \item \emph{Solo a quel punto} parte il \kw{do : rotate \ldots}: la porta
+        ruota di 90 gradi in 1 secondo.
+  \item Quando l'animazione è finita, lo step avanza al prossimo.
+\end{enumerate}
+
+Senza il click dello studente, la porta resta lì ferma. Il programma aspetta.
+
+\subsection{Le tre eccezioni: \texttt{auto}, \texttt{machine}, e l'attrezzo}
+
+Ci sono tre situazioni in cui il \kw{do :} parte \textbf{senza un click
+diretto} sull'\kw{element}:
+
+\begin{itemize}
+  \item \textbf{Step con bandierina \val{auto}}: lo studente \textbf{ha già
+        equipaggiato il tool} dichiarato e il programma simula il click in
+        automatico. Si usa per le viti consecutive: la prima la fa lo
+        studente, le altre sono in cascata.
+  \item \textbf{Step con bandierina \val{machine}}: la macchina si muove da
+        sola, senza nemmeno il tool. Esempio: il carro dell'asse Y che si
+        sposta automaticamente durante un cambio utensile.
+  \item \textbf{Step con \kw{tool = \ldots} + \kw{do :}}: lo studente
+        \textbf{equipaggia l'attrezzo dalla cassetta} e poi clicca
+        l'\kw{element} con quell'attrezzo. È sempre un click sull'element,
+        solo mediato dal tool.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap06/do_quando_parte.png}
+  \imgph{13cm}{Quattro vignette in fila. (1) Cursore che scende verso un'\kw{element} illuminata di giallo $\rightarrow$ click $\rightarrow$ \kw{do} che parte. (2) Lo stesso ma il cursore ha forma dell'attrezzo (chiave a brugola). (3) Step con la bandierina \val{auto}: il cursore non c'è, una freccia ``automatico'' avvia il \kw{do}. (4) Step \val{machine}: la macchina che si muove da sola, etichetta ``nessun click necessario''.}
+  \caption{Quando parte un \kw{do :}: nei tre casi normali al click dello studente, nei due automatici (\val{auto}/\val{machine}) da solo.}
+  \label{fig:do-quando-parte}
+\end{figure}
+
+\subsection{Più \texttt{do :} in fila = una sola animazione}
+
+Se metti più righe \kw{do :} nello stesso step, vengono eseguite
+\textbf{una dopo l'altra} a partire dal singolo click dello studente. Lo
+studente clicca \textbf{una volta}, e parte tutta la sequenza.
+
+\begin{lstlisting}
+[step "Estrai la flangia" highlight]
+element     = flangia
+description = Stacca la flangia dalla macchina.
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (90, 0, 0) duration 0.5
+do          : place duration 0.2
+\end{lstlisting}
+
+\textbf{Cosa vede lo studente.} Clicca la flangia una sola volta. Poi:
+prima la flangia si sposta lungo Z (mezzo secondo); poi ruota di 90 gradi
+(altro mezzo secondo); poi si appoggia a terra (un quinto di secondo). Tre
+animazioni concatenate, un solo click.
+
+\section{Il vocabolario degli ordini}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap06/9_azioni.png}
+  \imgph{13cm}{Tabella visiva 3$\times$3 con le 9 azioni: ognuna ha un'icona simbolica e il nome inglese sotto. \texttt{unscrew} (vite con frecce circolari + uscita), \texttt{screw} (vite che entra), \texttt{extract} (freccia in linea), \texttt{insert} (freccia inversa), \texttt{place} (oggetto che cade), \texttt{move} (cubo con vettore), \texttt{rotate} (cerchio rotatorio), \texttt{pump} (oscillazione $\leftrightarrow$), \texttt{idle} (cerchio reset).}
+  \caption{Il vocabolario completo: nove ordini per descrivere ogni movimento.}
+  \label{fig:9-azioni}
+\end{figure}
+
+Sono solo \textbf{nove parole}:
+
+\begin{longtable}{@{}lp{6cm}p{6cm}@{}}
+\toprule
+\textbf{Ordine} & \textbf{Cosa fa} & \textbf{Esempio} \\
+\midrule
+\val{unscrew} & Svita la vite (rotazione + estrazione) & \texttt{do : unscrew distance 0.3} \\
+\val{screw} & Avvita la vite (inverso di unscrew) & \texttt{do : screw distance 0.005} \\
+\val{extract} & Estrae il pezzo lungo l'asse & \texttt{do : extract distance 0.4} \\
+\val{insert} & Inserisce il pezzo & \texttt{do : insert distance 0.4} \\
+\val{place} & Appoggia a terra il pezzo & \texttt{do : place duration 0.5} \\
+\val{move} & Sposta il pezzo (traslazione) & \texttt{do : move by (0,0,-0.1) duration 0.2} \\
+\val{rotate} & Ruota il pezzo & \texttt{do : rotate by (0,0,-90) duration 0.8} \\
+\val{pump} & Pompa avanti-indietro (cicli) & \texttt{do : pump along x amplitude 0.08\ldots} \\
+\val{idle} & Operazioni speciali & \texttt{do : idle reset} \\
+\bottomrule
+\end{longtable}
+
+\section{Spiegazioni semplici di ognuno}
+
+\subsection{\texttt{unscrew} -- Svita la vite}
+
+\begin{lstlisting}
+do : unscrew                  # Svita di mezzo metro (default)
+do : unscrew distance 0.3     # Svita di 30 centimetri
+\end{lstlisting}
+
+Pensa a una vite: per svitarla devi \textbf{girarla tante volte} e
+\textbf{tirarla fuori}. \val{unscrew} fa entrambe le cose insieme.
+
+\begin{notablu}
+La direzione (su, giù, verso destra) è scritta nel file
+\file{scenes/homeconfig.ini} per ogni modello. Tu non te ne devi preoccupare.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap06/unscrew_sequenza.png}
+  \imgph{11cm}{Tre fotogrammi in sequenza orizzontale: vite avvitata nel pezzo (frame 1), vite a metà strada con freccia di rotazione e freccia di traslazione (frame 2), vite completamente fuori e separata (frame 3). Frecce di flusso tra i frame.}
+  \caption{\val{unscrew} combina rotazione e traslazione lungo l'asse di svitatura.}
+  \label{fig:unscrew-sequenza}
+\end{figure}
+
+\subsection{\texttt{screw} -- Avvita la vite}
+
+L'opposto di \val{unscrew}. La vite \textbf{rientra} nel suo buco.
+
+\begin{lstlisting}
+do : screw distance 0.02
+\end{lstlisting}
+
+\subsection{\texttt{extract} / \texttt{insert} -- Estrae / Inserisce}
+
+Come svitare ma \textbf{senza la rotazione}. Solo lo spostamento.
+
+\begin{lstlisting}
+do : extract distance 0.6     # tira fuori di 60 cm
+do : insert  distance 0.6     # rimette dentro
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=10cm]{immagini/cap06/extract_insert.png}
+  \imgph{10cm}{Pezzo cilindrico (es.\ filtro) che esce in linea retta dalla sua sede, senza rotazione. Sopra l'asse di estrazione una doppia freccia: $\rightarrow$ etichettata \texttt{extract}, $\leftarrow$ etichettata \texttt{insert}. Il pezzo non ruota mai.}
+  \caption{\val{extract} è solo traslazione: niente rotazione, solo movimento lungo la direzione del modello.}
+  \label{fig:extract-insert}
+\end{figure}
+
+\subsection{\texttt{place} -- Appoggia a terra}
+
+Il pezzo \textbf{scende e si appoggia per terra}. Utile dopo che lo hai svitato e tolto.
+
+\begin{lstlisting}
+do : place duration 0.5    # impiega mezzo secondo a scendere
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=9cm]{immagini/cap06/place.png}
+  \imgph{9cm}{Vite sospesa in aria con una freccia verticale verso il basso. Linea tratteggiata orizzontale a Y=0 etichettata ``pavimento''. La vite finisce esattamente sulla linea, appoggiata in piedi.}
+  \caption{\val{place} calcola il pavimento e fa scendere il pezzo dolcemente fino a Y=0.}
+  \label{fig:place}
+\end{figure}
+
+\subsection{\texttt{move} -- Sposta in linea retta}
+
+\begin{lstlisting}
+do : move by (1, 0, 0) duration 1.0
+\end{lstlisting}
+
+Significa: sposta il pezzo di 1 metro lungo l'asse X, in 1 secondo.
+
+I tre numeri tra parentesi sono \textbf{(X, Y, Z)} -- esattamente come tre direzioni:
+
+\begin{itemize}
+  \item \textbf{X} = destra/sinistra (numeri positivi = destra)
+  \item \textbf{Y} = su/giù (positivi = su)
+  \item \textbf{Z} = avanti/indietro (positivi = avanti)
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=10cm]{immagini/cap06/move_xyz.png}
+  \imgph{10cm}{Sistema di riferimento 3D con tre frecce colorate: X rossa (destra/sinistra), Y verde (su/giù), Z blu (avanti/indietro). Un cubo centrato nell'origine con vettore di spostamento \texttt{(1,0,0)} disegnato verso destra.}
+  \caption{Le tre coordinate (X,~Y,~Z) come tre direzioni dello spazio.}
+  \label{fig:move-xyz}
+\end{figure}
+
+\textbf{Versione speciale} che parte da un altro pezzo:
+
+\begin{lstlisting}
+do : move from tappino_grasso_dx_original by (-0.2, 0, 0) duration 0.5
+\end{lstlisting}
+
+Significa: ``Vai vicino al tappino di destra (alla sua posizione originale),
+poi spostati di -0.2 lungo X''. Si usa quando vuoi posizionare un oggetto
+\textbf{vicino a un altro}.
+
+\subsection{\texttt{rotate} -- Gira}
+
+\begin{lstlisting}
+do : rotate by (0, 0, 90) duration 1.0
+\end{lstlisting}
+
+Significa: ruota di 90 gradi attorno all'asse Z, in 1 secondo.
+
+\textbf{Versione speciale} ``ruota intorno a un punto preciso'':
+
+\begin{lstlisting}
+do : rotate around (0, 0.1, 0) by (0, 0, -90) duration 0.8
+\end{lstlisting}
+
+Significa: ruota di -90 gradi sull'asse Z, ma il \textbf{perno della rotazione}
+è il punto (0, 0.1, 0). È come quando una porta gira intorno alla cerniera.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap06/rotate_due_modi.png}
+  \imgph{12cm}{Confronto a due immagini: a sinistra cubo che ruota attorno al suo centro (\texttt{rotate by}, perno = origine pezzo). A destra cubo che ruota attorno a un punto esterno marcato con un cardine (\texttt{rotate around}, come una porta che gira sui cardini).}
+  \caption{La differenza tra \texttt{rotate by} (perno = origine pezzo) e \texttt{rotate around} (perno = punto esterno).}
+  \label{fig:rotate-due-modi}
+\end{figure}
+
+\subsection{\texttt{pump} -- Pompare}
+
+Il pezzo si muove \textbf{avanti e indietro} tante volte (es. una pompetta del grasso).
+
+\begin{lstlisting}
+do : pump along x amplitude 0.08 cycles 10 duration 0.1 from tappino_grasso_dx_original
+\end{lstlisting}
+
+Si legge: ``Pompa lungo X, ampiezza 8 cm, fai 10 cicli, ogni ciclo dura
+0.1 secondi, partendo dal tappino di destra''.
+
+\textbf{Versione asimmetrica} (il ``su'' e il ``giù'' non sono uguali):
+
+\begin{lstlisting}
+do : pump from tappino_grasso_dx_original between (-0.08, 0, 0) and (-0.09, 0, 0) cycles 10 duration 0.1
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap06/pump.png}
+  \imgph{11cm}{Pompetta del grasso con stantuffo che si muove avanti-indietro: doppia freccia $\leftrightarrow$ etichettata ``ampiezza''. Sotto, una linea ondulata sinusoidale con N picchi etichettati ``cicli=10''. A fianco una clessidra con scritto ``durata=0.1s per ciclo''.}
+  \caption{\val{pump} ripete avanti-indietro N volte: utile per simulare pompette del grasso.}
+  \label{fig:pump}
+\end{figure}
+
+\subsection{\texttt{idle reset} -- Resetta tutto}
+
+\begin{lstlisting}
+do : idle reset
+\end{lstlisting}
+
+Mette tutti i pezzi nella loro posizione originale. Si usa solitamente
+all'inizio di una \sez{section} per ``ripulire'' la scena.
+
+%--------------------------------------------------------------------------
+\chapter{Gli strumenti: i vari attrezzi}
+\label{ch:strumenti}
+%--------------------------------------------------------------------------
+
+Lo studente, durante il tutorial, sceglie un attrezzo. Tu gli dici quale serve
+con la riga \kw{tool = \ldots}. Sono \textbf{poche}, parole inglesi semplici:
+
+\begin{longtable}{@{}llp{8cm}@{}}
+\toprule
+\textbf{Riga nel file} & \textbf{Attrezzo} & \textbf{Quando usarlo} \\
+\midrule
+\val{tool = hand}    & Mano                & Per pezzi che si tolgono a mano (tappi, coperchi) \\
+\val{tool = hex\_key} & Chiave a brugola    & Per viti a brugola (esagonali) \\
+\val{tool = wrench}  & Chiave inglese      & Per dadi e bulloni \\
+\val{tool = air}     & Aria compressa      & Per soffiare via la sporcizia \\
+\val{tool = spray}   & Spray lubrificante  & Per ingrassare \\
+\bottomrule
+\end{longtable}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap07/cinque_attrezzi.png}
+  \imgph{12cm}{Cassetta degli attrezzi aperta con cinque scomparti, ognuno con icona e doppia etichetta (italiana sopra, inglese sotto): mano (\texttt{hand}), brugola (\texttt{hex\_key}), chiave inglese (\texttt{wrench}), pistola aria compressa (\texttt{air}), bomboletta spray (\texttt{spray}).}
+  \caption{Gli attrezzi disponibili: i nomi inglesi sono quelli da usare nella riga \kw{tool =}.}
+  \label{fig:cinque-attrezzi}
+\end{figure}
+
+\textbf{Esempio completo:}
+
+\begin{lstlisting}
+[step "Rimuovi la vite" highlight]
+element     = vite_culatta_1
+tool        = hex_key
+description = Usa la chiave a brugola da 6mm per svitare la prima vite.
+do          : unscrew distance 0.3
+do          : place duration 0.2
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap07/barra_strumenti_app.png}
+  \imgph{12cm}{Screenshot della barra degli strumenti reale dell'app: 4 slot in basso allo schermo, ognuno con icona dell'attrezzo e label sotto. Uno slot è evidenziato (selezionato) con bordo colorato. Annotazioni numerate 1--4 sopra ogni slot.}
+  \caption{La cassetta degli attrezzi nell'interfaccia: lo studente sceglie da qui prima di ogni azione.}
+  \label{fig:barra-strumenti-app}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap07/galleria_cursori.png}
+  \imgph{12cm}{Galleria di 5 cursori: per ognuno (brugola, chiave inglese, mano, aria, spray) due frame affiancati: ``normale'' a sinistra e ``premuto'' a destra. Etichetta sotto ogni coppia.}
+  \caption{I cursori dei cinque attrezzi: cambiano forma quando il mouse è premuto.}
+  \label{fig:galleria-cursori}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{La camera: dove guarda lo studente}
+\label{ch:camera}
+%--------------------------------------------------------------------------
+
+La telecamera è gli \textbf{occhi dello studente}. Tu decidi dove guardare con la
+riga \kw{camera = \ldots}. Si scrive \textbf{tutto su una riga}, separando con
+virgole:
+
+\begin{lstlisting}
+camera = position (1, 2, 3), target (0, 0, 0), zoom 1.5, fade 2.0
+\end{lstlisting}
+
+\section{Le parti della camera}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap08/camera_geometria.png}
+  \imgph{12cm}{Schema 3D della telecamera: una cinepresa stilizzata in posizione \texttt{position}, vettore tratteggiato verso \texttt{target}, cono giallo del campo visivo (FOV), e cerchio orizzontale che rappresenta il \texttt{pivot}. Misurato anche il \texttt{distance} come segmento tra position e target.}
+  \caption{Le proprietà geometriche della camera: ogni numero ha un significato preciso nello spazio.}
+  \label{fig:camera-geometria}
+\end{figure}
+
+\begin{longtable}{@{}lp{10cm}@{}}
+\toprule
+\textbf{Pezzettino} & \textbf{Significato} \\
+\midrule
+\val{position (x, y, z)}      & Dove sta la telecamera nello spazio \\
+\val{target (x, y, z)}        & Dove sta guardando \\
+\val{target nome\_pezzo}      & Punta a un pezzo (senza coordinate) \\
+\val{zoom 1.5}                & Quanto è zoomata (più alto = più vicino) \\
+\val{fade 2.0}                & Quanti secondi impiega per spostarsi \\
+\val{pivot (x, y, z)}         & Il punto attorno a cui ruota \\
+\val{distance 0.5}            & Distanza dal target \\
+\val{fov 75}                  & ``Angolo di vista'' della camera \\
+\val{rotation (rx, ry, rz)}   & Rotazione della camera \\
+\val{free within (-3.14, 3.14)} & Lo studente può girare liberamente \\
+\bottomrule
+\end{longtable}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap08/fov_confronto.png}
+  \imgph{12cm}{Stessa scena vista con due valori di \texttt{fov}: a sinistra \texttt{fov 45} (campo stretto, effetto teleobiettivo, soggetto grande), a destra \texttt{fov 90} (campo ampio, effetto grandangolo, si vede di più). Cono di vista sovrapposto.}
+  \caption{Più alto è il FOV, più ampio è il campo di vista (effetto grandangolo).}
+  \label{fig:fov-confronto}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=10cm]{immagini/cap08/free_within.png}
+  \imgph{10cm}{Emisfero (cupola) attorno a un oggetto al centro: archi colorati in verde indicano l'intervallo di rotazione consentito da \texttt{free within (-3.14, 3.14)}, archi rossi al di fuori indicano i limiti vietati. Una telecamera si muove lungo l'arco verde.}
+  \caption{I limiti \texttt{free within} impediscono allo studente di disorientarsi girando troppo la camera.}
+  \label{fig:free-within}
+\end{figure}
+
+\begin{trucchetto}
+Nelle \sez{section} e negli \sez{step} puoi scrivere \textbf{solo i pezzi che
+cambiano}. Il programma ricorda gli altri dal contesto precedente.
+
+Esempio: se uno step è quasi uguale al precedente ma cambi solo il target:
+
+\begin{lstlisting}
+[step "Tappino Sinistro" highlight]
+camera      = target tappino_grasso_sx
+description = Monta il tappino di sinistra.
+\end{lstlisting}
+\end{trucchetto}
+
+%--------------------------------------------------------------------------
+\chapter{Trascinare gli oggetti (drag \& drop)}
+\label{ch:drag}
+%--------------------------------------------------------------------------
+
+A volte vuoi che sia lo \textbf{studente a trascinare} un pezzo nella sua sede
+(non automatico). Si fa con la riga \kw{drag = \ldots}:
+
+\begin{lstlisting}
+drag = filtro distance 0.3
+\end{lstlisting}
+
+Significa: ``Lo studente può trascinare il filtro. Quando si avvicina entro
+30 cm dal punto di destinazione, il pezzo \textbf{si aggancia automaticamente}''.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap09/snap_sequenza.png}
+  \imgph{13cm}{Tre fotogrammi orizzontali: 1) filtro lontano dalla sua sede, cursore mano che lo trascina; 2) filtro entro la sfera tratteggiata di soglia (\texttt{distance 0.3}), il bordo della sfera è visibile; 3) filtro agganciato perfettamente nella sede, indicatore di snap acceso (verde).}
+  \caption{La meccanica dello snap: quando l'oggetto entra nella soglia di distanza, si aggancia automaticamente.}
+  \label{fig:snap-sequenza}
+\end{figure}
+
+\section{Più oggetti contemporaneamente}
+
+\begin{lstlisting}
+drag = vite_1, vite_2, vite_3, vite_4 distance 0.2
+\end{lstlisting}
+
+Significa: ``Lo studente può trascinare le 4 viti, in qualsiasi ordine''.
+
+\section{Punto di aggancio personalizzato}
+
+\begin{longtable}{@{}lp{9cm}@{}}
+\toprule
+\textbf{Forma} & \textbf{Cosa fa} \\
+\midrule
+\val{snap offset (0, 0, 0.01)}      & Si aggancia un po' sollevato (1 cm sopra) \\
+\val{snap pivot (x, y, z)}          & Si aggancia con il pivot in quel punto \\
+\val{snap targets a, b, c}          & Si aggancia in uno qualsiasi di questi punti \\
+\bottomrule
+\end{longtable}
+
+\textbf{Esempio con tutto:}
+
+\begin{lstlisting}
+drag = filtro distance 1.5 snap offset (0, 0, 0.01)
+\end{lstlisting}
+
+\begin{lstlisting}
+drag = vite distance 1.5 snap targets foro_1.origin, foro_2.origin
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap09/snap_varianti.png}
+  \imgph{13cm}{Tre riquadri affiancati con esempi di snap: 1) \texttt{snap offset (0,0,0.01)} --- pezzo agganciato 1\,cm sopra la sede (linea tratteggiata di offset visibile); 2) \texttt{snap pivot (x,y,z)} --- pezzo con un perno colorato spostato dal centro; 3) \texttt{snap targets a, b, c} --- vite con 3 fori candidati (bersagli) di cui quello più vicino si illumina.}
+  \caption{Tre modi di definire dove un oggetto si aggancia: offset, pivot custom, lista di target.}
+  \label{fig:snap-varianti}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{Pulsanti, porte, leve: tutto è \texttt{element}}
+\label{ch:pulsanti}
+%--------------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap10/pulpito_annotato.png}
+  \imgph{12cm}{Render del pulpito 3D dell'Elettromandrino con callout numerati che evidenziano i singoli pulsanti: \texttt{Pulsante\_mdi}, \texttt{Pulsante\_tool}, \texttt{chiave0}, \texttt{chiave1}, \texttt{emergenza\_off}, \texttt{pstart0}, \texttt{pstart1}. Sopra il modello l'etichetta ``\file{pulpito.glb}''.}
+  \caption{Il pulpito di una macchina utensile: ogni pulsante è un figlio del modello \file{pulpito.glb}.}
+  \label{fig:pulpito-annotato}
+\end{figure}
+
+Una delle cose più importanti del CVTScript v3 è una piccola idea che cambia
+tutto: \textbf{tutto quello su cui lo studente clicca si chiama \kw{element}}.
+Una vite, un pulsante del pulpito, una porta, una leva, una chiave da girare:
+una sola parola, \kw{element}, per dire al programma ``\emph{questo è il pezzo
+di questo step}''.
+
+\begin{regola}[La grande regola del v3]
+Il programma capisce \textbf{da solo} cosa deve succedere quando lo studente
+clicca un \kw{element}, guardando le \emph{altre righe} dello step:
+se c'è \kw{do :} parte un'animazione, se c'è \kw{after :} cambia uno stato,
+se c'è \kw{tool =} si usa un attrezzo, se c'è la bandierina \val{auto} non
+serve neanche cliccare. \textbf{Tu scrivi solo cosa vuoi che succeda}: il
+programma collega da sé i pezzi.
+\end{regola}
+
+\begin{notablu}[Perché ``element'' e basta]
+Nelle prime versioni del v3 c'era una parola \kw{button =} per i pulsanti
+3D. Ma una porta non è un pulsante. Una leva non è un pulsante. Una vite
+non è un pulsante. Chiamarli tutti ``button'' confondeva chi leggeva il
+file. Allora abbiamo unificato: \textbf{tutto è \kw{element}}, e il
+contesto chiarisce di cosa si tratta. La parola \kw{button =} continua a
+funzionare per non rompere i tutorial vecchi, ma il programma ti avvisa
+che è deprecata.
+\end{notablu}
+
+\section{Caso A -- Click su un pulsante che cambia uno schermo}
+
+Quando lo studente deve \textbf{premere un pulsante 3D} (es.\ il pulsante MDI
+sul pulpito della macchina), scrivi semplicemente l'\kw{element} e il
+\kw{after :}:
+
+\begin{lstlisting}
+[step "Vai alla schermata MDI" highlight]
+description = Premi il pulsante MDI sul pulpito.
+element     = pulpito.Pulsante_mdi
+after       : schermo = schermo002
+\end{lstlisting}
+
+Si legge:
+
+\begin{itemize}
+  \item ``Il pezzo dello step è il pulsante chiamato \texttt{Pulsante\_mdi}
+        dentro l'oggetto \texttt{pulpito}''.
+  \item ``Quando lo studente lo clicca, cambia la variante dello schermo a
+        \texttt{schermo002}''.
+  \item Niente \kw{do :} significa che non c'è animazione da aspettare: si
+        passa subito al prossimo step.
+\end{itemize}
+
+\section{Caso B -- Click su una porta che si apre}
+
+Una porta non è un pulsante: è una porta. Ma per il programma è anch'essa
+un \kw{element}. La differenza è che ha un'animazione (\kw{do :}) invece di
+un \kw{after :}:
+
+\begin{lstlisting}
+[step "Apri la porta"]
+description = Apri la porta della cabina.
+element     = a500.porta
+do          : rotate around (0.615, 0, 0) by (0, 90, 0) duration 1.0
+\end{lstlisting}
+
+Si legge:
+
+\begin{itemize}
+  \item ``Il pezzo dello step è la porta della macchina (\texttt{a500.porta})''.
+  \item ``Quando lo studente la clicca, la porta ruota di 90 gradi attorno al
+        punto (0.615, 0, 0) in 1 secondo''.
+  \item Quando l'animazione è finita, lo step avanza da solo.
+\end{itemize}
+
+\section{Caso C -- Click su una vite con un attrezzo}
+
+Quando l'\kw{element} richiede un attrezzo (chiave a brugola, chiave inglese,
+spray\ldots) aggiungi \kw{tool = \ldots}. Lo studente prima equipaggia
+l'attrezzo, poi clicca l'\kw{element}:
+
+\begin{lstlisting}
+[step "Rimuovi vite culatta"]
+element     = vite_culatta_1
+tool        = hex_key
+description = Svita la vite con la chiave a brugola.
+do          : unscrew distance 0.3
+\end{lstlisting}
+
+\section{\texttt{after} con effetti multipli}
+
+Se cliccare l'\kw{element} deve cambiare \textbf{più cose} contemporaneamente,
+separa con \texttt{;}:
+
+\begin{lstlisting}
+element = pulpito.pstart0
+after   : start = pstart1; schermo = schermo002
+\end{lstlisting}
+
+Significa: ``Quando lo studente clicca il pulsante di accensione, cambia sia la
+variante del pulsante stesso (acceso) sia quella dello schermo''.
+
+\begin{notablu}[\texttt{after} funziona anche senza click]
+\kw{after :} significa ``\textbf{alla fine di questo step}''. Se lo step ha un
+\kw{element =} cliccabile, ``alla fine'' = ``dopo il click''. Se invece lo step
+è \val{auto} o \val{machine} (senza click), ``alla fine'' = ``quando lo step
+parte''.
+
+\textbf{Esempio} -- step \val{machine} che cambia variante senza click:
+
+\begin{lstlisting}
+[step "Scambio Utensile" machine]
+after : tool = tool0
+\end{lstlisting}
+
+Lo studente non deve cliccare niente: la macchina cambia da sola la variante
+del tool e va al prossimo step.
+\end{notablu}
+
+\section{La tabella che decide tutto}
+
+Ecco la regola completa. Il programma guarda quali righe ci sono nello step e
+sceglie \emph{cosa} far succedere al click:
+
+\begin{longtable}{@{}p{2.4cm}p{2.4cm}p{2.4cm}p{2.4cm}p{4.0cm}@{}}
+\toprule
+\textbf{\kw{tool}?} & \textbf{\kw{do :}?} & \textbf{\kw{after :}?} & \textbf{flag \val{auto}/\val{machine}?} & \textbf{Cosa succede al click} \\
+\midrule
+sì & sì & --- & no & Lo studente equipaggia il tool, clicca l'\kw{element} con il tool, parte l'animazione. \\
+no & sì & --- & no & Lo studente clicca l'\kw{element}, parte l'animazione. \\
+qualunque & no & sì & no & Lo studente clicca l'\kw{element}, partono gli effetti di \kw{after :}, lo step avanza. \\
+qualunque & no & no & no & Lo studente clicca l'\kw{element}, lo step avanza. \\
+qualunque & qualunque & qualunque & sì & Non serve cliccare: parte tutto da solo. L'\kw{element} è solo il bersaglio dell'animazione. \\
+\bottomrule
+\end{longtable}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap10/element_unificato.png}
+  \imgph{13cm}{Quattro mini-scene affiancate che condividono lo stesso schema di partenza ``il programma guarda lo step''. Scena 1: vite + attrezzo $\to$ ``flusso tool''. Scena 2: porta che ruota $\to$ ``click + animazione''. Scena 3: pulsante che cambia schermo $\to$ ``click + after''. Scena 4: ingranaggio rotante $\to$ ``machine, automatico''. Sopra le scene un'unica scritta: \kw{element = X}.}
+  \caption{Una sola keyword, quattro comportamenti: il programma deduce dal contesto.}
+  \label{fig:element-unificato}
+\end{figure}
+
+\section{Click ripetuti: \texttt{repeat N}}
+
+A volte vuoi che lo studente clicchi lo stesso \kw{element} \textbf{più volte}
+(per esempio per simulare ``apri e chiudi la pinza 8 volte e verifica che
+funzioni''). Aggiungi \val{repeat N} al valore dell'\kw{element}:
+
+\begin{lstlisting}
+[step "Apri e chiudi la pinza" highlight]
+element   = remote.Pulsante_r_unlock repeat 8
+animation = folder screens/mandrino at (60%, 60%) frame 20ms
+\end{lstlisting}
+
+Significa: ``Lo studente deve premere il pulsante \textbf{8 volte}. Ogni volta
+appare un'\textbf{immagine diversa} dalla cartella \texttt{screens/mandrino}
+(animazione a frame, 20 millisecondi tra una e l'altra). Dopo l'ottavo click,
+lo step avanza''.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap10/repeat_animation.png}
+  \imgph{12cm}{Pulsante 3D al centro con contatore ``+1 +1 +1'' che sale (1/8, 2/8\ldots 8/8). Sopra, una sequenza di mini-schermate che cambiano a ogni click (filmstrip). All'ottavo click, il fumetto si chiude e parte la freccia di avanzamento.}
+  \caption{\texttt{repeat N} accoppiato a \texttt{animation}: ogni click avanza un frame, all'ennesimo lo step finisce.}
+  \label{fig:repeat-animation}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{Le bandierine \texttt{auto}, \texttt{machine}, \texttt{highlight}}
+\label{ch:bandierine}
+%--------------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap11/tre_bandierine.png}
+  \imgph{12cm}{Tre bandierine stilizzate affiancate, ognuna con icona simbolica e nome: \texttt{auto} (ingranaggio in movimento), \texttt{machine} (silhouette di macchina utensile), \texttt{highlight} (lampada accesa con onde di luce). Sotto ogni bandierina una frase breve ``chi muove cosa, chi attira l'attenzione''.}
+  \caption{Le tre bandierine: chi muove cosa, e chi attira l'attenzione dello studente.}
+  \label{fig:tre-bandierine}
+\end{figure}
+
+Sono \textbf{etichette speciali} che si scrivono \textbf{dopo il nome dello step},
+nella parentesi quadra:
+
+\begin{lstlisting}
+[step "Nome dello step" auto, highlight]
+\end{lstlisting}
+
+\begin{longtable}{@{}lp{11cm}@{}}
+\toprule
+\textbf{Bandierina} & \textbf{Significato} \\
+\midrule
+\val{auto} & Lo step si esegue \textbf{da solo}: equipaggia l'attrezzo, fa le azioni,
+             e va al prossimo step. Lo studente non deve cliccare. \\
+\val{machine} & Come \val{auto} ma \textbf{senza attrezzo}. Si usa per movimenti
+                automatici della macchina (es.\ ``il carro Y si sposta''). \\
+\val{highlight} & Il fumetto della spiegazione \textbf{lampeggia} per attirare
+                  l'attenzione. Si usa per i passi importanti dove vuoi che lo
+                  studente legga. \\
+\bottomrule
+\end{longtable}
+
+Si possono \textbf{combinare} separandole con virgola:
+
+\begin{lstlisting}
+[step "Apertura magazzino" highlight, machine]
+\end{lstlisting}
+
+Significa: il fumetto lampeggia E lo step si esegue automaticamente.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap11/highlight_confronto.png}
+  \imgph{12cm}{Due screenshot affiancati della stessa scena: a sinistra fumetto normale (testo statico, bordo sottile); a destra fumetto in stato \val{highlight} (bordo luminoso, alone giallo-arancio attorno al riquadro, frecce di pulsazione). Etichetta sotto: ``normale'' / ``highlight''.}
+  \caption{L'effetto \val{highlight}: il fumetto pulsa per dirigere l'attenzione dello studente al testo importante.}
+  \label{fig:highlight-confronto}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{Tenere oggetti in mano (\texttt{hold})}
+\label{ch:hold}
+%--------------------------------------------------------------------------
+
+A volte lo studente deve \textbf{prendere un oggetto in mano} (per esempio un
+telecomando o una pistola di aria compressa) e poi rimetterlo giù. Si gestisce
+con la riga \kw{hold = \ldots}, che ha tre forme.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap12/hold_ciclo.png}
+  \imgph{13cm}{Sequenza a tre stati orizzontali: 1) telecomando posato sul tavolo (etichetta \texttt{pick}), 2) telecomando sospeso davanti alla telecamera in primo piano (etichetta \texttt{held}), 3) telecomando di nuovo sul tavolo (etichetta \texttt{release}). Frecce di transizione tra gli stati con i nomi delle azioni.}
+  \caption{Il ciclo di vita di un oggetto in mano: pick $\rightarrow$ held $\rightarrow$ release.}
+  \label{fig:hold-ciclo}
+\end{figure}
+
+\section{\texttt{hold = pick} -- Prendi in mano un oggetto}
+
+\begin{lstlisting}
+hold = pick remote at (-0.25, -0.07, 0.25) facing (0, 5, 0)
+\end{lstlisting}
+
+Si legge: ``\textbf{Prendi} l'oggetto chiamato \texttt{remote}, mettilo nella
+\textbf{posizione} (--0.25, --0.07, 0.25) rispetto alla telecamera, con la
+\textbf{rotazione} (0, 5, 0) (in gradi)''.
+
+L'oggetto seguirà la telecamera come se fosse tenuto davanti agli occhi. Le
+parti \texttt{at (\ldots)} e \texttt{facing (\ldots)} sono \textbf{opzionali}:
+se non le metti il sistema usa una posizione di default.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap12/hold_at_facing.png}
+  \imgph{11cm}{Telecamera in primo piano (cinepresa stilizzata) con il telecomando sospeso davanti agli occhi. Vettore \texttt{at (-0.25, -0.07, 0.25)} disegnato dalla camera al telecomando. Triedro di rotazione \texttt{facing (0, 5, 0)} che mostra l'inclinazione dell'oggetto (gradi).}
+  \caption{\texttt{at} posiziona l'oggetto rispetto alla camera; \texttt{facing} ne imposta l'orientamento.}
+  \label{fig:hold-at-facing}
+\end{figure}
+
+\section{\texttt{hold = held} -- Lo step richiede l'oggetto già in mano}
+
+\begin{lstlisting}
+hold = held remote
+\end{lstlisting}
+
+Significa: ``Questo step parte solo se l'oggetto \texttt{remote} è
+\textbf{già in mano} dal passo precedente''. Si usa quando hai una sequenza di
+step in cui l'oggetto viene preso una volta sola e poi usato in più passi.
+
+\section{\texttt{hold = release} -- Rimetti giù}
+
+\begin{lstlisting}
+hold = release
+\end{lstlisting}
+
+L'oggetto torna nella sua posizione originale nella scena. Lo studente
+\textbf{lo molla}.
+
+\begin{esempiocvt}[{Sequenza completa: prendi, usa, lascia}]
+\begin{lstlisting}
+[step "Prendi il telecomando" highlight]
+description = Prendi il telecomando dal tavolo.
+tool        = hand
+hold        = pick remote at (-0.25, -0.07, 0.25) facing (0, 5, 0)
+view        = main
+
+[step "Premi Start sul telecomando"]
+description = Premi il pulsante Start.
+hold        = held remote
+element     = remote.pulsante_r_play
+after       : schermo = schermo004
+
+[step "Rimetti giu il telecomando"]
+description = Rimetti il telecomando al suo posto.
+hold        = release
+\end{lstlisting}
+\end{esempiocvt}
+
+%--------------------------------------------------------------------------
+\chapter{Mostrare un messaggio sullo schermo}
+\label{ch:message}
+%--------------------------------------------------------------------------
+
+A volte vuoi mostrare allo studente una \textbf{finestra di avviso} con un
+testo, magari un'\textbf{immagine} o un \textbf{video} di spiegazione. Si usa
+\kw{message =} accompagnato (in modo opzionale) da \kw{title =}, \kw{image =}
+e \kw{video =}.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap13/modal_completo.png}
+  \imgph{11cm}{Screenshot di una finestra modale completa: titolo in alto (``Sicurezza importante''), testo del messaggio (``Indossa i guanti\ldots''), video player con controlli al centro, pulsante \texttt{OK} grande in basso. Sfondo dell'app sfumato dietro.}
+  \caption{Una finestra modale completa: titolo, messaggio, video opzionale, OK per chiudere.}
+  \label{fig:modal-completo}
+\end{figure}
+
+\begin{lstlisting}
+[step "Attenzione lubrificante" highlight]
+message = Indossa i guanti prima di toccare il grasso.
+title   = Sicurezza importante
+video   = media/lubelett.mp4
+\end{lstlisting}
+
+\textbf{Cosa succede}: appare al centro dello schermo una finestra grande con:
+\begin{itemize}
+  \item Il \textbf{titolo} ``Sicurezza importante''.
+  \item Il \textbf{testo} ``Indossa i guanti\ldots''.
+  \item Il \textbf{video} che parte automaticamente con i controlli (play/pause).
+  \item Un pulsante \textbf{OK} per chiudere e andare avanti.
+\end{itemize}
+
+\begin{notablu}[Combinazioni possibili]
+\begin{itemize}
+  \item \kw{message =} da solo $\rightarrow$ finestra con solo testo
+  \item \kw{message =} + \kw{title =} $\rightarrow$ testo con titolo personalizzato
+  \item \kw{message =} + \kw{image =} $\rightarrow$ testo + immagine
+  \item \kw{message =} + \kw{video =} $\rightarrow$ testo + video (con player)
+\end{itemize}
+
+Se non scrivi \kw{title =}, il titolo della finestra sarà uguale al nome dello
+step.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap13/modal_varianti.png}
+  \imgph{13cm}{Galleria di 4 mock-up di finestra modale, in fila: 1) solo testo (no titolo no media), 2) testo + titolo personalizzato, 3) testo + immagine al centro, 4) testo + video con controlli player. Etichetta sotto ognuna.}
+  \caption{Le quattro combinazioni di \kw{message}: scegli ciò che ti serve.}
+  \label{fig:modal-varianti}
+\end{figure}
+
+\begin{trucchetto}
+Puoi mettere \kw{message =} \textbf{insieme} ad altre azioni dello step (es.\ con
+\kw{drag =} o \kw{do :}). La finestra appare \textbf{prima}, lo studente la
+chiude con OK, poi parte il resto.
+\end{trucchetto}
+
+%--------------------------------------------------------------------------
+\chapter{Mettere a posto i pezzi prima di iniziare}
+\label{ch:position-rotation}
+%--------------------------------------------------------------------------
+
+Quando carichi la scena 3D, ogni pezzo si trova nella sua posizione
+``naturale'' (quella in cui è stato modellato in Blender). Ma a volte tu
+vuoi che la scena \textbf{parta in un certo modo specifico}: per esempio in
+un tutorial di rimontaggio, vuoi che le viti siano già \textbf{tolte e
+appoggiate per terra}, in modo che lo studente le trascini al loro posto.
+
+Per questo ci sono \kw{position =} e \kw{rotation =}.
+
+\section{\texttt{position} -- Mettere un pezzo in un punto}
+
+\begin{lstlisting}
+position = vite_coperchio_1 at (-0.500, -0.349, 0.000)
+\end{lstlisting}
+
+Si legge: ``Metti la \texttt{vite\_coperchio\_1} nel punto (--0.5, --0.35, 0)
+rispetto al centro della scena''.
+
+\section{\texttt{rotation} -- Ruotare un pezzo}
+
+\begin{lstlisting}
+rotation = coperchio by (0, 0, -90)
+\end{lstlisting}
+
+Si legge: ``Ruota il \texttt{coperchio} di --90 gradi sull'asse Z''.
+
+\section{Dove si scrivono?}
+
+\begin{itemize}
+  \item Nella \sez{[scene]}: si applicano \textbf{una sola volta} all'inizio del
+        tutorial.
+  \item In una \sez{[section "\ldots"]}: si applicano all'\textbf{inizio del
+        capitolo}, prima del primo step.
+  \item In uno \sez{[step "\ldots"]}: si applicano \textbf{quando lo step parte}.
+\end{itemize}
+
+\begin{esempiocvt}[Posizionare i pezzi smontati per il rimontaggio]
+\begin{lstlisting}
+[section "Riassemblaggio"]
+camera   = position (-1.5, 0.5, -0.2), target (0, 0, 0), zoom 1.2
+
+# Pezzi che partono smontati e per terra
+position = coperchio at (-1.148, -0.261, 0.500)
+rotation = coperchio by (0, 0, -90)
+position = filtro at (-0.300, -0.142, 0.500)
+position = vite_coperchio_1 at (-0.500, -0.349, 0)
+position = vite_coperchio_2 at (-0.500, -0.349, 0)
+
+[step "Tappino destro" highlight]
+description = Monta il tappino di destra.
+tool        = hand
+drag        = tappino_grasso_dx distance 0.2
+\end{lstlisting}
+\end{esempiocvt}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap14/prima_dopo_riassemblaggio.png}
+  \imgph{13cm}{Confronto a due render della stessa scena: a sinistra ``Default'' --- pompa intera già montata; a destra ``Dopo \texttt{position}/\texttt{rotation}'' --- coperchio per terra ruotato di 90$^\circ$, filtro a fianco, viti sparpagliate sul pavimento. Etichetta sopra: ``Stato iniziale per il rimontaggio''.}
+  \caption{La stessa scena prima e dopo i comandi \texttt{position}/\texttt{rotation} della sezione di rimontaggio.}
+  \label{fig:prima-dopo-riassemblaggio}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{Pezzi che si muovono insieme (\texttt{companion})}
+\label{ch:companion}
+%--------------------------------------------------------------------------
+
+A volte un pezzo si muove e \textbf{ne tira un altro}. Per esempio: quando tiri
+fuori la flangia della pompa, il \textbf{tubo del grasso} attaccato dietro
+viene tirato anche lui.
+
+In questi casi il pezzo principale (che lo studente sposta) si chiama
+\textbf{master}. I pezzi che lo seguono si chiamano \textbf{compagni}
+(\val{companion}).
+
+\section{\texttt{companion = X follows master} -- Mi attacco al master}
+
+\begin{lstlisting}
+[step "Allontana la flangia"]
+element   = flangia
+tool      = hand
+companion = tubograsso follows master
+do        : move by (0, 0, 0.2) duration 0.5
+\end{lstlisting}
+
+Significa: ``Quando la \textbf{flangia} (master) si sposta di 20 cm avanti, il
+\textbf{tubograsso} la \textbf{segue} attaccato''.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap15/follows_master.png}
+  \imgph{11cm}{Flangia (master, blu) con catena/corda visuale che la lega al tubograsso (companion, arancione). Una freccia di movimento parte dalla flangia, e il tubograsso si muove rigidamente nella stessa direzione e quantità. Etichetta ``master'' sulla flangia, ``companion'' sul tubo.}
+  \caption{\val{follows master}: il companion è agganciato e segue rigidamente il movimento del master.}
+  \label{fig:follows-master}
+\end{figure}
+
+\section{\texttt{companion = X moves by (\ldots) duration t} -- Movimento separato}
+
+\begin{lstlisting}
+companion = flangia moves by (0, 0, 0.005) duration 0.5
+companion = tubograsso moves by (0, 0, 0.005) duration 0.5
+\end{lstlisting}
+
+In questo caso il companion fa un \textbf{movimento suo}, in parallelo al
+master. Si usa per esempio quando si avvitano viti estrattori e \textbf{tutta
+la flangia avanza un pochino} a ogni giro di vite.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap15/moves_by.png}
+  \imgph{11cm}{Master e companion disegnati come due oggetti distinti, ognuno con la propria freccia di movimento parallela ma indipendente. Una clessidra centrale unisce le due frecce per indicare ``stessa durata''. Nessuna catena tra i due.}
+  \caption{\val{moves by}: il companion fa il proprio movimento in parallelo, non agganciato al master.}
+  \label{fig:moves-by}
+\end{figure}
+
+\begin{notablu}
+Si possono mettere \textbf{più righe} \kw{companion = \ldots} nello stesso step:
+ogni pezzo segue/si muove come scritto nella sua riga.
+\end{notablu}
+
+%--------------------------------------------------------------------------
+\chapter{Schermate di un display 3D (\texttt{view})}
+\label{ch:view}
+%--------------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap16/display_viste.png}
+  \imgph{13cm}{Quattro pannelli affiancati di uno stesso display 3D: ``home'' (icone delle app), ``mdi'' (campo di input), ``tool'' (parametri utensile), ``running'' (barra avanzamento). Ogni vista ha una etichetta sopra con il nome \texttt{view}.}
+  \caption{Le viste di un display digitale: ogni \texttt{view} è un GLB diverso che si scambia in tempo reale.}
+  \label{fig:display-viste}
+\end{figure}
+
+Alcuni oggetti della scena hanno uno \textbf{schermo digitale} (per esempio il
+display di una macchina utensile, o lo schermo di un telecomando). Questo
+schermo può mostrare \textbf{varie pagine} -- come il telefono che cambia
+applicazione.
+
+Quando in uno step vuoi \textbf{cambiare la pagina} mostrata da un display,
+usi:
+
+\begin{lstlisting}
+view = main
+\end{lstlisting}
+
+Significa: ``Mostra la pagina chiamata \texttt{main} sullo schermo''. Le pagine
+disponibili sono definite nel file \file{objects.ini} (vedi capitolo dedicato).
+
+\begin{esempiocvt}[Prendi il telecomando con la sua schermata principale]
+\begin{lstlisting}
+[step "Prendi il telecomando"]
+description = Prendi il telecomando dal tavolo.
+tool        = hand
+hold        = pick remote at (-0.25, -0.07, 0.25) facing (0, 5, 0)
+view        = main
+\end{lstlisting}
+\end{esempiocvt}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap16/state_machine_viste.png}
+  \imgph{11cm}{Diagramma a stati con tre cerchi nominati ``main'', ``pumping'', ``idle'' collegati da frecce con etichette degli step (es.\ ``view = pumping''). Mostra le transizioni possibili tra le viste di un display.}
+  \caption{Le transizioni tra viste: dichiarate in \file{objects.ini}, attivate dal tutorial con \texttt{view =}.}
+  \label{fig:state-machine-viste}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{Animazioni 2D a frame (\texttt{animation})}
+\label{ch:animation}
+%--------------------------------------------------------------------------
+
+Per simulare \textbf{contatori, schermate che cambiano, sequenze ripetitive}
+puoi mostrare una serie di immagini sopra la scena 3D, una dopo l'altra. Si fa
+con:
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap17/filmstrip.png}
+  \imgph{13cm}{Filmstrip orizzontale di 8 frame in fila (es.\ contatore numerico che sale 1, 2, 3\ldots oppure pinza che si apre progressivamente). Sotto: timeline con tacche \texttt{20ms} tra ogni frame, e freccia di scorrimento ``$\rightarrow$''.}
+  \caption{Un'animazione a frame: una sequenza di immagini mostrate ogni N millisecondi sopra la scena 3D.}
+  \label{fig:filmstrip}
+\end{figure}
+
+\begin{lstlisting}
+animation = folder screens/mandrino at (60%, 60%) frame 20ms
+\end{lstlisting}
+
+Significa:
+\begin{itemize}
+  \item \val{folder screens/mandrino} -- la cartella dove ci sono le immagini
+        (le carica tutte in ordine di nome)
+  \item \val{at (60\%, 60\%)} -- in che punto dello schermo (percentuali della
+        finestra: 0\%=sinistra/alto, 100\%=destra/basso)
+  \item \val{frame 20ms} -- quanti millisecondi tra un'immagine e la prossima
+\end{itemize}
+
+Tutte e tre le parti sono opzionali (puoi metterne anche solo due).
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap17/animazione_posizione.png}
+  \imgph{12cm}{Screenshot della finestra dell'app con un riquadro semi-trasparente sovrapposto alla scena 3D, posizionato in alto-destra (al 60\%, 60\%). Linee guida tratteggiate mostrano le percentuali ``60\%'' dall'angolo in alto a sinistra (X) e dall'alto (Y).}
+  \caption{Posizionamento dell'animazione: percentuali sulla finestra (0\%~=~sinistra/alto, 100\%~=~destra/basso), non pixel.}
+  \label{fig:animazione-posizione}
+\end{figure}
+
+\begin{notablu}[Quasi sempre va con \texttt{element \ldots repeat N}]
+L'animazione è quasi sempre \textbf{guidata da clic ripetuti}: ogni clic fa
+avanzare di un frame. Nello stesso step si scrive l'\kw{element} con
+\val{repeat N}:
+
+\begin{lstlisting}
+[step "Apri e chiudi" highlight]
+description = Apri e chiudi piu volte premendo il pulsante (4 cicli)
+tool        = hand
+element     = remote.Pulsante_r_unlock repeat 8
+animation   = folder screens/mandrino at (60%, 60%) frame 20ms
+\end{lstlisting}
+
+Lo studente preme 8 volte il pulsante, ad ogni pressione l'immagine cambia,
+all'ottava lo step finisce.
+\end{notablu}
+
+%--------------------------------------------------------------------------
+\chapter{I blocchi \texttt{[state]} e \texttt{[object]}}
+\label{ch:state-object}
+%--------------------------------------------------------------------------
+
+Oltre ai tre blocchi gerarchici (\sez{[scene]}, \sez{[section]},
+\sez{[step]}) visti nel Capitolo~\ref{ch:struttura}, esistono due blocchi
+\textbf{dichiarativi} che servono a descrivere oggetti con \textbf{più stati
+visivi} (per esempio una chiave che può essere ``girata'' o ``non girata'')
+oppure modelli 3D \textbf{con parti interattive} (per esempio un pulpito di
+comando con i suoi pulsanti).
+
+Per igiene di progetto questi blocchi \textbf{non si scrivono nel}
+\file{tutorial.cvtscript}, ma in un file separato chiamato
+\file{objects.ini} caricato automaticamente prima del tutorial.
+
+\section{\texttt{[state nome]} -- Le varianti di un oggetto}
+
+Pensa a una \textbf{lampadina}: può essere \textbf{accesa} o \textbf{spenta}.
+Sono due \textbf{varianti} dello stesso oggetto. Si scrive così:
+
+\begin{lstlisting}
+[state lampadina]
+Variants = lampadina_off, lampadina_on
+Default  = lampadina_off
+\end{lstlisting}
+
+Significa:
+\begin{itemize}
+  \item Lo state si chiama \texttt{lampadina}
+  \item Ha due varianti: \texttt{lampadina\_off} e \texttt{lampadina\_on}
+        (sono i nomi dei mesh dentro al modello 3D)
+  \item All'inizio è in \texttt{lampadina\_off}
+\end{itemize}
+
+In uno step puoi cambiare variante con \kw{after :}:
+
+\begin{lstlisting}
+[step "Accendi" machine]
+after : lampadina = lampadina_on
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=11cm]{immagini/cap18/state_lampadina.png}
+  \imgph{11cm}{Due icone di lampadina affiancate: a sinistra spenta (etichetta \texttt{lampadina\_off}), a destra accesa con alone giallo (etichetta \texttt{lampadina\_on}). Una doppia freccia tra le due con scritta ``setVariant''. Sopra il riquadro: ``state lampadina''.}
+  \caption{Uno \texttt{state} è un gruppo di varianti mutuamente esclusive: la lampadina è O accesa O spenta, mai entrambe.}
+  \label{fig:state-lampadina}
+\end{figure}
+
+\section{\texttt{[object nome]} -- Un oggetto con pulsanti dentro}
+
+Quando un modello 3D ha dei \textbf{pulsanti} che lo studente può cliccare
+(per esempio il pulpito di una macchina), lo dichiari così:
+
+\begin{lstlisting}
+[object pulpito]
+Model = models/pulpito.glb
+
+InteractiveChild = Pulsante_mdi, button, onClick:setVariant:schermo=schermo002
+InteractiveChild = chiave0, button, onClick:cycleVariant:chiave
+\end{lstlisting}
+
+Si legge:
+\begin{itemize}
+  \item L'oggetto si chiama \texttt{pulpito} e usa il modello
+        \texttt{models/pulpito.glb}
+  \item Dentro c'è un pulsante \texttt{Pulsante\_mdi}: quando lo clicchi, cambia
+        la variante dello state \texttt{schermo} a \texttt{schermo002}.
+  \item C'è anche \texttt{chiave0}: quando lo clicchi, cicla
+        sulla \textbf{prossima variante} dello state \texttt{chiave} (off
+        $\rightarrow$ on $\rightarrow$ off\ldots).
+\end{itemize}
+
+\begin{notablu}[A che servono?]
+Il file \file{objects.ini} \textbf{descrive una sola volta} che il pulpito ha 5
+pulsanti, che lo schermo può mostrare 9 pagine, eccetera. Poi nel tutorial usi
+solo \kw{element =} per attivarli e \kw{after :} per cambiare le pagine.
+
+È la stessa cosa che fai con le \textbf{persone}: prima dici ``Mario è alto e ha
+i capelli neri'' (= dichiari l'oggetto), poi puoi parlare di Mario senza
+ridescriverlo ogni volta.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap18/object_pulpito.png}
+  \imgph{12cm}{Render del pulpito 3D con etichette colorate sui figli interattivi: \texttt{Pulsante\_mdi $\rightarrow$ setVariant:schermo=schermo002}, \texttt{chiave0 $\rightarrow$ cycleVariant:chiave}, \texttt{Pulsante\_tool $\rightarrow$ setVariant:schermo=schermo003}. Sopra: titolo ``object pulpito''.}
+  \caption{Un \texttt{object} è un modello 3D con figli cliccabili: ogni \texttt{InteractiveChild} ha la sua azione \texttt{onClick}.}
+  \label{fig:object-pulpito}
+\end{figure}
+
+%--------------------------------------------------------------------------
+\chapter{I file di configurazione attorno al tutorial}
+\label{ch:config}
+%--------------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap19/mappa_orbitale.png}
+  \imgph{13cm}{Mappa orbitale: al centro un planeta blu con etichetta ``\file{tutorial.cvtscript}''. In orbita 4 satelliti collegati da linee con frecce: \file{homeconfig.ini} (vetrina scenari), \file{interfaceconfig.ini} (mouse e camera), \file{tool.ini} (attrezzi), \file{objects.ini} (stati e pulsanti). Ogni satellite ha sotto una mini-etichetta che spiega il ruolo.}
+  \caption{I cinque file che compongono uno scenario, e come si parlano tra loro.}
+  \label{fig:mappa-orbitale}
+\end{figure}
+
+Il file \file{tutorial.cvtscript} \textbf{non è solo}. Vive insieme a
+\textbf{quattro fratellini} che si trovano in altre cartelle. Ognuno ha un
+compito preciso:
+
+\begin{longtable}{@{}p{4.2cm}p{8.5cm}@{}}
+\toprule
+\textbf{File} & \textbf{A cosa serve} \\
+\midrule
+\file{scenes/homeconfig.ini} & Lista degli scenari disponibili (la pagina iniziale che vedi quando apri il programma) \\
+\file{scenes/interfaceconfig.ini} & Personalizzazione dell'interfaccia (zoom, rotazione camera, sensibilità mouse) \\
+\file{scenes/<NomeScenario>/tool.ini} & Quali attrezzi vede lo studente per questo scenario \\
+\file{scenes/<NomeScenario>/objects.ini} & Stati e oggetti interattivi (pulsanti, schermi) della scena \\
+\bottomrule
+\end{longtable}
+
+\section{\texttt{homeconfig.ini} -- La vetrina degli scenari}
+
+È la \textbf{lista dei tutorial} che vede lo studente quando apre il programma.
+Ogni scenario è un \textbf{blocco}, e dentro dichiari di che tutorial si tratta,
+quali modelli 3D caricare, dove mettere la telecamera all'inizio.
+
+\begin{esempiocvt}[Esempio: una pagina con due scenari]
+\begin{lstlisting}
+title    = Campus Virtual Training Morbidelli X400
+subtitle = Seleziona uno scenario per cominciare
+
+[Manutenzione pompa del vuoto]
+CameraPos        = (-1.5, 0.5, -0.2)
+CameraTarget     = (0, 0, 0)
+AmbientLight     = 0x404040, 1.5
+DirectionalLight = 0xffffff, 2.5, (-8, 15, 10)
+description      = Smontaggio e manutenzione della pompa Becker.
+image            = menuimages/pompavuoto.png
+tutorial         = scenes/Pompa_Becker/tutorial.cvtscript
+tool             = scenes/Pompa_Becker/tool.ini
+model            = models/culatta.glb
+direction        = 0, 0, 1
+model            = models/corpo.glb
+direction        = 0, 0, 1
+
+[Manutenzione Elettromandrino]
+CameraPos        = (-1.11, 1.44, 3.97)
+description      = Pulizia, lubrificazione e blocco/sblocco pinza.
+image            = menuimages/1.png
+tutorial         = scenes/Manutenzione_Elettromandrino/tutorial.cvtscript
+tool             = scenes/Manutenzione_Elettromandrino/tool.ini
+model            = models/pulpito.glb
+direction        = 0, 0, 1
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Le righe importanti}:
+
+\begin{longtable}{@{}lp{9cm}@{}}
+\toprule
+\textbf{Riga} & \textbf{Cosa fa} \\
+\midrule
+\val{title} / \val{subtitle} & Titolo e sottotitolo della home page \\
+\val{[Nome scenario]} & Apre il blocco dello scenario (= card visibile in home) \\
+\val{description} & Testo descrittivo dello scenario \\
+\val{image} & L'immagine di anteprima della card \\
+\val{tutorial} & Il file \file{tutorial.cvtscript} da caricare \\
+\val{tool} & Il file \file{tool.ini} da caricare per gli attrezzi \\
+\val{CameraPos / CameraTarget} & Dove sta la telecamera all'apertura della scena \\
+\val{AmbientLight} & Luce ambiente (colore esadecimale, intensità) \\
+\val{DirectionalLight} & Luce principale (colore, intensità, direzione) \\
+\val{model} & Un modello 3D da caricare nella scena (può apparire più volte) \\
+\val{direction} & Per ogni \texttt{model}, la direzione di svita/estrazione \\
+\bottomrule
+\end{longtable}
+
+\begin{notablu}[\texttt{direction} a che serve?]
+Quando scrivi \texttt{do : unscrew} su una vite, il programma deve sapere
+\textbf{in che direzione} esce. La risposta sta in \kw{direction} di quel
+modello in \file{homeconfig.ini}: \texttt{(0, 0, 1)} = esce verso Z+,
+\texttt{(--1, 0, 0)} = esce verso X--, eccetera. Tu ti preoccupi solo di scrivere
+\texttt{direction} una volta per modello.
+\end{notablu}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap19/home_page_app.png}
+  \imgph{12cm}{Screenshot della home page reale dell'applicazione: titolo ``Campus Virtual Training Morbidelli X400'' in alto, sottotitolo, due card affiancate (``Manutenzione pompa del vuoto'' con immagine pompa, ``Manutenzione Elettromandrino'' con immagine mandrino), pulsante ``Avvia'' su ognuna.}
+  \caption{La home page generata da \file{homeconfig.ini}: ogni \texttt{[Nome scenario]} produce una card.}
+  \label{fig:home-page-app}
+\end{figure}
+
+\section{\texttt{tool.ini} -- Gli attrezzi della cassetta}
+
+Per ogni scenario decidi \textbf{quali 4 attrezzi} vede lo studente nella barra
+in basso. È come scegliere gli attrezzi da mettere nello zainetto prima di
+partire.
+
+\begin{esempiocvt}[Esempio: scenario Pompa Becker]
+\begin{lstlisting}
+[Tools]
+Slot1 = brugola
+Slot2 = chiave_inglese
+Slot3 = mano
+Slot4 = aria
+
+[Tool:brugola]
+Label              = Brugola
+Icon               = utilimages/brugola.png
+Cursor             = cursors/brugola_normal.svg
+CursorPressed      = cursors/brugola_premuto_frame1.svg
+CursorPressedFrame2= cursors/brugola_premuto_frame2.svg
+CursorHotspotX     = 4
+CursorHotspotY     = 9
+Type               = tool
+TutorialNames      = ChiaveBrugola, hex_key
+
+[Tool:mano]
+Label         = Mano
+Icon          = utilimages/mano.png
+Cursor        = cursors/mano_normal.svg
+CursorPressed = cursors/mano_premuto_frame1.svg
+CursorHotspotX= 16
+CursorHotspotY= 16
+Type          = tool
+TutorialNames = Mani, hand
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Spiegato facile facile}:
+
+\begin{longtable}{@{}lp{10cm}@{}}
+\toprule
+\textbf{Riga} & \textbf{Cosa fa} \\
+\midrule
+\sez{[Tools]} & Il blocco con i 4 slot della barra attrezzi \\
+\val{Slot1\ldots Slot4} & Quale attrezzo va in ogni posizione (da sinistra a destra) \\
+\sez{[Tool:nome]} & Apre il blocco con i dettagli di quell'attrezzo \\
+\val{Label} & Il nome che appare in italiano sotto l'icona \\
+\val{Icon} & L'immagine che si vede nella barra \\
+\val{Cursor} & Come diventa il cursore del mouse quando l'attrezzo è scelto \\
+\val{CursorPressed} / \val{CursorPressedFrame2} & I due frame dell'animazione del cursore quando si clicca \\
+\val{CursorHotspotX/Y} & Il puntino preciso del cursore (la ``punta'' dell'attrezzo) \\
+\val{Type} & \texttt{tool} = è un attrezzo (al momento è l'unico valore) \\
+\val{TutorialNames} & I nomi che il tutorial può usare nella riga \kw{tool =} per attivarlo \\
+\bottomrule
+\end{longtable}
+
+\begin{trucchetto}
+\val{TutorialNames} accetta \textbf{più nomi} separati da virgola. Così puoi
+scrivere indifferentemente \texttt{tool = hand} o \texttt{tool = Mani} e il
+programma sceglie comunque la mano.
+\end{trucchetto}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=12cm]{immagini/cap19/barra_4_slot.png}
+  \imgph{12cm}{Barra strumenti reale dell'app con 4 slot in basso, ognuno etichettato sopra con ``Slot1'', ``Slot2'', ``Slot3'', ``Slot4'' (numerati da sinistra a destra). Sotto ogni slot l'icona dell'attrezzo: brugola, chiave inglese, mano, aria.}
+  \caption{I 4 slot della barra strumenti: l'ordine in \file{tool.ini} è l'ordine sullo schermo, da sinistra a destra.}
+  \label{fig:barra-4-slot}
+\end{figure}
+
+\section{\texttt{objects.ini} -- I pulsanti e gli schermi della scena}
+
+Qui dichiari i \textbf{blocchi dichiarativi} (\sez{[state]} e \sez{[object]}) che
+descrivono \textbf{cosa è cliccabile} nella scena 3D e \textbf{come si
+comporta} quando viene cliccato.
+
+\begin{esempiocvt}[Esempio: pulpito di una macchina utensile]
+\begin{lstlisting}
+# La chiave puo essere girata o non girata
+[state chiave]
+Variants = chiave0, chiave1
+Default  = chiave0
+
+# Lo schermo del pulpito puo mostrare diverse pagine
+[state schermo]
+Variants = schermo001, schermo002, schermo003, schermo004
+Default  = schermo001
+
+# Il pulpito ha pulsanti e una chiave dentro
+[object pulpito]
+Model = models/pulpito.glb
+
+InteractiveChild = chiave0, button, onClick:cycleVariant:chiave
+InteractiveChild = chiave1, button, onClick:cycleVariant:chiave
+InteractiveChild = Pulsante_mdi, button, onClick:setVariant:schermo=schermo002
+InteractiveChild = Pulsante_tool, button, onClick:setVariant:schermo=schermo003
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Cosa significa}:
+
+\begin{itemize}
+  \item Lo \textbf{state \texttt{chiave}} dice ``c'è un mesh che può essere
+        \texttt{chiave0} oppure \texttt{chiave1}; all'inizio è
+        \texttt{chiave0}''.
+  \item Lo \textbf{state \texttt{schermo}} elenca le 4 pagine possibili dello
+        schermo del pulpito.
+  \item L'\textbf{oggetto \texttt{pulpito}} carica il modello 3D e dichiara che
+        ha dei figli interattivi (i pulsanti).
+  \item Per ogni pulsante \kw{InteractiveChild} dice: ``Quando lo clicchi, fai
+        questa azione''.
+\end{itemize}
+
+\textbf{Le azioni possibili al click}:
+
+\begin{longtable}{@{}lp{10cm}@{}}
+\toprule
+\textbf{Forma} & \textbf{Cosa fa} \\
+\midrule
+\val{onClick:setVariant:STATE=VARIANTE} & Imposta lo state alla variante data \\
+\val{onClick:cycleVariant:STATE} & Va alla variante successiva (cicla) \\
+\bottomrule
+\end{longtable}
+
+\begin{notablu}[Perché è separato dal tutorial?]
+Il pulpito è \textbf{sempre lo stesso} -- ha gli stessi pulsanti -- in tutti i
+tutorial. Se descrivessi i pulsanti dentro \file{tutorial.cvtscript}, dovresti
+ripetere la stessa cosa in ogni file. Mettendo le definizioni in
+\file{objects.ini} le scrivi \textbf{una volta sola}.
+\end{notablu}
+
+\section{\texttt{interfaceconfig.ini} -- Personalizzare i comandi}
+
+Questo file decide come si comporta il \textbf{mouse} (e il pinch-to-zoom su
+touch). Non serve modificarlo per scrivere un tutorial, ma è utile sapere che
+esiste.
+
+\begin{esempiocvt}[Configurazione tipica]
+\begin{lstlisting}
+[ResetCameraButton]
+Position = bottom-right
+
+[CameraControls]
+InvertVertical    = true
+InvertHorizontal  = false
+PinchSensitivity  = 0.001
+InvertPinchZoom   = false
+ScrollSensitivity = 0.01
+InvertScrollZoom  = false
+ZoomMin           = 0.15
+ZoomMax           = 1.3
+
+[SpeechBubble]
+DramaticAnimationDuration = 2000
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Le impostazioni più importanti}:
+
+\begin{longtable}{@{}lp{10cm}@{}}
+\toprule
+\textbf{Riga} & \textbf{Cosa fa} \\
+\midrule
+\val{Position} (in \sez{[ResetCameraButton]}) & Dove sta il pulsantino di reset
+camera. Valori: \texttt{top-right}, \texttt{top-left}, \texttt{top-center},
+\texttt{bottom-right}, \texttt{bottom-left}, \texttt{bottom-center} \\
+\val{InvertVertical} & Inverte la rotazione su/giù della camera (\texttt{true}
+= naturale, \texttt{false} = invertito) \\
+\val{InvertHorizontal} & Inverte la rotazione sinistra/destra \\
+\val{PinchSensitivity} & Quanto è sensibile il pinch-to-zoom su touch
+(0.001--0.010, default 0.003) \\
+\val{ScrollSensitivity} & Sensibilità della rotellina del mouse
+(0.010--0.060) \\
+\val{ZoomMin / ZoomMax} & Quanto vicino e quanto lontano si può zoomare \\
+\val{DramaticAnimationDuration} & Quanti millisecondi dura l'animazione di
+``ingrandimento drammatico'' del fumetto quando ha la bandierina \val{highlight}
+\\
+\bottomrule
+\end{longtable}
+
+\begin{regola}
+\textbf{Quasi mai} devi toccare \file{interfaceconfig.ini}. È pensato per
+piccoli ritocchi all'esperienza, non per il contenuto del tutorial.
+\end{regola}
+
+%--------------------------------------------------------------------------
+\chapter{Un esempio completo, riga per riga}
+\label{ch:esempio}
+%--------------------------------------------------------------------------
+
+Vediamo uno \textbf{step completo} e capiamolo riga per riga.
+
+\begin{esempiocvt}[Step ``Rimuovi la prima vite della culatta'']
+\begin{lstlisting}
+[step "Rimuovi la prima vite della culatta" highlight]
+element     = vite_culatta_1
+tool        = hex_key
+description = Usa la chiave a brugola da 6mm per svitare la prima vite della culatta.
+do          : unscrew distance 0.3
+do          : place duration 0.2
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Cosa succede quando lo studente arriva qui:}
+
+\begin{enumerate}
+  \item Apparirà un \textbf{fumetto} con scritto ``Usa la chiave a brugola
+        da 6mm\ldots'' (e il fumetto lampeggia, perché c'è la bandierina
+        \val{highlight}).
+  \item Lo studente deve \textbf{scegliere la chiave a brugola} dalla barra
+        degli strumenti.
+  \item Lo studente clicca sulla \textbf{vite} (\texttt{vite\_culatta\_1}).
+  \item La vite si \textbf{svita} girando e uscendo di 30 centimetri.
+  \item La vite si \textbf{appoggia a terra} in mezzo secondo.
+  \item Lo studente clicca la \textbf{freccia avanti} per andare al prossimo step.
+\end{enumerate}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap20/sequenza_step_completo.png}
+  \imgph{13cm}{Sequenza di 4 fotogrammi orizzontali dello step ``Rimuovi la prima vite'': 1) stato iniziale (vite avvitata, fumetto compare con highlight); 2) studente seleziona brugola, cursore cambia; 3) vite si svita (rotazione + traslazione); 4) vite appoggiata a terra accanto alla culatta. Numerazione 1--4 sotto.}
+  \caption{Lo step ``Rimuovi la prima vite'' eseguito: cosa vede lo studente, momento per momento.}
+  \label{fig:sequenza-step-completo}
+\end{figure}
+
+\section{Step automatici in catena}
+
+\begin{esempiocvt}[Sequenza di viti consecutive]
+\begin{lstlisting}
+[step "Prima vite" highlight]
+element     = vite_coperchio_1
+tool        = hand
+description = Seleziona il tool "Mano" e rimuovi la prima vite del coperchio.
+do          : unscrew
+do          : place duration 0.2
+
+[step "Seconda vite" auto]
+element     = vite_coperchio_2
+description = Rimuovi la seconda vite del coperchio.
+do          : unscrew
+do          : place duration 0.2
+
+[step "Terza vite" auto]
+element     = vite_coperchio_3
+description = Rimuovi la terza vite del coperchio.
+do          : unscrew
+do          : place duration 0.2
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Cosa succede:}
+
+\begin{itemize}
+  \item La \textbf{prima} vite la deve fare lo studente (perché ha
+        \val{highlight}, niente \val{auto}).
+  \item Dopo che ha tolto la prima vite con successo, la \textbf{seconda} e la
+        \textbf{terza} si svitano \textbf{da sole} (\val{auto}).
+\end{itemize}
+
+\begin{trucchetto}
+\val{tool = hand} lo scrivi \textbf{solo nella prima vite}. Le successive con
+\val{auto} lo \textbf{ereditano} dal contesto precedente.
+\end{trucchetto}
+
+\section{Esempio di drag \& drop}
+
+\begin{esempiocvt}[Step con trascinamento]
+\begin{lstlisting}
+[step "Monta il coperchio" highlight]
+description = Posiziona il coperchio sopra il filtro.
+tool        = hand
+drag        = coperchio distance 0.3
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Cosa succede:}
+
+\begin{enumerate}
+  \item Apparirà il fumetto ``Posiziona il coperchio sopra il filtro''.
+  \item Lo studente seleziona la mano.
+  \item Lo studente \textbf{clicca e trascina} il coperchio.
+  \item Quando il coperchio è entro 30 cm dalla sua sede originale,
+        \textbf{si aggancia automaticamente} lì.
+  \item Lo step viene completato e si va avanti.
+\end{enumerate}
+
+\section{Esempio di click su un pulsante 3D}
+
+\begin{esempiocvt}[Step con click su pulsante]
+\begin{lstlisting}
+[step "Vai alla schermata MDI" highlight]
+description = Premi il pulsante MDI sul pulpito.
+element     = pulpito.Pulsante_mdi
+after       : schermo = schermo002
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Cosa succede:}
+
+\begin{enumerate}
+  \item Apparirà il fumetto ``Premi il pulsante MDI sul pulpito''.
+  \item Il pulsante MDI si \textbf{illumina} di giallo (auto-evidenziato).
+  \item Lo studente lo clicca.
+  \item Lo schermo del pulpito \textbf{cambia} mostrando la schermata
+        ``schermo002''.
+  \item Si passa al prossimo step automaticamente.
+\end{enumerate}
+
+\section{Esempio di click su una porta}
+
+\begin{esempiocvt}[Step con click su porta che si apre]
+\begin{lstlisting}
+[step "Apri la porta della cabina" highlight]
+description = Apri la porta della cabina della macchina.
+element     = a500.porta
+do          : rotate around (0.615, 0, 0) by (0, 90, 0) duration 1.0
+\end{lstlisting}
+\end{esempiocvt}
+
+\textbf{Cosa succede:}
+
+\begin{enumerate}
+  \item Apparirà il fumetto ``Apri la porta della cabina della macchina''.
+  \item La porta si \textbf{illumina} di giallo per dire ``cliccami''.
+  \item Lo studente la clicca.
+  \item La porta \textbf{ruota} di 90 gradi attorno al cardine in 1 secondo.
+  \item Quando l'animazione è finita, si passa al prossimo step.
+\end{enumerate}
+
+\begin{notablu}[Stessa keyword, comportamento diverso]
+Nei due esempi sopra abbiamo la stessa parola \kw{element =}. Nel primo
+caso (pulsante) lo step ha \kw{after :} e si passa subito al prossimo step
+dopo il click. Nel secondo (porta) lo step ha \kw{do :} e si aspetta che
+l'animazione finisca. \textbf{Tu non devi dire al programma quale dei due
+casi è}: lui lo capisce dalle altre righe dello step.
+\end{notablu}
+
+%--------------------------------------------------------------------------
+\chapter{Errori comuni e come evitarli}
+\label{ch:errori}
+%--------------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=13cm]{immagini/cap21/mappa_10_errori.png}
+  \imgph{13cm}{Griglia 2$\times$5 con dieci celle, ognuna con un simbolo \sino{} rosso e una parola chiave breve: ``Maiuscolo'', ``Virgolette'', ``Numerare'', ``.glb'', ``Italiano'', ``Spazi'', ``\texttt{//}'', ``AutoSet'', ``ActiveButtons'', ``Animated...''. Sotto il titolo ``i 10 errori più comuni''.}
+  \caption{La mappa rapida dei dieci errori più comuni: usa questa pagina come check-list quando un tutorial non funziona.}
+  \label{fig:mappa-10-errori}
+\end{figure}
+
+\section{Errore 1: scrivere le righe con la lettera maiuscola}
+
+\begin{sbagliato}[Sbagliato (vecchia sintassi v1/v2)]
+\begin{lstlisting}
+Element=vite_coperchio_1
+Tool=Mani
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Giusto (sintassi nuova v3)]
+\begin{lstlisting}
+element = vite_coperchio_1
+tool    = hand
+\end{lstlisting}
+\end{giusto}
+
+Le maiuscole continuano a funzionare per \textbf{retrocompatibilità}, ma la
+sintassi nuova vuole tutto \textbf{minuscolo}.
+
+\section{Errore 2: dimenticare le virgolette nel nome dello step}
+
+\begin{sbagliato}
+\begin{lstlisting}
+[step Rimuovi la prima vite]
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}
+\begin{lstlisting}
+[step "Rimuovi la prima vite"]
+\end{lstlisting}
+\end{giusto}
+
+Senza virgolette il programma si confonde perché ci sono spazi nel nome.
+
+\section{Errore 3: numerare le azioni manualmente}
+
+\begin{sbagliato}[Non è necessario (vecchia sintassi)]
+\begin{lstlisting}
+Action1 = unscrew
+Action2 = place(0.2)
+Action3 = move by (0, 0, -0.1)
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Sintassi nuova]
+\begin{lstlisting}
+do : unscrew
+do : place duration 0.2
+do : move by (0, 0, -0.1) duration 0.5
+\end{lstlisting}
+\end{giusto}
+
+Tu scrivi \kw{do :} e il programma le numera da solo. Se vuoi inserirne una
+in mezzo, basta aggiungere una riga -- niente da rinumerare.
+
+\section{Errore 4: scrivere il nome del file \texttt{.glb}}
+
+\begin{sbagliato}[Non serve]
+\begin{lstlisting}
+element = models/vite.glb
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}
+\begin{lstlisting}
+element = vite
+\end{lstlisting}
+\end{giusto}
+
+Il programma aggiunge da solo \texttt{models/} e \texttt{.glb}. Tu scrivi solo il
+\textbf{nome del pezzo}.
+
+\begin{notablu}[Eccezione: child interno a un modello]
+Se vuoi un pezzo dentro un altro (es.\ la ``porta'' dentro il modello ``a500''),
+si scrive con il \textbf{punto}:
+\begin{lstlisting}
+element = a500.porta
+\end{lstlisting}
+\end{notablu}
+
+\section{Errore 5: usare i nomi italiani degli attrezzi}
+
+\begin{sbagliato}[Vecchio stile]
+\begin{lstlisting}
+tool = Mani
+tool = ChiaveBrugola
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Stile v3]
+\begin{lstlisting}
+tool = hand
+tool = hex_key
+\end{lstlisting}
+\end{giusto}
+
+I nomi italiani continuano a funzionare ma quelli inglesi sono più moderni.
+
+\section{Errore 6: dimenticare gli spazi attorno all'\texttt{=}}
+
+Il programma è abbastanza tollerante, ma per \textbf{leggibilità} scrivi sempre:
+
+\begin{giusto}[Ottimo]
+\begin{lstlisting}
+element = vite_coperchio_1
+tool    = hand
+\end{lstlisting}
+\end{giusto}
+
+\begin{sbagliato}[Funziona ma è brutto]
+\begin{lstlisting}
+element=vite_coperchio_1
+tool=hand
+\end{lstlisting}
+\end{sbagliato}
+
+\section{Errore 7: mettere commenti con \texttt{//}}
+
+\begin{sbagliato}[Da non fare -- vecchia sintassi deprecata]
+\begin{lstlisting}
+// Questo è un commento
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Stile v3]
+\begin{lstlisting}
+# Questo è un commento
+\end{lstlisting}
+\end{giusto}
+
+Il \texttt{\#} è il modo moderno. Il \texttt{//} ancora funziona ma il programma
+ti avvisa che è vecchio.
+
+\section{Errore 8: usare \texttt{AutoSetVariant} invece di \texttt{after :}}
+
+\begin{sbagliato}[Vecchio stile]
+\begin{lstlisting}
+[step "Scambio Utensile" machine]
+AutoSetVariant=tool=tool0
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Stile v3]
+\begin{lstlisting}
+[step "Scambio Utensile" machine]
+after : tool = tool0
+\end{lstlisting}
+\end{giusto}
+
+\kw{after :} si occupa da solo di cambiare la variante: se lo step ha un
+\kw{element =} cliccabile cambia dopo il click, altrimenti cambia quando lo
+step parte.
+
+\section{Errore 9: usare \texttt{ActiveButtons} + \texttt{AcceptTrigger} a mano}
+
+\begin{sbagliato}[Vecchio stile esplicito]
+\begin{lstlisting}
+ActiveButtons=chiave0
+AcceptTrigger_Physical=pulpito.chiave0
+OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo005
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Stile v3 -- 2 righe sole]
+\begin{lstlisting}
+element = pulpito.chiave0
+after   : chiave = chiave1; schermo = schermo005
+\end{lstlisting}
+\end{giusto}
+
+L'\kw{element} dice ``il pezzo da cliccare è la chiave'', e \kw{after :} dice
+``quando lo studente la clicca, applica questi cambi di stato''. Le tre righe
+\texttt{ActiveButtons}, \texttt{AcceptTrigger\_Physical} e
+\texttt{OnPhysicalTrigger} le aggiunge automaticamente il programma.
+
+\section{Errore 10: scrivere \texttt{button = ...} (vecchia versione del v3)}
+
+\begin{sbagliato}[Vecchia versione v3 (deprecata)]
+\begin{lstlisting}
+button = pulpito.Pulsante_mdi
+after  : schermo = schermo002
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[v3 attuale -- una sola keyword]
+\begin{lstlisting}
+element = pulpito.Pulsante_mdi
+after   : schermo = schermo002
+\end{lstlisting}
+\end{giusto}
+
+Nelle prime versioni del v3 c'era \kw{button =} per i pulsanti 3D. Ora
+\textbf{tutto è \kw{element}}: pulsanti, porte, leve, viti. Il programma
+capisce da solo cosa fare guardando le altre righe dello step. La parola
+\kw{button =} continua a funzionare per non rompere i tutorial vecchi, ma il
+programma ti avvisa che è deprecata.
+
+\section{Errore 11: usare \texttt{Animated...} invece di \texttt{animation}}
+
+\begin{sbagliato}[Vecchio stile]
+\begin{lstlisting}
+ActiveButtons=Pulsante_r_unlock
+AcceptTrigger_Physical=remote.Pulsante_r_unlock
+AnimatedImagesFolder=screens/mandrino
+AnimatedPosition=(60%,60%)
+AnimatedMaxTriggers=8
+AnimatedFrameDelay=20
+\end{lstlisting}
+\end{sbagliato}
+
+\begin{giusto}[Stile v3 -- 2 righe sole]
+\begin{lstlisting}
+element   = remote.Pulsante_r_unlock repeat 8
+animation = folder screens/mandrino at (60%, 60%) frame 20ms
+\end{lstlisting}
+\end{giusto}
+
+\val{repeat 8} dice ``8 click totali''. \kw{animation =} dice cosa mostrare
+nel frattempo.
+
+%--------------------------------------------------------------------------
+\chapter{Glossario delle parole importanti}
+\label{ch:glossario}
+%--------------------------------------------------------------------------
+
+\begin{description}[leftmargin=2.5cm,style=nextline]
+
+\item[\textbf{Block} (blocco)]
+Un pezzo di file racchiuso tra \texttt{[} e \texttt{]}. Esempi:
+\sez{[scene]}, \sez{[section "\ldots"]}, \sez{[step "\ldots"]},
+\sez{[state \ldots]}, \sez{[object \ldots]}.
+
+\item[\textbf{Section} (sezione, capitolo)]
+Un grande pezzo di tutorial (es.\ ``Pulizia Filtro''). Contiene tanti step.
+
+\item[\textbf{Step} (passo)]
+Un singolo passo del tutorial. Lo studente vede il fumetto, fa l'azione,
+va al prossimo.
+
+\item[\textbf{Element} (elemento)]
+Il pezzo 3D coinvolto nello step. \textbf{È sempre la stessa parola}, qualunque
+sia il pezzo: una vite (\texttt{vite\_coperchio\_1}), un pulsante
+(\texttt{pulpito.Pulsante\_mdi}), una porta (\texttt{a500.porta}), una leva. Il
+programma capisce dal contesto cosa fare quando lo studente lo clicca.
+
+\item[\textbf{Tool} (attrezzo)]
+L'attrezzo che lo studente deve scegliere. Cinque possibili: \val{hand},
+\val{hex\_key}, \val{wrench}, \val{air}, \val{spray}.
+
+\item[\textbf{Description} (descrizione)]
+Il testo che appare nel \textbf{fumetto} della spiegazione.
+
+\item[\textbf{Action / \texttt{do :}}]
+Un'azione che il pezzo fa nello step. Possono essercene tante in fila.
+
+\item[\textbf{Camera}]
+Gli ``occhi'' dello studente. Si dirige con
+\val{camera = position (\ldots), target (\ldots), \ldots}.
+
+\item[\textbf{Drag}]
+Lo studente trascina il pezzo con il mouse fino alla destinazione.
+
+\item[\textbf{After}]
+Cosa succede subito dopo che lo studente clicca l'\kw{element} (cambia uno o
+più stati con \texttt{after : nome\_state = variante}).
+
+\item[\textbf{Hold}]
+Lo studente prende un oggetto in mano (es.\ un telecomando).
+
+\item[\textbf{Bandierine}]
+Parole speciali alla fine del nome di uno step. Tre esistono:
+\val{auto}, \val{machine}, \val{highlight}.
+
+\item[\textbf{Coordinate (x, y, z)}]
+Tre numeri che dicono ``dove'' nello spazio. X = destra/sinistra, Y = su/giù,
+Z = avanti/indietro.
+
+\item[\textbf{Origin} (suffisso \texttt{\_original})]
+Un riferimento alla \textbf{posizione iniziale} di un pezzo. Esempio:
+\texttt{tappino\_grasso\_dx\_original} significa ``la posizione dove sta il
+tappino di destra all'avvio''.
+
+\item[\textbf{Companion} (compagno)]
+Un pezzo che si muove \textbf{insieme} a quello principale dello step.
+Esempio: quando svitate la flangia, anche il tubo del grasso la segue.
+
+\item[\textbf{Variant} (variante)]
+Una ``versione'' diversa di un pezzo. Esempio: lo schermo del pulpito può
+essere \texttt{schermo001} (home) o \texttt{schermo002} (MDI). Cambiare
+variante significa mostrare una versione diversa.
+
+\item[\textbf{State} (stato)]
+Un gruppo di varianti possibili. Esempio: lo state \texttt{schermo} può
+essere uno di [\texttt{schermo001}, \texttt{schermo002}, \ldots].
+Si dichiara nel blocco \sez{[state nome]} dentro \file{objects.ini}.
+
+\item[\textbf{Object} (oggetto interattivo)]
+Un modello 3D con pulsanti e parti che lo studente può cliccare
+(es.\ il pulpito). Si dichiara nel blocco \sez{[object nome]} dentro
+\file{objects.ini}.
+
+\item[\textbf{Position} / \textbf{Rotation}]
+Righe che spostano o ruotano un pezzo \emph{prima} che lo step parta. Si
+scrivono in \sez{[scene]}, in una \sez{[section]} o dentro uno \sez{[step]}.
+
+\item[\textbf{Companion}]
+Un pezzo che si muove \textbf{insieme} a quello principale dello step. Può
+seguirlo passivamente (\val{follows master}) o fare il proprio movimento
+(\val{moves by}).
+
+\item[\textbf{Repeat N} (in \texttt{element = X repeat N})]
+Lo studente deve cliccare l'\kw{element} N volte. Si usa con \kw{animation =}
+per animazioni a frame (apri/chiudi la pinza, sfoglia pagine, ecc.).
+
+\item[\textbf{Animation}]
+Una sequenza di immagini 2D mostrate sopra la scena 3D. Avanza ad ogni clic
+del pulsante (vedi \val{repeat}).
+
+\item[\textbf{View} (vista di un display)]
+La pagina mostrata da uno schermo digitale 3D. Si cambia con \kw{view = nome}.
+Le pagine possibili sono dichiarate in \file{objects.ini}.
+
+\item[\textbf{Hold}]
+Lo studente prende un oggetto in mano (\val{hold = pick}), continua a tenerlo
+(\val{hold = held}) o lo lascia (\val{hold = release}).
+
+\item[\textbf{Message / Title / Video / Image}]
+Mostra una finestra modale con testo, titolo, video o immagine. Lo studente
+chiude con OK e va avanti.
+
+\end{description}
+
+%--------------------------------------------------------------------------
+\chapter*{Conclusione}
+\addcontentsline{toc}{chapter}{Conclusione}
+%--------------------------------------------------------------------------
+
+Adesso sai scrivere un tutorial. Ricorda i \textbf{tre segreti}:
+
+\begin{enumerate}
+  \item \textbf{Scrivi minuscolo} (per la sintassi v3).
+  \item \textbf{Le virgolette} nei nomi di section e step.
+  \item \textbf{\kw{do :}} per ogni azione, una per riga, in ordine.
+\end{enumerate}
+
+Se ti dimentichi qualcosa, riapri questo manuale al \textbf{glossario}
+(Capitolo~\ref{ch:glossario}) o all'\textbf{esempio completo}
+(Capitolo~\ref{ch:esempio}).
+
+\vfill
+\begin{center}
+\textit{\Large Buon divertimento e buon tutorial!}
+\end{center}
+
+\end{document}

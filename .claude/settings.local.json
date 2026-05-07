@@ -66,7 +66,17 @@
       "Bash(__NEW_LINE_0fd02d40fc4614f0__ sed:*)",
       "Bash(pip show:*)",
       "Bash(rm:*)",
-      "Bash(sort -t: -k2)"
+      "Bash(sort -t: -k2)",
+      "Bash(command -v pdflatex)",
+      "PowerShell(Get-Content *)",
+      "Bash(xelatex -interaction=nonstopmode -halt-on-error docManuale_CVTScript_v3_per_principianti_arial.tex)",
+      "Bash(xelatex -interaction=nonstopmode -halt-on-error -jobname=test_compile docManuale_CVTScript_v3_per_principianti_arial.tex)",
+      "Bash(pdfinfo test_compile.pdf)",
+      "PowerShell(Test-Path *)",
+      "Bash(\"/c/Users/mloffredo/campus_virtual_training/node_modules/.bin/asar\" list *)",
+      "Read(//tmp/**)",
+      "PowerShell(Get-Process *)",
+      "PowerShell($f = \"C:\\\\Users\\\\mloffredo\\\\campus_virtual_training\\\\dist\\\\win-unpacked\\\\resources\\\\app.asar\"; try { $s = [System.IO.File]::Open\\($f, 'Open', 'ReadWrite', 'None'\\); $s.Close\\(\\); 'unlocked' } catch { \"locked: $\\($_.Exception.Message\\)\" })"
     ],
     "deny": [],
     "ask": [],

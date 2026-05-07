@@ -1,0 +1,185 @@
+% =====================================================================
+%  Proposta — Campus Virtual Training & Campus LINGO
+%  Stile ispirato a "For Dummies" — versione compatta 3 pagine
+%  Compilare con: pdflatex proposta.tex
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Pacchetti ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{microtype}
+\usepackage[a4paper,top=1cm,bottom=1.5cm,left=2.5cm,right=2.5cm,marginparwidth=2cm,marginparsep=4mm,headheight=22pt]{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{lettrine}
+\usepackage{marginnote}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+% ---------- Colori "For Dummies" ----------
+\definecolor{dummiesyellow}{RGB}{255,204,0}
+\definecolor{dummiesblack}{RGB}{0,0,0}
+\definecolor{dummiesgray}{RGB}{90,90,90}
+\definecolor{dummieslightyellow}{RGB}{255,243,191}
+
+% ---------- Hyperref ----------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=dummiesblack,
+  urlcolor=dummiesblack,
+  citecolor=dummiesblack,
+  pdftitle={Proposta Campus Virtual Training},
+}
+
+% ---------- Stile sezioni ----------
+\titleformat{\section}
+  {\normalfont\sffamily\large\bfseries\color{dummiesblack}}
+  {\thesection}{1em}{}
+  [{\color{dummiesyellow}\rule{\textwidth}{1.2pt}}]
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+
+% ---------- Header e footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\sffamily\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% ---------- Icone ----------
+\newcommand{\iconTarget}{%
+  \begin{tikzpicture}[scale=0.3]
+    \fill[dummiesyellow] (0,0) circle (1);
+    \draw[dummiesblack,thick] (0,0) circle (1);
+    \fill[white] (0,0) circle (0.6);
+    \draw[dummiesblack,thick] (0,0) circle (0.6);
+    \fill[dummiesyellow] (0,0) circle (0.25);
+    \draw[dummiesblack,very thick] (0.5,1.2) -- (0.05,0.1);
+    \fill[dummiesblack] (0.5,1.2) -- (0.3,0.8) -- (0.7,0.9) -- cycle;
+  \end{tikzpicture}}
+
+\newcommand{\iconRemember}{%
+  \begin{tikzpicture}[scale=0.3]
+    \draw[dummiesblack,very thick] (-1.2,0) -- (1.2,0);
+    \fill[dummiesyellow] (0,0) circle (0.45);
+    \draw[dummiesblack,thick] (0,0) circle (0.45);
+  \end{tikzpicture}}
+
+\newcommand{\iconWarning}{%
+  \begin{tikzpicture}[scale=0.3]
+    \fill[dummiesyellow] (0,1.2) -- (-1.1,-0.7) -- (1.1,-0.7) -- cycle;
+    \draw[dummiesblack,thick] (0,1.2) -- (-1.1,-0.7) -- (1.1,-0.7) -- cycle;
+    \node[dummiesblack,font=\bfseries\small] at (0,0) {!};
+  \end{tikzpicture}}
+
+% ---------- Box ----------
+\newcommand{\dummiestip}[2]{%
+  \marginnote{\iconTarget\\\sffamily\footnotesize\bfseries #1}%
+  \begin{tcolorbox}[colback=dummieslightyellow,colframe=dummiesyellow,
+    boxrule=1pt,arc=2pt,left=6pt,right=6pt,top=3pt,bottom=3pt,breakable]
+    \small #2
+  \end{tcolorbox}}
+
+\newcommand{\dummiesremember}[2]{%
+  \marginnote{\iconRemember\\\sffamily\footnotesize\bfseries #1}%
+  \begin{tcolorbox}[colback=dummieslightyellow,colframe=dummiesyellow,
+    boxrule=1pt,arc=2pt,left=6pt,right=6pt,top=3pt,bottom=3pt,breakable]
+    \small #2
+  \end{tcolorbox}}
+
+\newcommand{\dummieswarning}[2]{%
+  \marginnote{\iconWarning\\\sffamily\footnotesize\bfseries #1}%
+  \begin{tcolorbox}[colback=dummieslightyellow,colframe=dummiesyellow,
+    boxrule=1pt,arc=2pt,left=6pt,right=6pt,top=3pt,bottom=3pt,breakable]
+    \small #2
+  \end{tcolorbox}}
+
+% =====================================================================
+\begin{document}
+\thispagestyle{fancy}
+
+% ---------- Intestazione compatta stile "For Dummies" ----------
+\noindent
+\begin{tikzpicture}
+  \fill[dummiesyellow] (0,0) rectangle (\textwidth,2.2);
+  \fill[dummiesblack] (0,-0.6) rectangle (\textwidth,0);
+  \node[anchor=west,font=\sffamily\bfseries,text=dummiesblack]
+    at (0.4,1.55) {\fontsize{22}{26}\selectfont Proposta};
+  \node[anchor=west,font=\sffamily\bfseries,text=dummiesblack]
+    at (0.4,0.75) {\fontsize{18}{22}\selectfont Un'evoluzione condivisa};
+  \node[anchor=west,font=\sffamily\small,text=white]
+    at (0.4,-0.3) {Campus Virtual Training \& Campus LINGO \textemdash{} Scm Campus};
+\end{tikzpicture}
+
+\vspace{0.4em}
+
+\lettrine[lines=2,lhang=0.1,findent=2pt]{N}{egli ultimi anni}, lavorando
+nella formazione, mi sono reso conto di quanto la tecnologia non sia
+più solo un supporto, ma una leva concreta per far evolvere davvero
+quello che facciamo.
+
+E, un po' alla volta, ho iniziato a muovermi in questa direzione. Oggi
+non mi sento più solo ``il formatore'': mi piace farlo, ma nel
+frattempo sono nati \textbf{Campus Virtual Training} e
+\textbf{Campus LINGO}. Sono strumenti già utilizzabili, con un
+potenziale che secondo me va oltre l'uso interno.
+
+\dummiesremember{Il punto}{%
+Così come sono oggi, riesco a portarli avanti ``a pezzi'', nei
+ritagli. Ma per trasformarli in qualcosa di \textbf{strutturato},
+\textbf{scalabile} e anche \textbf{proponibile ai clienti}, serve un
+passo in più.}
+{\color{dummiesyellow}\rule{\textwidth}{1.2pt}}
+\section*{Perché il tuo ruolo è fondamentale}
+
+
+Io non sto cercando di cambiare direzione da solo, né di costruire
+qualcosa ``a lato''. Al contrario, credo che questa possa essere
+un'evoluzione naturale del lavoro che stiamo già facendo --- ma
+guidata insieme, con una visione chiara e condivisa.
+
+Mi piacerebbe costruire questo percorso con te:
+\begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
+  \item dare una forma più concreta a questi progetti;
+  \item capire come integrarli nel nostro perimetro;
+  \item se ha senso, iniziare a strutturarli come veri e propri
+        \textbf{prodotti}.
+\end{itemize}
+
+\dummiestip{In pratica}{%
+Io porto l'iniziativa e lo sviluppo, ma ho bisogno di un contesto, di
+una direzione e di un allineamento forte con te per farli crescere
+davvero.}
+{\color{dummiesyellow}\rule{\textwidth}{1.2pt}}
+\section*{Un'estensione del lavoro che faccio}
+
+
+La formazione resta il cuore di quello che faccio: è il terreno da cui
+nascono queste idee e quello su cui continuano ad avere senso. Quello
+che propongo è affiancarci un tassello in più, che amplia ciò che
+portiamo ai clienti e l'impatto che possiamo avere come team.
+
+\dummieswarning{Attenzione}{%
+Questa non è una proposta di separazione o di cambio di rotta: è una
+richiesta di allineamento per trasformare qualcosa che sta già
+crescendo in un asset condiviso e sostenibile, integrato con l'attività
+di formazione che continua.}
+{\color{dummiesyellow}\rule{\textwidth}{1.2pt}}
+\section*{Il passo successivo}
+
+
+Se per te ha senso, mi piacerebbe ragionarci insieme e capire come
+trasformare questa cosa in un percorso concreto.
+
+\vspace{0.6em}
+\begin{center}
+\itshape Prometto che non ti porto solo idee\ldots{} ma anche un po' di
+lavoro in più.
+\end{center}
+
+\end{document}

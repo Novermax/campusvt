@@ -29,8 +29,40 @@
       "!dist/**/*",
       "!build/**/*",
       "!.git/**/*",
+      "!.vscode/**/*",
+      "!.claude/**/*",
+      "!docs/**/*",
+      "!Proposta/**/*",
+      "!neweditor/**/*",
       "!*.md",
-      "!distribuzione.txt"
+      "!*.pdf",
+      "!*.pptx",
+      "!*.bat",
+      "!*.ps1",
+      "!*.py",
+      "!admin.html",
+      "!CHEAT_SHEET.html",
+      "!MANUALE_COMPLETO_CAMPUS_VIRTUAL_TRAINING.html",
+      "!MANUALE_PRESENTAZIONE.html",
+      "!remote.bin",
+      "!Analizza il linguaggio di scripting.txt",
+      "!autoaction.txt",
+      "!bigtask.txt",
+      "!console.txt",
+      "!convergere.txt",
+      "!correggere1.txt",
+      "!correggere2.txt",
+      "!distribuzione.txt",
+      "!electron.txt",
+      "!git commands.txt",
+      "!new 17.txt",
+      "!neweditor.txt",
+      "!presentazione_demo.txt",
+      "!razionalizzazione.txt",
+      "!resume.txt",
+      "!scenari.txt",
+      "!traduzione.txt",
+      "!traduzione2.txt"
     ],
     "asarUnpack": [
       "**/*.mp4",
@@ -39,8 +71,12 @@
     ],
     "extraFiles": [
       {
-        "from": "InterfaceConfig.cvtscript",
-        "to": "InterfaceConfig.cvtscript"
+        "from": "scenes/interfaceconfig.ini",
+        "to": "scenes/interfaceconfig.ini"
+      },
+      {
+        "from": "users.txt",
+        "to": "users.txt"
       }
     ],
     "win": {

@@ -352,13 +352,14 @@ const UI = {
     loadInterfaceConfig: function() {
         // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
         if (window.electronAPI && window.electronAPI.readConfigFile) {
-            window.electronAPI.readConfigFile('InterfaceConfig.cvtscript')
+            const tryIPC = (name) => window.electronAPI.readConfigFile(name);
+            tryIPC('scenes/interfaceconfig.ini')
+                .then(content => content || tryIPC('InterfaceConfig.cvtscript'))
                 .then(content => {
                     if (content) {
-                        console.log('[UI] ✅ InterfaceConfig.cvtscript caricato via IPC (Electron)');
+                        console.log('[UI] ✅ interfaceconfig caricato via IPC (Electron)');
                         this.parseInterfaceConfig(content);
                     } else {
-                        // File non trovato via IPC, prova con fetch (fallback)
                         this._loadInterfaceConfigViaFetch();
                     }
                 })
@@ -370,18 +371,25 @@ const UI = {
     },
 
     _loadInterfaceConfigViaFetch: function() {
-        fetchFile(`./InterfaceConfig.cvtscript?v=${Date.now()}`)
+        const candidates = [
+            './scenes/interfaceconfig.ini',
+            './InterfaceConfig.cvtscript',
+        ];
+        const tryLoad = (path) => fetchFile(`${path}?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.text();
             })
             .then(content => {
-                console.log('[UI] ✅ InterfaceConfig.cvtscript caricato');
+                console.log(`[UI] ✅ interfaceconfig caricato: ${path}`);
                 this.parseInterfaceConfig(content);
-            })
-            .catch(() => {
-                // File opzionale - nessun errore se assente
             });
+        candidates.reduce(
+            (chain, path) => chain.catch(() => tryLoad(path)),
+            Promise.reject()
+        ).catch(() => {
+            // File opzionale - nessun errore se assente
+        });
     },
 
     /**
@@ -391,6 +399,7 @@ const UI = {
         const validPositions = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
         const lines = content.split('\n');
         let currentSection = null;
+        console.log(`🔧 [UI] parseInterfaceConfig: ${lines.length} righe da processare`);
 
         for (let line of lines) {
             line = line.trim();
@@ -450,6 +459,61 @@ const UI = {
                     const v = parseFloat(value);
                     if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMax = v;
                     console.log(`🎥 [UI] InterfaceConfig: CameraControls.ZoomMax = ${value}`);
+                }
+            }
+
+            if (currentSection === 'Highlight' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                window.InterfaceConfig = window.InterfaceConfig || {};
+                window.InterfaceConfig.highlight = window.InterfaceConfig.highlight || {};
+                const IO = window.InteractiveObject3D;
+                const HCM = (window.Scene3D && window.Scene3D.highlightCircleManager) || window.HighlightCircleManager;
+                if (key === 'Color') {
+                    const hex = value.startsWith('0x') || value.startsWith('0X')
+                        ? parseInt(value, 16) : parseInt(value, 10);
+                    if (!isNaN(hex)) {
+                        window.InterfaceConfig.highlight.color = hex;
+                        if (IO && IO.setHighlightColor) IO.setHighlightColor(hex);
+                        else if (IO) IO.config.highlightColor = hex;
+                        if (HCM && typeof HCM.setBorderColor === 'function') HCM.setBorderColor(hex);
+                        if (window.Scene3D && typeof window.Scene3D.setHighlightMaterialColor === 'function') {
+                            window.Scene3D.setHighlightMaterialColor(hex);
+                        }
+                        console.log(`💡 [UI] InterfaceConfig: Highlight.Color = ${value} (hex=0x${hex.toString(16).padStart(6,'0')})`);
+                    } else {
+                        console.warn(`💡 [UI] InterfaceConfig: Highlight.Color non valido: "${value}"`);
+                    }
+                } else if (key === 'IntensityScale') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0) {
+                        window.InterfaceConfig.highlight.intensityScale = v;
+                        if (IO && IO.setHighlightIntensity) IO.setHighlightIntensity(v);
+                        else if (IO) IO.config.highlightIntensityScale = v;
+                        console.log(`💡 [UI] InterfaceConfig: Highlight.IntensityScale = ${value}`);
+                    }
+                } else if (key === 'DefaultOpacity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0 && v <= 1) {
+                        window.InterfaceConfig.highlight.defaultOpacity = v;
+                        console.log(`💡 [UI] InterfaceConfig: Highlight.DefaultOpacity = ${value}`);
+                    }
+                } else if (key === 'FadeMaterial') {
+                    const enabled = (value === 'true');
+                    window.InterfaceConfig.highlight.fadeMaterial = enabled;
+                    if (IO && IO.setHighlightFadeMaterial) IO.setHighlightFadeMaterial(enabled);
+                    else if (IO) IO.config.highlightFadeMaterial = enabled;
+                    console.log(`💡 [UI] InterfaceConfig: Highlight.FadeMaterial = ${value}`);
+                } else if (key === 'FadeStrength') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0 && v <= 1) {
+                        window.InterfaceConfig.highlight.fadeStrength = v;
+                        if (IO && IO.setHighlightFadeMaterial) {
+                            IO.setHighlightFadeMaterial(IO.config.highlightFadeMaterial, v);
+                        } else if (IO) {
+                            IO.config.highlightFadeStrength = v;
+                        }
+                        console.log(`💡 [UI] InterfaceConfig: Highlight.FadeStrength = ${value}`);
+                    }
                 }
             }
         }
@@ -700,8 +764,9 @@ const UI = {
     /**
      * Posizione corrente del pulsante reset camera.
      * Valori: 'top-right' | 'top-left' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center'
+     * Default allineato a scenes/interfaceconfig.ini (Position=bottom-left).
      */
-    resetCameraPosition: 'bottom-right',
+    resetCameraPosition: 'bottom-left',
 
     /**
      * Imposta la posizione del pulsante reset camera.
@@ -745,8 +810,8 @@ const UI = {
             // Applica SEMPRE la posizione corrente (resetCameraPosition è source of truth)
             const valid = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
             valid.forEach(p => btn.classList.remove('pos-' + p));
-            btn.classList.add('pos-' + (this.resetCameraPosition || 'bottom-right'));
-            console.log(`📷 [UI] Pulsante reset camera mostrato in posizione: ${this.resetCameraPosition || 'bottom-right'}`);
+            btn.classList.add('pos-' + (this.resetCameraPosition || 'bottom-left'));
+            console.log(`📷 [UI] Pulsante reset camera mostrato in posizione: ${this.resetCameraPosition || 'bottom-left'}`);
         }
     },
 

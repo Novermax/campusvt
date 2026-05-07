@@ -356,7 +356,7 @@
     <!-- Pulsante per ripristinare la camera alla posizione iniziale dello step -->
     <button
         id="resetCameraBtn"
-        class="reset-camera-btn pos-bottom-right hidden"
+        class="reset-camera-btn pos-bottom-left hidden"
         aria-label="Ripristina vista camera allo step corrente"
         title="Ripristina vista camera"
     >
@@ -464,6 +464,15 @@
         <div class="tutorial-selection-arrow">
             ↓
         </div>
+    </div>
+
+    <!-- ===== BANNER DEPRECAZIONE CVTScript v2 ===== -->
+    <div id="cvtscriptDeprecationBanner" class="cvtscript-deprecation-banner hidden">
+        <div class="cvtscript-deprecation-header">
+            <span>⚠ CVTScript — Sintassi v1 rilevata nel file tutorial</span>
+            <button class="cvtscript-deprecation-close" onclick="document.getElementById('cvtscriptDeprecationBanner').classList.add('hidden')">✕</button>
+        </div>
+        <ul class="cvtscript-deprecation-list"></ul>
     </div>
 
     <!-- ===== SCRIPT JAVASCRIPT ===== -->
@@ -754,13 +763,11 @@
         function logoutUser() {
             localStorage.removeItem('currentUser');
             window.currentUser = null;
-            closeUserManager();
-            // Torna alla pagina di login senza ricaricare la pagina intera
-            document.getElementById('container').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('loginError').classList.add('hidden');
+            try { closeUserManager(); } catch (e) {}
+            // Reload completo: l'app ha stato globale (Scene3D, UI, scenari, lingua,
+            // tool registry, ecc.) che non si reinizializza in modo affidabile senza
+            // un restart. Senza reload il nuovo utente eredita lo stato del precedente.
+            window.location.reload();
         }
 
         // ============================================================================

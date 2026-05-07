@@ -62,8 +62,12 @@ class ScenarioManager {
             ? window.currentUser.language.toLowerCase()
             : null;
 
-        const localizedConfig = lang ? `./home_config_${lang}.cvtscript` : null;
-        const fallbackConfig = `./home_config.cvtscript`;
+        const candidates = [
+            lang ? `./scenes/homeconfig_${lang}.ini` : null,
+            `./scenes/homeconfig.ini`,
+            lang ? `./home_config_${lang}.cvtscript` : null,
+            `./home_config.cvtscript`,
+        ].filter(Boolean);
 
         const loadConfig = (path) => {
             return fetchFile(`${path}?v=${Date.now()}`)
@@ -77,9 +81,10 @@ class ScenarioManager {
                 });
         };
 
-        const tryLoad = localizedConfig
-            ? loadConfig(localizedConfig).catch(() => loadConfig(fallbackConfig))
-            : loadConfig(fallbackConfig);
+        const tryLoad = candidates.reduce(
+            (chain, path) => chain.catch(() => loadConfig(path)),
+            Promise.reject()
+        );
 
         tryLoad.catch(error => {
             this.safeLog(1, '[ScenarioManager] Impossibile caricare home_config:', error);
@@ -160,7 +165,7 @@ class ScenarioManager {
                         currentScenario.directionalLight = value;
                     } else if (key === 'BackLight') {
                         currentScenario.backLight = value;
-                    } else if (key === 'Configuration') {
+                    } else if (key === 'tool' || key === 'Configuration') {
                         currentScenario.configuration = value;
                     } else if (key === 'direction' || key === 'direzione') {
                         // Direzione per l'ultimo modello aggiunto

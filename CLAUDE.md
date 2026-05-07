@@ -40,7 +40,114 @@
 
 ## Sintassi Tutorial (tutorial.cvtscript)
 
-### Struttura base
+**Versione corrente: CVTScript v3** (inglese, vocabolario chiuso, una forma per concetto). Pre-processore in `js/ui/CVTScriptV3.js` traduce v3→v2 prima del parser principale (`ui.js` parseTutorialContent). Sintassi v1 (italiano) e v2 (inglese mista) restano supportate per retrocompatibilità — i due format possono coesistere nello stesso file.
+
+Spec completa: `docs/CVTScript_v3_spec.md`. Esempi reali: `scenes/Pompa_Becker/tutorial.cvtscript`, `scenes/Manutenzione_Elettromandrino/tutorial.cvtscript`.
+
+### Sintassi v3 — quick reference
+
+```ini
+# Block headers (lowercase, titoli quotati per section/step)
+[scene]                              # Proprietà globali (camera + posizioni iniziali)
+[section "Titolo"]                   # Sezione/tutorial
+[step "Titolo" auto, highlight]      # Step con flags (auto, machine, highlight)
+[state nome]                         # StateGroup (varianti mutuamente esclusive)
+[object nome]                        # InteractiveObject 3D
+[hotspot id]   [screen id]   [screenview id.view]   [screenaction id]
+
+# Step fields (lowercase, prosa quasi naturale)
+element     = vite_coperchio_1                       # nome modello (path implicito models/X.glb)
+element     = a500.Basamento_Portale_CarroY          # dot notation per child interno
+tool        = hand | hex_key | wrench | air | spray  # vocabolario chiuso
+description = Testo descrittivo dello step.
+camera      = position (x,y,z), target (x,y,z), zoom Z, fade T, pivot (x,y,z), distance D, fov F, rotation (rx,ry,rz)
+camera      = position (...), free within (min,max)  # CameraUnlocked + CameraLimits
+
+# Azioni (verbo + named args, ripetibili — ordine = sequenza)
+do : unscrew                                          # svita, distanza default 0.5
+do : unscrew distance 0.3
+do : screw distance 0.005
+do : extract distance 0.4
+do : insert distance 0.4
+do : place duration 0.2                               # appoggia
+do : move by (x,y,z) duration t                      # traslazione assoluta
+do : move from ref by (x,y,z) duration t             # traslazione relativa a ref
+do : rotate by (rx,ry,rz) duration t
+do : rotate around (px,py,pz) by (rx,ry,rz) duration t
+do : pump along x amplitude 0.08 cycles 10 duration 0.1 from ref
+do : pump from ref between (a,b,c) and (d,e,f) cycles N duration T
+do : idle reset                                       # resetCenteredOriginal
+
+# Drag & Drop (singola riga compatta)
+drag = obj1, obj2 distance 0.3 snap offset (x,y,z)
+drag = vite distance 1.5 snap targets foro_1.origin, foro_2.origin
+drag = flangia distance 0.3 snap pivot (0, 0, 0.3)
+
+# Click su element (panel button, porta, leva, vite). Una sola keyword: `element`.
+# Il pre-processore deduce il tipo di interazione dal contesto dello step:
+#  - `element` + `tool` + `do :`           → flusso tool (clic con strumento)
+#  - `element` + `do :` (no tool)          → clic diretto → animazione
+#  - `element` + `after :` (no do)         → clic → cambio stato → avanza
+#  - `element` (solo, no do/after)         → clic → avanza
+#  - flag `auto`/`machine` sullo step      → automatico, niente clic
+element = pulpito.Pulsante_mdi
+after  : schermo = schermo002                         # state.X = Y opzionale, prefisso "state." rimosso
+
+# Click ripetuti (frame animation): aggiungi `repeat N` al valore di element
+element   = remote.Pulsante_r_unlock repeat 8
+animation = folder screens/mandrino at (60%, 60%) frame 20ms
+
+# `button = ...` resta come ALIAS DEPRECATO per retrocompatibilità (warning in console).
+
+# Holdable
+hold = pick remote at (-0.25,-0.07,0.25) facing (0,5,0)
+hold = held remote
+hold = release
+
+# Posizioni / rotazioni iniziali (per sezione o globali)
+position = nome at (x, y, z)
+rotation = nome by (rx, ry, rz)
+
+# Companion (movimenti paralleli) — più righe = uniti in DrivenObjects
+companion = flangia follows master
+companion = tubograsso moves by (0, 0, 0.005) duration 0.5
+
+# Message modal
+message = Testo del messaggio.
+title   = ⚠️ Importante
+video   = media/x.mp4
+image   = scenes/X/img.jpg
+```
+
+### Mapping v3 → semantica interna (v2/v1)
+
+Il pre-processore `window.CVTScriptV3.preprocess(content)` trasforma:
+
+| v3 syntax | → v2/v1 emit | Note |
+|---|---|---|
+| `[step "X" auto, highlight]` | `[Step - X \| auto, highlight]` | flag space-separated o virgola |
+| `[section "X"]` | `[Section - X]` | |
+| `[state X]` / `[object X]` | `[StateGroup:X]` / `[InteractiveObject:X]` | |
+| `[scene]` | (riga scartata) | proprietà restano globali |
+| `element = X` | `Element=X` (poi `Elemento=models/X.glb`) | dot notation per child |
+| `tool = hand` | `Tool=Mani` (poi `Utensile=Mani`) | enum chiuso |
+| `description =` / `message =` / `title =` / `video =` | `Description=` / `Message=` / `MessageTitle=` / `MessageVideo=` | |
+| `do : unscrew distance 0.3` | `Action${n}=unscrew(0.3)` (poi `svita(0.3)`) | auto-numerato per step |
+| `do : move by (x,y,z) duration t` | `Action${n}=translate:(x,y,z,t)` (poi `traslazione:`) | |
+| `do : pump along x amplitude A cycles N duration T from ref` | `Action${n}=pump:ref(axis=x, amplitude=A, ...)` | |
+| `camera = position (..), target (..), zoom Z, fade T` | righe `CameraPos=(...)`, `CameraTarget=(...)`, `CameraZoom=Z`, `CameraTransitionTime=T` | una riga → multiple |
+| `drag = obj distance D snap offset (x,y,z)` | `DragDrop=true` + `DragDropObjects=obj` + `DragDropDistance=D` + `SnapPoint=offset:(x,y,z)` | |
+| `hold = pick obj at (...) facing (...)` | `HoldAction=pick` + `Holdable=true` + `Element=obj` + `HoldPosition=(...)` + `HoldRotation=(...)` | |
+| `element = X` + `after : key = val` (no tool, no do, no auto/machine) | `Element=X` + `Button=X` + `AfterClick=key=val` (poi espanso) | trigger compatto auto-advance |
+| `element = X` + `do : ...` (no tool, no auto/machine) | `Element=X` + `Action${n}=...` + `ActiveButtons=meshName` + `AcceptTrigger_Physical=X` | clic → animazione (no AutoAdvance) |
+| `element = X repeat N` + `do :` o `animation =` | `+ AnimatedMaxTriggers=N` | multi-trigger frame |
+| `button = X [wait\|repeat N]` (DEPRECATO) | come `element = X` ma forza il flag esplicito wait/repeat | warning in console |
+| `companion = X follows master` | segmento `X.glb,follow` aggiunto a `DrivenObjects=` | merge cross-line |
+| `position = X at (x,y,z)` / `rotation = X by (rx,ry,rz)` | `Posizione=X:(x,y,z)` / `Rotazione=X:(rx,ry,rz)` | |
+
+**Regola di disambiguazione**: chiavi totalmente lowercase = v3 (vengono pre-processate). Chiavi TitleCase (`Element=`, `Tool=`, `Action1=`, `ActiveButtons=`, `Posizione=`, ecc.) = v1/v2 native, pass-through inalterato. Questo permette di mescolare v3 con frammenti legacy nello stesso file.
+
+### Struttura base (legacy v1/v2 — ancora supportata)
 
 ```ini
 # Sezioni globali (prima di [Tutorial]) → applicate al caricamento scenario
@@ -190,8 +297,12 @@ OnPhysicalTrigger_SetView=pulpito.running     # Cambia vista schermo dopo trigge
 
 AutoAdvance=false        # Default: utente clicca → per avanzare. true = automatico dopo 500ms.
 
-# Evidenziazione automatica del pulsante richiesto (giallo emissivo)
-HighlightOpacity=0.5     # 0.0-1.0, default 0.5 (emissiveIntensity = opacity × 2.0)
+# Evidenziazione automatica del pulsante richiesto (velatura gialla emissiva)
+HighlightOpacity=0.5     # 0.0-1.0, default 0.5. Forza della tinta gialla.
+                         # emissiveIntensity = HighlightOpacity × highlightIntensityScale (default 0.6).
+                         # Il materiale resta opaco di default (i dettagli del pulsante restano visibili
+                         # sotto la velatura). Per il vecchio look "see-through" abilita
+                         # InteractiveObject3D.setHighlightFadeMaterial(true).
 ActiveButtons=Pulsante_mdi,Pulsante_tool  # Solo questi pulsanti rispondono nello step
 ```
 
@@ -386,6 +497,9 @@ InteractiveObject3D.setState('pulpito', 'chiave', 'on')
 InteractiveObject3D.setStateVariant('schermo', 'schermo.001')
 InteractiveObject3D.highlightRequiredButtons(['pulpito.Pulsante_mdi'], 0.5)
 InteractiveObject3D.clearButtonHighlights()
+InteractiveObject3D.setHighlightColor(0xffaa00)        // Cambia colore tinta (default 0xffff00)
+InteractiveObject3D.setHighlightIntensity(0.6)         // Cambia scala emissive (default 0.6)
+InteractiveObject3D.setHighlightFadeMaterial(true,0.5) // Riabilita "see-through" se desiderato
 
 StepController.debugInfo()
 StepController.simulateTrigger('physical', 'pulpito.Pulsante_mdi')
@@ -449,6 +563,8 @@ TouchSystem.setEnabled(false)
 ---
 
 ## Note Architetturali Importanti
+
+**`element` unificato (CVTScript v3.1)**: in v3.1 la keyword `button` dello step è stata assorbita da `element`. Tutto quello su cui l'utente clicca si chiama `element`. Il pre-processore `js/ui/CVTScriptV3.js` deduce a fine step se l'`element` è anche un trigger fisico, in base alla presenza di `tool`, `do :`, `after :` e dei flag `auto`/`machine` (vedi tabella di disambiguazione in `docs/CVTScript_v3_spec.md` §3.2.1). `button = ...` resta come alias deprecato con warning in console — i tutorial nuovi devono usare solo `element`. La parola `button` continua a esistere come **tipo di child** dentro `[InteractiveObject ...]` / `[object ...]` (`InteractiveChild=Pulsante_mdi,button,...`): è un altro contesto, non un campo di step.
 
 **AutoAdvance default**: `false` — gli step con trigger fisico/schermo **aspettano** che l'utente clicchi →. Usare `AutoAdvance=true` solo per step puramente automatici.
 

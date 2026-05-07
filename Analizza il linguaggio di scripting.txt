@@ -1,0 +1,95 @@
+Analyze the scripting language defined in the attached cvtscript file and redesign it with a radically simplified syntax.
+
+Goal:
+Minimize cognitive load and make the language consistent with how humans naturally describe actions and interactions.
+
+STRICT CONSTRAINT:
+- The new syntax MUST be entirely in English
+- No mixed language naming (no Italian, no legacy terms)
+- Use clear, descriptive, domain-agnostic English naming
+
+Other constraints:
+- Preserve full expressive power (no feature loss)
+- Drastically reduce:
+  - number of keywords
+  - syntactic variants for the same concept
+  - implicit behaviors
+- Completely remove:
+  - deprecated commands
+  - legacy syntax variants
+- Enforce a single, consistent convention across the entire language
+
+---
+
+Tasks:
+
+1) Critical analysis
+Identify and explain:
+- syntactic inconsistencies (mixed separators like ":", "=", ",", ";", "()")
+- duplicated concepts (e.g. AutoExecute vs Autoaction)
+- multiple syntaxes for the same feature (e.g. SnapPoint vs SnapTargets)
+- semantic overload (same keyword, different meanings)
+- hidden/implicit logic (e.g. camera inheritance, external direction config)
+
+Focus on why these increase cognitive load.
+
+---
+
+2) Human mental model redesign
+Refactor the language around a human-oriented structure:
+
+- WHAT happens
+- TO WHAT (target)
+- HOW it happens
+- WHEN it happens
+
+Avoid parser-driven design. Prefer declarative clarity.
+
+---
+
+3) New syntax definition
+Design a new grammar with:
+
+- one syntax per concept (no alternatives)
+- explicit named parameters (no anonymous tuples like (x,y,z,duration))
+- consistent structure (hierarchical or block-based)
+- minimal and unambiguous symbols
+- strong naming consistency (verbs for actions, nouns for entities)
+
+---
+
+4) Full refactoring examples
+Rewrite 2–3 complex steps from the original system:
+
+- show original cvtscript
+- show redesigned version
+
+The new version must be:
+- shorter
+- clearer
+- self-explanatory without documentation
+
+---
+
+5) Design principles
+Define stable rules for:
+
+- naming conventions
+- extensibility
+- readability
+- parsing simplicity
+- future evolution
+
+---
+
+6) Optional (high value)
+Propose an alternative representation:
+
+- human-readable DSL (near-natural language), OR
+- JSON/YAML optimized for clarity (not verbosity)
+
+---
+
+Output format:
+Technical, structured, no generic explanations.
+Focus on concrete improvements and trade-offs.

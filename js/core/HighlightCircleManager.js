@@ -107,6 +107,10 @@ class HighlightCircleManager {
         // Usa opacità custom o default
         const circleOpacity = (opacity !== null && opacity !== undefined) ? opacity : this.config.opacity;
 
+        // Risolvi colore bordo dinamicamente da InterfaceConfig / InteractiveObject3D,
+        // così il cerchio segue la stessa tinta del materiale del pulsante 3D.
+        const borderColor = this._resolveBorderColor();
+
         // Crea elemento DOM cerchio
         const circle = document.createElement('div');
         circle.className = 'highlight-circle';
@@ -115,7 +119,7 @@ class HighlightCircleManager {
             position: absolute;
             width: ${circleSize}px;
             height: ${circleSize}px;
-            border: ${this.config.borderWidth}px solid ${this.config.borderColor};
+            border: ${this.config.borderWidth}px solid ${borderColor};
             border-radius: 50%;
             background: transparent;
             opacity: ${circleOpacity};
@@ -261,6 +265,66 @@ class HighlightCircleManager {
             this.updateInterval = null;
             console.log('🔵 [HighlightCircleManager] Loop aggiornamento fermato');
         }
+    }
+
+    /**
+     * Converte un colore (hex numerico, '#rrggbb' o 'rrggbb') in stringa CSS '#rrggbb'.
+     * @param {number|string} color
+     * @returns {string|null}
+     */
+    _toCssColor(color) {
+        if (typeof color === 'number' && !isNaN(color)) {
+            return '#' + (color & 0xffffff).toString(16).padStart(6, '0');
+        }
+        if (typeof color === 'string') {
+            const trimmed = color.trim();
+            if (trimmed.startsWith('#')) return trimmed;
+            if (trimmed.startsWith('0x') || trimmed.startsWith('0X')) {
+                const n = parseInt(trimmed, 16);
+                if (!isNaN(n)) return '#' + (n & 0xffffff).toString(16).padStart(6, '0');
+            }
+            // Assume CSS named color o rgb()
+            return trimmed;
+        }
+        return null;
+    }
+
+    /**
+     * Risolve il colore bordo da usare: priorità InterfaceConfig.highlight.color,
+     * poi InteractiveObject3D.config.highlightColor, infine config.borderColor.
+     * @returns {string} CSS color
+     */
+    _resolveBorderColor() {
+        const cfgColor = window.InterfaceConfig && window.InterfaceConfig.highlight
+            && window.InterfaceConfig.highlight.color;
+        if (cfgColor !== undefined && cfgColor !== null) {
+            const css = this._toCssColor(cfgColor);
+            if (css) return css;
+        }
+        const ioColor = window.InteractiveObject3D && window.InteractiveObject3D.config
+            && window.InteractiveObject3D.config.highlightColor;
+        if (ioColor !== undefined && ioColor !== null) {
+            const css = this._toCssColor(ioColor);
+            if (css) return css;
+        }
+        return this.config.borderColor;
+    }
+
+    /**
+     * Imposta colore bordo cerchi (applica anche ai cerchi già creati).
+     * @param {number|string} color - Hex numerico (0xrrggbb) o stringa CSS
+     */
+    setBorderColor(color) {
+        const css = this._toCssColor(color);
+        if (!css) {
+            console.warn(`🔵 [HighlightCircleManager] Colore non valido: ${color}`);
+            return;
+        }
+        this.config.borderColor = css;
+        for (const [, circleData] of this.circles) {
+            circleData.element.style.borderColor = css;
+        }
+        console.log(`🔵 [HighlightCircleManager] Colore bordo aggiornato: ${css}`);
     }
 
     /**

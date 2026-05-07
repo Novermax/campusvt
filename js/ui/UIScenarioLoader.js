@@ -60,10 +60,14 @@
         console.log(`🌍 [loadHomeConfig] currentUser:`, JSON.stringify(window.currentUser));
         console.log(`🌍 [loadHomeConfig] lang rilevata: "${lang}"`);
 
-        const localizedConfig = lang ? `./home_config_${lang}.cvtscript` : null;
-        const fallbackConfig = `./home_config.cvtscript`;
+        const candidates = [
+            lang ? `./scenes/homeconfig_${lang}.ini` : null,
+            `./scenes/homeconfig.ini`,
+            lang ? `./home_config_${lang}.cvtscript` : null,
+            `./home_config.cvtscript`,
+        ].filter(Boolean);
 
-        console.log(`🌍 [loadHomeConfig] Tentativo: ${localizedConfig || '(nessuno, diretto fallback)'} → fallback: ${fallbackConfig}`);
+        console.log(`🌍 [loadHomeConfig] Candidati:`, candidates);
 
         const loadConfig = (path) => {
             return fetchFile(`${path}?v=${Date.now()}`)
@@ -78,15 +82,16 @@
                 });
         };
 
-        const tryLoad = localizedConfig
-            ? loadConfig(localizedConfig).catch((err) => {
-                console.warn(`🌍 [loadHomeConfig] ❌ Config localizzata FALLITA: ${localizedConfig}`, err.message);
-                return loadConfig(fallbackConfig);
-            })
-            : loadConfig(fallbackConfig);
+        const tryLoad = candidates.reduce(
+            (chain, path, i) => chain.catch(() => {
+                if (i > 0) console.warn(`🌍 [loadHomeConfig] tentativo precedente fallito, provo: ${path}`);
+                return loadConfig(path);
+            }),
+            Promise.reject()
+        );
 
         tryLoad.catch(error => {
-            this.safeLog(1, 'Impossibile caricare home_config dal server:', error.message);
+            this.safeLog(1, 'Impossibile caricare home_config dal server:', error && error.message);
             this.updateStatus('Nessuna configurazione - usa caricamento manuale');
         });
     };
@@ -99,13 +104,14 @@
     UI.loadInterfaceConfig = function() {
         // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
         if (window.electronAPI && window.electronAPI.readConfigFile) {
-            window.electronAPI.readConfigFile('InterfaceConfig.cvtscript')
+            const tryIPC = (name) => window.electronAPI.readConfigFile(name);
+            tryIPC('scenes/interfaceconfig.ini')
+                .then(content => content || tryIPC('InterfaceConfig.cvtscript'))
                 .then(content => {
                     if (content) {
-                        this.safeLog(2, 'InterfaceConfig.cvtscript caricato via IPC (Electron)');
+                        this.safeLog(2, 'interfaceconfig caricato via IPC (Electron)');
                         this.parseInterfaceConfig(content);
                     } else {
-                        // File non trovato via IPC, prova con fetch (fallback)
                         this._loadInterfaceConfigViaFetch();
                     }
                 })
@@ -116,18 +122,25 @@
         this._loadInterfaceConfigViaFetch();
     };
     UI._loadInterfaceConfigViaFetch = function() {
-        fetchFile(`./InterfaceConfig.cvtscript?v=${Date.now()}`)
+        const candidates = [
+            './scenes/interfaceconfig.ini',
+            './InterfaceConfig.cvtscript',
+        ];
+        const tryLoad = (path) => fetchFile(`${path}?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.text();
             })
             .then(content => {
-                this.safeLog(2, 'InterfaceConfig.cvtscript caricato con successo');
+                this.safeLog(2, `interfaceconfig caricato: ${path}`);
                 this.parseInterfaceConfig(content);
-            })
-            .catch(() => {
-                // File opzionale - silenzioso se assente
             });
+        candidates.reduce(
+            (chain, path) => chain.catch(() => tryLoad(path)),
+            Promise.reject()
+        ).catch(() => {
+            // File opzionale - silenzioso se assente
+        });
     };
     /**
      * Parsa InterfaceConfig.txt e applica le impostazioni UI
@@ -195,6 +208,56 @@
                     const v = parseFloat(value);
                     if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMax = v;
                     this.safeLog(2, `InterfaceConfig: CameraControls.ZoomMax = ${value}`);
+                }
+            }
+
+            if (currentSection === 'Highlight' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                window.InterfaceConfig = window.InterfaceConfig || {};
+                window.InterfaceConfig.highlight = window.InterfaceConfig.highlight || {};
+                const IO = window.InteractiveObject3D;
+                const HCM = window.Scene3D && window.Scene3D.highlightCircleManager;
+                if (key === 'Color') {
+                    const hex = value.startsWith('0x') || value.startsWith('0X')
+                        ? parseInt(value, 16) : parseInt(value, 10);
+                    if (!isNaN(hex)) {
+                        window.InterfaceConfig.highlight.color = hex;
+                        if (IO && IO.setHighlightColor) IO.setHighlightColor(hex);
+                        else if (IO) IO.config.highlightColor = hex;
+                        if (HCM && HCM.setBorderColor) HCM.setBorderColor(hex);
+                        this.safeLog(2, `InterfaceConfig: Highlight.Color = ${value}`);
+                    }
+                } else if (key === 'IntensityScale') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0) {
+                        window.InterfaceConfig.highlight.intensityScale = v;
+                        if (IO && IO.setHighlightIntensity) IO.setHighlightIntensity(v);
+                        else if (IO) IO.config.highlightIntensityScale = v;
+                        this.safeLog(2, `InterfaceConfig: Highlight.IntensityScale = ${value}`);
+                    }
+                } else if (key === 'DefaultOpacity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0 && v <= 1) {
+                        window.InterfaceConfig.highlight.defaultOpacity = v;
+                        this.safeLog(2, `InterfaceConfig: Highlight.DefaultOpacity = ${value}`);
+                    }
+                } else if (key === 'FadeMaterial') {
+                    const enabled = (value === 'true');
+                    window.InterfaceConfig.highlight.fadeMaterial = enabled;
+                    if (IO && IO.setHighlightFadeMaterial) IO.setHighlightFadeMaterial(enabled);
+                    else if (IO) IO.config.highlightFadeMaterial = enabled;
+                    this.safeLog(2, `InterfaceConfig: Highlight.FadeMaterial = ${value}`);
+                } else if (key === 'FadeStrength') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0 && v <= 1) {
+                        window.InterfaceConfig.highlight.fadeStrength = v;
+                        if (IO && IO.setHighlightFadeMaterial) {
+                            IO.setHighlightFadeMaterial(IO.config.highlightFadeMaterial, v);
+                        } else if (IO) {
+                            IO.config.highlightFadeStrength = v;
+                        }
+                        this.safeLog(2, `InterfaceConfig: Highlight.FadeStrength = ${value}`);
+                    }
                 }
             }
         }
@@ -273,9 +336,13 @@
                     currentScenario.backLight = line.substring(10);
                     AppConfig.log(3, `  🔅 Back Light: ${currentScenario.backLight}`);
 
+                } else if (line.startsWith('tool=')) {
+                    currentScenario.configuration = line.substring(5).trim();
+                    AppConfig.log(3, `  ⚙️ Tool config: ${currentScenario.configuration}`);
+
                 } else if (line.startsWith('Configuration=')) {
                     currentScenario.configuration = line.substring(14).trim();
-                    AppConfig.log(3, `  ⚙️ Configuration: ${currentScenario.configuration}`);
+                    AppConfig.log(3, `  ⚙️ Configuration (legacy): ${currentScenario.configuration}`);
 
                 } else if (line.startsWith('position=')) {
                     // Posizione modello (formato: position=x,y,z)
@@ -521,15 +588,61 @@
         // Carica automaticamente tutti i modelli OBJ/MTL dello scenario
         this.loadScenarioModels(scenario);
         
+        // Carica objects.ini PRIMA del tutorial: registra StateGroup/InteractiveObject
+        // (fallback opzionale se objects.ini non esiste).
+        const objectsLoaded = this.loadObjectsForScenario(scenario);
+
         // Carica il tutorial se specificato nel file di configurazione
         if (scenario.tutorial) {
             AppConfig.log(2, `🎓 Caricamento tutorial per scenario: ${scenario.tutorial}`);
-            this.loadTutorial(scenario.tutorial);
+            objectsLoaded.then(() => this.loadTutorial(scenario.tutorial));
         } else {
             AppConfig.log(2, `❌ Nessun tutorial specificato per scenario: ${scenario.name}`);
             // Nasconde la barra tutorial se non c'è tutorial
             this.hideTutorialStepsBar();
         }
+    };
+
+    /**
+     * Carica objects.ini della scena (definizioni statiche di [state ...] e [object ...]).
+     * Riusa la pipeline tutorial (CVTScriptV3 preprocess + parseTutorialContent) per
+     * registrare StateGroup e InteractiveObject. Fallback silenzioso se assente:
+     * il tutorial.cvtscript può ancora contenere le definizioni come legacy.
+     */
+    UI.loadObjectsForScenario = function(scenario) {
+        // Deriva la cartella scena dal path tutorial (es. scenes/Pompa_Becker/tutorial.cvtscript → scenes/Pompa_Becker)
+        let sceneFolder = null;
+        if (scenario && scenario.tutorial) {
+            const lastSlash = scenario.tutorial.lastIndexOf('/');
+            if (lastSlash !== -1) sceneFolder = scenario.tutorial.substring(0, lastSlash);
+        }
+        if (!sceneFolder) {
+            AppConfig.log(3, '[loadObjects] Cartella scena non determinabile, skip');
+            return Promise.resolve();
+        }
+
+        const objectsPath = `${sceneFolder}/objects.ini`;
+        AppConfig.log(2, `📦 Tentativo caricamento objects.ini: ${objectsPath}`);
+
+        return fetchFile(`${objectsPath}?v=${Date.now()}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.text();
+            })
+            .then(content => {
+                let processed = content;
+                if (window.CVTScriptV3 && typeof window.CVTScriptV3.preprocess === 'function') {
+                    processed = window.CVTScriptV3.preprocess(content);
+                }
+                // Riusa il parser tutorial: registra screen/state/object via registerScreenDefinitions.
+                // L'array tutorials risultante è vuoto (objects.ini non ha [Tutorial] o [section]),
+                // perciò non sovrascrive availableTutorials.
+                this.parseTutorialContent(processed);
+                AppConfig.log(2, `✅ objects.ini caricato: ${objectsPath}`);
+            })
+            .catch(err => {
+                AppConfig.log(3, `[loadObjects] ${objectsPath} non disponibile (${err.message}) - fallback su tutorial.cvtscript`);
+            });
     };
     /**
      * Applica le configurazioni di camera e luci specifiche dello scenario

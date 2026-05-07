@@ -1,0 +1,93 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\contentsline {chapter}{\numberline {1}Cos'è un tutorial?}{1}{chapter.1}%
+\contentsline {chapter}{\numberline {2}I modelli 3D: la scena dove tutto accade}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Il formato richiesto: \texttt {.glb}}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Esportazione da Blender}{5}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Convenzioni di denominazione}{8}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Oggetti compositi con figli interattivi}{8}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Origine, direzione e posizione iniziale}{9}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Origine (pivot)}{9}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Direzione di movimento}{10}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Posizione iniziale}{11}{subsection.2.3.3}%
+\contentsline {chapter}{\numberline {3}Organizzare il progetto: cartelle e file}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Struttura delle cartelle del progetto}{12}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Registrare i modelli in \texttt {homeconfig.ini}}{13}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Checklist prima di iniziare a scrivere}{14}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Come è organizzato un file \texttt {cvtscript}}{16}{chapter.4}%
+\contentsline {section}{\numberline {4.1}La forma di una riga}{16}{section.4.1}%
+\contentsline {section}{\numberline {4.2}La gerarchia a tre livelli}{17}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Livello 1 -- \texttt {[scene]}: la cornice globale}{17}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Livello 2 -- \texttt {[section "Titolo"]}: il capitolo}{18}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Livello 3 -- \texttt {[step "Titolo" flag]}: il singolo passo}{18}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Altri blocchi accessori}{19}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Dentro uno step}{20}{chapter.5}%
+\contentsline {chapter}{\numberline {6}Gli ordini, l'istruzione \texttt {do :}}{22}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Quando parte un \texttt {do :} ?}{22}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Le tre eccezioni: \texttt {auto}, \texttt {machine}, e l'attrezzo}{22}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Più \texttt {do :} in fila = una sola animazione}{23}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2}Il vocabolario degli ordini}{24}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Spiegazioni semplici di ognuno}{24}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}\texttt {unscrew} -- Svita la vite}{24}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}\texttt {screw} -- Avvita la vite}{25}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}\texttt {extract} / \texttt {insert} -- Estrae / Inserisce}{25}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}\texttt {place} -- Appoggia a terra}{25}{subsection.6.3.4}%
+\contentsline {subsection}{\numberline {6.3.5}\texttt {move} -- Sposta in linea retta}{26}{subsection.6.3.5}%
+\contentsline {subsection}{\numberline {6.3.6}\texttt {rotate} -- Gira}{26}{subsection.6.3.6}%
+\contentsline {subsection}{\numberline {6.3.7}\texttt {pump} -- Pompare}{27}{subsection.6.3.7}%
+\contentsline {subsection}{\numberline {6.3.8}\texttt {idle reset} -- Resetta tutto}{28}{subsection.6.3.8}%
+\contentsline {chapter}{\numberline {7}Gli strumenti: i vari attrezzi}{29}{chapter.7}%
+\contentsline {chapter}{\numberline {8}La camera: dove guarda lo studente}{31}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Le parti della camera}{31}{section.8.1}%
+\contentsline {chapter}{\numberline {9}Trascinare gli oggetti (drag \& drop)}{33}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Più oggetti contemporaneamente}{33}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Punto di aggancio personalizzato}{33}{section.9.2}%
+\contentsline {chapter}{\numberline {10}Pulsanti, porte, leve: tutto è \texttt {element}}{35}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Caso A -- Click su un pulsante che cambia uno schermo}{36}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Caso B -- Click su una porta che si apre}{36}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Caso C -- Click su una vite con un attrezzo}{36}{section.10.3}%
+\contentsline {section}{\numberline {10.4}\texttt {after} con effetti multipli}{37}{section.10.4}%
+\contentsline {section}{\numberline {10.5}La tabella che decide tutto}{37}{section.10.5}%
+\contentsline {section}{\numberline {10.6}Click ripetuti: \texttt {repeat N}}{38}{section.10.6}%
+\contentsline {chapter}{\numberline {11}Le bandierine \texttt {auto}, \texttt {machine}, \texttt {highlight}}{39}{chapter.11}%
+\contentsline {chapter}{\numberline {12}Tenere oggetti in mano (\texttt {hold})}{41}{chapter.12}%
+\contentsline {section}{\numberline {12.1}\texttt {hold = pick} -- Prendi in mano un oggetto}{41}{section.12.1}%
+\contentsline {section}{\numberline {12.2}\texttt {hold = held} -- Lo step richiede l'oggetto già in mano}{42}{section.12.2}%
+\contentsline {section}{\numberline {12.3}\texttt {hold = release} -- Rimetti giù}{42}{section.12.3}%
+\contentsline {chapter}{\numberline {13}Mostrare un messaggio sullo schermo}{43}{chapter.13}%
+\contentsline {chapter}{\numberline {14}Mettere a posto i pezzi prima di iniziare}{45}{chapter.14}%
+\contentsline {section}{\numberline {14.1}\texttt {position} -- Mettere un pezzo in un punto}{45}{section.14.1}%
+\contentsline {section}{\numberline {14.2}\texttt {rotation} -- Ruotare un pezzo}{45}{section.14.2}%
+\contentsline {section}{\numberline {14.3}Dove si scrivono?}{45}{section.14.3}%
+\contentsline {chapter}{\numberline {15}Pezzi che si muovono insieme (\texttt {companion})}{47}{chapter.15}%
+\contentsline {section}{\numberline {15.1}\texttt {companion = X follows master} -- Mi attacco al master}{47}{section.15.1}%
+\contentsline {section}{\numberline {15.2}\texttt {companion = X moves by (\ldots ) duration t} -- Movimento separato}{48}{section.15.2}%
+\contentsline {chapter}{\numberline {16}Schermate di un display 3D (\texttt {view})}{49}{chapter.16}%
+\contentsline {chapter}{\numberline {17}Animazioni 2D a frame (\texttt {animation})}{51}{chapter.17}%
+\contentsline {chapter}{\numberline {18}I blocchi \texttt {[state]} e \texttt {[object]}}{53}{chapter.18}%
+\contentsline {section}{\numberline {18.1}\texttt {[state nome]} -- Le varianti di un oggetto}{53}{section.18.1}%
+\contentsline {section}{\numberline {18.2}\texttt {[object nome]} -- Un oggetto con pulsanti dentro}{54}{section.18.2}%
+\contentsline {chapter}{\numberline {19}I file di configurazione attorno al tutorial}{56}{chapter.19}%
+\contentsline {section}{\numberline {19.1}\texttt {homeconfig.ini} -- La vetrina degli scenari}{56}{section.19.1}%
+\contentsline {section}{\numberline {19.2}\texttt {tool.ini} -- Gli attrezzi della cassetta}{58}{section.19.2}%
+\contentsline {section}{\numberline {19.3}\texttt {objects.ini} -- I pulsanti e gli schermi della scena}{59}{section.19.3}%
+\contentsline {section}{\numberline {19.4}\texttt {interfaceconfig.ini} -- Personalizzare i comandi}{61}{section.19.4}%
+\contentsline {chapter}{\numberline {20}Un esempio completo, riga per riga}{62}{chapter.20}%
+\contentsline {section}{\numberline {20.1}Step automatici in catena}{63}{section.20.1}%
+\contentsline {section}{\numberline {20.2}Esempio di drag \& drop}{64}{section.20.2}%
+\contentsline {section}{\numberline {20.3}Esempio di click su un pulsante 3D}{64}{section.20.3}%
+\contentsline {section}{\numberline {20.4}Esempio di click su una porta}{65}{section.20.4}%
+\contentsline {chapter}{\numberline {21}Errori comuni e come evitarli}{66}{chapter.21}%
+\contentsline {section}{\numberline {21.1}Errore 1: scrivere le righe con la lettera maiuscola}{66}{section.21.1}%
+\contentsline {section}{\numberline {21.2}Errore 2: dimenticare le virgolette nel nome dello step}{67}{section.21.2}%
+\contentsline {section}{\numberline {21.3}Errore 3: numerare le azioni manualmente}{67}{section.21.3}%
+\contentsline {section}{\numberline {21.4}Errore 4: scrivere il nome del file \texttt {.glb}}{67}{section.21.4}%
+\contentsline {section}{\numberline {21.5}Errore 5: usare i nomi italiani degli attrezzi}{68}{section.21.5}%
+\contentsline {section}{\numberline {21.6}Errore 6: dimenticare gli spazi attorno all'\texttt {=}}{68}{section.21.6}%
+\contentsline {section}{\numberline {21.7}Errore 7: mettere commenti con \texttt {//}}{68}{section.21.7}%
+\contentsline {section}{\numberline {21.8}Errore 8: usare \texttt {AutoSetVariant} invece di \texttt {after :}}{69}{section.21.8}%
+\contentsline {section}{\numberline {21.9}Errore 9: usare \texttt {ActiveButtons} + \texttt {AcceptTrigger} a mano}{69}{section.21.9}%
+\contentsline {section}{\numberline {21.10}Errore 10: scrivere \texttt {button = ...} (vecchia versione del v3)}{70}{section.21.10}%
+\contentsline {section}{\numberline {21.11}Errore 11: usare \texttt {Animated...} invece di \texttt {animation}}{70}{section.21.11}%
+\contentsline {chapter}{\numberline {22}Glossario delle parole importanti}{71}{chapter.22}%
+\contentsline {chapter}{Conclusione}{73}{chapter*.57}%

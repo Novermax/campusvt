@@ -1466,6 +1466,49 @@ body.tool-brugola-active [role="button"] {
     }
 }
 
+/* ===== BANNER DEPRECAZIONE CVTScript v2 ===== */
+#cvtscriptDeprecationBanner {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 680px;
+    width: calc(100% - 32px);
+    background: #fff8e1;
+    border: 2px solid #f9a825;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 99990;
+    font-size: 13px;
+    color: #4a3700;
+}
+.cvtscript-deprecation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+.cvtscript-deprecation-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #4a3700;
+    line-height: 1;
+    padding: 0 2px;
+}
+.cvtscript-deprecation-list {
+    margin: 0;
+    padding: 0 14px 10px 30px;
+    max-height: 140px;
+    overflow-y: auto;
+}
+.cvtscript-deprecation-list li {
+    margin-bottom: 2px;
+}
+
 /* ===== CERCHI EVIDENZIAZIONE TRIGGER ===== */
 .highlight-circle {
     /* Cerchio pulsante giallo per evidenziare pulsanti 3D */

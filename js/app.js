@@ -314,9 +314,10 @@ window.App = {
             await this.loadModule('./js/ui/TutorialManager.js?nocache=1000027');
             // ToolsManager.js è già caricato nell'HTML
             await this.loadModule('./js/ui/ui-coordinator.js?nocache=1000026');
+            await this.loadModule('./js/ui/CVTScriptV3.js?v=1000001');  // Pre-processore v3→v2 (deve precedere ui.js)
             console.log('✅ Moduli UI refactorizzati caricati');
 
-            await this.loadModule('./js/ui.js?nocache=1000040');  // DEBUG: mostra child disponibili per TargetChild
+            await this.loadModule('./js/ui.js?nocache=1000041');  // CVTScript v3: pre-processore applicato in loadTutorial
 
             // Inizializza il sistema UI refactorizzato se disponibile
             if (window.UI && typeof window.UI.init === 'function' && window.UI._tutorialManager !== undefined) {

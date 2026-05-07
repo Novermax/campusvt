@@ -1,424 +1,166 @@
-# ═══════════════════════════════════════════════════════════════════════════
-# MAINTENANCE ÉLECTROBROCHE - Tutoriel avec StateGroups
-# ═══════════════════════════════════════════════════════════════════════════
-
-# ═══════════════════════════════════════════════════════════════════════════
-# CONFIGURATION GLOBALE
-# ═══════════════════════════════════════════════════════════════════════════
-
-CameraPos=(1.01, 1.22, 3.87)
-CameraTarget=(0,0,0)
-CameraRotation=(-0.26, -0.01, 0)
-CameraPivot=(1.02, 1.1, 3.4)
-CameraDistance=1.24
-CameraFOV=75.0
-CameraTransitionTime=2.0
-
-# ═══════════════════════════════════════════════════════════════════════════
-# GROUPES D'ÉTATS - Variantes mutuellement exclusives
-# ═══════════════════════════════════════════════════════════════════════════
-
-# Clé d'allumage : deux états (off/on)
-[StateGroup:chiave]
-Variants=chiave0,chiave1
-Default=chiave0
-
-# Bouton démarrage : deux états (off/on)
-[StateGroup:start]
-Variants=pstart0,pstart1
-Default=pstart1
-
-# Urgence : deux états (off/on)
-[StateGroup:emergenza]
-Variants=emergenza_off,emergenza_on
-Default=emergenza_off
-
-# Écrans : variantes (home/mdi/tool/running)
-[StateGroup:schermo]
-Variants=schermo001,schermo002,schermo003,schermo004,schermo007,schermo008,schermo009,schermo010,schermo011
-Default=schermo001
-
-[StateGroup:schermo_remote]
-Variants=Schermo_R000,Schermo_R001
-Default=Schermo_R000
-
-# Outil : deux variantes, outil1 sur l'électrobroche et outil0 dans le magasin
-[StateGroup:tool]
-Variants=tool0,tool1
-Default=tool1
-
-# ═══════════════════════════════════════════════════════════════════════════
-# DÉFINITION OBJET INTERACTIF : PUPITRE DE COMMANDE
-# ═══════════════════════════════════════════════════════════════════════════
-
-[InteractiveObject:pulpito]
-Model=models/pulpito.glb
-
-# Clé rotative - le clic change la variante du StateGroup "chiave"
-InteractiveChild=chiave0,button,onClick:cycleVariant:chiave,opacity:1.0
-InteractiveChild=chiave1,button,onClick:cycleVariant:chiave,opacity:1.0
-
-# Boutons de navigation écran - changent la variante du StateGroup "schermo"
-InteractiveChild=Pulsante_mdi,button,onClick:setVariant:schermo=schermo002,opacity:1.0
-InteractiveChild=Pulsante_tool,button,onClick:setVariant:schermo=schermo003,opacity:1.0
-InteractiveChild=Pulsante_WH,button,onClick:setVariant:schermo=schermo008,opacity:1.0
-InteractiveChild=Pulsante_electrospindle,button,onClick:setVariant:schermo=schermo009,opacity:1.0
-InteractiveChild=Pulsante_LU,button,onClick:setVariant:schermo=schermo010,opacity:1.0
-
-# Bouton champignon d'urgence - change la variante du StateGroup "emergenza"
-InteractiveChild=emergenza_off,button,onClick:setVariant:emergenza=emergenza_on,opacity:1.0
-InteractiveChild=emergenza_on,button,onClick:setVariant:emergenza=emergenza_off,opacity:1.0
-
-# Bouton démarrage - change la variante du StateGroup "start"
-InteractiveChild=pstart0,button,onClick:cycleVariant:start,opacity:1.0
-InteractiveChild=pstart1,button,onClick:cycleVariant:start,opacity:1.0
-
-# ═══════════════════════════════════════════════════════════════════════════
-# DÉFINITION OBJET INTERACTIF : TÉLÉCOMMANDE (REMOTE)
-# ═══════════════════════════════════════════════════════════════════════════
-
-[InteractiveObject:remote]
-Model=models/remote.glb
-
-# Bouton lecture sur la télécommande
-InteractiveChild=pulsante_r_play,button,onClick:setVariant:start=pstart1,opacity:1.0
-
-# Bouton état sur la télécommande
-InteractiveChild=Pulsante_r_status,button,onClick:setVariant:schermo_remote=Schermo_R001,opacity:1.0
-
-# Bouton déverrouillage sur la télécommande (pour l'animation ouverture/fermeture)
-InteractiveChild=Pulsante_r_unlock,button,opacity:1.0
-
-# ═══════════════════════════════════════════════════════════════════════════
-# DÉFINITION OBJET INTERACTIF : MACHINE A500
-# ═══════════════════════════════════════════════════════════════════════════
-
-[InteractiveObject:a500]
-Model=models/a500.glb
-
-# Variantes d'outil - outil sur l'électrobroche (tool1) et dans le magasin (tool0)
-# Ces noms doivent correspondre aux noms des enfants dans le fichier GLB a500.glb
-
-# ═══════════════════════════════════════════════════════════════════════════
-# MODÈLES D'OUTILS - Gérés par le StateGroup "tool"
-# ═══════════════════════════════════════════════════════════════════════════
-
-# Tool1 : outil monté sur l'électrobroche (visible au démarrage)
-Elemento=models/utensile.glb
-Posizione=utensile:(2.8, 2.5, -0.7)
-Rotazione=utensile:(0, 0, 0)
-
-# Tool0 : même outil mais dans le magasin (caché au démarrage, visible après déchargement)
-# Note : le système renomme automatiquement en tool0/tool1 pour le StateGroup
-# Pour l'instant tool0 est caché et sera affiché par l'étape AutoSetVariant
-
-# ═══════════════════════════════════════════════════════════════════════════
-# TUTORIEL
-# ═══════════════════════════════════════════════════════════════════════════
-
-[Maintenance Électrobroche - lubrification]
-CameraPos=(0.97, 1.25, 3.92)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.24, 0, 0)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.42
-CameraFOV=75.0
-CameraTransitionTime=2.0
-
-
-[Step 1 - Aller à l'écran MDI]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton MDI du pupitre de commande pour accéder au mode de contrôle manuel.
-# Déclencheur : clic sur le bouton MDI modifié
-ActiveButtons=Pulsante_mdi
-AcceptTrigger_Physical=pulpito.Pulsante_mdi
-OnPhysicalTrigger=setVariant:schermo=schermo002
-AutoAdvance=true
-
-[Next Step - Décharger l'outil]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton à l'écran pour décharger l'outil T=1000.
-# Déclencheur : clic sur le bouton Tool
-ActiveButtons=Pulsante_tool
-AcceptTrigger_Physical=pulpito.Pulsante_tool
-OnPhysicalTrigger=setVariant:schermo=schermo003
-AutoAdvance=true
-
-[Next Step - Prendre la télécommande Tecpad]
-HighlightDescription=true
-Descrizione=Prenez la télécommande Tecpad
-CameraPos=(0.94, 1.29, 4.07)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.25, -0.04, -0.01)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.56
-CameraFOV=75.0
-CameraTransitionTime=2.0
-Utensile=Mani
-Elemento=models/remote.glb
-HoldAction=pick
-Holdable=true
-HoldPosition=(-0.25,-0.07,0.25)
-HoldRotation=(0,5,0)
-DefaultView=main
-CameraDistance=0.5
-
-[Next Step - Appuyer sur le bouton démarrage]
-HighlightDescription=true
-CameraPos=(2.52, 1.3, 4.55)
-CameraTarget=(2.37, 1.15, 3.6)
-CameraRotation=(-0.16, 0.15, 0.02)
-CameraPivot=(2.37, 1.15, 3.6)
-CameraDistance=0.98
-CameraFOV=75.0
-CameraTransitionTime=2.0
-Descrizione=Appuyez sur le bouton Démarrage de la télécommande pour lancer le déchargement de l'outil.
-Utensile=Mani
-# Déclencheur : clic sur le bouton lecture de la télécommande
-ActiveButtons=pulsante_r_play
-AcceptTrigger_Physical=remote.pulsante_r_play
-OnPhysicalTrigger=setVariant:schermo=schermo004
-AutoAdvance=true
-
-
-
-
-# ───────────────────────────────────────────────────────────────────────────
-# PHASE 2 : SÉQUENCE DE DÉCHARGEMENT DE L'OUTIL (AutoExecute)
-# ───────────────────────────────────────────────────────────────────────────
-
-[Next Step - Déplacement chariot Y]
-#Descrizione=Le chariot Y se déplace vers la position de changement d'outil...
-Elemento=models/a500.glb
-TargetChild=Basamento_Portale_CarroY
-Azione1=traslazione:(0,0,2.623,1.5)
-AutoExecute=true
-AutoAdvance=true
-
-[Next Step - Descente du prisme]
-#Descrizione=Le prisme descend vers le magasin d'outils...
-Elemento=models/a500.glb
-TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
-Azione1=traslazione:(0,-0.085,0,1.0)
-AutoExecute=true
-AutoAdvance=true
-
-[Next Step - Ouverture du magasin]
-#Descrizione=Le magasin d'outils s'ouvre...
-Elemento=models/a500.glb
-TargetChild=Basamento_Portale_MagazzinoInternoX1
-Azione1=traslazione:(0.565,0,0,1.0)
-AutoExecute=true
-AutoAdvance=true
-
-[Next Step - Échange d'outil]
-#Descrizione=L'outil est déchargé dans le magasin...
-AutoSetVariant=tool=tool0
-AutoExecute=true
-AutoAdvance=true
-
-[Next Step - Montée du prisme]
-#Descrizione=Le prisme remonte légèrement...
-Elemento=models/a500.glb
-TargetChild=Basamento_Portale_CarroY_CarroZ_Prisma
-Azione1=traslazione:(0,0.085,0,1.0)
-AutoExecute=true
-AutoAdvance=true
-
-[Next Step - Fermeture du magasin]
-#Descrizione=Le magasin d'outils se ferme...
-Elemento=models/a500.glb
-TargetChild=Basamento_Portale_MagazzinoInternoX1
-Azione1=traslazione:(-0.565,0,0,1.0)
-AutoExecute=true
-AutoAdvance=true
-AutoSetVariant=schermo=schermo002
-
-[Next Step - Bouton WH]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton à l'écran pour sélectionner les têtes
-CameraPos=(0.95,1.21,3.91)
-CameraTarget=(0.97,1.15,3.52)
-CameraRotation=(-0.16,-0.05,-0.01)
-CameraPivot=(0.97,1.15,3.52)
-CameraDistance=0.4
-CameraFOV=75
-CameraTransitionTime=2.0
-# Déclencheur : clic sur le bouton Tool
-ActiveButtons=Pulsante_WH
-AcceptTrigger_Physical=pulpito.Pulsante_WH
-OnPhysicalTrigger=setVariant:schermo=schermo008
-AutoAdvance=true
-
-[Next Step - Bouton électrobroche]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton à l'écran pour sélectionner l'électrobroche
-# Déclencheur : clic sur le bouton Tool
-ActiveButtons=Pulsante_electrospindle
-AcceptTrigger_Physical=pulpito.Pulsante_electrospindle
-OnPhysicalTrigger=setVariant:schermo=schermo009
-AutoAdvance=true
-
-
-
-
-[Next Step - Activer le déverrouillage]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton à l'écran pour activer le déverrouillage de la pince de l'électrobroche
-# Déclencheur : clic sur le bouton Tool
-ActiveButtons=Pulsante_LU
-AcceptTrigger_Physical=pulpito.Pulsante_LU
-OnPhysicalTrigger=setVariant:schermo=schermo010
-AutoAdvance=true
-
-[Next Step - Appuyer sur le bouton démarrage pour déverrouiller]
-HighlightDescription=true
-
-Descrizione=Appuyez sur le bouton Démarrage de la télécommande pour activer le déverrouillage de la pince de l'électrobroche.
-Utensile=Mani
-# Déclencheur : clic sur le bouton lecture de la télécommande
-ActiveButtons=pulsante_r_play
-AcceptTrigger_Physical=remote.pulsante_r_play
-OnPhysicalTrigger=setVariant:schermo=schermo011
-AutoAdvance=true
-
-
-[Next Step - Tourner la clé]
-HighlightDescription=true
-Descrizione=Tournez la clé pour ouvrir la porte d'accès à l'électrobroche.
-Utensile=Mani
-CameraPos=(0.94, 1.29, 4.07)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.25, -0.04, -0.01)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.56
-CameraFOV=75.0
-CameraTransitionTime=2.0
-# Déclencheur : clic sur la clé du pupitre (seulement chiave0 car c'est celui visible au démarrage)
-ActiveButtons=chiave0
-AcceptTrigger_Physical=pulpito.chiave0
-OnPhysicalTrigger=setVariant:chiave=chiave1;setVariant:schermo=schermo005;setVariant:start=pstart0
-
-[Next Step - Ouvrir physiquement la porte]
-HighlightDescription=true
-Descrizione=Ouvrez la porte de la cabine pour accéder à l'électrobroche.
-Utensile=Mani
-CameraPos=(2.52, 1.3, 4.55)
-CameraTarget=(2.37, 1.15, 3.6)
-CameraRotation=(-0.16, 0.15, 0.02)
-CameraPivot=(2.37, 1.15, 3.6)
-CameraDistance=0.98
-CameraFOV=75.0
-CameraTransitionTime=2.0
-# Déclencheur : clic sur la clé du pupitre (accepte les variantes chiave0/chiave1)
-Elemento=models/a500.glb
-TargetChild=porta
-AcceptTrigger_Physical=a500.porta
-Azione1=centro:(0.615,0,0);rotazione:(0,90,0,1.0)
-
-[Next Step - Se positionner face au nez de l'électrobroche]
-HighlightDescription=true
-descrizione=Positionnez-vous pour regarder vers le nez de l'électrobroche, si nécessaire déplacez d'abord manuellement l'axe Y vers vous
-CameraPos=(2.74, 1.34, 2.45)
-CameraTarget=(2.79, 1.27, 1.99)
-CameraRotation=(-0.16, -0.11, -0.02)
-CameraPivot=(2.79, 1.27, 1.99)
-CameraDistance=0.47
-CameraFOV=75.0
-CameraTransitionTime=2.0
-AutoExecute=true
-AutoAdvance=true
-
-[Next Step - Lubrifier avec le spray]
-HighlightDescription=false
-Utensile=Spray
-Descrizione=Utilisez le spray lubrifiant pour graisser le nez de l'électrobroche.
-Message=Utilisez le spray lubrifiant pour graisser le nez de l'électrobroche.
-MessageTitle=⚠️ Important
-MessageVideo=media/lubelett.mp4
-
-# Caméra déverrouillée pour cette étape
-CameraUnlocked=true
-
-
-CameraLimits=(-3.14, 3.14)                    # minPhi, maxPhi en radians
-CameraPos=(2.78, 0.91, 2.29)
-CameraTarget=(2.79, 1.27, 1.99)
-CameraRotation= (0.87, -0.03, 0.04)
-CameraPivot=(2.79, 1.27, 1.99)
-CameraDistance=0.47
-CameraFOV=75.0
-Elemento=models/a500.glb
-TargetChild=naso
-Azione1=traslazione:(0,0,0,0.5)
-
-[Next Step - Changer l'écran sur le Tecpad]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton du Tecpad pour changer l'écran vers l'état
-Utensile=Mani
-# Déclencheur : clic sur le bouton Pulsante_r_status
-ActiveButtons=Pulsante_r_status
-AcceptTrigger_Physical=remote.Pulsante_r_status
-OnPhysicalTrigger=setVariant:schermo_remote=Schermo_R001
-AutoAdvance=true
-
-[Next Step - Ouvrir et fermer]
-HighlightDescription=true
-Elemento=models/remote.glb
-Utensile=Mani
-Descrizione=Ouvrez et fermez plusieurs fois en appuyant sur le bouton de déverrouillage (4 cycles)
-ActiveButtons=Pulsante_r_unlock
-AcceptTrigger_Physical=remote.Pulsante_r_unlock
-AnimatedImagesFolder=screens/mandrino
-AnimatedPosition=(60%,60%)
-AnimatedMaxTriggers=8
-AnimatedFrameDelay=20
-
-
-
-
-[Next Step - Fermer physiquement la porte]
-HighlightDescription=true
-Descrizione=Fermez la porte de la cabine pour l'accès à l'électrobroche.
-Utensile=Mani
-CameraPos=(2.52, 1.3, 4.55)
-CameraTarget=(2.37, 1.15, 3.6)
-CameraRotation=(-0.16, 0.15, 0.02)
-CameraPivot=(2.37, 1.15, 3.6)
-CameraDistance=0.98
-CameraFOV=75.0
-CameraTransitionTime=2.0
-# Déclencheur : clic sur la clé du pupitre (accepte les variantes chiave0/chiave1)
-Elemento=models/a500.glb
-TargetChild=porta
-AcceptTrigger_Physical=a500.porta
-Azione1=centro:(0,0,-0.615);rotazione:(0,-90,0,1.0)
-
-[Next Step - Aller au pupitre et tourner la clé pour fermer]
-HighlightDescription=true
-Descrizione=Allez au pupitre de commande et tournez la clé pour fermer.
-Utensile=Mani
-CameraPos=(0.94, 1.29, 4.07)
-CameraTarget=(0.97, 1.15, 3.52)
-CameraRotation=(-0.25, -0.04, -0.01)
-CameraPivot=(0.97, 1.15, 3.52)
-CameraDistance=0.56
-CameraFOV=75.0
-CameraTransitionTime=2.0
-# Déclencheur : clic sur la clé du pupitre (seulement chiave1 car c'est celui visible après l'ouverture)
-ActiveButtons=chiave1
-AcceptTrigger_Physical=pulpito.chiave1
-OnPhysicalTrigger=setVariant:chiave=chiave0
-
-
-
-[Next Step - Redémarrer la machine]
-HighlightDescription=true
-Descrizione=Appuyez sur le bouton d'alimentation pour redémarrer la machine.
-Utensile=Mani
-# Déclencheur : clic sur le bouton démarrage (seulement pstart0 car c'est celui visible après avoir tourné la clé)
-ActiveButtons=pstart0
-AcceptTrigger_Physical=pulpito.pstart0
-OnPhysicalTrigger=setVariant:start=pstart1;setVariant:schermo=schermo002
-AutoAdvance=true
 
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# MANUTENZIONE ELETTROMANDRINO - Tutorial CVTScript v3
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# CONFIGURAZIONE GLOBALE
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+[scene]
+camera = position (1.01, 1.22, 3.87), target (0, 0, 0), rotation (-0.26, -0.01, 0), pivot (1.02, 1.1, 3.4), distance 1.24, fov 75.0, fade 2.0
+
+# NOTE: Definizioni di [state ...] e [object ...] estratte in objects.ini
+# (caricato automaticamente prima di questo file dal loader modulare).
+
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# TUTORIAL: Manutenzione Elettromandrino - lubrificazione
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+[section "Maintenance de l'électrobroche - Lubrification"]
+camera = position (0.97, 1.25, 3.92), target (0.97, 1.15, 3.52), rotation (-0.24, 0, 0), pivot (0.97, 1.15, 3.52), distance 0.42, fov 75.0, fade 2.0
+
+[step "Aller à l'écran MDI" highlight]
+description = Appuyez sur le bouton MDI du pupitre pour accéder au mode de contrôle manuel.
+element     = pulpito.Pulsante_mdi
+after       : schermo = schermo002
+
+[step "Décharger l'outil" highlight]
+description = Appuyez sur le bouton à l'écran pour effectuer le déchargement de l'outil T=1000.
+element     = pulpito.Pulsante_tool
+after       : schermo = schermo003
+
+[step "Prendre la télécommande Tecpad" highlight]
+description = Prenez la télécommande Tecpad.
+camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), fov 75.0, fade 2.0, distance 0.5
+tool        = hand
+hold        = pick remote at (-0.25, -0.07, 0.25) facing (0, 5, 0)
+view        = main
+
+[step "Appuyer sur le bouton démarrer" highlight]
+camera      = position (2.52, 1.3, 4.55), target (2.37, 1.15, 3.6), rotation (-0.16, 0.15, 0.02), pivot (2.37, 1.15, 3.6), distance 0.98, fov 75.0, fade 2.0
+description = Appuyez sur le bouton Démarrer de la télécommande pour lancer le déchargement de l'outil.
+tool        = hand
+element     = remote.pulsante_r_play
+after       : schermo = schermo004
+
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+# FASE 2: SEQUENZA SCARICO UTENSILE (automatica)
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+
+[step "Mouvement du chariot Y" machine]
+element = a500.Basamento_Portale_CarroY
+do      : move by (0, 0, 2.623) duration 1.5
+
+[step "Descente du prisme" machine]
+element = a500.Basamento_Portale_CarroY_CarroZ_Prisma
+do      : move by (0, -0.085, 0) duration 1.0
+
+[step "Ouverture du magasin" machine]
+element = a500.Basamento_Portale_MagazzinoInternoX1
+do      : move by (0.565, 0, 0) duration 1.0
+
+[step "Changement d'outil" machine]
+after : tool = tool0
+
+[step "Remontée du prisme" machine]
+element = a500.Basamento_Portale_CarroY_CarroZ_Prisma
+do      : move by (0, 0.085, 0) duration 1.0
+
+[step "Fermeture du magasin" machine]
+element = a500.Basamento_Portale_MagazzinoInternoX1
+do      : move by (-0.565, 0, 0) duration 1.0
+after   : schermo = schermo002
+
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+# FASE 3: SELEZIONE TESTA E SBLOCCO PINZA
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+
+[step "Bouton WH" highlight]
+description = Appuyez sur le bouton à l'écran pour sélectionner les têtes.
+camera      = position (0.95, 1.21, 3.91), target (0.97, 1.15, 3.52), rotation (-0.16, -0.05, -0.01), pivot (0.97, 1.15, 3.52), distance 0.4, fov 75, fade 2.0
+element     = pulpito.Pulsante_WH
+after       : schermo = schermo008
+
+[step "Bouton électrobroche"]
+description = Appuyez sur le bouton à l'écran pour sélectionner l'électrobroche.
+element     = pulpito.Pulsante_electrospindle
+after       : schermo = schermo009
+
+[step "Activation du déverrouillage"]
+description = Appuyez sur le bouton à l'écran pour activer le déverrouillage du mandrin de l'électrobroche.
+element     = pulpito.Pulsante_LU
+after       : schermo = schermo010
+
+[step "Appuyer sur le bouton démarrer pour le déverrouillage" highlight]
+description = Appuyez sur le bouton Démarrer de la télécommande pour activer le déverrouillage du mandrin de l'électrobroche.
+tool        = hand
+element     = remote.pulsante_r_play
+after       : schermo = schermo011
+
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+# FASE 4: ACCESSO FISICO ALL'ELETTROMANDRINO
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+
+[step "Tourner la clé" highlight]
+description = Tournez la clé pour ouvrir la porte d'accès à l'électrobroche.
+tool        = hand
+camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), distance 0.56, fov 75.0, fade 2.0
+element     = pulpito.chiave0
+after       : chiave = chiave1; schermo = schermo005; start = pstart0
+
+[step "Ouvrir physiquement la porte" highlight]
+description = Ouvrez la porte de la cabine pour accéder à l'électrobroche.
+camera      = position (2.52, 1.3, 4.55), target (2.37, 1.15, 3.6), rotation (-0.16, 0.15, 0.02), pivot (2.37, 1.15, 3.6), distance 0.98, fov 75.0, fade 2.0
+element     = a500.porta
+do          : rotate around (0.615, 0, 0) by (0, 90, 0) duration 1.0
+
+[step "Regarder vers le nez de l'électrobroche" highlight, machine]
+description = Positionnez-vous pour regarder vers le nez de l'électrobroche ; si nécessaire, déplacez d'abord manuellement l'axe Y vers vous.
+camera      = position (2.74, 1.34, 2.45), target (2.79, 1.27, 1.99), rotation (-0.16, -0.11, -0.02), pivot (2.79, 1.27, 1.99), distance 0.47, fov 75.0, fade 2.0
+
+[step "Lubrifier avec le spray"]
+tool        = spray
+description = Utilisez le spray lubrifiant pour graisser le nez de l'électrobroche.
+message     = Utilisez le spray lubrifiant pour graisser le nez de l'électrobroche.
+title       = ⚠️ Important
+video       = media/lubelett.mp4
+# Camera sbloccata per questo step
+camera      = position (2.78, 0.91, 2.29), target (2.79, 1.27, 1.99), rotation (0.87, -0.03, 0.04), pivot (2.79, 1.27, 1.99), distance 0.47, fov 75.0, free within (-3.14, 3.14)
+element     = a500.naso
+do          : move by (0, 0, 0) duration 0.5
+
+[step "Changer d'écran sur le Tecpad" highlight]
+description = Appuyez sur le bouton du Tecpad pour changer l'écran en statut.
+tool        = hand
+element     = remote.Pulsante_r_status
+after       : schermo_remote = Schermo_R001
+
+[step "Ouvrir et fermer" highlight]
+tool        = hand
+description = Ouvrez et fermez plusieurs fois en appuyant sur le bouton déverrouiller (4 cycles).
+element     = remote.Pulsante_r_unlock repeat 8
+animation   = folder screens/mandrino at (60%, 60%) frame 20ms
+
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+# FASE 5: CHIUSURA E RIACCENSIONE
+# â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+
+[step "Fermer physiquement la porte" highlight]
+description = Refermez la porte de la cabine pour accéder à l'électrobroche.
+camera      = position (2.52, 1.3, 4.55), target (2.37, 1.15, 3.6), rotation (-0.16, 0.15, 0.02), pivot (2.37, 1.15, 3.6), distance 0.98, fov 75.0, fade 2.0
+element     = a500.porta
+do          : rotate around (0, 0, -0.615) by (0, -90, 0) duration 1.0
+
+[step "Aller au pupitre et tourner la clé en fermeture" highlight]
+description = Allez au pupitre et tournez la clé en position de fermeture.
+tool        = hand
+camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), distance 0.56, fov 75.0, fade 2.0
+element     = pulpito.chiave1
+after       : chiave = chiave0
+
+[step "Redémarrer la machine" highlight]
+description = Appuyez sur le bouton de démarrage pour redémarrer la machine.
+tool        = hand
+element     = pulpito.pstart0
+after       : start = pstart1; schermo = schermo002

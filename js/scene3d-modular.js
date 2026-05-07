@@ -393,78 +393,69 @@ const Scene3D = {
         const animate = config.animate || false;
         const duration = config.duration || 1.0;
 
-        // Target position e rotation
+        // Target position
         const targetPosition = config.position ?
             new THREE.Vector3(config.position.x, config.position.y, config.position.z) :
             this.camera.position.clone();
 
-        const targetRotation = config.rotation ?
-            new THREE.Euler(config.rotation.x, config.rotation.y, config.rotation.z) :
-            this.camera.rotation.clone();
+        // Target pivot (se assente, mantieni il pivot corrente)
+        const targetPivot = (config.pivot && this.mouseControls) ?
+            new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z) :
+            (this.mouseControls && this.mouseControls.pivotPoint
+                ? this.mouseControls.pivotPoint.clone()
+                : new THREE.Vector3());
 
-        // Pivot point
-        if (config.pivot && this.mouseControls) {
-            this.mouseControls.pivotPoint = new THREE.Vector3(
-                config.pivot.x,
-                config.pivot.y,
-                config.pivot.z
-            );
-            console.log('[Scene3D] 📍 Pivot impostato:', this.mouseControls.pivotPoint);
-        }
-
-        // FOV
-        if (config.fov && config.fov !== this.camera.fov) {
-            this.camera.fov = config.fov;
-            this.camera.updateProjectionMatrix();
-            console.log('[Scene3D] 🔭 FOV impostato:', config.fov);
-        }
-
-        // Se specificata la distanza, calcola la posizione dalla distanza e pivot
-        if (config.distance && config.pivot) {
-            // Calcola direzione dalla posizione corrente al pivot
-            const direction = new THREE.Vector3();
-            if (config.position) {
-                direction.subVectors(targetPosition, new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z));
-            } else {
-                direction.subVectors(this.camera.position, new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z));
+        // Distanza: usata SOLO se la posizione non è specificata. Quando entrambe sono presenti
+        // (es. dal getCameraInfo arrotondato a 2 decimali) la posizione è più autorevole —
+        // ricalcolare da direzione+distanza introdurrebbe drift dovuto al rounding.
+        if (config.distance && config.pivot && !config.position) {
+            const direction = new THREE.Vector3()
+                .subVectors(this.camera.position, targetPivot);
+            if (direction.lengthSq() > 0) {
+                direction.normalize();
+                targetPosition.copy(targetPivot).addScaledVector(direction, config.distance);
             }
-            direction.normalize();
-
-            // Posiziona camera alla distanza specificata dal pivot
-            targetPosition.copy(new THREE.Vector3(config.pivot.x, config.pivot.y, config.pivot.z));
-            targetPosition.add(direction.multiplyScalar(config.distance));
         }
 
-        if (animate && window.TWEEN) {
-            // Animazione fluida
-            const startPosition = this.camera.position.clone();
-            const startRotation = {
-                x: this.camera.rotation.x,
-                y: this.camera.rotation.y,
-                z: this.camera.rotation.z
-            };
+        if (animate) {
+            // Usa il sistema cameraAnimation nativo: lerpa position+pivot e chiama
+            // lookAt(pivot) ogni frame, coerentemente con la transizione di andata
+            // (applyCameraSettings/updateCameraAnimation). Evita TWEEN su rotation:
+            // l'orientamento viene derivato dal lookAt sul pivot interpolato.
+            this.cameraAnimation = this.cameraAnimation || { isAnimating: false };
+            this.cameraAnimation.isAnimating = true;
+            this.cameraAnimation.startTime = performance.now();
+            this.cameraAnimation.duration = duration;
+            this.cameraAnimation.startPosition = this.camera.position.clone();
+            this.cameraAnimation.targetPosition = targetPosition;
+            this.cameraAnimation.startTarget = (this.mouseControls && this.mouseControls.pivotPoint)
+                ? this.mouseControls.pivotPoint.clone()
+                : targetPivot.clone();
+            this.cameraAnimation.targetTarget = targetPivot;
+            this.cameraAnimation.targetZoom = null;
+            this.cameraAnimation.startZoom = null;
+            this.cameraAnimation.targetDistance = null;
 
-            new TWEEN.Tween(startPosition)
-                .to(targetPosition, duration * 1000)
-                .easing(TWEEN.Easing.Quadratic.InOut)
-                .onUpdate(() => {
-                    this.camera.position.copy(startPosition);
-                })
-                .start();
+            if (config.fov && config.fov !== this.camera.fov) {
+                this.cameraAnimation.startFOV = this.camera.fov;
+                this.cameraAnimation.targetFOV = config.fov;
+            } else {
+                this.cameraAnimation.startFOV = undefined;
+                this.cameraAnimation.targetFOV = undefined;
+            }
 
-            new TWEEN.Tween(startRotation)
-                .to({ x: targetRotation.x, y: targetRotation.y, z: targetRotation.z }, duration * 1000)
-                .easing(TWEEN.Easing.Quadratic.InOut)
-                .onUpdate(() => {
-                    this.camera.rotation.set(startRotation.x, startRotation.y, startRotation.z);
-                })
-                .start();
-
-            console.log('[Scene3D] 🎬 Animazione camera avviata');
+            console.log('[Scene3D] 🎬 Animazione camera avviata (sistema nativo, durata:', duration + 's)');
         } else {
-            // Applicazione immediata
+            // Applicazione immediata, mantenendo lookAt sul pivot
+            if (this.mouseControls) {
+                this.mouseControls.pivotPoint.copy(targetPivot);
+            }
             this.camera.position.copy(targetPosition);
-            this.camera.rotation.copy(targetRotation);
+            this.camera.lookAt(targetPivot);
+            if (config.fov && config.fov !== this.camera.fov) {
+                this.camera.fov = config.fov;
+                this.camera.updateProjectionMatrix();
+            }
             console.log('[Scene3D] 📹 Camera impostata immediatamente');
         }
 
@@ -785,16 +776,73 @@ const Scene3D = {
             console.log('[Scene3D] ℹ️ HighlightCircleManager non disponibile (opzionale)');
         }
 
+        // Colore highlight: priorità InterfaceConfig.highlight.color, fallback giallo scuro 0xcccc00.
+        const cfgHex = (window.InterfaceConfig && window.InterfaceConfig.highlight
+            && typeof window.InterfaceConfig.highlight.color === 'number')
+            ? window.InterfaceConfig.highlight.color : 0xcccc00;
+        // Opacity highlight: rispetta InterfaceConfig (DefaultOpacity + FadeMaterial + FadeStrength).
+        // Quando FadeMaterial=true, applica la stessa formula usata da InteractiveObject3D:
+        //   opacity = 1 - (1 - DefaultOpacity) × FadeStrength
+        // Così l'overlay ha la stessa "trasparenza" definita per il sistema emissive.
+        const cfgOpacity = this._computeHighlightOpacity();
         this.highlightSystem.highlightMaterial = new THREE.MeshBasicMaterial({
-            color: 0xcccc00,
+            color: cfgHex,
             transparent: true,
-            opacity: 0.8,
+            opacity: cfgOpacity,
             wireframe: false,
             side: THREE.DoubleSide,
             depthTest: false,
             depthWrite: false
         });
-        
+        console.log(`🔍 [Scene3D] highlightMaterial creato con colore 0x${cfgHex.toString(16).padStart(6,'0')}, opacity=${cfgOpacity.toFixed(2)}`);
+
+    },
+
+    /**
+     * Aggiorna il colore di highlightMaterial (chiamato dal parser InterfaceConfig).
+     * Modifica il materiale condiviso, quindi tutti i modelli evidenziati ne risentono live.
+     * @param {number} hex - colore esadecimale (es. 0x00ffff)
+     */
+    setHighlightMaterialColor: function(hex) {
+        if (typeof hex !== 'number' || isNaN(hex)) return;
+        if (this.highlightSystem && this.highlightSystem.highlightMaterial) {
+            this.highlightSystem.highlightMaterial.color.setHex(hex);
+            this.highlightSystem.highlightMaterial.needsUpdate = true;
+            console.log(`🔍 [Scene3D] highlightMaterial colore aggiornato → 0x${hex.toString(16).padStart(6,'0')}`);
+        }
+    },
+
+    /**
+     * Calcola l'opacity dell'highlightMaterial in base a InterfaceConfig.highlight:
+     *   FadeMaterial=true  → opacity = 1 - (1 - DefaultOpacity) × FadeStrength
+     *   FadeMaterial=false → opacity = 0.8 (fallback storico)
+     * Così l'overlay rispetta la stessa trasparenza del sistema emissive di InteractiveObject3D.
+     * @returns {number} opacity 0..1
+     */
+    _computeHighlightOpacity: function() {
+        const cfg = (window.InterfaceConfig && window.InterfaceConfig.highlight) || {};
+        if (cfg.fadeMaterial) {
+            const defOp = (typeof cfg.defaultOpacity === 'number') ? cfg.defaultOpacity : 0.5;
+            const fadeStr = (typeof cfg.fadeStrength === 'number') ? cfg.fadeStrength : 0.5;
+            return Math.max(0, Math.min(1, 1 - (1 - defOp) * fadeStr));
+        }
+        return 0.8;
+    },
+
+    /**
+     * Aggiorna l'opacity di highlightMaterial (chiamato dal parser InterfaceConfig
+     * dopo modifiche a FadeMaterial / FadeStrength / DefaultOpacity).
+     * @param {number} [opacity] - se omesso, ricalcola da InterfaceConfig
+     */
+    setHighlightMaterialOpacity: function(opacity) {
+        if (!this.highlightSystem || !this.highlightSystem.highlightMaterial) return;
+        const op = (typeof opacity === 'number' && !isNaN(opacity))
+            ? Math.max(0, Math.min(1, opacity))
+            : this._computeHighlightOpacity();
+        this.highlightSystem.highlightMaterial.opacity = op;
+        this.highlightSystem.highlightMaterial.transparent = op < 1.0;
+        this.highlightSystem.highlightMaterial.needsUpdate = true;
+        console.log(`🔍 [Scene3D] highlightMaterial opacity aggiornata → ${op.toFixed(2)}`);
     },
 
     onMouseDown: function(event) {
@@ -1478,13 +1526,51 @@ const Scene3D = {
             return;
         }
 
-        console.log(`🔍 HIGHLIGHT: ✅ APPLICAZIONE per ${model.name} (non bloccato)`);
+        // Sincronizza il colore del materiale con InterfaceConfig (al momento dell'apply,
+        // così non dipende dall'ordine init parser/scena).
+        const cfgHex = (window.InterfaceConfig && window.InterfaceConfig.highlight
+            && typeof window.InterfaceConfig.highlight.color === 'number')
+            ? window.InterfaceConfig.highlight.color : null;
+        if (cfgHex !== null && this.highlightSystem.highlightMaterial) {
+            const mat = this.highlightSystem.highlightMaterial;
+            if (mat.color.getHex() !== cfgHex) {
+                mat.color.setHex(cfgHex);
+                mat.needsUpdate = true;
+                console.log(`🔍 HIGHLIGHT: colore sincronizzato da InterfaceConfig → 0x${cfgHex.toString(16).padStart(6,'0')}`);
+            }
+        }
+
+        // Sincronizza anche l'opacity da InterfaceConfig (DefaultOpacity + FadeMaterial + FadeStrength).
+        // Se nessuna config presente, mantiene il valore corrente.
+        if (this.highlightSystem.highlightMaterial && window.InterfaceConfig && window.InterfaceConfig.highlight) {
+            const targetOp = this._computeHighlightOpacity();
+            const mat = this.highlightSystem.highlightMaterial;
+            if (Math.abs(mat.opacity - targetOp) > 0.001) {
+                mat.opacity = targetOp;
+                mat.transparent = targetOp < 1.0;
+                mat.needsUpdate = true;
+                console.log(`🔍 HIGHLIGHT: opacity sincronizzata da InterfaceConfig → ${targetOp.toFixed(2)}`);
+            }
+        }
+
+        console.log(`🔍 HIGHLIGHT: ✅ APPLICAZIONE per ${model.name} (non bloccato, colore=0x${this.highlightSystem.highlightMaterial.color.getHex().toString(16).padStart(6,'0')})`);
         if (window.DragDropSystem && window.DragDropSystem.silhouetteBlocked) {
             console.log(`🔍 HIGHLIGHT: Modelli bloccati:`, Array.from(window.DragDropSystem.silhouetteBlocked));
         }
 
         model.traverse((child) => {
             if (child.isMesh) {
+                // Mesh originalmente invisibile (es. trigger zone con material.opacity=0):
+                // non sostituire il materiale, altrimenti diventerebbe un blocco colorato
+                // sopra la schermata. Il cerchio 2D del HighlightCircleManager è sufficiente
+                // a guidare l'utente al click.
+                const origMats = Array.isArray(child.material) ? child.material : [child.material];
+                const allInvisible = origMats.length > 0 && origMats.every(m => m && m.opacity !== undefined && m.opacity <= 0.001);
+                if (allInvisible) {
+                    console.log(`🔍 HIGHLIGHT: ⏭️ Skip mesh "${child.name}" (originalmente invisibile, mantengo invisibile)`);
+                    return;
+                }
+
                 if (Array.isArray(child.material)) {
                     child.material = child.material.map(() => this.highlightSystem.highlightMaterial);
                 } else {

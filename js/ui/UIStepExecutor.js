@@ -202,15 +202,18 @@
             if (step.properties.AcceptTrigger_Physical) {
                 const triggers = step.properties.AcceptTrigger_Physical.split(',').map(t => t.trim());
 
-                // Parsing HighlightOpacity (default: 0.5 = semitrasparente bilanciato)
-                let highlightOpacity = 0.5;
+                // Default opacity da interfaceconfig.ini > Highlight.DefaultOpacity (fallback 0.5)
+                const cfgDefault = (window.InterfaceConfig && window.InterfaceConfig.highlight
+                    && typeof window.InterfaceConfig.highlight.defaultOpacity === 'number')
+                    ? window.InterfaceConfig.highlight.defaultOpacity : 0.5;
+                let highlightOpacity = cfgDefault;
                 if (step.properties.HighlightOpacity) {
                     const parsed = parseFloat(step.properties.HighlightOpacity);
                     if (!isNaN(parsed) && parsed >= 0 && parsed <= 1.0) {
                         highlightOpacity = parsed;
                         console.log(`💡 [UI] HighlightOpacity personalizzata: ${highlightOpacity}`);
                     } else {
-                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default 0.5`);
+                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default ${cfgDefault}`);
                     }
                 }
 
@@ -1117,7 +1120,9 @@
                     // CERCHIO SELEZIONE GIALLO per Elemento azionabile (convergere.txt)
                     // Il cerchio definisce l'area di interazione valida: il touch/click è
                     // accettato se cade dentro il cerchio, anche se il raycast manca la mesh.
-                    if (window.Scene3D.highlightCircleManager && step.properties.DragDrop !== 'true') {
+                    // Skip se AcceptTrigger_Physical: il mesh ha già un cerchio (trigger),
+                    // due cerchi sovrapposti = anomalia visiva (vedi pulsante MDI).
+                    if (window.Scene3D.highlightCircleManager && step.properties.DragDrop !== 'true' && !step.properties.AcceptTrigger_Physical) {
                         const cleanName = step.properties.Elemento.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
                         const obj = window.Scene3D.findModelByName(cleanName);
                         if (obj) {

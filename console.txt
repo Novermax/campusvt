@@ -1,560 +1,745 @@
-(index):531 💻 Dispositivo desktop rilevato
-fetchFile.js?v=1000001:144 ✅ fetchFile helper caricato (compatibilità Electron)
-fetchFile.js?v=1000001:169 🌐 [fetchFile] Browser normale - fetch standard attivo
-DynamicToolStyles.js?v=1000021:274 [DynamicToolStyles] 📦 Modulo caricato
-MobileOptimizer.js?v=1000021:422 [MobileOptimizer] Modulo caricato
-index.js?v=1000001:327 [TouchSystem] Modulo caricato
-app.js?v=1000011:639 📄 App.js caricato, in attesa del DOM...
-(index):561 🔄 Sessione ripristinata per: Pippo
-MobileBrowserUI.js?v=1000005:49 [MobileBrowserUI] Desktop rilevato - sistema inattivo
-app.js?v=1000011:613 📄 DOM pronto, avvio applicazione...
-favicon.png:1  GET http://localhost:8000/favicon.png 404 (File not found)
-
-app.js?v=1000011:51 🚀 Avvio Visualizzatore Modelli 3D
-app.js?v=1000011:52 📅 Caricamento moduli in corso...
-app.js?v=1000011:115 ✅ Browser compatibile
-app.js?v=1000011:137 📦 Verifica dipendenze ES Module...
-app.js?v=1000011:141 ✅ Three.js ES Module disponibile, versione: 155
-app.js?v=1000011:193 📦 Caricamento moduli dinamico...
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/config.js?nocache=999999
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/ParticleSystem.js?v=1000018
-app.js?v=1000011:201 ✅ Sistema particellare caricato
-InterchangeableTracker.js?v=1000001:254 [InterchangeableTracker] 📦 Modulo caricato e disponibile globalmente
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/InterchangeableTracker.js?v=1000001
-app.js?v=1000011:206 ✅ Sistema tracking intercambiabili caricato
-SnapSystem.js?v=1000001:664 [SnapSystem] 📦 Modulo caricato e disponibile globalmente
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/SnapSystem.js?v=1000001
-app.js?v=1000011:214 ✅ Sistema snap caricato
-DragDropSystem.js?nocache=1000032:15 🔥🔥🔥 [DragDropSystem] Versione 1.3.9 REFACTORING caricata - 2026-01-31 🔥🔥🔥
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/DragDropSystem.js?nocache=1000032
-DragDropMaterialHighlight.js?v=1000001:84 [DragDropMaterialHighlight] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/DragDropMaterialHighlight.js?v=1000001
-DragDropSnapConfig.js?v=1000002:612 [DragDropSnapConfig] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/DragDropSnapConfig.js?v=1000002
-DragDropDebugHelpers.js?v=1000002:666 [DragDropDebugHelpers] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/DragDropDebugHelpers.js?v=1000002
-app.js?v=1000011:225 ✅ Sistema drag & drop caricato
-AssemblySystem.js?nocache=1000022:622 [AssemblySystem] 📦 Modulo caricato e disponibile globalmente
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/AssemblySystem.js?nocache=1000022
-app.js?v=1000011:232 ✅ Sistema assemblaggio caricato
-ScreenSystem.js?v=1000001:22 [ScreenSystem] Modulo caricato v2.0.1 REFACTORING
-ScreenSystem.js?v=1000001:1254 [ScreenSystem] ✅ Modulo ScreenSystem pronto
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/ScreenSystem.js?v=1000001
-app.js?v=1000011:240 ✅ Sistema schermi interattivi caricato
- [HoldableSystem] Modulo caricato v1.0.0
- [HoldableSystem] ✅ Modulo HoldableSystem pronto
- ✅ Modulo caricato: ./js/core/HoldableSystem.js?v=1000007
- ✅ Sistema oggetti prendibili caricato
- [StepController] Modulo caricato v1.0.1 REFACTORING
- [StepController] ✅ Modulo StepController pronto
- ✅ Modulo caricato: ./js/core/StepController.js?v=1000008
- ✅ Controller step centralizzato caricato (v1000008 - Fix auto-avanzamento dopo trigger)
- [StepGatingManager] 📦 Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/StepGatingManager.js?v=1000001
-app.js?v=1000011:264 ✅ Step Gating Manager caricato
-InteractiveObject3D.js?v=1000003:14 [InteractiveObject3D] Modulo caricato v1.0.1 REFACTORING
-InteractiveObject3D.js?v=1000003:1672 📦 [InteractiveObject3D] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/InteractiveObject3D.js?v=1000003
-app.js?v=1000011:272 ✅ Sistema oggetti 3D interattivi caricato
-AnimatedWindowSystem.js?v=1000001:15 [AnimatedWindowSystem] Modulo caricato v1.0.0
-AnimatedWindowSystem.js?v=1000001:71 [AnimatedWindowSystem] Inizializzazione...
-AnimatedWindowSystem.js?v=1000001:183 [AnimatedWindowSystem] 🎨 Elementi DOM creati
-AnimatedWindowSystem.js?v=1000001:85 [AnimatedWindowSystem] ✅ Inizializzato
-AnimatedWindowSystem.js?v=1000001:915 [AnimatedWindowSystem] ✅ Modulo pronto
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/AnimatedWindowSystem.js?v=1000001
-app.js?v=1000011:280 ✅ Sistema finestra 2D animata caricato
-MovementParser.js?v=1000001:592 📦 MovementParser module loaded
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/MovementParser.js?v=1000001
-app.js?v=1000011:287 ✅ Parser comandi movimento caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/core/MultiStepAnimationSystem.js?v=1000001
-app.js?v=1000011:291 ✅ Sistema animazioni multi-step caricato
-scene3d-modular.js?nocache=1000032:5236 
-🔧 COMANDI DEBUG TARGETCHILD DISPONIBILI:
-══════════════════════════════════════════════════════════════
-  Scene3D.listChildNames('a500')                → Lista child del GLB
-  Scene3D.findChild('a500', 'CarroY')           → Trova child specifico
-  Scene3D.listA500Children()                    → Shortcut per a500
-  Scene3D.testMoveChild('a500', 'child', x,y,z) → TEST animazione child
-══════════════════════════════════════════════════════════════
-💡 Esempio test:
-  Scene3D.testMoveChild('a500', 'Basamento_Portale', 0, 0, -1, 1.5)
-
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/scene3d-modular.js?nocache=1000032
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/modelloader.js?nocache=1000011
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/ui.js?nocache=1000041
-UIElements.js?v=1000001:485 [UIElements] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/ui/UIElements.js?v=1000001
-UIScenarioLoader.js?v=1000001:1145 [UIScenarioLoader] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/ui/UIScenarioLoader.js?v=1000001
-UITutorialParser.js?v=1000001:547 [UITutorialParser] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/ui/UITutorialParser.js?v=1000001
-UIStepExecutor.js?v=1000001:1488 [UIStepExecutor] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/ui/UIStepExecutor.js?v=1000001
-UINavigationHelpers.js?v=1000001:552 [UINavigationHelpers] Modulo caricato
-app.js?v=1000011:324 ✅ Modulo caricato: ./js/ui/UINavigationHelpers.js?v=1000001
-MobileOptimizer.js?v=1000021:63 [MobileOptimizer] Inizializzazione...
-MobileOptimizer.js?v=1000021:95 📊 RAM rilevata: 8 GB
-MobileOptimizer.js?v=1000021:110 📊 GPU: ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)
-MobileOptimizer.js?v=1000021:138 📊 [MobileOptimizer] Capacità dispositivo: {isMobile: false, isLowEnd: false, maxMemoryMB: 8192, gpuTier: 'high', maxConcurrentModels: 10}
-MobileOptimizer.js?v=1000021:71 ⚠️ [MobileOptimizer] DISABILITATO - lazy loading causava schermo vuoto
-app.js?v=1000011:310 ✅ Tutti i moduli caricati (architettura modulare ottimizzata)
-app.js?v=1000011:66 ✅ Versione: 1.0.0
-app.js?v=1000011:67 📅 Build: 2026-04-05
-app.js?v=1000011:339 🔧 Inizializzazione moduli...
-StepGatingManager.js?v=1000001:43 [StepGating] 🚦 Inizializzazione sistema Step Gating...
-StepGatingManager.js?v=1000001:52 [StepGating] 📷 Limiti camera default salvati: {minPhi: 0.2, maxPhi: 1.413716694115407}
-StepGatingManager.js?v=1000001:63 [StepGating] ✅ Sistema inizializzato
-InteractiveObject3D.js?v=1000003:116 🎮 [InteractiveObject3D] Inizializzazione sistema...
-InteractiveObject3D.js?v=1000003:123 ✅ [InteractiveObject3D] Sistema inizializzato
-app.js?v=1000011:374 🔍 Verifica moduli:
-app.js?v=1000011:375   ✅ Disponibili: (4) ['AppConfig', 'Scene3D', 'ModelLoader', 'UI']
-app.js?v=1000011:376   ❌ Mancanti: []
-   🌐 Oggetti globali rilevanti: (5) ['App', 'AppConfig', 'Scene3D', 'ModelLoader', 'UI']
- ✅ Tutti i moduli richiesti sono disponibili
- 🔧 Inizializzazione ModelLoader...
- [4:03:00 PM] INFO: ModelLoader inizializzato
- ✅ ModelLoader inizializzato
-app.js?v=1000011:442 🔧 Inizializzazione UI...
-config.js?nocache=999999:242 [4:03:00 PM] INFO: Inizializzazione UI...
-config.js?nocache=999999:242 [4:03:00 PM] INFO: Tentativo caricamento home_config dal server...
-UIScenarioLoader.js?v=1000001:60 🌍 [loadHomeConfig] currentUser: {"name":"Pippo","loginTime":"2026-04-05T13:55:02.534Z","expiration":"2026-12-31T00:00:00.000Z","language":"ita","role":null}
-UIScenarioLoader.js?v=1000001:61 🌍 [loadHomeConfig] lang rilevata: "ita"
-UIScenarioLoader.js?v=1000001:66 🌍 [loadHomeConfig] Tentativo: ./home_config_ita.cvtscript → fallback: ./home_config.cvtscript
-ToolRegistry.js?v=1000021:82 [ToolRegistry] Inizializzazione con configurazione default...
-ToolRegistry.js?v=1000021:85 [ToolRegistry] ✅ Inizializzato con 4 strumenti default
-config.js?nocache=999999:242 [4:03:00 PM] INFO: ToolRegistry inizializzato
-DynamicToolStyles.js?v=1000021:35 [DynamicToolStyles] Inizializzazione sistema CSS dinamico...
-DynamicToolStyles.js?v=1000021:44 [DynamicToolStyles] ✅ Sistema inizializzato
-DynamicToolStyles.js?v=1000021:83 [DynamicToolStyles] ✅ CSS dinamico generato per 4 tool
-config.js?nocache=999999:242 [4:03:00 PM] INFO: CSS dinamico tool generato all'inizializzazione
-config.js?nocache=999999:242 [4:03:00 PM] INFO: ToolsManager istanziato globalmente
-config.js?nocache=999999:242 [4:03:00 PM] INFO: [ToolsManager] Inizializzazione gestione strumenti...
-config.js?nocache=999999:242 [4:03:00 PM] INFO: [ToolsManager] Caricati 4 tool da ToolRegistry
-config.js?nocache=999999:242 [4:03:00 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
-config.js?nocache=999999:242 [4:03:00 PM] INFO: [ToolsManager] Sistema strumenti inizializzato con successo
-config.js?nocache=999999:242 [4:03:00 PM] INFO: ToolsManager inizializzato con successo
-config.js?nocache=999999:242 [4:03:00 PM] INFO: UI inizializzata con successo
-app.js?v=1000011:466 ✅ UI inizializzato
-app.js?v=1000011:492 🎉 Applicazione inizializzata in 392ms
-app.js?v=1000011:493 📊 Moduli attivi: (2) ['ModelLoader', 'UI']
-app.js?v=1000011:497 ⚙️ Configurazione: {version: '1.0.0', debug: 2, device: {…}}
-fetchFile.js?v=1000001:36  GET http://localhost:8000/home_config_ita.cvtscript?v=1775397780542 404 (File not found)
-window.fetchFile @ fetchFile.js?v=1000001:36
-loadConfig @ UIScenarioLoader.js?v=1000001:69
-UI.loadHomeConfigFromServer @ UIScenarioLoader.js?v=1000001:82
-init @ ui.js?nocache=1000041:61
-(anonymous) @ app.js?v=1000011:453
-initializeModule @ app.js?v=1000011:441
-sequence @ app.js?v=1000011:404
-(anonymous) @ app.js?v=1000011:427
-executeSequence @ app.js?v=1000011:421
-(anonymous) @ app.js?v=1000011:429
-Promise.then
-(anonymous) @ app.js?v=1000011:428
-executeSequence @ app.js?v=1000011:421
-(anonymous) @ app.js?v=1000011:429
-Promise.then
-(anonymous) @ app.js?v=1000011:428
-executeSequence @ app.js?v=1000011:421
-(anonymous) @ app.js?v=1000011:411
-initializeModuleSequence @ app.js?v=1000011:395
-(anonymous) @ app.js?v=1000011:348
-setTimeout
-(anonymous) @ app.js?v=1000011:342
-initializeModules @ app.js?v=1000011:338
-(anonymous) @ app.js?v=1000011:70
-Promise.then
-init @ app.js?v=1000011:64
-(anonymous) @ app.js?v=1000011:617
-setTimeout
-(anonymous) @ app.js?v=1000011:616
-UIScenarioLoader.js?v=1000001:83 🌍 [loadHomeConfig] ❌ Config localizzata FALLITA: ./home_config_ita.cvtscript HTTP 404
-(anonymous) @ UIScenarioLoader.js?v=1000001:83
-Promise.catch
-UI.loadHomeConfigFromServer @ UIScenarioLoader.js?v=1000001:82
-init @ ui.js?nocache=1000041:61
-(anonymous) @ app.js?v=1000011:453
-initializeModule @ app.js?v=1000011:441
-sequence @ app.js?v=1000011:404
-(anonymous) @ app.js?v=1000011:427
-executeSequence @ app.js?v=1000011:421
-(anonymous) @ app.js?v=1000011:429
-Promise.then
-(anonymous) @ app.js?v=1000011:428
-executeSequence @ app.js?v=1000011:421
-(anonymous) @ app.js?v=1000011:429
-Promise.then
-(anonymous) @ app.js?v=1000011:428
-executeSequence @ app.js?v=1000011:421
-(anonymous) @ app.js?v=1000011:411
-initializeModuleSequence @ app.js?v=1000011:395
-(anonymous) @ app.js?v=1000011:348
-setTimeout
-(anonymous) @ app.js?v=1000011:342
-initializeModules @ app.js?v=1000011:338
-(anonymous) @ app.js?v=1000011:70
-Promise.then
-init @ app.js?v=1000011:64
-(anonymous) @ app.js?v=1000011:617
-setTimeout
-(anonymous) @ app.js?v=1000011:616
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig.cvtscript caricato con successo
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: ResetCameraButton.Position = bottom-left
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.InvertVertical = true
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.InvertHorizontal = false
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.PinchSensitivity = 0.001
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.InvertPinchZoom = false
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.ScrollSensitivity = 0.01
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.InvertScrollZoom = false
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.ZoomMin = 0.15
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: CameraControls.ZoomMax = 1.3
-config.js?nocache=999999:242 [4:03:00 PM] INFO: InterfaceConfig: SpeechBubble.DramaticAnimationDuration = 2000
-config.js?nocache=999999:242 [4:03:00 PM] INFO: home_config caricato: ./home_config.cvtscript
-UIScenarioLoader.js?v=1000001:318 🧭 RIEPILOGO DIREZIONI per scenario "Calibrazione barre Matic/ Flex-matic":
-UIScenarioLoader.js?v=1000001:320   0: scenario_Matic_Flex-matic_Bar_Calibration_description -> direzione: null
-config.js?nocache=999999:242 [4:03:00 PM] INFO: Configurazione home caricata: 10 scenari
-config.js?nocache=999999:242 [4:03:02 PM] INFO: Scenario selezionato: Manutenzione pompa del vuoto
-HoldableSystem.js?v=1000007:596 [HoldableSystem] 🔄 ═══════════════════════════════════════════
-HoldableSystem.js?v=1000007:597 [HoldableSystem] 🔄 Avvio reset stato oggetti...
-HoldableSystem.js?v=1000007:598 [HoldableSystem] 🔄 Stato PRE-reset: initialized=false, camera=false, holdables=0, held=0
-HoldableSystem.js?v=1000007:624 [HoldableSystem] 🔄 Stato POST-reset: initialized=false, camera=false, holdables=0
- [HoldableSystem] ✅ Reset stato completato - sistema pronto per nuovo tutorial
- [HoldableSystem] 🔄 ═══════════════════════════════════════════
- [Scene3D] ✅ Luci configurate: Ambient + Directional (ombre) + BackLight (no ombre) + Hemisphere
- [Scene3D] 📱 Touch handlers legacy attivi
- [Scene3D] ⌨️ Controlli tastiera attivati (frecce = pan camera)
- [DragDropSystem] Inizializzazione sistema drag & drop...
- [DragDropSystem] Materiali visivi inizializzati
- [DragDropSystem] Event listeners configurati (ESC = force reset)
- [InterchangeableTracker] 🏗️ Inizializzazione sistema tracking...
- [InterchangeableTracker] ✅ Sistema tracking inizializzato
- [DragDropSystem] ✅ InterchangeableTracker collegato
- [SnapSystem] 🎯 Inizializzazione sistema snap...
- [SnapSystem] ✅ Sistema snap inizializzato
- [DragDropSystem] ✅ SnapSystem collegato
- [DragDropSystem] Sistema inizializzato correttamente
- [Scene3D] ✅ DragDropSystem inizializzato
- [Scene3D] 🔍 DEBUG ParticleSystem - window object keys: ['ParticleSystem']
- [Scene3D] 🔍 DEBUG ParticleSystem - window.ParticleSystem exists: true
- [Scene3D] 🔍 DEBUG ParticleSystem - full object: {scene: null, camera: null, isActive: false, activeEffects: Map(0), presets: {…}, …}
- [Scene3D] 🔍 DEBUG ParticleSystem - init function type: function
- [Scene3D] 🚀 Tentativo inizializzazione ParticleSystem...
- [ParticleSystem] Sistema particellare inizializzato
- [Scene3D] ✅ ParticleSystem inizializzato con successo!
- [Scene3D] 🔍 ParticleSystem methods: (19) ['scene', 'camera', 'isActive', 'activeEffects', 'presets', 'init', 'createAirJet', 'createDustEffect', 'createSpray', 'createDust', 'update', 'updateParticleEffect', 'createAirJetFromMouse', 'removeEffect', 'clearAllEffects', 'setEnabled', 'getStats', 'testAirJet', 'cleanup']
- [Scene3D] 🏗️ Inizializzazione AssemblySystem...
- [AssemblySystem] 🏗️ Inizializzazione sistema assemblaggio...
- [AssemblySystem] ✅ Sistema assemblaggio inizializzato
- [Scene3D] ✅ AssemblySystem inizializzato con successo!
- [Scene3D] 📺 Inizializzazione ScreenSystem...
- [ScreenSystem] Inizializzazione sistema schermi...
- [ScreenSystem] Materiali hotspot inizializzati
- [ScreenSystem] Event listeners configurati
- [ScreenSystem] ✅ Sistema inizializzato correttamente
- [Scene3D] ✅ ScreenSystem inizializzato con successo!
- [Scene3D] 🤚 Inizializzazione HoldableSystem...
- [HoldableSystem] Inizializzazione sistema oggetti prendibili...
- [HoldableSystem] ✅ Sistema inizializzato correttamente
- [Scene3D] ✅ HoldableSystem inizializzato con successo!
- [Scene3D] 🔵 Inizializzazione HighlightCircleManager...
- 🔵 [HighlightCircleManager] Inizializzato
- 🔵 [HighlightCircleManager] Container creato
- 🔵 [HighlightCircleManager] Loop aggiornamento avviato (60fps)
- ✅ [HighlightCircleManager] Sistema inizializzato
- [Scene3D] ✅ HighlightCircleManager inizializzato con successo!
- [Scene3D] ✅ Inizializzazione completata
- [TouchSystem] 📱 Inizializzazione sistema touch...
- [TouchCameraHandler] Inizializzato
- [TouchDragHandler] Inizializzato v1.3.0
- [TouchUIHandler] Inizializzato
- [TouchInteractive3DHandler] Inizializzato
- [GestureRecognizer] Inizializzato
- [TouchInputRouter] Inizializzato
- [TouchEventDispatcher] Inizializzato
- [TouchSystem] CSS touch applicato al canvas
- [TouchSystem] ✅ Sistema touch inizializzato
- [UI] 📱 TouchSystem inizializzato
- [4:03:02 PM] INFO: 🎭 Applicazione configurazione per scenario: Manutenzione pompa del vuoto
- [4:03:02 PM] INFO: 📷 Camera position applicata: (-1.5, 0.5, -0.2) - Auto-fitting disabilitato
- [4:03:02 PM] INFO: 🎯 Camera target applicato: (0, 0, 0) - Pivot aggiornato
- [4:03:02 PM] INFO: ✅ Configurazione scenario applicata per: Manutenzione pompa del vuoto
- [4:03:02 PM] INFO: ⚙️ Caricamento configurazione tool da: scenes/Pompa_Becker/config.cvtscript
- [ToolRegistry] 📥 Caricamento config da: scenes/Pompa_Becker/config.cvtscript
- 🔄 loadScenarioModels chiamata per: Manutenzione pompa del vuoto
- 🔄 Files nello scenario: (35) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
- 🔄 File modello filtrati: (34) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
- [4:03:02 PM] INFO: Caricamento 34 modelli per scenario: Manutenzione pompa del vuoto
- 📊 Progress aggiornato: 0% - Preparazione...
- 📊 Progress bar modelli mostrata
- 🔒 Pulsanti tutorial disabilitati durante caricamento 3D
- 🌐 Avvio fetch per: (34) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
- ⏳ Rilevati 11 file di grandi dimensioni (culatta.glb, corpo.glb, coperchio.glb, vite_coperchio_1.glb, vite_coperchio_2.glb, vite_coperchio_3.glb, vite_coperchio_4.glb, vite_culatta_1.glb, vite_culatta_2.glb, vite_culatta_3.glb, vite_culatta_4.glb). Il caricamento potrebbe richiedere fino a 2 minuti.
- 🌐 Fetching: models/culatta.glb
- 🌐 Timeout per culatta.glb: 120s (isLarge: true)
- 🌐 Fetching: models/corpo.glb
- 🌐 Timeout per corpo.glb: 120s (isLarge: true)
- 🌐 Fetching: models/coperchio.glb
- 🌐 Timeout per coperchio.glb: 120s (isLarge: true)
- 🌐 Fetching: models/filtro.glb
- 🌐 Timeout per filtro.glb: 120s (isLarge: true)
- 🌐 Fetching: models/pavimento.glb
- 🌐 Timeout per pavimento.glb: 120s (isLarge: true)
- 🌐 Fetching: models/planaxis.glb
- 🌐 Timeout per planaxis.glb: 60s (isLarge: false)
- 🌐 Fetching: models/vite_coperchio_1.glb
- 🌐 Timeout per vite_coperchio_1.glb: 120s (isLarge: true)
- 🌐 Fetching: models/vite_coperchio_2.glb
- 🌐 Timeout per vite_coperchio_2.glb: 120s (isLarge: true)
- 🌐 Fetching: models/vite_coperchio_3.glb
- 🌐 Timeout per vite_coperchio_3.glb: 120s (isLarge: true)
- 🌐 Fetching: models/vite_coperchio_4.glb
- 🌐 Timeout per vite_coperchio_4.glb: 120s (isLarge: true)
- 🌐 Fetching: models/tappino_grasso_sx.glb
- 🌐 Timeout per tappino_grasso_sx.glb: 60s (isLarge: false)
- 🌐 Fetching: models/tappino_grasso_dx.glb
- 🌐 Timeout per tappino_grasso_dx.glb: 60s (isLarge: false)
- 🌐 Fetching: models/ingrassatore.glb
- 🌐 Timeout per ingrassatore.glb: 60s (isLarge: false)
- 🌐 Fetching: models/vite_culatta_1.glb
- 🌐 Timeout per vite_culatta_1.glb: 120s (isLarge: true)
- 🌐 Fetching: models/vite_culatta_2.glb
- 🌐 Timeout per vite_culatta_2.glb: 120s (isLarge: true)
- 🌐 Fetching: models/vite_culatta_3.glb
- 🌐 Timeout per vite_culatta_3.glb: 120s (isLarge: true)
- 🌐 Fetching: models/vite_culatta_4.glb
- 🌐 Timeout per vite_culatta_4.glb: 120s (isLarge: true)
- 🌐 Fetching: models/estrattoredx.glb
- 🌐 Timeout per estrattoredx.glb: 60s (isLarge: false)
- 🌐 Fetching: models/estrattoresx.glb
- 🌐 Timeout per estrattoresx.glb: 60s (isLarge: false)
- 🌐 Fetching: models/flangia.glb
- 🌐 Timeout per flangia.glb: 60s (isLarge: false)
- 🌐 Fetching: models/vite_flangia_1.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_1.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_2.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_2.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_3.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_3.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_4.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_4.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_5.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_5.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_6.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_6.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_7.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_7.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/vite_flangia_8.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per vite_flangia_8.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/paletta1.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per paletta1.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/paletta2.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per paletta2.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/paletta3.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per paletta3.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/paletta4.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per paletta4.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/paletta5.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per paletta5.glb: 60s (isLarge: false)
-UIScenarioLoader.js?v=1000001:820 🌐 Fetching: models/tubograsso.glb
-UIScenarioLoader.js?v=1000001:796 🌐 Timeout per tubograsso.glb: 60s (isLarge: false)
-config.js?nocache=999999:242 [4:03:02 PM] INFO: 🎓 Caricamento tutorial per scenario: scenes/Pompa_Becker/tutorial.cvtscript
-config.js?nocache=999999:242 [4:03:02 PM] INFO: Caricamento tutorial: scenes/Pompa_Becker/tutorial.cvtscript
-ToolRegistry.js?v=1000021:280 [ToolRegistry] 🔧 Slot1: brugola (Brugola) custom
-ToolRegistry.js?v=1000021:280 [ToolRegistry] 🔧 Slot2: chiave_inglese (Chiave Inglese) custom
-ToolRegistry.js?v=1000021:280 [ToolRegistry] 🔧 Slot3: mano (Mano) custom
-ToolRegistry.js?v=1000021:280 [ToolRegistry] 🔧 Slot4: aria (Aria Compressa) custom
-ToolRegistry.js?v=1000021:132 [ToolRegistry] ✅ Config caricato: 4 strumenti definiti
-config.js?nocache=999999:242 [4:03:02 PM] INFO: ✅ Tool configurati da: scenes/Pompa_Becker/config.cvtscript
-DynamicToolStyles.js?v=1000021:83 [DynamicToolStyles] ✅ CSS dinamico generato per 4 tool
-config.js?nocache=999999:242 [4:03:02 PM] INFO: [ToolsManager] Refresh UI strumenti...
-config.js?nocache=999999:242 [4:03:02 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
-config.js?nocache=999999:242 [4:03:02 PM] INFO: [ToolsManager] Caricati 4 tool da ToolRegistry
-config.js?nocache=999999:242 [4:03:02 PM] INFO: [ToolsManager] Legenda strumenti inizializzata
-config.js?nocache=999999:242 [4:03:02 PM] INFO: [ToolsManager] UI strumenti aggiornata
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/culatta.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/corpo.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/coperchio.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/filtro.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/pavimento.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/planaxis.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per planaxis.glb: 6776 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_coperchio_1.glb: 200 OK
-ui.js?nocache=1000041:951 [DEBUG] 🔍 getActiveTool() - toolsState: {}
-ui.js?nocache=1000041:958 [DEBUG] ❌ getActiveTool() returning null - no active tools
-ui.js?nocache=1000041:1030 🖱️ Cursore aggiornato: default → cursor-default
-config.js?nocache=999999:242 [4:03:02 PM] INFO: 🔄 Rimozione luci esistenti...
-config.js?nocache=999999:242 [4:03:02 PM] INFO: 🗑️ Rimosse 4 luci esistenti
-config.js?nocache=999999:242 [4:03:02 PM] INFO: 💡 Luce ambientale applicata: colore=404040, intensità=1.5
-config.js?nocache=999999:242 [4:03:02 PM] INFO: 🔆 Luce direzionale applicata: pos=(-8, 15, 10), intensità=2.5
-config.js?nocache=999999:242 [4:03:02 PM] INFO: 🔅 Luce posteriore applicata: pos=(-8, 15, 10), intensità=1
-config.js?nocache=999999:242 [4:03:02 PM] INFO: ✅ Applicazione luci scenario completata
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_coperchio_1.glb: 5722180 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_coperchio_2.glb: 200 OK
-UIScenarioLoader.js?v=1000001:845 ❌ ERRORE FETCH filtro.glb: TypeError: Failed to fetch
-(anonymous) @ UIScenarioLoader.js?v=1000001:845
-Promise.catch
-(anonymous) @ UIScenarioLoader.js?v=1000001:844
-UI.loadModelsFromUrls @ UIScenarioLoader.js?v=1000001:819
-UI.loadScenarioModels @ UIScenarioLoader.js?v=1000001:768
-UI.loadScenario @ UIScenarioLoader.js?v=1000001:522
-UI.onScenarioCardClick @ UIScenarioLoader.js?v=1000001:440
-config.js?nocache=999999:242 [4:03:02 PM] ERROR: ⚠️ FILE MANCANTE: filtro.glb - Failed to fetch
-fetchFile.js?v=1000001:36  GET http://localhost:8000/models/filtro.glb?v=1775397782295 net::ERR_FAILED 200 (OK)
-window.fetchFile @ fetchFile.js?v=1000001:36
-attemptFetch @ UIScenarioLoader.js?v=1000001:802
-fetchWithTimeoutAndRetry @ UIScenarioLoader.js?v=1000001:816
-(anonymous) @ UIScenarioLoader.js?v=1000001:826
-UI.loadModelsFromUrls @ UIScenarioLoader.js?v=1000001:819
-UI.loadScenarioModels @ UIScenarioLoader.js?v=1000001:768
-UI.loadScenario @ UIScenarioLoader.js?v=1000001:522
-UI.onScenarioCardClick @ UIScenarioLoader.js?v=1000001:440
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_coperchio_3.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_coperchio_3.glb: 5867500 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_coperchio_4.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per pavimento.glb: 8221420 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/tappino_grasso_sx.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_coperchio_2.glb: 5869464 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/tappino_grasso_dx.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per tappino_grasso_dx.glb: 3784968 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per tappino_grasso_sx.glb: 3784784 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_coperchio_4.glb: 5721064 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/ingrassatore.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_culatta_1.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_culatta_2.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per ingrassatore.glb: 3992832 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_culatta_3.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_culatta_1.glb: 3862160 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_culatta_2.glb: 3862516 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per culatta.glb: 23543384 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_culatta_4.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/estrattoredx.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_culatta_3.glb: 3857360 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/estrattoresx.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/flangia.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_culatta_4.glb: 3857504 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per estrattoredx.glb: 3840564 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per estrattoresx.glb: 3840728 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_1.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_2.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per flangia.glb: 5323568 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_3.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_4.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_1.glb: 3806864 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_2.glb: 3806768 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_3.glb: 3806964 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_5.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_6.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_7.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per coperchio.glb: 50273844 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per corpo.glb: 50674636 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_4.glb: 3807464 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/vite_flangia_8.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/paletta1.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/paletta2.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_5.glb: 3805472 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_7.glb: 3806092 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_6.glb: 3805784 bytes
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/paletta3.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/paletta4.glb: 200 OK
-UIScenarioLoader.js?v=1000001:828 🌐 Response per models/paletta5.glb: 200 OK
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per vite_flangia_8.glb: 3805976 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per paletta1.glb: 3771372 bytes
-UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per paletta2.glb: 3770872 bytes
- 🌐 Response per models/tubograsso.glb: 200 OK
- 📝 PARSER: Proprietà globale pre-tutorial: CameraPos = (-1.5, 0.5,-0.2)
- 📝 PARSER: Proprietà globale pre-tutorial: CameraTarget = (0, 0, 0)
- 📝 PARSER: Proprietà globale pre-tutorial: CameraZoom = 1.2
- 📝 PARSER: Proprietà globale pre-tutorial: CameraTransitionTime = 2.5
- 📝 PARSER: Proprietà globale pre-tutorial: Posizione = planaxis:(-0.5,0.01,-0.5)
- 📝 PARSER: Applicazione 5 proprietà globali al primo tutorial "Pulizia  Filtro e ingrassaggio"
- 📝 PARSER: Posizione multipla aggiunta: coperchio:(-1.148,-0.261,0.500) (totale: 1)
- 📝 PARSER: Rotazione multipla aggiunta: coperchio:(0.0,0.0,-90.0) (totale: 1)
- 📝 PARSER: Posizione multipla aggiunta: filtro:(-0.300,-0.142,0.500) (totale: 2)
- 📝 PARSER: Rotazione multipla aggiunta: filtro:(0.0,0.0,0.0) (totale: 2)
- 📝 PARSER: Posizione multipla aggiunta: pavimento:(0.000,0.000,0.000) (totale: 3)
- 📝 PARSER: Rotazione multipla aggiunta: pavimento:(0.0,0.0,0.0) (totale: 3)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_1:(-0.500,-0.349,0.000) (totale: 4)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_1:(-360.0,0.0,0.0) (totale: 4)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_2:(-0.500,-0.349,0.000) (totale: 5)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_2:(-360.0,0.0,0.0) (totale: 5)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_3:(-0.500,-0.117,-0.100) (totale: 6)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_3:(-360.0,0.0,0.0) (totale: 6)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_4:(-0.500,-0.117,-0.100) (totale: 7)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_4:(-360.0,0.0,0.0) (totale: 7)
- 📝 PARSER: Posizione multipla aggiunta: tappino_grasso_sx:(-0.300,-0.243,0.000) (totale: 8)
- 📝 PARSER: Rotazione multipla aggiunta: tappino_grasso_sx:(0.0,0.0,0.0) (totale: 8)
- 📝 PARSER: Posizione multipla aggiunta: tappino_grasso_dx:(-0.300,-0.243,0.000) (totale: 9)
- 📝 PARSER: Rotazione multipla aggiunta: tappino_grasso_dx:(0.0,0.0,0.0) (totale: 9)
- 📝 PARSER: Posizione multipla aggiunta: ingrassatore:(-0.208,0.243,0) (totale: 10)
- 📝 PARSER: Rotazione multipla aggiunta: ingrassatore:(0.0,0.0,90.0) (totale: 10)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_1:(0.000,0.000,0.000) (totale: 1)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_1:(0.0,0.0,0.0) (totale: 1)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_3:(0.000,0.000,0.000) (totale: 2)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_3:(0.0,0.0,0.0) (totale: 2)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_2:(0.000,0.000,0.000) (totale: 3)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_2:(0.0,0.0,0.0) (totale: 3)
- 📝 PARSER: Posizione multipla aggiunta: tappino_grasso_sx:(0.000,0.000,0.000) (totale: 4)
- 📝 PARSER: Rotazione multipla aggiunta: tappino_grasso_sx:(0.0,0.0,0.0) (totale: 4)
- 📝 PARSER: Posizione multipla aggiunta: ingrassatore:(0.000,0.000,0.000) (totale: 5)
- 📝 PARSER: Rotazione multipla aggiunta: ingrassatore:(0.0,0.0,0.0) (totale: 5)
- 📝 PARSER: Posizione multipla aggiunta: tappino_grasso_dx:(0.000,0.000,0.000) (totale: 6)
- 📝 PARSER: Rotazione multipla aggiunta: tappino_grasso_dx:(0.0,0.0,0.0) (totale: 6)
- 📝 PARSER: Posizione multipla aggiunta: vite_coperchio_4:(0.000,0.000,0.000) (totale: 7)
- 📝 PARSER: Rotazione multipla aggiunta: vite_coperchio_4:(0.0,0.0,0.0) (totale: 7)
- 📝 PARSER: Posizione multipla aggiunta: vite_culatta_3:(-0.100,-0.116,0.300) (totale: 8)
- 📝 PARSER: Rotazione multipla aggiunta: vite_culatta_3:(0.0,0.0,1800.0) (totale: 8)
- 📝 PARSER: Posizione multipla aggiunta: estrattoredx:(0.000,0.000,0.000) (totale: 9)
- 📝 PARSER: Rotazione multipla aggiunta: estrattoredx:(0.0,0.0,0.0) (totale: 9)
- 📝 PARSER: Posizione multipla aggiunta: vite_culatta_4:(-0.100,-0.116,0.300) (totale: 10)
- 📝 PARSER: Rotazione multipla aggiunta: vite_culatta_4:(0.0,0.0,1800.0) (totale: 10)
- 📝 PARSER: Posizione multipla aggiunta: vite_culatta_1:(0.000,-0.378,0.091) (totale: 11)
- 📝 PARSER: Rotazione multipla aggiunta: vite_culatta_1:(0.0,0.0,0.0) (totale: 11)
- 📝 PARSER: Posizione multipla aggiunta: vite_culatta_2:(0.000,-0.378,0.091) (totale: 12)
- 📝 PARSER: Rotazione multipla aggiunta: vite_culatta_2:(0.0,0.0,0.0) (totale: 12)
- 📝 PARSER: Posizione multipla aggiunta: flangia:(0.000,0.261,0.493) (totale: 13)
- 📝 PARSER: Rotazione multipla aggiunta: flangia:(90.0,0.0,0.0) (totale: 13)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_4:(-0.000,-0.267,0.200) (totale: 14)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_4:(0.0,0.0,1800.0) (totale: 14)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_2:(-0.000,-0.321,0.200) (totale: 15)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_2:(0.0,0.0,1800.0) (totale: 15)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_5:(-0.100,-0.191,0.200) (totale: 16)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_5:(0.0,0.0,1800.0) (totale: 16)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_1:(-0.000,-0.267,0.200) (totale: 17)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_1:(0.0,0.0,1800.0) (totale: 17)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_6:(-0.100,-0.137,0.200) (totale: 18)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_6:(0.0,0.0,1800.0) (totale: 18)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_8:(-0.100,-0.191,0.200) (totale: 19)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_8:(0.0,0.0,1800.0) (totale: 19)
- 📝 PARSER: Posizione multipla aggiunta: estrattoresx:(0.000,0.000,0.000) (totale: 20)
- 📝 PARSER: Rotazione multipla aggiunta: estrattoresx:(0.0,0.0,0.0) (totale: 20)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_7:(-0.100,-0.137,0.100) (totale: 21)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_7:(0.0,0.0,1800.0) (totale: 21)
- 📝 PARSER: Posizione multipla aggiunta: vite_flangia_3:(-0.000,-0.321,0.100) (totale: 22)
- 📝 PARSER: Rotazione multipla aggiunta: vite_flangia_3:(0.0,0.0,1800.0) (totale: 22)
- 📝 PARSER: Posizione multipla aggiunta: paletta5:(-1.188,-0.151,0.700) (totale: 23)
- 📝 PARSER: Rotazione multipla aggiunta: paletta5:(0.0,0.0,32.0) (totale: 23)
- 📝 PARSER: Posizione multipla aggiunta: paletta1:(-0.625,-0.156,0.700) (totale: 24)
- 📝 PARSER: Rotazione multipla aggiunta: paletta1:(0.0,0.0,-32.0) (totale: 24)
- 📝 PARSER: Posizione multipla aggiunta: paletta3:(-0.900,-0.273,0.700) (totale: 25)
- 📝 PARSER: Rotazione multipla aggiunta: paletta3:(0.0,0.0,0.0) (totale: 25)
- 📝 PARSER: Posizione multipla aggiunta: paletta2:(-0.958,0.124,0.700) (totale: 26)
- 📝 PARSER: Rotazione multipla aggiunta: paletta2:(0.0,0.0,-108.0) (totale: 26)
- 📝 PARSER: Posizione multipla aggiunta: filtro:(0.000,0.000,0.000) (totale: 27)
- 📝 PARSER: Rotazione multipla aggiunta: filtro:(0.0,0.0,0.0) (totale: 27)
- 📝 PARSER: Posizione multipla aggiunta: paletta4:(-1.337,-0.082,0.700) (totale: 28)
- 📝 PARSER: Rotazione multipla aggiunta: paletta4:(0.0,0.0,-72.0) (totale: 28)
- 📝 PARSER: Posizione multipla aggiunta: tubograsso:(0.000,0.000,0.010) (totale: 29)
- 📝 PARSER: Rotazione multipla aggiunta: tubograsso:(0.0,0.0,0.0) (totale: 29)
- 📝 PARSER: Posizione multipla aggiunta: culatta:(0.500,-0.110,0.954) (totale: 30)
- 📝 PARSER: Rotazione multipla aggiunta: culatta:(-90.0,0.0,0.0) (totale: 30)
- 📝 PARSER: Posizione multipla aggiunta: pavimento:(0.000,0.000,0.000) (totale: 31)
- 📝 PARSER: Rotazione multipla aggiunta: pavimento:(0.0,0.0,0.0) (totale: 31)
- 📝 PARSER: Posizione multipla aggiunta: coperchio:(0.000,0.000,0.000) (totale: 32)
- 📝 PARSER: Rotazione multipla aggiunta: coperchio:(0.0,0.0,0.0) (totale: 32)
- 📝 PARSER: Posizione multipla aggiunta: corpo:(0.000,0.000,0.000) (totale: 33)
- 📝 PARSER: Rotazione multipla aggiunta: corpo:(0.0,0.0,0.0) (totale: 33)
- [ScreenSystem] 🗑️ Definizioni cancellate
- 🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
+:8000/favicon.png:1  Failed to load resource: the server responded with a status of 404 (File not found)
+:8000/scenes/homeconfig_ita.ini?v=1778121709756:1  Failed to load resource: the server responded with a status of 404 (File not found)
+ 🎨 Color sum: 3
+ 🔍 Controllo material: bianco colorSum=3
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
+ 🎨 Color sum: 1.9630574584007263
+ 🔍 Controllo material: metal colorSum=1.9630574584007263
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: Material.001 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: metal.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
+ 🎨 Color sum: 1.9630574584007263
+ 🔍 Controllo material: metal.001 colorSum=1.9630574584007263
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.003 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.003 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.003
+ ⚠️ Metalness troppo alta, riducendo
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 1 1 1
+ 🎨 Color sum: 3
+ 🔍 Controllo material:  colorSum=3
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
+ 🎨 Color sum: 1.9630574584007263
+ 🔍 Controllo material: metal colorSum=1.9630574584007263
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: nero.001 colorSum=0
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.001
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: bianco Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 1 1 1
+ 🎨 Color sum: 3
+ 🔍 Controllo material: bianco colorSum=3
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: metal Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.6543524861335754 0.6543524861335754 0.6543524861335754
+ 🎨 Color sum: 1.9630574584007263
+ 🔍 Controllo material: metal colorSum=1.9630574584007263
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
+ ⚠️ Metalness troppo alta, riducendo
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material:  Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 1 1 1
+ 🎨 Color sum: 3
+ 🔍 Controllo material:  colorSum=3
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: bandelle Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: bandelle colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.020 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0.04249753803014755 0.250879168510437
+ 🎨 Color sum: 0.29337670654058456
+ 🔍 Controllo material: Material.020 colorSum=0.29337670654058456
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: bianco.006 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 1 1 1
+ 🎨 Color sum: 3
+ 🔍 Controllo material: bianco.006 colorSum=3
+ ✅ Colore OK, non modificato
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.002 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ✅ Materiale corretto: Object
+ 🎯 GLTF/GLB processato, chiamando onSuccess
+ ✅ Modello 3/4 caricato: a500.glb
+ 🌐 Progress: 3/4 - a500.glb
+ 📊 Progress aggiornato: 75% - a500.glb
+ ✅ GLTF/GLB caricato con successo: Object
+ 🎨 Fixing material: nero.006 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.006 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.006
+ ⚠️ Metalness troppo alta, riducendo
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: bianco.003 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 1 1 1
+ 🎨 Color sum: 3
+ 🔍 Controllo material: bianco.003 colorSum=3
+ ✅ Colore OK, non modificato
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.040 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
+ 🎨 Color sum: 0.9600689113140106
+ 🔍 Controllo material: Material.040 colorSum=0.9600689113140106
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: / Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
+ 🎨 Color sum: 0.9600689113140106
+ 🔍 Controllo material: / colorSum=0.9600689113140106
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.072 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.8000074625015259 0.0017059262609109282 0
+ 🎨 Color sum: 0.8017133887624368
+ 🔍 Controllo material: Material.072 colorSum=0.8017133887624368
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.038 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.8000074625015259 0.0017059262609109282 0
+ 🎨 Color sum: 0.8017133887624368
+ 🔍 Controllo material: Material.038 colorSum=0.8017133887624368
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.052 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+ 🎨 Color sum: 1.074936032295227
+ 🔍 Controllo material: Material.052 colorSum=1.074936032295227
+ ✅ Colore OK, non modificato
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: bianco.004 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: bianco.004 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.051 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+ 🎨 Color sum: 1.074936032295227
+ 🔍 Controllo material: Material.051 colorSum=1.074936032295227
+ ✅ Colore OK, non modificato
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Luminoso.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Luminoso.002 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 💡 [ModelLoader] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1, emissiveIntensity=3
+ 🎨 Fixing material: Material.008 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: Material.008 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.006 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: Material.006 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.044 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: Material.044 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.043 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: Material.043 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.007 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: Material.007 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: simbolini.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: simbolini.002 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.019 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0.2581735849380493 0.46068859100341797
+ 🎨 Color sum: 0.7188621759414673
+ 🔍 Controllo material: Material.019 colorSum=0.7188621759414673
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.020 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0.04249753803014755 0.250879168510437
+ 🎨 Color sum: 0.29337670654058456
+ 🔍 Controllo material: Material.020 colorSum=0.29337670654058456
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.021 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.3583120107650757 0.3583120107650757 0.3583120107650757
+ 🎨 Color sum: 1.074936032295227
+ 🔍 Controllo material: Material.021 colorSum=1.074936032295227
+ ✅ Colore OK, non modificato
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.022 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0.250879168510437 0.010888764634728432
+ 🎨 Color sum: 0.26176793314516544
+ 🔍 Controllo material: Material.022 colorSum=0.26176793314516544
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.006 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.006 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.006
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.039 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.8000156879425049 0.40019044280052185 0
+ 🎨 Color sum: 1.2002061307430267
+ 🔍 Controllo material: Material.039 colorSum=1.2002061307430267
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.040 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.32002297043800354 0.32002297043800354 0.32002297043800354
+ 🎨 Color sum: 0.9600689113140106
+ 🔍 Controllo material: Material.040 colorSum=0.9600689113140106
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_1.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.03310476616024971 0.03310476616024971 0.03310476616024971
+ 🎨 Color sum: 0.09931429848074913
+ 🔍 Controllo material: mat_1.002 colorSum=0.09931429848074913
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 333333
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.014 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.014 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.013 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.013 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.011 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.011 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.010 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.010 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.012 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.012 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.017 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.017 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.018 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.018 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.045 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.045 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.046 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.046 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.006 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.006 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.006
+ ✅ Materiale corretto: Object
+ 🎯 GLTF/GLB processato, chiamando onSuccess
+ ✅ Modello 4/4 caricato: pulpito.glb
+ 🌐 Progress: 4/4 - pulpito.glb
+ 📊 Progress aggiornato: 100% - pulpito.glb
+ ✅ Caricamento completato: 4 successi, 0 fallimenti
+ ✅ Tutti i modelli caricati, rendering finale...
+ 🎨 Batch rendering completato
+ 🌐 Modelli caricati, chiamando onModelLoadComplete: Array(4)
+ [4:41:52 AM] INFO: Modelli caricati con successo: 4
+ 🔍 Ricerca config per modello: "pavimento"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="pavimento", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="pavimento", fileName="pulpito", exactMatch=false, direction= Object
+ 🔍 Test file "models/remote.glb": modelName="pavimento", fileName="remote", exactMatch=false, direction= Object
+ 🔍 Test file "models/a500.glb": modelName="pavimento", fileName="a500", exactMatch=false, direction= Object
+ 🔍 Test file "models/pavimento.glb": modelName="pavimento", fileName="pavimento", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "pavimento": models/pavimento.glb with direction: Object
+ 🔍✅ Config trovato per "pavimento": Object
+ 📐 Bounding box per undefined:
+    Min: (-6.119, 0.000, -7.115)
+    Max: (8.110, 0.000, 7.115)
+    Center: (0.996, 0.000, 0.000)
+    Size: (14.229, 0.000, 14.229)
+ 💾 Posizione iniziale salvata per modello: pavimento - Centro BB: (0.996, 0.000, 0.000)
+ 📐 Bounding box per undefined:
+    Min: (-6.119, 0.000, -7.115)
+    Max: (8.110, 0.000, 7.115)
+    Center: (0.996, 0.000, 0.000)
+    Size: (14.229, 0.000, 14.229)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pavimento - Centro BB: (0.996, 0.000, 0.000)
+ 📋 [DEBUG] Gerarchia oggetti in "pavimento" (2 totali):
+    pavimento(G)
+      Plane001(M)
+ 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "pavimento"
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "chiave": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "start": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "emergenza": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo": trovate 0/9 varianti
+    Varianti mancanti: Array(9)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "tool": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🧭 Direction loaded for pavimento: Object
+ 🔍 Ricerca config per modello: "remote"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="remote", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="remote", fileName="pulpito", exactMatch=false, direction= Object
+ 🔍 Test file "models/remote.glb": modelName="remote", fileName="remote", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "remote": models/remote.glb with direction: Object
+ 🔍✅ Config trovato per "remote": Object
+ 📐 Bounding box per undefined:
+    Min: (0.863, 0.779, 3.591)
+    Max: (1.094, 0.916, 3.653)
+    Center: (0.979, 0.848, 3.622)
+    Size: (0.231, 0.136, 0.062)
+ 💾 Posizione iniziale salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
+ 📐 Bounding box per undefined:
+    Min: (0.863, 0.779, 3.591)
+    Max: (1.094, 0.916, 3.653)
+    Center: (0.979, 0.848, 3.622)
+    Size: (0.231, 0.136, 0.062)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
+ 🔍 [InteractiveObject3D] Child disponibili in "remote": Array(18)
+ 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(3)
+    ✓ Figlio interattivo (Mesh): "pulsante_r_play" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_r_status" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_r_unlock" (button)
+ 🔗 [InteractiveObject3D] Modello "remote" collegato con 3 figli interattivi
+ 📋 [DEBUG] Gerarchia oggetti in "remote" (18 totali):
+    remote(G)
+      remote(G)
+        07L0676941A_001002(M)
+        07L0676941A_001002_1(M)
+        07L0676941A_001002_2(M)
+        07L0676941A_001002_3(M)
+        07L0676941A_001002_4(M)
+        07L0676941A_001002_5(M)
+        07L0676941A_001002_6(M)
+        07L0676941A_001002_7(M)
+        07L0676941A_001002_8(M)
+        07L0676941A_001002_9(M)
+        07L0676941A_001002_10(M)
+        pulsante_r_play(M)
+        Pulsante_r_status(M)
+        Pulsante_r_unlock(M)
+        Schermo_R000(M)
+        Schermo_R001(M)
+ 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "remote"
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "chiave": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "start": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "emergenza": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo": trovate 0/9 varianti
+    Varianti mancanti: Array(9)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ✅ StateGroup "schermo_remote": TROVATO Mesh "Schermo_R000" (visibile)
+    ✅ StateGroup "schermo_remote": TROVATO Mesh "Schermo_R001" (nascosta)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "tool": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔀 [InteractiveObject3D] Collegate 2 mesh a StateGroups
+ 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R000, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R001, emissiveIntensity=0.5
+ 🧭 Direction loaded for remote: Object
+ 🔍 Ricerca config per modello: "a500"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="a500", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="a500", fileName="pulpito", exactMatch=false, direction= Object
+ 🔍 Test file "models/remote.glb": modelName="a500", fileName="remote", exactMatch=false, direction= Object
+ 🔍 Test file "models/a500.glb": modelName="a500", fileName="a500", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "a500": models/a500.glb with direction: Object
+ 🔍✅ Config trovato per "a500": Object
+ 📐 Bounding box per undefined:
+    Min: (-4.109, -0.005, -1.835)
+    Max: (3.978, 2.793, 3.176)
+    Center: (-0.066, 1.394, 0.671)
+    Size: (8.086, 2.798, 5.011)
+ 💾 Posizione iniziale salvata per modello: a500 - Centro BB: (-0.066, 1.394, 0.671)
+ 📐 Bounding box per undefined:
+    Min: (-4.109, -0.005, -1.835)
+    Max: (3.978, 2.793, 3.176)
+    Center: (-0.066, 1.394, 0.671)
+    Size: (8.086, 2.798, 5.011)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: a500 - Centro BB: (-0.066, 1.394, 0.671)
+ 🔍 [InteractiveObject3D] Child disponibili in "a500": Array(66)
+ 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(0)
+ 🔗 [InteractiveObject3D] Modello "a500" collegato con 0 figli interattivi
+ 📋 [DEBUG] Gerarchia oggetti in "a500" (66 totali):
+    a500(G)
+      A500(M)
+        Basamento_BarraFissaDx(G)
+          Basamento_BarraFissaDx_1(M)
+          Basamento_BarraFissaDx_2(M)
+          Basamento_BarraFissaDx_3(M)
+        Basamento_BarraFissaSx(G)
+          Basamento_BarraFissaSx_1(M)
+          Basamento_BarraFissaSx_2(M)
+          Basamento_BarraFissaSx_3(M)
+        Basamento_BarraTondaAnteriore(M)
+        Basamento_BarreTonde_BarraDx(G)
+          Basamento_BarreTonde_BarraDx_1(M)
+          Basamento_BarreTonde_BarraDx_2(M)
+        Basamento_BarreTonde_BarraDx(2)(G)
+          Basamento_BarreTonde_BarraDx(2)_1(M)
+          Basamento_BarreTonde_BarraDx(2)_2(M)
+        Basamento_BarreTonde_BarraDx(3)(G)
+          Basamento_BarreTonde_BarraDx(3)_1(M)
+          Basamento_BarreTonde_BarraDx(3)_2(M)
+        Basamento_BarreTonde_BarraDx(4)(G)
+          Basamento_BarreTonde_BarraDx(4)001(M)
+          Basamento_BarreTonde_BarraDx(4)001_1(M)
+        Basamento_BarreTonde_BarraSx(M)
+        Basamento_BarreTonde_BarraSx(2)(G)
+          Basamento_BarreTonde_BarraSx(2)_1(M)
+          Basamento_BarreTonde_BarraSx(2)_2(M)
+        Basamento_BarreTonde_BarraSx(3)(G)
+          Basamento_BarreTonde_BarraSx(3)_1(M)
+          Basamento_BarreTonde_BarraSx(3)_2(M)
+        Basamento_BarreTonde_BarraSx(4)(G)
+          Basamento_BarreTonde_BarraSx(4)_1(M)
+          Basamento_BarreTonde_BarraSx(4)_2(M)
+        Basamento_Portale(M)
+          Basamento_Portale_BraccioQuadro(M)
+          Basamento_Portale_CarroY(M)
+            Basamento_Portale_CarroY_CarroZ(M)
+              Basamento_Portale_CarroY_CarroZ_Prisma(M)
+                Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa(G)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_1(M)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_2(M)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna(G)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna_1(M)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna_2(M)
+                Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC(M)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB(G)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB_1(M)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB_2(M)
+                    naso(M)
+                    tool1(G)
+                      A0001(M)
+                      A0001_1(M)
+            Basamento_Portale_CarroY_CarroZG(M)
+          Basamento_Portale_MagazzinoInternoX1(G)
+            Basamento_Portale_MagazzinoInternoX1_1(M)
+            Basamento_Portale_MagazzinoInternoX1_2(M)
+            Basamento_Portale_MagazzinoInternoX1_3(M)
+            tool0(G)
+              A0(M)
+              A0_1(M)
+          Basamento_Portale_MisuratoreAltezzaUtensileP(M)
+          Basamento_Portale_ProtezioneTraslante(G)
+            Basamento_Portale_ProtezioneTraslante_1(M)
+            Basamento_Portale_ProtezioneTraslante_2(M)
+            Basamento_Portale_ProtezioneTraslante_3(M)
+          porta(M)
+ 🔧 [DEBUG] Trovati oggetti con "tool" nel nome: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "chiave": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "start": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "emergenza": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo": trovate 0/9 varianti
+    Varianti mancanti: Array(9)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ✅ StateGroup "tool": TROVATO Group "tool1" (visibile)
+    ✅ StateGroup "tool": TROVATO Group "tool0" (nascosta)
+ 🔀 [InteractiveObject3D] Collegate 2 mesh a StateGroups
+ 🧭 Direction loaded for a500: Object
+ 🔍 Ricerca config per modello: "pulpito"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="pulpito", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="pulpito", fileName="pulpito", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "pulpito": models/pulpito.glb with direction: Object
+ 🔍✅ Config trovato per "pulpito": Object
+ 📐 Bounding box per undefined:
+    Min: (0.739, 0.004, 3.460)
+    Max: (1.251, 1.276, 3.947)
+    Center: (0.995, 0.640, 3.703)
+    Size: (0.512, 1.273, 0.487)
+ 💾 Posizione iniziale salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
+ 📐 Bounding box per undefined:
+    Min: (0.739, 0.004, 3.460)
+    Max: (1.251, 1.276, 3.947)
+    Center: (0.995, 0.640, 3.703)
+    Size: (0.512, 1.273, 0.487)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
+ 🔍 [InteractiveObject3D] Child disponibili in "pulpito": Array(39)
+ 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(11)
+    ✓ Figlio interattivo (Mesh): "chiave0" (button)
+    ✓ Figlio interattivo (Mesh): "chiave1" (button)
+    ✓ Figlio interattivo (Mesh): "emergenza_off" (button)
+    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off001" (button)
+    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off001_1" (button)
+    ✓ Figlio interattivo (Group): "pstart0" (button)
+    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on001" (button)
+    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on001_1" (button)
+    ✓ Figlio interattivo (Group): "pstart1" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_electrospindle" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_LU" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_mdi" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_tool" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_WH" (button)
+ 💡 [InteractiveObject3D] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1[0]
+ 🔗 [InteractiveObject3D] Modello "pulpito" collegato con 10 figli interattivi
+ 📋 [DEBUG] Gerarchia oggetti in "pulpito" (39 totali):
+    pulpito(G)
+      pulpito001(G)
+        telaio002(M)
+        telaio002_1(M)
+        chiave0(M)
+        chiave1(M)
+        emergenza_off(M)
+        emergenza_on001(M)
+        pstart0(G)
+          p_off001(M)
+          p_off001_1(M)
+        pstart1(G)
+          p_on001(M)
+          p_on001_1(M)
+        Pulsante_electrospindle(M)
+        Pulsante_LU(M)
+        Pulsante_mdi(M)
+        Pulsante_tool(M)
+        Pulsante_WH(M)
+        pulsanti001(G)
+          simbolini002(M)
+          simbolini002_1(M)
+          simbolini002_2(M)
+          simbolini002_3(M)
+          simbolini002_4(M)
+          simbolini002_5(M)
+          simbolini002_6(M)
+          simbolini002_7(M)
+          simbolini002_8(M)
+        schermo001(M)
+        schermo002(M)
+        schermo003(M)
+        schermo004(M)
+        schermo007(M)
+        schermo008(M)
+        schermo009(M)
+        schermo010(M)
+        schermo011(M)
+        tastiera(M)
+ 🔧 [DEBUG] Trovati oggetti con "tool" nel nome: Array(1)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ✅ StateGroup "chiave": TROVATO Mesh "chiave0" (visibile)
+    ✅ StateGroup "chiave": TROVATO Mesh "chiave1" (nascosta)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ✅ StateGroup "start": TROVATO Group "pstart0" (nascosta)
+    ✅ StateGroup "start": TROVATO Group "pstart1" (visibile)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ✅ StateGroup "emergenza": TROVATO Mesh "emergenza_off" (visibile)
+ [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
+    Varianti mancanti: Array(1)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo001" (visibile)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo002" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo003" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo004" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo007" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo008" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo009" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo010" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo011" (nascosta)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔀 [InteractiveObject3D] Collegate 14 mesh a StateGroups
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo001, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo002, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo003, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo004, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo007, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo008, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo009, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo010, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo011, emissiveIntensity=0.5
+ 🏷️ [Scene3D] Trasparenza attivata per materiale: simbolini.002 su mesh simbolini002
+ 💡 [Scene3D] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1[0], emissiveIntensity=3
+ 🧭 Direction loaded for pulpito: Object
+ Pannello controlli visibilità modelli non trovato
+ 📊 Progress bar modelli nascosta
+ 🔓 Pulsanti tutorial riabilitati dopo caricamento 3D
+ 🔧 DRAG&DROP: Salvataggio posizioni originali post-caricamento modelli
+ [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
+ [DragDropSystem] 📍 Memorizzata posizione originale per remote: (0.979, 0.848, 3.622)
+ [DragDropSystem] 📍 Memorizzata posizione originale per a500: (-0.066, 1.394, 0.671)
+ [DragDropSystem] 📍 Memorizzata posizione originale per pulpito: (0.995, 0.640, 3.703)
+ [DragDropSystem] ✅ Salvate 4 posizioni originali
+ [InterchangeableTracker] ℹ️ AssemblySystem non in modalità assemblaggio - skip inizializzazione occupazioni
+ 🎮 [UI] Inizializzazione StepController...
+ [StepController] Inizializzazione...
+ [StepController] Event listeners configurati
+ [StepController] ✅ Inizializzato
+ 🔀 [UI] Ricerca varianti StateGroup in tutta la scena...
+ 🔍 [InteractiveObject3D] Cercando varianti StateGroup in TUTTA la scena...
+    ✅ StateGroup "emergenza": MATCH PARZIALE in scena Mesh "emergenza_on001" → variante "emergenza_on" (nascosta)
+ ✅ [InteractiveObject3D] StateGroup "chiave": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "start": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "emergenza": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "schermo": tutte le 9 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "schermo_remote": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "tool": tutte le 2 varianti trovate
+ 🔀 [InteractiveObject3D] Collegate 1 mesh a StateGroups dalla scena
+ [4:41:52 AM] INFO: Scenario Manutenzione Elettromandrino caricato completamente
+ 📚 [UI] Overlay selezione tutorial mostrato
+ 🎬 [UI] Animazione drammatica completata
+ 📹 CAMERA: Animazione completata
+ ✅ [UI] Animazione pulse pulsanti completata
+ ❌ [UI] Overlay selezione tutorial nascosto
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ 🔥 CLICK TUTORIAL BUTTON: index=0, name="Manutenzione Elettromandrino - lubrificazione"
  [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
  [UI] 🧹 Rimossa evidenziazione modello corrente
  [UI] 🧹 Rimosse evidenziazioni pulsanti
@@ -562,204 +747,274 @@ UIScenarioLoader.js?v=1000001:835 🌐 Blob creato per paletta2.glb: 3770872 byt
  [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
  🔓 INTERAZIONI SBLOCCATE: Nuovo tutorial avviato
  🏠 RESET SCENARIO: Ripristino posizioni originali dello scenario...
-scene3d-modular.js?nocache=1000032:3207 🏠 DEBUG: loadedModels count: 0
-scene3d-modular.js?nocache=1000032:3208 🏠 DEBUG: scenarioOriginalPositions size: 0
-scene3d-modular.js?nocache=1000032:3223 🏠 RESET SCENARIO: 0 modelli ripristinati alle posizioni originali dello scenario
-ui.js?nocache=1000041:1083 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
-scene3d-modular.js?nocache=1000032:4209 🔧 MODEL: Modello "planaxis" non trovato per posizionamento
-applyModelPosition @ scene3d-modular.js?nocache=1000032:4209
-(anonymous) @ scene3d-modular.js?nocache=1000032:4152
-applyModelSettings @ scene3d-modular.js?nocache=1000032:4141
-selectTutorial @ ui.js?nocache=1000041:1084
-UI.parseTutorialContent @ UITutorialParser.js?v=1000001:431
-UI.loadTutorial @ UITutorialParser.js?v=1000001:26
-await in UI.loadTutorial
-UI.loadScenario @ UIScenarioLoader.js?v=1000001:527
-UI.onScenarioCardClick @ UIScenarioLoader.js?v=1000001:440
-StepController.js?v=1000008:798 [StepController] 🔄 Reset completato
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 🎮 STEP CONTROLLER: Reset per nuovo tutorial
-AssemblySystem.js?nocache=1000022:100 [AssemblySystem] 🔴 Disabilitazione modalità assemblaggio...
-AssemblySystem.js?nocache=1000022:112 [AssemblySystem] ✅ Modalità assemblaggio disabilitata
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 🚫 ASSEMBLY: Sistema disabilitato per nuovo tutorial
-config.js?nocache=999999:242 [4:03:03 PM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
-scene3d-modular.js?nocache=1000032:1020 [Scene3D] 🛑 stopCursorAnimation() chiamato
-scene3d-modular.js?nocache=1000032:1021 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= []
-scene3d-modular.js?nocache=1000032:1040 [Scene3D] 🔍 Stato DOPO: body.classList= []
-config.js?nocache=999999:242 [4:03:03 PM] INFO: Tutorial selezionato: Pulizia  Filtro e ingrassaggio (12 step)
-StepGatingManager.js?v=1000001:70 [StepGating] 🔄 Reset sistema...
-StepGatingManager.js?v=1000001:75 [StepGating] ✅ Reset completato
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 🚦 Step Gating: 0 configurazioni registrate
-ui.js?nocache=1000041:1563 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=0
-config.js?nocache=999999:242 [4:03:03 PM] INFO: Tutorial 1 attivato (comportamento radio button)
-UIElements.js?v=1000001:274 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 📹 CAMERA INIZIALE: CameraPos = (-1.5, 0.5,-0.2)
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 📹 CAMERA INIZIALE: CameraTarget = (0, 0, 0)
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 📹 CAMERA INIZIALE: CameraZoom = 1.2
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 📹 CAMERA INIZIALE: Applicazione impostazioni camera da "Pulizia  Filtro e ingrassaggio"
-scene3d-modular.js?nocache=1000032:4018 📹 CAMERA: Posizione assoluta (-1.5, 0.5, -0.2)
-scene3d-modular.js?nocache=1000032:4039 📹 CAMERA: Target assoluto (0, 0, 0)
-scene3d-modular.js?nocache=1000032:4064 📹 CAMERA: Zoom = 1.2
-scene3d-modular.js?nocache=1000032:4094 📹 CAMERA: Durata transizione = 2.5s
-scene3d-modular.js?nocache=1000032:4132 📹 CAMERA: Avvio animazione camera (durata: 2.5s)
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 🔧 MODELLI INIZIALI: Posizione = planaxis:(-0.5,0.01,-0.5)
-config.js?nocache=999999:242 [4:03:03 PM] INFO: 🔧 MODELLI INIZIALI: Applicazione impostazioni modelli da "Pulizia  Filtro e ingrassaggio"
-scene3d-modular.js?nocache=1000032:4209 🔧 MODEL: Modello "planaxis" non trovato per posizionamento
-applyModelPosition @ scene3d-modular.js?nocache=1000032:4209
-(anonymous) @ scene3d-modular.js?nocache=1000032:4152
-applyModelSettings @ scene3d-modular.js?nocache=1000032:4141
-applyInitialCameraSettings @ ui.js?nocache=1000041:1311
-UI.loadTutorial @ UITutorialParser.js?v=1000001:32
-await in UI.loadTutorial
-UI.loadScenario @ UIScenarioLoader.js?v=1000001:527
-UI.onScenarioCardClick @ UIScenarioLoader.js?v=1000001:440
-UIStepExecutor.js?v=1000001:88 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
-UIStepExecutor.js?v=1000001:93 [UI] 🧹 Rimossa evidenziazione modello corrente
-UIStepExecutor.js?v=1000001:99 [UI] 🧹 Rimosse evidenziazioni pulsanti
-HighlightCircleManager.js?v=1000025:159 🔵 [HighlightCircleManager] Rimozione 0 cerchi
-UIStepExecutor.js?v=1000001:105 [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
-UIElements.js?v=1000001:176 💬 [UI] Fumetto step nascosto
-config.js?nocache=999999:242 [4:03:03 PM] INFO: Tutorial disponibili: 4 - Camera impostata dal primo tutorial
- 🌐 Blob creato per paletta3.glb: 3771328 bytes
- 🌐 Blob creato per paletta4.glb: 3772000 bytes
- 🌐 Blob creato per paletta5.glb: 3772576 bytes
- 🌐 Blob creato per tubograsso.glb: 3860916 bytes
- 🌐 Risultati fetch: (34) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
- 🌐 File validi: 33 File falliti: 1
- 🌐 ValidFiles dettaglio: (33) [File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File]
- ❌ File falliti: ['filtro.glb']
-(anonymous) @ UIScenarioLoader.js?v=1000001:872
-Promise.then
-UI.loadModelsFromUrls @ UIScenarioLoader.js?v=1000001:852
-UI.loadScenarioModels @ UIScenarioLoader.js?v=1000001:768
-UI.loadScenario @ UIScenarioLoader.js?v=1000001:522
-UI.onScenarioCardClick @ UIScenarioLoader.js?v=1000001:440
- [4:03:03 PM] INFO: ✅ 33/34 modelli caricati con successo
- [4:03:03 PM] ERROR: ⚠️ ATTENZIONE: 1 file mancanti: filtro.glb
- [4:03:03 PM] ERROR: Errore UI: Caricati 33/34 modelli. Mancanti: filtro.glb
- 🌐 Chiamando ModelLoader.loadFiles con: (33) [File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File, File]
- 🌐 ModelLoader disponibile? true
- 🌐 loadFiles function? function
- 🌐 Avvio ModelLoader.loadFiles...
- [4:03:03 PM] INFO: Inizio caricamento di 33 file(s)
- 📁 File organizzati: {modelli: Array(33), materiali: Array(0), texture: Array(0)}
- 🌐 Progress: 0
- 🚀 Avvio caricamento parallelo: 33 modelli, concurrency=6
- 🔧 loadGLTFModel - GLTFLoader disponibile? true
- ✅ GLTFLoader + DRACOLoader inizializzati (decoder: ./libs/draco/)
- 🔄 Inizio caricamento GLTF/GLB: culatta.glb
- 🔧 loadGLTFModel - GLTFLoader disponibile? true
- 🔄 Inizio caricamento GLTF/GLB: corpo.glb
- 🔧 loadGLTFModel - GLTFLoader disponibile? true
- 🔄 Inizio caricamento GLTF/GLB: coperchio.glb
- 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: pavimento.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: planaxis.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_coperchio_1.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_coperchio_2.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_coperchio_3.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_coperchio_4.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: tappino_grasso_sx.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: tappino_grasso_dx.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: ingrassatore.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_culatta_1.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_culatta_2.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_culatta_3.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_culatta_4.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: estrattoredx.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: estrattoresx.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: flangia.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_1.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_2.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_3.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_4.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_5.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_6.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_7.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: vite_flangia_8.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: paletta1.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: paletta2.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: paletta3.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: paletta4.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: paletta5.glb
-modelloader.js?nocache=1000011:732 🔧 loadGLTFModel - GLTFLoader disponibile? true
-modelloader.js?nocache=1000011:757 🔄 Inizio caricamento GLTF/GLB: tubograsso.glb
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 8.91%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 17.82%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 4.14%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 8.28%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 4.17%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 8.34%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 25.51%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 51.02%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 36.65%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 73.30%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 35.73%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 71.46%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 35.74%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 71.48%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 36.66%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 73.31%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.41%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.41%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 52.52%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 54.30%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 54.29%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 54.37%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 54.37%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 54.61%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 54.60%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 39.39%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 78.79%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.09%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.09%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.09%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.08%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.11%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.10%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 55.10%
-modelloader.js?nocache=1000011:810 📊 GLTF/GLB Progress: 100.00%
+ 🏠 DEBUG: loadedModels count: 4
+ 🏠 DEBUG: scenarioOriginalPositions size: 4
+ 🏠 DEBUG: Tentativo reset SCENARIO modello: pavimento
+ 🏠 Modello ripristinato SCENARIO: pavimento - Pos: (0.000, 0.000, 0.000)
+ 🏠 DEBUG: Reset SCENARIO riuscito per: pavimento
+ 🏠 DEBUG: Tentativo reset SCENARIO modello: remote
+ 🏠 Modello ripristinato SCENARIO: remote - Pos: (0.000, 0.000, 0.000)
+ 🏠 DEBUG: Reset SCENARIO riuscito per: remote
+ 🏠 DEBUG: Tentativo reset SCENARIO modello: a500
+ 🏠 Modello ripristinato SCENARIO: a500 - Pos: (0.000, 0.000, 0.000)
+ 🏠 DEBUG: Reset SCENARIO riuscito per: a500
+ 🏠 DEBUG: Tentativo reset SCENARIO modello: pulpito
+ 🏠 Modello ripristinato SCENARIO: pulpito - Pos: (0.000, 0.000, 0.000)
+ 🏠 DEBUG: Reset SCENARIO riuscito per: pulpito
+ 🏠 RESET SCENARIO: 4 modelli ripristinati alle posizioni originali dello scenario
+ 🔧 Applicazione impostazioni tutorial sopra posizioni scenario...
+ [StepController] 🔄 Reset completato
+ [4:41:54 AM] INFO: 🎮 STEP CONTROLLER: Reset per nuovo tutorial
+ [AssemblySystemSimplified] 🔴 Disabilitazione modalità assemblaggio...
+ [AssemblySystemSimplified] ✅ Modalità assemblaggio disabilitata
+ [4:41:54 AM] INFO: [ToolsManager] Tutti gli strumenti disattivati e cursori ripristinati
+ [4:41:54 AM] INFO: 🔧 TOOLS: Tutti i tool disattivati per nuovo tutorial
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
+ [4:41:54 AM] INFO: Tutorial selezionato: Manutenzione Elettromandrino - lubrificazione (23 step)
+ [StepGating] 🔄 Reset sistema...
+ [StepGating] ✅ Reset completato
+ [StepGating] 📝 Config registrata per step 0: Object
+ [StepGating] 📝 Config registrata per step 1: Object
+ [StepGating] 📝 Config registrata per step 3: Object
+ [StepGating] 📝 Config registrata per step 10: Object
+ [StepGating] 📝 Config registrata per step 11: Object
+ [StepGating] 📝 Config registrata per step 12: Object
+ [StepGating] 📝 Config registrata per step 13: Object
+ [StepGating] 📝 Config registrata per step 14: Object
+ [StepGating] 📝 Config registrata per step 15: Object
+ 📷 [Gating] Step 17 CameraUnlocked raw="true" clean="true" → true
+ [StepGating] 📝 Config registrata per step 17: Object
+ [StepGating] 📝 Config registrata per step 18: Object
+ [StepGating] 📝 Config registrata per step 19: Object
+ [StepGating] 📝 Config registrata per step 20: Object
+ [StepGating] 📝 Config registrata per step 21: Object
+ [StepGating] 📝 Config registrata per step 22: Object
+ [4:41:54 AM] INFO: 🚦 Step Gating: 15 configurazioni registrate
+ 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=1
+ 🔥 Button 0 set to ACTIVE (green)
+ [4:41:54 AM] INFO: Tutorial 1 attivato (comportamento radio button)
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ 🔥 updateTutorialButtonsState: activeIndex=0, totalButtons=1
+ 🔥 Button 0 set to ACTIVE (green)
+ [4:41:54 AM] INFO: Tutorial 1 attivato (comportamento radio button)
+ 🔥 Tutorial button state updated for index: 0
+ 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
+ 📹 TUTORIAL: CameraPos globale = (0.97,1.25,3.92)
+ 📹 TUTORIAL: CameraTarget globale = (0.97,1.15,3.52)
+ 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino - lubrificazione"
+ 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
+ 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_mdi"
+ ✅ HIGHLIGHT: Trovato child "Pulsante_mdi" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: Pulsante_mdi
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_mdi
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_mdi (non bloccato, colore=0x00ffff)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ [4:41:54 AM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
+ [DEBUG] 🚀 Step properties: Object
+ [4:41:54 AM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
+ [StepController] 📋 Step 0 auto-configurato da proprietà:
+ [StepController]    Triggers Physical: [pulpito.Pulsante_mdi]
+ [StepController]    Actions Physical: 1 azioni
+ [StepController]      1. setVariant: schermo=schermo002
+ 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
+ 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
+ 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+ 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+ 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_mdi"
+ 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 10
+ 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
+ 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+ 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_mdi
+ 💡 [InteractiveObject3D] Mesh ha material: true
+ 💡 [InteractiveObject3D] Material type: MeshBasicMaterial
+ 💡 [InteractiveObject3D] Material ha emissive: false
+ 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+ 💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=0, opacity=0.8
+ 💡 [InteractiveObject3D] ⚠️ Materiale 0 non ha proprietà emissive
+ 💡 [InteractiveObject3D] ✓ Material opacity impostata a 0.20 (fade attivo)
+ 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_mdi" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ 🔵 [HighlightCircleManager] Cerchio creato per "pulpito.Pulsante_mdi" (size: 80px, opacity: 0.2)
+ 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "pulpito.Pulsante_mdi" con opacità 0.2
+ 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI" con opacità 0.2
+ 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
+ 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+ 📹 CAMERA: Distance = 0.42
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ 📷 [UI] CameraTransitionTime: 2s (2000ms)
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_mdi"
+ ✅ HIGHLIGHT: Trovato child "Pulsante_mdi" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: Pulsante_mdi
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_mdi
+ 🔍 HIGHLIGHT: Rimozione highlight precedente
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_mdi (non bloccato, colore=0x00ffff)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ 📷 [UI] Attesa completamento transizione camera: 2300ms
+ 🎬 [UI] Animazione drammatica completata
+ 📹 CAMERA: Animazione completata
+ [Scene3D] 📹 CAMERA INFO:
+   Position: (0.97, 1.25, 3.93)
+   Rotation: (-0.24, 0, 0)
+   Pivot Point: (0.97, 1.15, 3.52)
+   Distance to Pivot: 0.42
+   FOV: 75
+   Near/Far: 0.1/1000
+ 
+📋 TUTORIAL SYNTAX (copia e incolla):
+CameraPos=(0.97,1.25,3.93)
+CameraTarget=(0.97,1.15,3.52)
+CameraRotation=(-0.24,0,0)
+CameraPivot=(0.97,1.15,3.52)
+CameraDistance=0.42
+CameraFOV=75
+CameraTransitionTime=1.0
+ 📷 [UI] Posizione camera memorizzata per step: Step 1 - Vai alla schermata MDI
+ 📷 [UI] Camera state: Object
+ 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: null
+ [Scene3D] ⚠️ Nessun tool attivo, esco
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_mdi
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_mdi" (parent: pulpito)
+ 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_mdi (mesh: Pulsante_mdi) → setVariant:schermo=schermo002
+ 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click
+ 🔵 [HighlightCircleManager] Cerchio rimosso per "pulpito.Pulsante_mdi"
+ 🔵 [InteractiveObject3D] Cerchio rimosso per "pulpito.Pulsante_mdi" dopo click
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_mdi"
+ [StepController] 🔍 currentStepIndex=0
+ [StepController] 🔍 stepConfigs.size=1
+ [StepController] 🔍 stepConfigs.keys=[0]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "pulpito.Pulsante_mdi" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
+StepController.js?v=1000008:441 [StepController]    1. setVariant: Object
+StepController.js?v=1000008:500 [StepController] 🔀 setVariant: schermo=schermo002
+InteractiveObject3D.js?v=1000003:999 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo001" → "schermo002"
+StepController.js?v=1000008:424 [StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni
+StepController.js?v=1000008:623 [StepController] ⏭️ Auto-avanzamento schedulato per step 0
+InteractiveObject3D.js?v=1000003:571    ✓ Gestito da StepController
+InteractiveObject3D.js?v=1000003:582    ⏭️ Azione locale "setVariant:schermo=schermo002" ignorata (già gestito da StepController)
+scene3d-modular.js?nocache=1000032:1628 [Scene3D] ✅ Click gestito da InteractiveObject3D
+scene3d-modular.js?nocache=1000032:1026 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1027 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
+scene3d-modular.js?nocache=1000032:1046 [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
+StepController.js?v=1000008:641 [StepController] ⏭️ Avanzamento allo step successivo
+ui.js?nocache=1000041:3916 [DEBUG] ⏭️ GOTO STEP chiamata con index: 1
+ui.js?nocache=1000041:3937 [UI] 🚫 Cancellato timeout auto-avanzamento pendente
+ui.js?nocache=1000041:3953 [DEBUG] ⏭️ Navigazione a step: "Step 2 - Scarica l'utensile"
+config.js?nocache=999999:242 [4:45:07 AM] INFO: Navigazione a step 2: Step 2 - Scarica l'utensile
+ui.js?nocache=1000041:3996 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ui.js?nocache=1000041:4001 [UI] 🧹 Rimossa evidenziazione modello corrente
+ui.js?nocache=1000041:4007 [UI] 🧹 Rimosse evidenziazioni pulsanti
+HighlightCircleManager.js?v=1000025:163 🔵 [HighlightCircleManager] Rimozione 0 cerchi
+ui.js?nocache=1000041:4013 [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ui.js?nocache=1000041:5647 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ui.js?nocache=1000041:4053 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 2 - Scarica l'utensile"
+ui.js?nocache=1000041:4054 [DEBUG] 🚀 Step properties: Object
+config.js?nocache=999999:242 [4:45:07 AM] INFO: Esecuzione step: Step 2 - Scarica l'utensile Object
+ui.js?nocache=1000041:6393 📷 [UI] Pulsante reset camera nascosto
+ui.js?nocache=1000041:4087 📷 [UI] Reset stepCameraState per nuovo step
+StepController.js?v=1000008:159 [StepController] 📍 Step corrente: 1 Step 2 - Scarica l'utensile
+StepController.js?v=1000008:251 [StepController] 📋 Step 1 auto-configurato da proprietà:
+StepController.js?v=1000008:252 [StepController]    Triggers Physical: [pulpito.Pulsante_tool]
+StepController.js?v=1000008:253 [StepController]    Actions Physical: 1 azioni
+StepController.js?v=1000008:256 [StepController]      1. setVariant: schermo=schermo003
+StepGatingManager.js?v=1000001:140 🚦 [StepGating] Step 0 → 1 ("Step 2 - Scarica l'utensile")
+StepGatingManager.js?v=1000001:143 🚦 [StepGating] Pulsanti attivi: [Pulsante_tool]
+InteractiveObject3D.js?v=1000003:1209 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+InteractiveObject3D.js?v=1000003:1210 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+InteractiveObject3D.js?v=1000003:1221 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_tool"
+InteractiveObject3D.js?v=1000003:1230 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 10
+InteractiveObject3D.js?v=1000003:1253 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
+InteractiveObject3D.js?v=1000003:1319 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+InteractiveObject3D.js?v=1000003:1333 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_tool
+InteractiveObject3D.js?v=1000003:1334 💡 [InteractiveObject3D] Mesh ha material: true
+InteractiveObject3D.js?v=1000003:1335 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+InteractiveObject3D.js?v=1000003:1336 💡 [InteractiveObject3D] Material ha emissive: true
+InteractiveObject3D.js?v=1000003:1346 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+InteractiveObject3D.js?v=1000003:1363 💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=1, opacity=0
+InteractiveObject3D.js?v=1000003:1372 💡 [InteractiveObject3D] ✓ Tinta applicata al materiale 0: 0x00ffff, intensity=0.01
+InteractiveObject3D.js?v=1000003:1386 💡 [InteractiveObject3D] ✓ Material opacity impostata a 0.20 (fade attivo)
+InteractiveObject3D.js?v=1000003:1394 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_tool" evidenziato e aggiunto a highlightedButtons (totale: 1)
+HighlightCircleManager.js?v=1000025:140 🔵 [HighlightCircleManager] Cerchio creato per "pulpito.Pulsante_tool" (size: 80px, opacity: 0.2)
+InteractiveObject3D.js?v=1000003:1400 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "pulpito.Pulsante_tool" con opacità 0.2
+ui.js?nocache=1000041:4130 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 2 - Scarica l'utensile" con opacità 0.2
+scene3d-modular.js?nocache=1000032:4038 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
+scene3d-modular.js?nocache=1000032:4059 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+scene3d-modular.js?nocache=1000032:4095 📹 CAMERA: Distance = 0.42
+scene3d-modular.js?nocache=1000032:4105 📹 CAMERA: FOV = 75
+scene3d-modular.js?nocache=1000032:4114 📹 CAMERA: Durata transizione = 2s
+scene3d-modular.js?nocache=1000032:4152 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ui.js?nocache=1000041:4416 [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ui.js?nocache=1000041:5091 📷 [UI] CameraTransitionTime: 2s (2000ms)
+scene3d-modular.js?nocache=1000032:1547 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+scene3d-modular.js?nocache=1000032:1575 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_tool"
+scene3d-modular.js?nocache=1000032:1586 ✅ HIGHLIGHT: Trovato child "Pulsante_tool" da evidenziare
+scene3d-modular.js?nocache=1000032:1597 🔍 HIGHLIGHT: Evidenzio: Pulsante_tool
+scene3d-modular.js?nocache=1000032:1447 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_tool
+scene3d-modular.js?nocache=1000032:1505 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_tool (non bloccato, colore=0x00ffff)
+scene3d-modular.js?nocache=1000032:1507 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ui.js?nocache=1000041:5136 📷 [UI] Attesa completamento transizione camera: 2300ms
+ui.js?nocache=1000041:5657 🎬 [UI] Animazione drammatica completata
+scene3d-modular.js?nocache=1000032:4412 📹 CAMERA: Animazione completata
+scene3d-modular.js?nocache=1000032:318 [Scene3D] 📹 CAMERA INFO:
+scene3d-modular.js?nocache=1000032:319   Position: (0.97, 1.25, 3.93)
+scene3d-modular.js?nocache=1000032:320   Rotation: (-0.24, 0, 0)
+scene3d-modular.js?nocache=1000032:322   Pivot Point: (0.97, 1.15, 3.52)
+scene3d-modular.js?nocache=1000032:323   Distance to Pivot: 0.42
+scene3d-modular.js?nocache=1000032:325   FOV: 75
+scene3d-modular.js?nocache=1000032:326   Near/Far: 0.1/1000
+scene3d-modular.js?nocache=1000032:346 
+📋 TUTORIAL SYNTAX (copia e incolla):
+CameraPos=(0.97,1.25,3.93)
+CameraTarget=(0.97,1.15,3.52)
+CameraRotation=(-0.24,0,0)
+CameraPivot=(0.97,1.15,3.52)
+CameraDistance=0.42
+CameraFOV=75
+CameraTransitionTime=1.0
+ui.js?nocache=1000041:5141 📷 [UI] Posizione camera memorizzata per step: Step 2 - Scarica l'utensile
+ui.js?nocache=1000041:5142 📷 [UI] Camera state: Object
+ui.js?nocache=1000041:6374 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+scene3d-modular.js?nocache=1000032:960 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:969 [Scene3D] 🔍 Tool attivo: null
+scene3d-modular.js?nocache=1000032:972 [Scene3D] ⚠️ Nessun tool attivo, esco
+scene3d-modular.js?nocache=1000032:923 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:927 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:943 [Scene3D] ✅ Classi dopo pulizia: Array(0)
+scene3d-modular.js?nocache=1000032:923 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:927 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:943 [Scene3D] ✅ Classi dopo pulizia: Array(0)
+scene3d-modular.js?nocache=1000032:1659 [Scene3D] 🌟 Modello evidenziato attivo: Pulsante_tool, cerco priorità...
+scene3d-modular.js?nocache=1000032:1692 [Scene3D] Click su modello - ToolsManager: null, Body class aria: false, Body class spray: false
+scene3d-modular.js?nocache=1000032:1709 [Scene3D] 🎯 Click rilevato su modello: a500
+scene3d-modular.js?nocache=1000032:1716 [Scene3D] 📺 Uso sistema tutorial legacy per: a500
+scene3d-modular.js?nocache=1000032:2068 [DEBUG] 🎬 handleModelAction chiamato per: a500
+scene3d-modular.js?nocache=1000032:2071 [DEBUG] 📋 Current step: Step 2 - Scarica l'utensile
+scene3d-modular.js?nocache=1000032:2081 [DEBUG] 🎯 Model filename: "a500", Step element: "models/pulpito.glb", TargetChild: "Pulsante_tool"
+scene3d-modular.js?nocache=1000032:2091 [DEBUG] 🎯 Clean model: "a500", Clean step: "pulpito"
+scene3d-modular.js?nocache=1000032:2094 [DEBUG] ❌ Model/element mismatch - USCITA EARLY
+scene3d-modular.js?nocache=1000032:1026 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1027 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
+scene3d-modular.js?nocache=1000032:1046 [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
+
+ui.js?nocache=1000041:2236 📱 Finestra ridimensionata, controllo mobile...

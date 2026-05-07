@@ -389,7 +389,7 @@ window.UI = {
         this.currentTutorial = null;
         this.currentStepIndex = 0;
         this.stepCameraState = null; // Posizione camera dello step corrente
-        this.resetCameraPosition = 'bottom-right'; // Posizione pulsante reset camera (top-right/top-left/top-center/bottom-right/bottom-left/bottom-center)
+        this.resetCameraPosition = 'bottom-left'; // Posizione pulsante reset camera (top-right/top-left/top-center/bottom-right/bottom-left/bottom-center) — default allineato a interfaceconfig.ini
 
         // Reset stato scenario
         this.currentScenario = null;
@@ -612,10 +612,14 @@ window.UI = {
         console.log(`🌍 [loadHomeConfig] currentUser:`, JSON.stringify(window.currentUser));
         console.log(`🌍 [loadHomeConfig] lang rilevata: "${lang}"`);
 
-        const localizedConfig = lang ? `./home_config_${lang}.cvtscript` : null;
-        const fallbackConfig = `./home_config.cvtscript`;
+        const candidates = [
+            lang ? `./scenes/homeconfig_${lang}.ini` : null,
+            `./scenes/homeconfig.ini`,
+            lang ? `./home_config_${lang}.cvtscript` : null,
+            `./home_config.cvtscript`,
+        ].filter(Boolean);
 
-        console.log(`🌍 [loadHomeConfig] Tentativo: ${localizedConfig || '(nessuno, diretto fallback)'} → fallback: ${fallbackConfig}`);
+        console.log(`🌍 [loadHomeConfig] Candidati:`, candidates);
 
         const loadConfig = (path) => {
             return fetchFile(`${path}?v=${Date.now()}`)
@@ -630,15 +634,16 @@ window.UI = {
                 });
         };
 
-        const tryLoad = localizedConfig
-            ? loadConfig(localizedConfig).catch((err) => {
-                console.warn(`🌍 [loadHomeConfig] ❌ Config localizzata FALLITA: ${localizedConfig}`, err.message);
-                return loadConfig(fallbackConfig);
-            })
-            : loadConfig(fallbackConfig);
+        const tryLoad = candidates.reduce(
+            (chain, path, i) => chain.catch(() => {
+                if (i > 0) console.warn(`🌍 [loadHomeConfig] tentativo precedente fallito, provo: ${path}`);
+                return loadConfig(path);
+            }),
+            Promise.reject()
+        );
 
         tryLoad.catch(error => {
-            this.safeLog(1, 'Impossibile caricare home_config dal server:', error.message);
+            this.safeLog(1, 'Impossibile caricare home_config dal server:', error && error.message);
             this.updateStatus('Nessuna configurazione - usa caricamento manuale');
         });
     },
@@ -652,13 +657,14 @@ window.UI = {
     loadInterfaceConfig: function() {
         // In Electron (preload caricato): usa IPC per leggere fuori dall'ASAR
         if (window.electronAPI && window.electronAPI.readConfigFile) {
-            window.electronAPI.readConfigFile('InterfaceConfig.cvtscript')
+            const tryIPC = (name) => window.electronAPI.readConfigFile(name);
+            tryIPC('scenes/interfaceconfig.ini')
+                .then(content => content || tryIPC('InterfaceConfig.cvtscript'))
                 .then(content => {
                     if (content) {
-                        this.safeLog(2, 'InterfaceConfig.cvtscript caricato via IPC (Electron)');
+                        this.safeLog(2, 'interfaceconfig caricato via IPC (Electron)');
                         this.parseInterfaceConfig(content);
                     } else {
-                        // File non trovato via IPC, prova con fetch (fallback)
                         this._loadInterfaceConfigViaFetch();
                     }
                 })
@@ -670,18 +676,25 @@ window.UI = {
     },
 
     _loadInterfaceConfigViaFetch: function() {
-        fetchFile(`./InterfaceConfig.cvtscript?v=${Date.now()}`)
+        const candidates = [
+            './scenes/interfaceconfig.ini',
+            './InterfaceConfig.cvtscript',
+        ];
+        const tryLoad = (path) => fetchFile(`${path}?v=${Date.now()}`)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.text();
             })
             .then(content => {
-                this.safeLog(2, 'InterfaceConfig.cvtscript caricato con successo');
+                this.safeLog(2, `interfaceconfig caricato: ${path}`);
                 this.parseInterfaceConfig(content);
-            })
-            .catch(() => {
-                // File opzionale - silenzioso se assente
             });
+        candidates.reduce(
+            (chain, path) => chain.catch(() => tryLoad(path)),
+            Promise.reject()
+        ).catch(() => {
+            // File opzionale - silenzioso se assente
+        });
     },
 
     /**
@@ -691,6 +704,7 @@ window.UI = {
         const validPositions = ['top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'];
         const lines = content.split('\n');
         let currentSection = null;
+        console.log(`🔧 [UI] parseInterfaceConfig: ${lines.length} righe da processare`);
 
         for (let line of lines) {
             line = line.trim();
@@ -750,6 +764,61 @@ window.UI = {
                     const v = parseFloat(value);
                     if (!isNaN(v) && v > 0) window.InterfaceConfig.camera.zoomMax = v;
                     this.safeLog(2, `InterfaceConfig: CameraControls.ZoomMax = ${value}`);
+                }
+            }
+
+            if (currentSection === 'Highlight' && line.includes('=')) {
+                const [key, value] = line.split('=', 2).map(s => s.trim());
+                window.InterfaceConfig = window.InterfaceConfig || {};
+                window.InterfaceConfig.highlight = window.InterfaceConfig.highlight || {};
+                const IO = window.InteractiveObject3D;
+                const HCM = (window.Scene3D && window.Scene3D.highlightCircleManager) || window.HighlightCircleManager;
+                if (key === 'Color') {
+                    const hex = value.startsWith('0x') || value.startsWith('0X')
+                        ? parseInt(value, 16) : parseInt(value, 10);
+                    if (!isNaN(hex)) {
+                        window.InterfaceConfig.highlight.color = hex;
+                        if (IO && IO.setHighlightColor) IO.setHighlightColor(hex);
+                        else if (IO) IO.config.highlightColor = hex;
+                        if (HCM && typeof HCM.setBorderColor === 'function') HCM.setBorderColor(hex);
+                        if (window.Scene3D && typeof window.Scene3D.setHighlightMaterialColor === 'function') {
+                            window.Scene3D.setHighlightMaterialColor(hex);
+                        }
+                        console.log(`💡 [UI] InterfaceConfig: Highlight.Color = ${value} (hex=0x${hex.toString(16).padStart(6,'0')})`);
+                    } else {
+                        console.warn(`💡 [UI] InterfaceConfig: Highlight.Color non valido: "${value}"`);
+                    }
+                } else if (key === 'IntensityScale') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0) {
+                        window.InterfaceConfig.highlight.intensityScale = v;
+                        if (IO && IO.setHighlightIntensity) IO.setHighlightIntensity(v);
+                        else if (IO) IO.config.highlightIntensityScale = v;
+                        this.safeLog(2, `InterfaceConfig: Highlight.IntensityScale = ${value}`);
+                    }
+                } else if (key === 'DefaultOpacity') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0 && v <= 1) {
+                        window.InterfaceConfig.highlight.defaultOpacity = v;
+                        this.safeLog(2, `InterfaceConfig: Highlight.DefaultOpacity = ${value}`);
+                    }
+                } else if (key === 'FadeMaterial') {
+                    const enabled = (value === 'true');
+                    window.InterfaceConfig.highlight.fadeMaterial = enabled;
+                    if (IO && IO.setHighlightFadeMaterial) IO.setHighlightFadeMaterial(enabled);
+                    else if (IO) IO.config.highlightFadeMaterial = enabled;
+                    this.safeLog(2, `InterfaceConfig: Highlight.FadeMaterial = ${value}`);
+                } else if (key === 'FadeStrength') {
+                    const v = parseFloat(value);
+                    if (!isNaN(v) && v >= 0 && v <= 1) {
+                        window.InterfaceConfig.highlight.fadeStrength = v;
+                        if (IO && IO.setHighlightFadeMaterial) {
+                            IO.setHighlightFadeMaterial(IO.config.highlightFadeMaterial, v);
+                        } else if (IO) {
+                            IO.config.highlightFadeStrength = v;
+                        }
+                        this.safeLog(2, `InterfaceConfig: Highlight.FadeStrength = ${value}`);
+                    }
                 }
             }
         }
@@ -829,9 +898,13 @@ window.UI = {
                     currentScenario.backLight = line.substring(10);
                     AppConfig.log(3, `  🔅 Back Light: ${currentScenario.backLight}`);
 
+                } else if (line.startsWith('tool=')) {
+                    currentScenario.configuration = line.substring(5).trim();
+                    AppConfig.log(3, `  ⚙️ Tool config: ${currentScenario.configuration}`);
+
                 } else if (line.startsWith('Configuration=')) {
                     currentScenario.configuration = line.substring(14).trim();
-                    AppConfig.log(3, `  ⚙️ Configuration: ${currentScenario.configuration}`);
+                    AppConfig.log(3, `  ⚙️ Configuration (legacy): ${currentScenario.configuration}`);
 
                 } else if (line.startsWith('position=')) {
                     // Posizione modello (formato: position=x,y,z)
@@ -859,6 +932,21 @@ window.UI = {
                         } else {
                             AppConfig.log(1, `  ❌ Direzione non valida o nessun file precedente: ${path}`);
                         }
+                    } else if (label === 'models') {
+                        // v2: glob syntax — models=pattern, direction=x,y,z
+                        const dirIdx = path.indexOf(', direction=');
+                        let globPattern = path.trim();
+                        let globDirection = null;
+                        if (dirIdx !== -1) {
+                            globPattern = path.substring(0, dirIdx).trim();
+                            const dirStr = path.substring(dirIdx + 12).trim();
+                            const coords = dirStr.split(',').map(n => parseFloat(n.trim()));
+                            if (coords.length === 3) {
+                                globDirection = { x: coords[0], y: coords[1], z: coords[2] };
+                            }
+                        }
+                        currentScenario.files.push({ label: 'models', path: globPattern, direction: globDirection, isGlob: true });
+                        AppConfig.log(3, `  🔍 Glob: ${globPattern} direzione:`, globDirection);
                     } else {
                         // File da caricare
                         currentScenario.files.push({ label, path, direction: null });
@@ -1117,16 +1205,61 @@ window.UI = {
 
         // Carica automaticamente tutti i modelli OBJ/MTL dello scenario
         this.loadScenarioModels(scenario);
-        
+
+        // Carica objects.ini PRIMA del tutorial: registra StateGroup/InteractiveObject.
+        // Fallback opzionale se objects.ini non esiste.
+        const objectsLoaded = this.loadObjectsForScenario(scenario);
+
         // Carica il tutorial se specificato nel file di configurazione
         if (scenario.tutorial) {
             AppConfig.log(2, `🎓 Caricamento tutorial per scenario: ${scenario.tutorial}`);
-            this.loadTutorial(scenario.tutorial);
+            objectsLoaded.then(() => this.loadTutorial(scenario.tutorial));
         } else {
             AppConfig.log(2, `❌ Nessun tutorial specificato per scenario: ${scenario.name}`);
             // Nasconde la barra tutorial se non c'è tutorial
             this.hideTutorialStepsBar();
         }
+    },
+
+    /**
+     * Carica objects.ini della scena (definizioni statiche di [state ...] e [object ...]).
+     * Riusa la pipeline tutorial (CVTScriptV3 preprocess + parseTutorialContent) per
+     * registrare StateGroup e InteractiveObject. Fallback silenzioso se assente:
+     * il tutorial.cvtscript può ancora contenere le definizioni come legacy.
+     */
+    loadObjectsForScenario: function(scenario) {
+        let sceneFolder = null;
+        if (scenario && scenario.tutorial) {
+            const lastSlash = scenario.tutorial.lastIndexOf('/');
+            if (lastSlash !== -1) sceneFolder = scenario.tutorial.substring(0, lastSlash);
+        }
+        if (!sceneFolder) {
+            AppConfig.log(3, '[loadObjects] Cartella scena non determinabile, skip');
+            return Promise.resolve();
+        }
+
+        const objectsPath = `${sceneFolder}/objects.ini`;
+        AppConfig.log(2, `📦 Tentativo caricamento objects.ini: ${objectsPath}`);
+
+        return fetchFile(`${objectsPath}?v=${Date.now()}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.text();
+            })
+            .then(content => {
+                let processed = content;
+                if (window.CVTScriptV3 && typeof window.CVTScriptV3.preprocess === 'function') {
+                    processed = window.CVTScriptV3.preprocess(content);
+                }
+                // Pipeline tutorial: registra Screen/State/InteractiveObject via parser.
+                // L'array tutorials risultante è vuoto (objects.ini non ha [Tutorial] o [section]),
+                // perciò non sovrascrive availableTutorials.
+                this.parseTutorialContent(processed);
+                AppConfig.log(2, `✅ objects.ini caricato: ${objectsPath}`);
+            })
+            .catch(err => {
+                AppConfig.log(3, `[loadObjects] ${objectsPath} non disponibile (${err && err.message}) - fallback su tutorial.cvtscript`);
+            });
     },
     
     /**
@@ -1326,16 +1459,21 @@ window.UI = {
     /**
      * Carica automaticamente tutti i modelli OBJ/MTL di uno scenario
      */
-    loadScenarioModels: function(scenario) {
+    loadScenarioModels: async function(scenario) {
         console.log('🔄 loadScenarioModels chiamata per:', scenario.name);
         console.log('🔄 Files nello scenario:', scenario.files);
-        
+
         if (!scenario.files || scenario.files.length === 0) {
             console.log('❌ Nessun file nello scenario');
             this.updateStatus(`Scenario ${scenario.name} - Nessun modello da caricare`);
             return;
         }
-        
+
+        // v2: Risolvi glob pattern se presenti
+        if (scenario.files.some(f => f.isGlob)) {
+            scenario.files = await this._resolveGlobs(scenario.files);
+        }
+
         // Filtra solo i file modello (OBJ, MTL, GLTF, GLB, STL)
         const modelFiles = scenario.files.filter(file => {
             const extension = file.path.toLowerCase().split('.').pop();
@@ -2424,9 +2562,14 @@ window.UI = {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
-            const content = await response.text();
+            let content = await response.text();
+            // CVTScript v3 → v2: pre-processo testuale prima del parser principale.
+            // Idempotente per file v1/v2 nativi.
+            if (window.CVTScriptV3 && typeof window.CVTScriptV3.preprocess === 'function') {
+                content = window.CVTScriptV3.preprocess(content);
+            }
             this.availableTutorials = this.parseTutorialContent(content);
-            
+
             if (this.availableTutorials.length > 0) {
                 // Applica automaticamente le impostazioni camera del primo tutorial disponibile
                 const firstTutorial = this.availableTutorials[0];
@@ -2486,18 +2629,37 @@ window.UI = {
             interactiveObjects: new Map(),  // InteractiveObject3D
             stateGroups: new Map()          // StateGroup per varianti mutuamente esclusive
         };
-        
-        for (let line of lines) {
-            line = line.trim();
-            
-            // Ignora righe vuote e commenti
-            if (!line || line.startsWith('#') || line.startsWith('//')) continue;
-            
-            // Rimuovi commenti inline (dopo //)
-            const commentIndex = line.indexOf('//');
-            if (commentIndex !== -1) {
-                line = line.substring(0, commentIndex).trim();
-                if (!line) continue; // Se dopo aver rimosso il commento la riga è vuota, ignorala
+
+        // v2: tracciamento avvertimenti deprecazione + default di sezione persistenti
+        const deprecationWarnings = [];
+        let sectionDefaults = {};
+        let lineNumber = 0;
+
+        for (let rawLine of lines) {
+            lineNumber++;
+            let line = rawLine.trim();
+
+            if (!line) continue;
+
+            // v2: commento # (standard, silenzioso)
+            if (line.startsWith('#')) continue;
+            // v1: commento // (deprecato, genera avvertimento)
+            if (line.startsWith('//')) {
+                deprecationWarnings.push(`Riga ${lineNumber}: usa '#' al posto di '//'`);
+                continue;
+            }
+            // v2: commento # inline silenzioso — es. CameraPos=(0,1,0)   # nota
+            const inlineHashIdx = line.search(/\s#/);
+            if (inlineHashIdx !== -1) {
+                line = line.substring(0, inlineHashIdx).trim();
+                if (!line) continue;
+            }
+            // v1: commento // inline (deprecato)
+            const inlineSlashIdx = line.indexOf('//');
+            if (inlineSlashIdx !== -1) {
+                deprecationWarnings.push(`Riga ${lineNumber}: usa '#' al posto di '//' per commenti inline`);
+                line = line.substring(0, inlineSlashIdx).trim();
+                if (!line) continue;
             }
             
             // Rileva inizio sezione [Nome]
@@ -2591,9 +2753,16 @@ window.UI = {
                     currentScreenSection = null;
                 }
 
+                // v2: [Section - Titolo] → normalizza rimuovendo il prefisso
+                let effectiveSectionName = sectionName;
+                if (/^Section\s*-\s+/i.test(sectionName)) {
+                    effectiveSectionName = sectionName.replace(/^Section\s*-\s*/i, '').trim();
+                    AppConfig.log(3, `📝 [v2] Sezione normalizzata: "${sectionName}" → "${effectiveSectionName}"`);
+                }
+
                 // Determina se è un tutorial principale o uno step
-                const isStep = sectionName.toLowerCase().startsWith('step ') ||
-                               sectionName.toLowerCase().startsWith('next step');
+                const isStep = effectiveSectionName.toLowerCase().startsWith('step ') ||
+                               effectiveSectionName.toLowerCase().startsWith('next step');
 
                 if (isStep) {
                     // È uno step interno al tutorial corrente
@@ -2603,36 +2772,59 @@ window.UI = {
                         }
                     }
 
-                    // Calcola numero step automaticamente se è [Next Step] o [Next Step - Descrizione]
-                    let stepName = sectionName;
-                    let stepTitle = sectionName;
+                    // v2: estrai modificatori da [Step - Titolo | auto, highlight]
+                    let rawStepName = effectiveSectionName;
+                    const stepModifiers = [];
+                    const pipeIdx = effectiveSectionName.indexOf('|');
+                    if (pipeIdx !== -1) {
+                        const modStr = effectiveSectionName.substring(pipeIdx + 1);
+                        modStr.split(',').forEach(m => { const mt = m.trim(); if (mt) stepModifiers.push(mt); });
+                        rawStepName = effectiveSectionName.substring(0, pipeIdx).trim();
+                    }
 
-                    if (sectionName.toLowerCase().startsWith('next step')) {
-                        // Calcola il numero dello step automaticamente
+                    let stepName = rawStepName;
+                    let stepTitle = rawStepName;
+
+                    // v2: [Step - Titolo] senza numero → rinumera automaticamente
+                    if (/^Step\s*-\s+/i.test(rawStepName) && !/^Step\s+\d/i.test(rawStepName)) {
                         const stepNumber = currentTutorial ? currentTutorial.steps.length + 1 : 1;
-
-                        // Controlla se c'è una descrizione dopo "Next Step"
-                        const dashIndex = sectionName.indexOf('-');
+                        const titlePart = rawStepName.replace(/^Step\s*-\s*/i, '').trim();
+                        stepName = `Step ${stepNumber} - ${titlePart}`;
+                        stepTitle = stepName;
+                        AppConfig.log(3, `📝 [v2] Step: "${sectionName}" → "${stepTitle}"`);
+                    }
+                    // v1: [Next Step - Descrizione] → rinumera automaticamente
+                    else if (rawStepName.toLowerCase().startsWith('next step')) {
+                        const stepNumber = currentTutorial ? currentTutorial.steps.length + 1 : 1;
+                        const dashIndex = rawStepName.indexOf('-');
                         if (dashIndex !== -1) {
-                            // Formato: [Next Step - Descrizione]
-                            const description = sectionName.substring(dashIndex).trim(); // Include il "-"
+                            const description = rawStepName.substring(dashIndex).trim();
                             stepName = `Step ${stepNumber} ${description}`;
-                            stepTitle = `Step ${stepNumber} ${description}`;
+                            stepTitle = stepName;
                         } else {
-                            // Formato: [Next Step]
                             stepName = `Step ${stepNumber}`;
-                            stepTitle = `Step ${stepNumber}`;
+                            stepTitle = stepName;
                         }
-
                         AppConfig.log(3, `📝 PARSER: [${sectionName}] → automaticamente rinumerato come [${stepTitle}]`);
                     }
 
-                    // Crea nuovo step
+                    // Crea nuovo step con default di sezione pre-applicati (v2)
                     currentStep = {
                         name: stepName,
                         title: stepTitle,
-                        properties: {}
+                        properties: Object.assign({}, sectionDefaults)
                     };
+
+                    // v2: applica modificatori come proprietà dello step
+                    for (const modifier of stepModifiers) {
+                        if (modifier === 'auto') currentStep.properties['Autoaction'] = 'true';
+                        else if (modifier === 'machine') {
+                            currentStep.properties['AutoExecute'] = 'true';
+                            currentStep.properties['AutoAdvance'] = 'true';
+                        }
+                        else if (modifier === 'highlight') currentStep.properties['HighlightDescription'] = 'true';
+                        else AppConfig.log(1, `[v2] Modificatore sconosciuto: '${modifier}' in "${sectionName}"`);
+                    }
                 } else {
                     // È un tutorial principale
                     // Salva step precedente se esiste
@@ -2649,10 +2841,10 @@ window.UI = {
                     
                     // Crea nuovo tutorial
                     currentTutorial = {
-                        name: sectionName,
-                        title: sectionName,
+                        name: effectiveSectionName,
+                        title: effectiveSectionName,
                         steps: [],
-                        properties: {}  // NUOVO: proprietà globali del tutorial
+                        properties: {}
                     };
                     
                     // Se è il primo tutorial e abbiamo proprietà globali, applicale
@@ -2669,8 +2861,8 @@ window.UI = {
             else if (line && line.includes('=')) {
                 // Dividi solo sul PRIMO '=' per preservare '=' nei valori
                 const eqIndex = line.indexOf('=');
-                const key = line.substring(0, eqIndex).trim();
-                const value = line.substring(eqIndex + 1).trim();
+                let key = line.substring(0, eqIndex).trim();
+                let value = line.substring(eqIndex + 1).trim();
 
                 // ═══════════════════════════════════════════════════════════════
                 // SCREEN SYSTEM: Se siamo in una sezione screen, salva proprietà lì
@@ -2683,12 +2875,82 @@ window.UI = {
                         } else if (!Array.isArray(currentScreenSection.properties[key])) {
                             currentScreenSection.properties[key] = [currentScreenSection.properties[key]];
                         }
-                        currentScreenSection.properties[key].push(value);
-                        console.log(`🎮 [PARSER] InteractiveChild aggiunto: ${value} (totale: ${currentScreenSection.properties[key].length})`);
+                        const cleanIC = value.replace(/,\s*opacity:1\.0/g, '');
+                        currentScreenSection.properties[key].push(cleanIC);
+                        console.log(`🎮 [PARSER] InteractiveChild aggiunto: ${cleanIC} (totale: ${currentScreenSection.properties[key].length})`);
                     } else {
                         currentScreenSection.properties[key] = value;
                     }
                     continue; // Salta il resto del parsing proprietà
+                }
+
+                // ═══════════════════════════════════════════════════════════════
+                // CVTScript v2: Normalizzazioni proprietà
+                // ═══════════════════════════════════════════════════════════════
+
+                // v2: Default.xxx → accumula nei default di sezione persistenti
+                if (key.startsWith('Default.')) {
+                    sectionDefaults[key.substring(8)] = value;
+                    AppConfig.log(3, `[v2] Default sezione: ${key.substring(8)} = ${value}`);
+                    continue;
+                }
+                // v2: TutorialSteps= → deprecato, ignorato
+                if (key === 'TutorialSteps') {
+                    deprecationWarnings.push(`Riga ${lineNumber}: 'TutorialSteps=' è deprecato — valore calcolato automaticamente`);
+                    continue;
+                }
+                // v2: HighlightDescription=false → deprecato, è il default implicito
+                if (key === 'HighlightDescription' && value.toLowerCase() === 'false') {
+                    deprecationWarnings.push(`Riga ${lineNumber}: 'HighlightDescription=false' è deprecato — è il default implicito`);
+                    continue;
+                }
+                // v2: Element= → Elemento= (con notazione puntata per TargetChild)
+                if (key === 'Element') {
+                    const dotIdx = value.indexOf('.');
+                    if (dotIdx !== -1) {
+                        const propTarget = currentStep ? currentStep.properties : (currentTutorial ? currentTutorial.properties : globalProperties);
+                        propTarget['TargetChild'] = value.substring(dotIdx + 1);
+                        key = 'Elemento';
+                        value = `models/${value.substring(0, dotIdx)}.glb`;
+                    } else {
+                        key = 'Elemento';
+                        value = `models/${value}.glb`;
+                    }
+                } else if (key === 'Tool') {
+                    key = 'Utensile';
+                } else if (key === 'Description') {
+                    key = 'Descrizione';
+                } else {
+                    const actionMatch = key.match(/^Action(\d+)$/);
+                    if (actionMatch) {
+                        key = `Azione${actionMatch[1]}`;
+                        value = this._v2NormalizeActionValue(value);
+                    }
+                }
+                // v2: Auto=true → Autoaction=true
+                if (key === 'Auto' && value.toLowerCase() === 'true') key = 'Autoaction';
+                // v2: Machine=true → AutoExecute=true + AutoAdvance=true
+                if (key === 'Machine' && value.toLowerCase() === 'true') {
+                    const propTarget = currentStep ? currentStep.properties : (currentTutorial ? currentTutorial.properties : globalProperties);
+                    propTarget['AutoExecute'] = 'true';
+                    propTarget['AutoAdvance'] = 'true';
+                    continue;
+                }
+                // v2: Button=model.Mesh → ActiveButtons + AcceptTrigger_Physical + AutoAdvance
+                if (key === 'Button') {
+                    const propTarget = currentStep ? currentStep.properties : (currentTutorial ? currentTutorial.properties : globalProperties);
+                    const buttons = value.split(',').map(b => b.trim());
+                    const meshNames = buttons.map(b => { const di = b.indexOf('.'); return di !== -1 ? b.substring(di + 1) : b; });
+                    propTarget['ActiveButtons'] = meshNames.join(',');
+                    propTarget['AcceptTrigger_Physical'] = value;
+                    propTarget['AutoAdvance'] = 'true';
+                    continue;
+                }
+                // v2: AfterClick=key=val → OnPhysicalTrigger=setVariant:key=val
+                if (key === 'AfterClick') {
+                    const parts = value.split(';').map(p => p.trim()).filter(p => p);
+                    key = 'OnPhysicalTrigger';
+                    value = parts.map(p => `setVariant:${p}`).join(';');
                 }
 
                 if (!currentTutorial) {
@@ -2808,6 +3070,31 @@ window.UI = {
             tutorials.push(currentTutorial);
         }
 
+        // v2: Applica ereditarietà proprietà tra step consecutivi
+        const inheritableProps = [
+            'CameraPos', 'CameraTarget', 'CameraPivot', 'CameraRotation',
+            'CameraDistance', 'CameraFOV', 'CameraTransitionTime', 'CameraZoom',
+            'Utensile', 'DragDropDistance', 'ShowSnapIndicators'
+        ];
+        for (const tutorial of tutorials) {
+            let ctx = Object.assign({}, tutorial.properties || {});
+            for (const step of tutorial.steps) {
+                for (const prop of inheritableProps) {
+                    if (!(prop in step.properties) && prop in ctx) {
+                        step.properties[prop] = ctx[prop];
+                    }
+                }
+                for (const prop of inheritableProps) {
+                    if (prop in step.properties) ctx[prop] = step.properties[prop];
+                }
+            }
+        }
+
+        // v2: Mostra banner deprecazione se ci sono avvertimenti
+        if (deprecationWarnings.length > 0) {
+            this._v2ShowDeprecationBanner(deprecationWarnings);
+        }
+
         // ═══════════════════════════════════════════════════════════════
         // SCREEN SYSTEM: Salva ultima sezione e registra in ScreenSystem
         // ═══════════════════════════════════════════════════════════════
@@ -2836,6 +3123,153 @@ window.UI = {
         }
         
         return tutorials;
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CVTScript v2.0 — Metodi helper
+    // ═══════════════════════════════════════════════════════════════════════
+
+    _v2NormalizeActionValue: function(value) {
+        if (/^unscrew(\(|$)/.test(value)) return value.replace(/^unscrew/, 'svita');
+        if (/^screw(\(|$)/.test(value)) return value.replace(/^screw/, 'avvita');
+        if (/^extract(\(|$)/.test(value)) return value.replace(/^extract/, 'estrai');
+        if (/^insert(\(|$)/.test(value)) return value.replace(/^insert/, 'inserisci');
+        if (/^place(\(|$)/.test(value)) return value.replace(/^place/, 'appoggia');
+        if (/^translate:/.test(value)) return value.replace(/^translate:/, 'traslazione:');
+        if (/^rotate:/.test(value)) return value.replace(/^rotate:/, 'rotazione:');
+
+        // translate_from:ref(x,y,z,t) → traslazione:ref,(x,y,z,t)
+        if (/^translate_from:/.test(value)) {
+            const afterColon = value.substring('translate_from:'.length);
+            const parenIdx = afterColon.indexOf('(');
+            if (parenIdx !== -1) {
+                const ref = afterColon.substring(0, parenIdx).trim();
+                const paramPart = afterColon.substring(parenIdx);
+                return `traslazione:${ref},${paramPart}`;
+            }
+        }
+
+        // rotate_around:(pivot),(rx,ry,rz,t) → centro:(pivot);rotazione:(rx,ry,rz,t)
+        if (/^rotate_around:/.test(value)) {
+            const afterCmd = value.substring('rotate_around:'.length).trim();
+            const firstOpen = afterCmd.indexOf('(');
+            const firstClose = afterCmd.indexOf(')');
+            if (firstOpen !== -1 && firstClose !== -1) {
+                const pivot = afterCmd.substring(firstOpen, firstClose + 1);
+                const rest = afterCmd.substring(firstClose + 1).replace(/^\s*,\s*/, '');
+                return `centro:${pivot};rotazione:${rest}`;
+            }
+        }
+
+        if (/^pump:/.test(value)) return this._v2NormalizePump(value);
+
+        return value;
+    },
+
+    _v2NormalizePump: function(value) {
+        const colonIdx = value.indexOf(':');
+        const afterColon = value.substring(colonIdx + 1);
+        const parenIdx = afterColon.indexOf('(');
+        if (parenIdx === -1) return value;
+
+        const ref = afterColon.substring(0, parenIdx).trim();
+        const paramsStr = afterColon.substring(parenIdx + 1, afterColon.lastIndexOf(')'));
+
+        const extFromMatch = paramsStr.match(/from\s*=\s*\(([^)]+)\)/);
+        const extToMatch = paramsStr.match(/to\s*=\s*\(([^)]+)\)/);
+
+        if (extFromMatch && extToMatch) {
+            const fv = extFromMatch[1].split(',').map(v => parseFloat(v.trim()));
+            const tv = extToMatch[1].split(',').map(v => parseFloat(v.trim()));
+            const cycles = (paramsStr.match(/cycles\s*=\s*(\d+)/) || [, 10])[1];
+            const dur = (paramsStr.match(/duration\s*=\s*([\d.]+)/) || [, 0.1])[1];
+            return `oscillazione:${ref},(${fv[0]||0},${fv[1]||0},${fv[2]||0},${tv[0]||0},${tv[1]||0},${tv[2]||0},${cycles},${dur})`;
+        } else {
+            const axis = (paramsStr.match(/axis\s*=\s*([xyz])/) || [, 'x'])[1];
+            const amp = parseFloat((paramsStr.match(/amplitude\s*=\s*([\d.]+)/) || [, '0.1'])[1]);
+            const cycles = (paramsStr.match(/cycles\s*=\s*(\d+)/) || [, 10])[1];
+            const dur = (paramsStr.match(/duration\s*=\s*([\d.]+)/) || [, 0.1])[1];
+            const ax = axis === 'x' ? amp : 0;
+            const ay = axis === 'y' ? amp : 0;
+            const az = axis === 'z' ? amp : 0;
+            return `oscillazione:${ref},(0,0,0,${ax},${ay},${az},${cycles},${dur})`;
+        }
+    },
+
+    _v2ShowDeprecationBanner: function(warnings) {
+        const banner = document.getElementById('cvtscriptDeprecationBanner');
+        if (!banner) return;
+        const list = banner.querySelector('.cvtscript-deprecation-list');
+        if (list) {
+            list.innerHTML = warnings.map(w => `<li>${w}</li>`).join('');
+        }
+        banner.classList.remove('hidden');
+        AppConfig.log(1, `[v2] ${warnings.length} avvertimento/i deprecazione CVTScript`);
+    },
+
+    _resolveGlobs: async function(files) {
+        const resolved = [];
+        for (const file of files) {
+            if (!file.isGlob) { resolved.push(file); continue; }
+            const slashIdx = file.path.lastIndexOf('/');
+            const dirPath = slashIdx !== -1 ? file.path.substring(0, slashIdx + 1) : '';
+            const pattern = slashIdx !== -1 ? file.path.substring(slashIdx + 1) : file.path;
+            const regex = new RegExp('^' + pattern.replace(/\./g, '\\.').replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
+            try {
+                const resp = await fetch(dirPath || './');
+                if (!resp.ok) { console.warn(`[v2] Glob: impossibile leggere directory "${dirPath}"`); continue; }
+                const html = await resp.text();
+                for (const [, name] of html.matchAll(/href="([^"?#/][^"?#]*)"/g)) {
+                    if (regex.test(name)) {
+                        resolved.push({ label: 'model', path: dirPath + name, direction: file.direction, isGlob: false });
+                        AppConfig.log(3, `  🔍 Glob → ${dirPath + name}`);
+                    }
+                }
+            } catch (err) {
+                console.warn(`[v2] Glob errore risoluzione: ${err.message}`);
+            }
+        }
+        return resolved;
+    },
+
+    _v2LoadAndApplyState: async function(filePath) {
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) {
+                console.warn(`[v2] LoadState: file non trovato: ${filePath}`);
+                return;
+            }
+            const content = await response.text();
+            const lines = content.split('\n');
+            const positions = [];
+            const rotations = [];
+            const variants = [];
+
+            for (const rawLine of lines) {
+                const line = rawLine.trim();
+                if (!line || line.startsWith('#')) continue;
+                if (line.startsWith('Posizione=')) positions.push(line.substring(10));
+                else if (line.startsWith('Rotazione=')) rotations.push(line.substring(10));
+                else if (line.startsWith('Variante=')) variants.push(line.substring(9));
+            }
+
+            if ((positions.length > 0 || rotations.length > 0) && window.Scene3D?.applyModelSettings) {
+                const fakeStep = { properties: {} };
+                if (positions.length) fakeStep.properties['Posizione'] = positions;
+                if (rotations.length) fakeStep.properties['Rotazione'] = rotations;
+                window.Scene3D.applyModelSettings(fakeStep);
+                AppConfig.log(2, `[v2] LoadState: ${positions.length} posizioni, ${rotations.length} rotazioni applicate`);
+            }
+
+            for (const v of variants) {
+                const colonIdx = v.indexOf(':');
+                if (colonIdx !== -1 && window.InteractiveObject3D?.setStateVariant) {
+                    window.InteractiveObject3D.setStateVariant(v.substring(0, colonIdx).trim(), v.substring(colonIdx + 1).trim());
+                }
+            }
+        } catch (err) {
+            console.error(`[v2] LoadState errore: ${err.message}`);
+        }
     },
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -3104,7 +3538,7 @@ window.UI = {
             this.applyTutorialCameraSettings();
 
             // Applica anche le impostazioni modelli del tutorial
-            this.applyTutorialModelSettings();
+            await this.applyTutorialModelSettings();
 
             if (window.Scene3D && window.Scene3D.highlightCurrentTutorialElement) {
                 window.Scene3D.highlightCurrentTutorialElement();
@@ -3263,12 +3697,18 @@ window.UI = {
     /**
      * Applica impostazioni modelli dal tutorial corrente
      */
-    applyTutorialModelSettings: function() {
+    applyTutorialModelSettings: async function() {
         if (!this.currentTutorial || !this.currentTutorial.properties) {
             return;
         }
-        
+
         const props = this.currentTutorial.properties;
+
+        // v2: LoadState → carica file .cvtstate esterno
+        if (props.LoadState) {
+            await this._v2LoadAndApplyState(props.LoadState);
+        }
+
         let hasModelSettings = false;
         
         // Crea oggetto tutorial fake per riusare la funzione esistente di Scene3D
@@ -3671,15 +4111,18 @@ window.UI = {
             if (step.properties.AcceptTrigger_Physical) {
                 const triggers = step.properties.AcceptTrigger_Physical.split(',').map(t => t.trim());
 
-                // Parsing HighlightOpacity (default: 0.5 = semitrasparente bilanciato)
-                let highlightOpacity = 0.5;
+                // Default opacity da interfaceconfig.ini > Highlight.DefaultOpacity (fallback 0.5)
+                const cfgDefault = (window.InterfaceConfig && window.InterfaceConfig.highlight
+                    && typeof window.InterfaceConfig.highlight.defaultOpacity === 'number')
+                    ? window.InterfaceConfig.highlight.defaultOpacity : 0.5;
+                let highlightOpacity = cfgDefault;
                 if (step.properties.HighlightOpacity) {
                     const parsed = parseFloat(step.properties.HighlightOpacity);
                     if (!isNaN(parsed) && parsed >= 0 && parsed <= 1.0) {
                         highlightOpacity = parsed;
                         console.log(`💡 [UI] HighlightOpacity personalizzata: ${highlightOpacity}`);
                     } else {
-                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default 0.5`);
+                        console.warn(`⚠️ [UI] HighlightOpacity non valida (${step.properties.HighlightOpacity}), uso default ${cfgDefault}`);
                     }
                 }
 
@@ -4654,7 +5097,9 @@ window.UI = {
                     // CERCHIO SELEZIONE GIALLO per Elemento azionabile (convergere.txt)
                     // Il cerchio definisce l'area di interazione valida: il touch/click è
                     // accettato se cade dentro il cerchio, anche se il raycast manca la mesh.
-                    if (window.Scene3D.highlightCircleManager && step.properties.DragDrop !== 'true') {
+                    // Skip se AcceptTrigger_Physical: il mesh ha già un cerchio (trigger),
+                    // due cerchi sovrapposti = anomalia visiva (vedi pulsante MDI).
+                    if (window.Scene3D.highlightCircleManager && step.properties.DragDrop !== 'true' && !step.properties.AcceptTrigger_Physical) {
                         const cleanName = step.properties.Elemento.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
                         const obj = window.Scene3D.findModelByName(cleanName);
                         if (obj) {

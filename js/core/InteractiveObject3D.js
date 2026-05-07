@@ -51,6 +51,13 @@ window.InteractiveObject3D = {
         hoverColor: 0x44ff44,           // Colore hover (verde)
         clickColor: 0xffff00,           // Colore click (giallo)
 
+        // Evidenziazione pulsanti richiesti (highlightRequiredButtons)
+        highlightColor: 0xffff00,       // Colore tinta evidenziazione (giallo default)
+        highlightIntensityScale: 0.6,   // Scala emissive (intensity = HighlightOpacity × scale)
+        highlightFadeMaterial: false,   // Se true, riduce anche material.opacity (vecchio look "see-through")
+        highlightFadeStrength: 0.5,     // Quanto fade applica al material.opacity quando fadeMaterial=true
+                                        //   opacity finale = 1 - (1 - HighlightOpacity) × highlightFadeStrength
+
         // Debug
         debugMode: false,               // Log dettagliati
         showColliders: false            // Visualizza collider (debug)
@@ -1197,6 +1204,7 @@ window.InteractiveObject3D = {
 
         // Default opacity: 0.5 (semitrasparente bilanciato)
         const highlightOpacity = (opacity !== undefined && !isNaN(opacity)) ? opacity : 0.5;
+        this._lastHighlightOpacity = highlightOpacity;
 
         console.log(`💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti:`, triggers);
         console.log(`💡 [InteractiveObject3D] Opacità evidenziazione: ${highlightOpacity}`);
@@ -1355,22 +1363,37 @@ window.InteractiveObject3D = {
                 console.log(`💡 [InteractiveObject3D] Valori originali salvati per materiale ${index}: emissive=${mesh.userData.originalMaterials[index].emissive.toString(16)}, intensity=${mesh.userData.originalMaterials[index].emissiveIntensity}, opacity=${mesh.userData.originalMaterials[index].opacity}`);
             }
 
-            // Applica emissione gialla (intensità scalata con opacity per trasparenza)
+            // Mesh originalmente invisibile (es. trigger zone con opacity=0): non disegnarla.
+            // Il cerchio 2D del HighlightCircleManager guida comunque l'utente al click.
+            const originalOpacity = mesh.userData.originalMaterials[index].opacity;
+            if (originalOpacity <= 0.001) {
+                console.log(`💡 [InteractiveObject3D] Materiale ${index} originalmente invisibile (opacity=${originalOpacity}), skip highlight per mantenerlo invisibile`);
+                return;
+            }
+
+            // Applica tinta gialla via emissive (il materiale resta opaco: vediamo il pulsante sotto la velatura)
+            const highlightColor = this.config.highlightColor;
+            const intensityScale = this.config.highlightIntensityScale;
             if (material.emissive) {
-                material.emissive.setHex(0xffff00); // Giallo brillante
-                // Scala intensità con opacity: 0.3 → 0.6, 0.5 → 1.0, 1.0 → 2.0
-                material.emissiveIntensity = highlightOpacity * 2.0;
-                console.log(`💡 [InteractiveObject3D] ✓ Emissive applicata al materiale ${index}: 0xffff00, intensity=${material.emissiveIntensity.toFixed(2)}`);
+                material.emissive.setHex(highlightColor);
+                material.emissiveIntensity = highlightOpacity * intensityScale;
+                console.log(`💡 [InteractiveObject3D] ✓ Tinta applicata al materiale ${index}: 0x${highlightColor.toString(16).padStart(6,'0')}, intensity=${material.emissiveIntensity.toFixed(2)}`);
             } else {
                 console.warn(`💡 [InteractiveObject3D] ⚠️ Materiale ${index} non ha proprietà emissive`);
             }
 
-            // Applica trasparenza reale (si vede attraverso il pulsante)
-            material.opacity = highlightOpacity;
-            material.transparent = highlightOpacity < 1.0;
-            material.depthWrite = highlightOpacity >= 1.0; // Disabilita depthWrite per trasparenza corretta
+            // Riduzione opacity materiale: opzionale (default OFF). Quando attiva, la velatura
+            // diventa anche see-through. La formula evita che il pulsante sparisca:
+            //   opacity = 1 - (1 - HighlightOpacity) × fadeStrength
+            if (this.config.highlightFadeMaterial) {
+                const fadeStrength = Math.max(0, Math.min(1, this.config.highlightFadeStrength));
+                const finalOpacity = Math.max(0, Math.min(1, 1 - (1 - highlightOpacity) * fadeStrength));
+                material.opacity = finalOpacity;
+                material.transparent = finalOpacity < 1.0;
+                material.depthWrite = finalOpacity >= 1.0;
+                console.log(`💡 [InteractiveObject3D] ✓ Material opacity impostata a ${finalOpacity.toFixed(2)} (fade attivo)`);
+            }
             material.needsUpdate = true;
-            console.log(`💡 [InteractiveObject3D] ✓ Opacity impostata a ${highlightOpacity} per materiale ${index} (transparent: ${highlightOpacity < 1.0})`);
         });
 
         // Traccia pulsante evidenziato
@@ -1440,6 +1463,68 @@ window.InteractiveObject3D = {
         }
 
         this.highlightedButtons.clear();
+    },
+
+    /**
+     * Imposta colore evidenziazione (applica anche ai pulsanti già evidenziati).
+     * @param {number|string} color - Hex (es. 0xffaa00) o CSS string (es. '#ffaa00')
+     */
+    setHighlightColor: function(color) {
+        const hex = typeof color === 'string'
+            ? parseInt(color.replace('#', ''), 16)
+            : color;
+        if (isNaN(hex)) {
+            console.warn(`[InteractiveObject3D] Colore non valido: ${color}`);
+            return;
+        }
+        this.config.highlightColor = hex;
+        console.log(`💡 [InteractiveObject3D] highlightColor = 0x${hex.toString(16).padStart(6,'0')}`);
+        this._reapplyActiveHighlights();
+    },
+
+    /**
+     * Imposta scala intensità evidenziazione (emissiveIntensity = HighlightOpacity × scala).
+     * @param {number} scale - 0..2 (default 0.6)
+     */
+    setHighlightIntensity: function(scale) {
+        const v = parseFloat(scale);
+        if (isNaN(v) || v < 0) {
+            console.warn(`[InteractiveObject3D] Intensità non valida: ${scale}`);
+            return;
+        }
+        this.config.highlightIntensityScale = v;
+        console.log(`💡 [InteractiveObject3D] highlightIntensityScale = ${v}`);
+        this._reapplyActiveHighlights();
+    },
+
+    /**
+     * Abilita/disabilita la riduzione di material.opacity (look "see-through").
+     * @param {boolean} enabled
+     * @param {number} [strength] - 0..1, quanto fade (default 0.5)
+     */
+    setHighlightFadeMaterial: function(enabled, strength) {
+        this.config.highlightFadeMaterial = !!enabled;
+        if (strength !== undefined && !isNaN(parseFloat(strength))) {
+            this.config.highlightFadeStrength = Math.max(0, Math.min(1, parseFloat(strength)));
+        }
+        console.log(`💡 [InteractiveObject3D] highlightFadeMaterial=${this.config.highlightFadeMaterial}, fadeStrength=${this.config.highlightFadeStrength}`);
+        this._reapplyActiveHighlights();
+    },
+
+    /**
+     * Riapplica l'evidenziazione ai pulsanti attualmente evidenziati con la nuova config.
+     * @private
+     */
+    _reapplyActiveHighlights: function() {
+        if (this.highlightedButtons.size === 0) return;
+        const entries = Array.from(this.highlightedButtons.entries());
+        // Salva l'opacity con cui sono stati evidenziati (se tracciata, altrimenti default)
+        const lastOpacity = this._lastHighlightOpacity !== undefined ? this._lastHighlightOpacity : 0.5;
+        // Pulisci e riapplica
+        this.clearButtonHighlights();
+        for (const [triggerId, mesh] of entries) {
+            this.applyButtonHighlight(mesh, triggerId, lastOpacity);
+        }
     },
 
     // ═══════════════════════════════════════════════════════════════════

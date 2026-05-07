@@ -1,0 +1,6 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\contentsline {chapter}{Una proposta di evoluzione}{ii}{chapter*.1}%
+\contentsline {section}{\numberline {0.1}Perché il tuo ruolo è fondamentale}{ii}{section.0.1}%
+\contentsline {section}{\numberline {0.2}Non una fuga, ma un'estensione}{ii}{section.0.2}%
+\contentsline {section}{\numberline {0.3}Il passo successivo}{iii}{section.0.3}%
