@@ -74,21 +74,21 @@ class TutorialManager {
             this.availableTutorials = this.parseTutorialContent(content);
 
             if (this.availableTutorials.length > 0) {
-                // Applica automaticamente le impostazioni camera del primo tutorial disponibile
-                const firstTutorial = this.availableTutorials[0];
-                if (firstTutorial && firstTutorial.properties) {
-                    this.applyInitialCameraSettings(firstTutorial);
-                }
-
-                // NON selezionare automaticamente nessun tutorial - lascia che l'utente scelga
+                // Reset stato prima dell'auto-select (necessario se si ricarica lo stesso scenario:
+                // selectTutorial() ignora il click se l'indice è già attivo)
                 this.currentTutorial = null;
+                this.currentTutorialIndex = -1;
                 this.tutorialSteps = [];
-                this.currentStepIndex = -1; // -1 indica "nessun tutorial attivo"
+                this.currentStepIndex = -1;
 
                 this.createTutorialStepsBar();
                 this.showTutorialStepsBar();
 
-                this.safeLog(2, `[TutorialManager] Tutorial disponibili: ${this.availableTutorials.length} - Camera impostata dal primo tutorial`);
+                // Auto-seleziona la prima sessione (o l'unica): l'utente non deve cliccare manualmente.
+                // selectTutorial(0) applica camera, aggiorna barra/fumetto e parte dallo step 0.
+                this.selectTutorial(0);
+
+                this.safeLog(2, `[TutorialManager] Tutorial disponibili: ${this.availableTutorials.length} - Auto-selezionata sessione 0`);
             } else {
                 this.hideStepSpeechBubble();
                 this.safeLog(1, '[TutorialManager] Nessun tutorial trovato nel file');

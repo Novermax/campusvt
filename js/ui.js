@@ -1858,6 +1858,18 @@ window.UI = {
             window.InteractiveObject3D.attachStateGroupMeshesFromScene();
         }
 
+        // Auto-select sessione: se selectTutorial() è stato invocato prima che i modelli
+        // fossero caricati (caso tipico dell'auto-select su loadScenario), il body del suo
+        // setTimeout è stato rinviato. Ora che i modelli ci sono, rieseguiamo selectTutorial:
+        // resetterà gli highlight, ri-applicherà camera/posizioni e farà partire lo step 0
+        // con la silhouette gialla sull'elemento corretto.
+        if (this._pendingAutoSelectTutorialIndex !== undefined && this._pendingAutoSelectTutorialIndex !== null) {
+            const idx = this._pendingAutoSelectTutorialIndex;
+            this._pendingAutoSelectTutorialIndex = null;
+            console.log(`🎯 onModelLoadComplete: completo auto-select sessione ${idx} (modelli ora pronti)`);
+            this.selectTutorial(idx);
+        }
+
     },
     
     /**
@@ -2571,30 +2583,14 @@ window.UI = {
             this.availableTutorials = this.parseTutorialContent(content);
 
             if (this.availableTutorials.length > 0) {
-                // Applica automaticamente le impostazioni camera del primo tutorial disponibile
-                const firstTutorial = this.availableTutorials[0];
-                if (firstTutorial && firstTutorial.properties) {
-                    this.applyInitialCameraSettings(firstTutorial);
-                }
-                
-                // NON selezionare automaticamente nessun tutorial - lascia che l'utente scelga
-                this.currentTutorial = null;
-                this.tutorialSteps = [];
-                this.currentStepIndex = -1; // -1 indica "nessun tutorial attivo"
-
-                // Reset silhouette da tutorial precedente
-                this.resetAllHighlights();
-
+                // parseTutorialContent() ha già chiamato selectTutorial(0) per auto-selezionare
+                // la prima sessione (o l'unica). Qui mostriamo solo la barra delle sessioni;
+                // niente reset di currentTutorial/tutorialSteps/currentStepIndex e niente overlay
+                // "Seleziona un Tutorial" — l'utente non deve cliccare manualmente per partire.
                 this.createTutorialStepsBar();
                 this.showTutorialStepsBar();
-                // NON chiamare updateStepSpeechBubble() - il fumetto rimane nascosto
 
-                // ✨ Mostra overlay selezione tutorial con pulsanti pulsanti
-                setTimeout(() => {
-                    this.showTutorialSelectionOverlay();
-                }, 500); // Delay 500ms per permettere animazione barra tutorial
-
-                AppConfig.log(2, `Tutorial disponibili: ${this.availableTutorials.length} - Camera impostata dal primo tutorial`);
+                AppConfig.log(2, `Tutorial disponibili: ${this.availableTutorials.length} - Auto-selezionata sessione 0`);
             } else {
                 this.hideStepSpeechBubble(); // Nasconde il fumetto se non ci sono tutorial
                 AppConfig.log(1, 'Nessun tutorial trovato nel file');
@@ -3532,6 +3528,19 @@ window.UI = {
         
         // Evidenzia il primo elemento del tutorial appena selezionato
         setTimeout(async () => {
+            // Se i modelli 3D non sono ancora caricati (auto-select dopo loadTutorial,
+            // ma loadModels async non ha ancora finito), rinvia tutto a onModelLoadComplete:
+            // highlightCurrentTutorialElement cerca il modello in Scene3D.loadedModels e
+            // se non lo trova esce silenziosamente, lasciando la silhouette assente.
+            const modelsReady = window.Scene3D &&
+                Array.isArray(window.Scene3D.loadedModels) &&
+                window.Scene3D.loadedModels.length > 0;
+            if (!modelsReady) {
+                this._pendingAutoSelectTutorialIndex = tutorialIndex;
+                AppConfig.log(2, `🎯 selectTutorial(${tutorialIndex}): modelli non ancora pronti, esecuzione step 0 rinviata a onModelLoadComplete`);
+                return;
+            }
+
             console.log('🚀 Tutorial avviato dall\'utente - evidenzio primo elemento');
 
             // ADESSO applica le impostazioni camera del tutorial (quando parte il primo step)
