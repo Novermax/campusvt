@@ -1,0 +1,166 @@
+
+# ════════════════════════════════════════════════════════════════════════════════
+# WARTUNG ELEKTROSPINDEL - Tutorial CVTScript v3
+# ════════════════════════════════════════════════════════════════════════════════
+
+# ════════════════════════════════════════════════════════════════════════════════
+# GLOBALE KONFIGURATION
+# ════════════════════════════════════════════════════════════════════════════════
+
+[scene]
+camera = position (1.01, 1.22, 3.87), target (0, 0, 0), rotation (-0.26, -0.01, 0), pivot (1.02, 1.1, 3.4), distance 1.24, fov 75.0, fade 2.0
+
+# NOTE: Definizioni di [state ...] e [object ...] estratte in objects.ini
+# (caricato automaticamente prima di questo file dal loader modulare).
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TUTORIAL: Elektrospindel-Wartung – Schmierung
+# ════════════════════════════════════════════════════════════════════════════════
+
+[section "Elektrospindel-Wartung – Schmierung"]
+camera = position (0.97, 1.25, 3.92), target (0.97, 1.15, 3.52), rotation (-0.24, 0, 0), pivot (0.97, 1.15, 3.52), distance 0.42, fov 75.0, fade 2.0
+
+[step "MDI-Bildschirm aufrufen" highlight]
+description = Drücken Sie die MDI-Taste am Bedienpult, um den manuellen Steuermodus aufzurufen.
+element     = pulpito.Pulsante_mdi
+after       : schermo = schermo002
+
+[step "Werkzeug entladen" highlight]
+description = Drücken Sie die Bildschirmtaste, um das Werkzeug T=1000 zu entladen.
+element     = pulpito.Pulsante_tool
+after       : schermo = schermo003
+
+[step "Tecpad-Fernbedienung aufnehmen" highlight]
+description = Nehmen Sie die Tecpad-Fernbedienung auf.
+camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), fov 75.0, fade 2.0, distance 0.5
+tool        = hand
+hold        = pick remote at (-0.25, -0.07, 0.25) facing (0, 5, 0)
+view        = main
+
+[step "Start-Taste drücken" highlight]
+camera      = position (2.52, 1.3, 4.55), target (2.37, 1.15, 3.6), rotation (-0.16, 0.15, 0.02), pivot (2.37, 1.15, 3.6), distance 0.98, fov 75.0, fade 2.0
+description = Drücken Sie die Start-Taste der Fernbedienung, um das Werkzeug zu entladen.
+tool        = hand
+element     = remote.pulsante_r_play
+after       : schermo = schermo004
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PHASE 2: WERKZEUGENTLADESEQUENZ (automatisch)
+# ──────────────────────────────────────────────────────────────────────────────
+
+[step "Y-Schlitten-Bewegung" machine]
+element = a500.Basamento_Portale_CarroY
+do      : move by (0, 0, 2.623) duration 1.5
+
+[step "Prisma-Absenkung" machine]
+element = a500.Basamento_Portale_CarroY_CarroZ_Prisma
+do      : move by (0, -0.085, 0) duration 1.0
+
+[step "Magazin-Öffnung" machine]
+element = a500.Basamento_Portale_MagazzinoInternoX1
+do      : move by (0.565, 0, 0) duration 1.0
+
+[step "Werkzeugwechsel" machine]
+after : tool = tool0
+
+[step "Prisma-Anhebung" machine]
+element = a500.Basamento_Portale_CarroY_CarroZ_Prisma
+do      : move by (0, 0.085, 0) duration 1.0
+
+[step "Magazin-Schließung" machine]
+element = a500.Basamento_Portale_MagazzinoInternoX1
+do      : move by (-0.565, 0, 0) duration 1.0
+after   : schermo = schermo002
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PHASE 3: KOPFAUSWAHL UND SPANNZANGEN-ENTSPERRUNG
+# ──────────────────────────────────────────────────────────────────────────────
+
+[step "WH-Taste" highlight]
+description = Drücken Sie die Bildschirmtaste, um die Köpfe auszuwählen.
+camera      = position (0.95, 1.21, 3.91), target (0.97, 1.15, 3.52), rotation (-0.16, -0.05, -0.01), pivot (0.97, 1.15, 3.52), distance 0.4, fov 75, fade 2.0
+element     = pulpito.Pulsante_WH
+after       : schermo = schermo008
+
+[step "Elektrospindel-Taste"]
+description = Drücken Sie die Bildschirmtaste, um die Elektrospindel auszuwählen.
+element     = pulpito.Pulsante_electrospindle
+after       : schermo = schermo009
+
+[step "Entsperren aktivieren"]
+description = Drücken Sie die Bildschirmtaste, um die Entsperrung der Elektrospindelspannzange zu aktivieren.
+element     = pulpito.Pulsante_LU
+after       : schermo = schermo010
+
+[step "Start-Taste für Entsperrung drücken" highlight]
+description = Drücken Sie die Start-Taste der Fernbedienung, um die Entsperrung der Elektrospindelspannzange zu aktivieren.
+tool        = hand
+element     = remote.pulsante_r_play
+after       : schermo = schermo011
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PHASE 4: PHYSISCHER ZUGANG ZUR ELEKTROSPINDEL
+# ──────────────────────────────────────────────────────────────────────────────
+
+[step "Schlüssel drehen" highlight]
+description = Drehen Sie den Schlüssel, um die Zugangstür zur Elektrospindel zu öffnen.
+tool        = hand
+camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), distance 0.56, fov 75.0, fade 2.0
+element     = pulpito.chiave0
+after       : chiave = chiave1; schermo = schermo005; start = pstart0
+
+[step "Tür physisch öffnen" highlight]
+description = Öffnen Sie die Kabinentür für den Zugang zur Elektrospindel.
+camera      = position (2.52, 1.3, 4.55), target (2.37, 1.15, 3.6), rotation (-0.16, 0.15, 0.02), pivot (2.37, 1.15, 3.6), distance 0.98, fov 75.0, fade 2.0
+element     = a500.porta
+do          : rotate around (0.615, 0, 0) by (0, 90, 0) duration 1.0
+
+[step "Auf Elektrospindel-Nase blicken" highlight, machine]
+description = Positionieren Sie sich zur Elektrospindel-Nase hin; bewegen Sie bei Bedarf zuerst die Y-Achse manuell zu sich.
+camera      = position (2.74, 1.34, 2.45), target (2.79, 1.27, 1.99), rotation (-0.16, -0.11, -0.02), pivot (2.79, 1.27, 1.99), distance 0.47, fov 75.0, fade 2.0
+
+[step "Mit Spray schmieren"]
+tool        = spray
+description = Verwenden Sie das Schmiermittel-Spray, um die Elektrospindel-Nase zu fetten.
+message     = Verwenden Sie das Schmiermittel-Spray, um die Elektrospindel-Nase zu fetten.
+title       = ⚠️ Wichtig
+video       = media/lubelett.mp4
+# Kamera für diesen Schritt entsperrt
+camera      = position (2.78, 0.91, 2.29), target (2.79, 1.27, 1.99), rotation (0.87, -0.03, 0.04), pivot (2.79, 1.27, 1.99), distance 0.47, fov 75.0, free within (-3.14, 3.14)
+element     = a500.naso
+do          : move by (0, 0, 0) duration 0.5
+
+[step "Bildschirm auf Tecpad wechseln" highlight]
+description = Drücken Sie die Taste am Tecpad, um den Bildschirm auf Status zu wechseln.
+tool        = hand
+element     = remote.Pulsante_r_status
+after       : schermo_remote = Schermo_R001
+
+[step "Öffnen und Schließen" highlight]
+tool        = hand
+description = Öffnen und schließen Sie mehrmals durch Drücken der Entsperrtaste (4 Zyklen).
+element     = remote.Pulsante_r_unlock repeat 8
+animation   = folder screens/mandrino at (60%, 60%) frame 20ms
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PHASE 5: SCHLIESSEN UND NEUSTART
+# ──────────────────────────────────────────────────────────────────────────────
+
+[step "Tür physisch schließen" highlight]
+description = Schließen Sie die Kabinentür für den Zugang zur Elektrospindel.
+camera      = position (2.52, 1.3, 4.55), target (2.37, 1.15, 3.6), rotation (-0.16, 0.15, 0.02), pivot (2.37, 1.15, 3.6), distance 0.98, fov 75.0, fade 2.0
+element     = a500.porta
+do          : rotate around (0, 0, -0.615) by (0, -90, 0) duration 1.0
+
+[step "Zur Konsole gehen und Schlüssel schließen" highlight]
+description = Gehen Sie zur Konsole und drehen Sie den Schlüssel in die geschlossene Position.
+tool        = hand
+camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), distance 0.56, fov 75.0, fade 2.0
+element     = pulpito.chiave1
+after       : chiave = chiave0
+
+[step "Maschine neu starten" highlight]
+description = Drücken Sie die Ein/Aus-Taste, um die Maschine neu zu starten.
+tool        = hand
+element     = pulpito.pstart0
+after       : start = pstart1; schermo = schermo002

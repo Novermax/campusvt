@@ -1,0 +1,651 @@
+# Tutorial Wartung Vakuumpumpe
+# Geführte Sequenz für den Filterwechsel und die Schmierung der Vakuumpumpe Becker U5.40
+# Syntax: CVTScript v3
+
+[scene]
+camera   = position (-1.5, 0.5, -0.2), target (0, 0, 0), zoom 1.2, fade 2.5
+position = planaxis at (-0.5, 0.01, -0.5)
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TUTORIAL 1: Filterreinigung und Schmierung
+# ════════════════════════════════════════════════════════════════════════════════
+
+[section "Filterreinigung und Schmierung"]
+do : idle reset
+
+[step "Erste Schraube" highlight]
+element     = vite_coperchio_1
+tool        = hand
+description = Wählen Sie das Werkzeug „Hand" und entfernen Sie die erste Abdeckschraube.
+do          : unscrew
+do          : place duration 0.2
+
+[step "Zweite Schraube" auto]
+element     = vite_coperchio_2
+tool        = hand
+description = Entfernen Sie die zweite Abdeckschraube.
+do          : unscrew
+do          : place duration 0.2
+
+[step "Dritte Schraube" auto]
+element     = vite_coperchio_3
+tool        = hand
+description = Entfernen Sie die dritte Abdeckschraube.
+do          : unscrew
+do          : move by (0, 0, -0.1) duration 0.2
+do          : place duration 0.2
+
+[step "Vierte Schraube" auto]
+element     = vite_coperchio_4
+tool        = hand
+description = Entfernen Sie die vierte Abdeckschraube.
+do          : unscrew
+do          : move by (0, 0, -0.1) duration 0.2
+do          : place duration 0.2
+
+[step "Deckel" highlight]
+element     = coperchio
+tool        = hand
+description = Entfernen Sie den Filterdeckel.
+do          : move by (-0.5, 0, 0.5) duration 0.8
+do          : rotate around (0, 0.1, 0) by (0, 0, -90) duration 0.8
+do          : place duration 0.5
+
+[step "Filter" highlight]
+element     = filtro
+tool        = hand
+description = Entnehmen Sie den Filter.
+do          : move by (-0.3, 0, 0) duration 1.5
+do          : move by (0, 0, 0.5) duration 1.5
+do          : place duration 1.5
+
+[step "Druckluft" highlight]
+element     = filtro
+description = Reinigen Sie den Filter mit Druckluft.
+camera      = position (-0.2, 0.33, 0.74), target filtro, zoom 0.5
+tool        = air
+do          : move by (0, 0.01, 0) duration 0.5
+do          : place duration 0.5
+
+[step "Rechte Kappe" highlight]
+camera      = position (-1.5, 0.5, -0.2), target tappino_grasso_dx, zoom 0.5, fade 2.5
+element     = tappino_grasso_dx
+tool        = hand
+description = Entfernen Sie die Schutzkappe des rechten Schmiernippels.
+do          : move by (-0.3, 0, 0) duration 1.0
+do          : place duration 0.5
+
+[step "Linke Kappe" highlight]
+camera      = position (-1.5, 0.5, -0.2), target tappino_grasso_sx, zoom 0.5, fade 2.5
+element     = tappino_grasso_sx
+tool        = hand
+description = Entfernen Sie die Schutzkappe des linken Schmiernippels.
+do          : move by (-0.3, 0, 0) duration 1.0
+do          : place duration 0.5
+
+[step "Fettpresse" highlight]
+element     = ingrassatore
+tool        = hand
+description = Nehmen Sie die Fettpresse auf.
+do          : move by (0, 0.1, 0) duration 0.8
+do          : rotate around (-0.1, 0, 0) by (0, 0, 90) duration 0.8
+do          : move by (-0.2, 0, 0) duration 0.8
+do          : place duration 0.5
+
+[step "Rechter Schmiernippel" highlight]
+camera      = position (-0.42, 0.33, 0.3), target (-0.28, 0.25, -0.16)
+element     = ingrassatore
+tool        = hand
+description = Fetten Sie den rechten Schmiernippel durch 10-maliges Pumpen.
+do          : move from tappino_grasso_dx_original by (-0.2, 0, 0) duration 0.5
+do          : pump from tappino_grasso_dx_original between (-0.08, 0, 0) and (-0.09, 0, 0) cycles 10 duration 0.1
+do          : move from tappino_grasso_dx_original by (-0.2, 0, 0) duration 0.5
+
+[step "Linker Schmiernippel"]
+element     = ingrassatore
+tool        = hand
+description = Fetten Sie den linken Schmiernippel durch 10-maliges Pumpen.
+do          : move from tappino_grasso_sx_original by (-0.2, 0, 0) duration 0.5
+do          : pump from tappino_grasso_sx_original between (-0.08, 0, 0) and (-0.09, 0, 0) cycles 10 duration 0.1
+do          : move from tappino_grasso_sx_original by (-0.2, 0, 0) duration 0.5
+do          : move from ingrassatore_original by (-0.2, 0, 0) duration 0.5
+do          : place duration 0.5
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TUTORIAL 2: Wiedermontage
+# ════════════════════════════════════════════════════════════════════════════════
+
+[section "Wiedermontage"]
+camera   = position (-1.5, 0.5, -0.2), target (0, 0, 0), zoom 1.2, fade 2.5
+
+position = coperchio at (-1.148, -0.261, 0.500)
+rotation = coperchio by (0.0, 0.0, -90.0)
+position = filtro at (-0.300, -0.142, 0.500)
+rotation = filtro by (0.0, 0.0, 0.0)
+position = pavimento at (0.000, 0.000, 0.000)
+rotation = pavimento by (0.0, 0.0, 0.0)
+position = vite_coperchio_1 at (-0.500, -0.349, 0.000)
+rotation = vite_coperchio_1 by (-360.0, 0.0, 0.0)
+position = vite_coperchio_2 at (-0.500, -0.349, 0.000)
+rotation = vite_coperchio_2 by (-360.0, 0.0, 0.0)
+position = vite_coperchio_3 at (-0.500, -0.117, -0.100)
+rotation = vite_coperchio_3 by (-360.0, 0.0, 0.0)
+position = vite_coperchio_4 at (-0.500, -0.117, -0.100)
+rotation = vite_coperchio_4 by (-360.0, 0.0, 0.0)
+position = tappino_grasso_sx at (-0.300, -0.243, 0.000)
+rotation = tappino_grasso_sx by (0.0, 0.0, 0.0)
+position = tappino_grasso_dx at (-0.300, -0.243, 0.000)
+rotation = tappino_grasso_dx by (0.0, 0.0, 0.0)
+position = ingrassatore at (-0.208, 0.243, 0)
+rotation = ingrassatore by (0.0, 0.0, 90.0)
+
+[step "Rechte Kappe" highlight]
+camera      = position (-1.03, 0.27, 0.03), target (-0.17, 0.14, -0.01), rotation (-1.3, -1.41, -1.3), pivot (-0.17, 0.14, -0.01), distance 0.86, fov 75, fade 1.0
+description = Montieren Sie die rechte Schmiernippelkappe.
+tool        = hand
+drag        = tappino_grasso_dx distance 0.2
+
+[step "Linke Kappe" highlight]
+camera      = target tappino_grasso_sx
+description = Montieren Sie die linke Schmiernippelkappe.
+tool        = hand
+drag        = tappino_grasso_sx distance 0.2
+
+[step "Filter" highlight]
+camera      = position (-1.38, 0.5, 0.27), target (-0.58, 0.01, -0.16), rotation (-0.86, -0.88, -0.73), pivot (-0.58, 0.01, -0.16), distance 1.03, fov 75, fade 1.0
+description = Setzen Sie den Filter in sein Gehäuse ein.
+tool        = hand
+drag        = filtro distance 0.3
+
+[step "Deckel" highlight]
+description = Positionieren Sie den Deckel über dem Filter.
+tool        = hand
+drag        = coperchio distance 0.3
+
+[step "Abdeckschrauben-Gruppe" highlight]
+camera      = position (-1.14, 0.27, -0.04), target (-0.32, 0, -0.01), rotation (-1.67, -1.25, -1.67), pivot (-0.32, 0, -0.01), distance 0.86, fov 75, fade 1.0
+description = Montieren Sie die 4 Abdeckschrauben in beliebiger Reihenfolge.
+tool        = hand
+drag        = vite_coperchio_1, vite_coperchio_2, vite_coperchio_3, vite_coperchio_4 distance 0.2
+
+[step "Fettpresse zurücksetzen" highlight]
+description = Legen Sie die Fettpresse abschließend zurück in die Ruheposition. Alle Schrauben müssen montiert sein.
+tool        = hand
+drag        = ingrassatore distance 0.3
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TUTORIAL 3: Schaufelersatz – Demontage
+# ════════════════════════════════════════════════════════════════════════════════
+
+[section "Schaufelersatz – Demontage"]
+camera = position (-0.08, 0.34, 0.8), target (-0.03, 0.24, 0.27), rotation (-0.2, -0.09, -0.02), pivot (-0.03, 0.24, 0.27), distance 0.54, fov 75, fade 1.0
+do     : idle reset
+
+[step "Zylinderkopfschraube 1 entfernen" highlight]
+element     = vite_culatta_1
+description = Entfernen Sie die erste Inbusschraube des Zylinderkopfs mit dem 6-mm-Inbusschlüssel.
+tool        = hex_key
+do          : unscrew distance 0.3
+do          : place duration 0.2
+
+[step "Zylinderkopfschraube 2 entfernen" auto]
+element     = vite_culatta_2
+description = Entfernen Sie die zweite Inbusschraube des Zylinderkopfs mit dem 6-mm-Inbusschlüssel.
+tool        = hex_key
+do          : unscrew distance 0.3
+do          : place duration 0.2
+
+[step "Zylinderkopfschraube 3 entfernen" auto]
+element     = vite_culatta_3
+description = Entfernen Sie die dritte Inbusschraube des Zylinderkopfs mit dem 6-mm-Inbusschlüssel. Die unteren Schrauben sind kürzer.
+tool        = hex_key
+do          : unscrew distance 0.3
+do          : move by (-0.1, 0, 0) duration 0.2
+do          : place duration 0.2
+
+[step "Zylinderkopfschraube 4 entfernen" auto]
+element     = vite_culatta_4
+description = Entfernen Sie die vierte Inbusschraube des Zylinderkopfs mit dem 6-mm-Inbusschlüssel. Die unteren Schrauben sind kürzer.
+tool        = hex_key
+do          : unscrew distance 0.3
+do          : move by (-0.1, 0, 0) duration 0.2
+do          : place duration 0.2
+
+[step "Zylinderkopf entfernen"]
+element     = culatta
+description = Entfernen Sie den Pumpenzylinderkopf mit dem Werkzeug „Hand".
+tool        = hand
+do          : move by (0.5, 0, 0.5) duration 0.5
+do          : rotate by (-90, 0, 0) duration 0.8
+do          : place duration 0.2
+
+[step "Flanschschraube 1 entfernen" highlight]
+element     = vite_flangia_1
+description = Entfernen Sie die erste Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : place duration 0.2
+
+[step "Flanschschraube 2 entfernen" auto]
+element     = vite_flangia_2
+description = Entfernen Sie die zweite Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : place duration 0.2
+
+[step "Flanschschraube 3 entfernen" auto]
+element     = vite_flangia_3
+description = Entfernen Sie die dritte Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : place duration 0.2
+
+[step "Flanschschraube 4 entfernen" auto]
+element     = vite_flangia_4
+description = Entfernen Sie die vierte Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : place duration 0.2
+
+[step "Flanschschraube 5 entfernen" auto]
+element     = vite_flangia_5
+description = Entfernen Sie die fünfte Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : move by (-0.1, 0, 0) duration 0.2
+do          : place duration 0.2
+
+[step "Flanschschraube 6 entfernen" auto]
+element     = vite_flangia_6
+description = Entfernen Sie die sechste Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : move by (-0.1, 0, 0) duration 0.2
+do          : place duration 0.2
+
+[step "Flanschschraube 7 entfernen" auto]
+element     = vite_flangia_7
+description = Entfernen Sie die siebte Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : move by (-0.1, 0, 0) duration 0.2
+do          : place duration 0.2
+
+[step "Flanschschraube 8 entfernen" auto]
+element     = vite_flangia_8
+description = Entfernen Sie die achte Sechskantschraube mit dem 10-mm-Maulschlüssel.
+tool        = wrench
+do          : unscrew distance 0.1
+do          : move by (-0.1, 0, 0) duration 0.2
+do          : place duration 0.2
+
+[step "Flansch-Demontage-Anleitung" highlight]
+message     = Nehmen Sie zwei 8-mm-Schrauben und setzen Sie sie in die entsprechenden Sitze, um sie als Abzieher zu verwenden.
+title       = Wichtig
+video       = media/estrattore.mp4
+description = Flansch-Abziehphase mit Abzieherschrauben
+camera      = position (0, 0.45, 0.89), zoom 1
+tool        = hand
+drag        = vite_culatta_1, vite_culatta_2 distance 0 snap targets estrattoresx_original, estrattoredx_original
+
+[step "Abzieherschrauben anziehen" highlight]
+camera      = position (0.01,0.44,0.54), target (-0.03,0.24,0.27), rotation (-0.64,0.13,0.1), pivot (-0.03,0.24,0.27), distance 0.11, fov 75, fade 1.0
+description = Ziehen Sie Zylinderkopfschraube 1 mit dem Inbusschlüssel an.
+tool        = hex_key
+element     = vite_culatta_1
+do          : screw distance 0.005
+companion   = flangia moves by (0, 0, 0.005) duration 0.5
+companion   = tubograsso moves by (0, 0, 0.005) duration 0.5
+
+[step "Abzieherschrauben anziehen 2"]
+description = Ziehen Sie Zylinderkopfschraube 2 mit dem Inbusschlüssel an.
+tool        = hex_key
+element     = vite_culatta_2
+do          : screw distance 0.005
+companion   = flangia moves by (0, 0, 0.005) duration 0.5
+companion   = tubograsso moves by (0, 0, 0.005) duration 0.5
+
+[step "Abzieherschraube 2 entfernen"]
+element     = vite_culatta_2
+description = Entfernen Sie die als Abzieher verwendete Schraube mit dem 6-mm-Inbusschlüssel.
+tool        = hex_key
+do          : unscrew distance 0.1
+do          : place duration 0.2
+
+[step "Abzieherschraube 1 entfernen"]
+element     = vite_culatta_1
+description = Entfernen Sie die als Abzieher verwendete Schraube mit dem 6-mm-Inbusschlüssel.
+tool        = hex_key
+do          : unscrew distance 0.1
+do          : place duration 0.2
+
+[step "Flansch verschieben" highlight]
+camera      = zoom 1
+element     = flangia
+description = Bewegen Sie den Flansch mit den Händen weg. Das Fettrohr bewegt sich mit ihm.
+tool        = hand
+companion   = tubograsso follows master
+do          : move by (0, 0, 0.2) duration 0.5
+
+[step "Fettrohr abkoppeln" highlight]
+element     = tubograsso
+description = Koppeln Sie das Fettrohr vom Flansch ab.
+tool        = hand
+do          : move by (0, 0, -0.2) duration 0.5
+
+[step "Flansch entnehmen" highlight]
+element     = flangia
+description = Legen Sie den Flansch auf den Boden.
+tool        = hand
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (90, 0, 0) duration 0.5
+do          : place duration 0.2
+
+[step "Schaufel 1 entnehmen" highlight]
+camera      = position (0.14, 0.96, 1.21), target (-0.03, 0.24, 0.27), rotation (-0.65, 0.14, 0.11), pivot (-0.03, 0.24, 0.27), distance 1.2, fov 75, fade 1.0
+element     = paletta1
+description = Legen Sie Schaufel 1 auf den Boden.
+tool        = hand
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (0, 0, -32) duration 0.5
+do          : move by (-0.5, 0, 0.2) duration 0.5
+do          : place duration 0.2
+
+[step "Schaufel 2 entnehmen" auto]
+element     = paletta2
+description = Legen Sie Schaufel 2 auf den Boden.
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (0, 0, -108) duration 0.5
+do          : move by (-0.7, 0, 0.2) duration 0.5
+do          : place duration 0.2
+
+[step "Schaufel 3 entnehmen" auto]
+element     = paletta3
+description = Legen Sie Schaufel 3 auf den Boden.
+tool        = hand
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (0, 0, 0) duration 0.5
+do          : move by (-0.9, 0, 0.2) duration 0.5
+do          : place duration 0.2
+
+[step "Schaufel 4 entnehmen" auto]
+element     = paletta4
+description = Legen Sie Schaufel 4 auf den Boden.
+tool        = hand
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (0, 0, -72) duration 0.5
+do          : move by (-1.1, 0, 0.2) duration 0.5
+do          : place duration 0.2
+
+[step "Schaufel 5 entnehmen" auto]
+element     = paletta5
+description = Legen Sie Schaufel 5 auf den Boden.
+tool        = hand
+do          : move by (0, 0, 0.5) duration 0.5
+do          : rotate by (0, 0, 32) duration 0.5
+do          : move by (-1.3, 0, 0.2) duration 0.5
+do          : place duration 0.2
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TUTORIAL 4: Schaufelersatz – Montage
+# ════════════════════════════════════════════════════════════════════════════════
+
+[section "Schaufelersatz – Montage"]
+camera = position (-0.65, 0.2, 1.11), target (0, 0, 0), rotation (-0.18, -0.52, -0.09), pivot (0, 0, 0), distance 1.3, fov 75, fade 1.0
+
+position = vite_coperchio_1 at (0.000, 0.000, 0.000)
+rotation = vite_coperchio_1 by (0.0, 0.0, 0.0)
+position = vite_coperchio_3 at (0.000, 0.000, 0.000)
+rotation = vite_coperchio_3 by (0.0, 0.0, 0.0)
+position = vite_coperchio_2 at (0.000, 0.000, 0.000)
+rotation = vite_coperchio_2 by (0.0, 0.0, 0.0)
+position = tappino_grasso_sx at (0.000, 0.000, 0.000)
+rotation = tappino_grasso_sx by (0.0, 0.0, 0.0)
+position = ingrassatore at (0.000, 0.000, 0.000)
+rotation = ingrassatore by (0.0, 0.0, 0.0)
+position = tappino_grasso_dx at (0.000, 0.000, 0.000)
+rotation = tappino_grasso_dx by (0.0, 0.0, 0.0)
+position = vite_coperchio_4 at (0.000, 0.000, 0.000)
+rotation = vite_coperchio_4 by (0.0, 0.0, 0.0)
+position = vite_culatta_3 at (-0.100, -0.116, 0.300)
+rotation = vite_culatta_3 by (0.0, 0.0, 1800.0)
+position = estrattoredx at (0.000, 0.000, 0.000)
+rotation = estrattoredx by (0.0, 0.0, 0.0)
+position = vite_culatta_4 at (-0.100, -0.116, 0.300)
+rotation = vite_culatta_4 by (0.0, 0.0, 1800.0)
+position = vite_culatta_1 at (0.000, -0.378, 0.091)
+rotation = vite_culatta_1 by (0.0, 0.0, 0.0)
+position = vite_culatta_2 at (0.000, -0.378, 0.091)
+rotation = vite_culatta_2 by (0.0, 0.0, 0.0)
+position = flangia at (0.000, 0.261, 0.493)
+rotation = flangia by (90.0, 0.0, 0.0)
+position = vite_flangia_4 at (-0.000, -0.267, 0.200)
+rotation = vite_flangia_4 by (0.0, 0.0, 1800.0)
+position = vite_flangia_2 at (-0.000, -0.321, 0.200)
+rotation = vite_flangia_2 by (0.0, 0.0, 1800.0)
+position = vite_flangia_5 at (-0.100, -0.191, 0.200)
+rotation = vite_flangia_5 by (0.0, 0.0, 1800.0)
+position = vite_flangia_1 at (-0.000, -0.267, 0.200)
+rotation = vite_flangia_1 by (0.0, 0.0, 1800.0)
+position = vite_flangia_6 at (-0.100, -0.137, 0.200)
+rotation = vite_flangia_6 by (0.0, 0.0, 1800.0)
+position = vite_flangia_8 at (-0.100, -0.191, 0.200)
+rotation = vite_flangia_8 by (0.0, 0.0, 1800.0)
+position = estrattoresx at (0.000, 0.000, 0.000)
+rotation = estrattoresx by (0.0, 0.0, 0.0)
+position = vite_flangia_7 at (-0.100, -0.137, 0.100)
+rotation = vite_flangia_7 by (0.0, 0.0, 1800.0)
+position = vite_flangia_3 at (-0.000, -0.321, 0.100)
+rotation = vite_flangia_3 by (0.0, 0.0, 1800.0)
+position = paletta5 at (-1.188, -0.151, 0.700)
+rotation = paletta5 by (0.0, 0.0, 32.0)
+position = paletta1 at (-0.625, -0.156, 0.700)
+rotation = paletta1 by (0.0, 0.0, -32.0)
+position = paletta3 at (-0.900, -0.273, 0.700)
+rotation = paletta3 by (0.0, 0.0, 0.0)
+position = paletta2 at (-0.958, 0.124, 0.700)
+rotation = paletta2 by (0.0, 0.0, -108.0)
+position = filtro at (0.000, 0.000, 0.000)
+rotation = filtro by (0.0, 0.0, 0.0)
+position = paletta4 at (-1.337, -0.082, 0.700)
+rotation = paletta4 by (0.0, 0.0, -72.0)
+position = tubograsso at (0.000, 0.000, 0.010)
+rotation = tubograsso by (0.0, 0.0, 0.0)
+position = culatta at (0.500, -0.110, 0.954)
+rotation = culatta by (-90.0, 0.0, 0.0)
+position = pavimento at (0.000, 0.000, 0.000)
+rotation = pavimento by (0.0, 0.0, 0.0)
+position = coperchio at (0.000, 0.000, 0.000)
+rotation = coperchio by (0.0, 0.0, 0.0)
+position = corpo at (0.000, 0.000, 0.000)
+rotation = corpo by (0.0, 0.0, 0.0)
+
+[step "Schaufel 1 einsetzen" highlight]
+description = Nehmen Sie Schaufel 1 und setzen Sie sie an ihrer ursprünglichen Position ein. Die Schaufel wird automatisch gedreht und positioniert.
+tool        = hand
+element     = paletta1
+rotation    = paletta1 by (0.0, 0.0, 0.0)
+do          : move by (0.625, 0.156, -0.300) duration 1.2
+do          : move by (0, 0, -0.4) duration 1.2
+
+[step "Schaufel 2 einsetzen" auto]
+camera      = position (-0.45, 0.45, 1.3), target (-0.7, 0.05, 0.61), rotation (-0.53, 0.31, 0.18), pivot (-0.7, 0.05, 0.61), distance 0.83, fov 75, fade 1.0, zoom 1
+description = Nehmen Sie Schaufel 2 und setzen Sie sie an ihrer ursprünglichen Position ein. Die Schaufel wird automatisch gedreht und positioniert.
+tool        = hand
+element     = paletta2
+rotation    = paletta2 by (0.0, 0.0, 0.0)
+do          : move by (0.958, -0.124, -0.300) duration 1.2
+do          : move by (0.0, -0.0, -0.400) duration 1.2
+
+[step "Schaufel 3 einsetzen" auto]
+description = Nehmen Sie Schaufel 3 und setzen Sie sie an ihrer ursprünglichen Position ein. Die Schaufel wird automatisch positioniert.
+tool        = hand
+element     = paletta3
+do          : move by (0.900, 0.273, -0.300) duration 1.2
+do          : move by (0.0, -0.0, -0.400) duration 1.2
+
+[step "Schaufel 4 einsetzen" auto]
+description = Nehmen Sie Schaufel 4 und setzen Sie sie an ihrer ursprünglichen Position ein. Die Schaufel wird automatisch gedreht und positioniert.
+tool        = hand
+element     = paletta4
+rotation    = paletta4 by (0.0, 0.0, 0.0)
+do          : move by (1.337, 0.082, -0.300) duration 1.2
+do          : move by (0.0, -0.0, -0.400) duration 1.2
+
+[step "Schaufel 5 einsetzen" auto]
+description = Nehmen Sie Schaufel 5 und setzen Sie sie an ihrer ursprünglichen Position ein. Die Schaufel wird automatisch gedreht und positioniert.
+tool        = hand
+element     = paletta5
+rotation    = paletta5 by (0.0, 0.0, 0.0)
+do          : move by (1.188, 0.151, -0.300) duration 1.2
+do          : move by (0.0, -0.0, -0.400) duration 1.2
+
+[step "Flansch positionieren"]
+description = Ziehen Sie den Flansch und positionieren Sie ihn über seinem Sitz (er rastet automatisch ein, wenn er 0,3 m angehoben wird).
+tool        = hand
+camera      = position (0, 0.45, 0.89), target (0, 0, 0), zoom 1.2, fade 1.5
+drag        = flangia distance 0.3 snap pivot (0.000, 0.0, 0.3)
+
+[step "Flansch absenken" highlight]
+description = Der Flansch wird nun automatisch in seine endgültige Position abgesenkt.
+tool        = hand
+element     = flangia
+do          : move by (0.0, 0.0, -0.3) duration 0.8
+
+[step "Flanschschraube 1 einsetzen" highlight]
+description = Setzen Sie die erste Flanschschraube in ihren Sitz.
+tool        = hand
+camera      = position (0.01, 0.54, 0.79), target (0, 0.15, 0.19), rotation (-0.58, 0.02, 0.01), pivot (0, 0.15, 0.19), distance 0.72, fov 60, fade 1.0
+drag        = vite_flangia_1 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 2 einsetzen" auto]
+description = Setzen Sie die zweite Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_2 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 3 einsetzen" auto]
+description = Setzen Sie die dritte Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_3 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 4 einsetzen" auto]
+description = Setzen Sie die vierte Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_4 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 5 einsetzen" auto]
+description = Setzen Sie die fünfte Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_5 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 6 einsetzen" auto]
+description = Setzen Sie die sechste Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_6 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 7 einsetzen" auto]
+description = Setzen Sie die siebte Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_7 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 8 einsetzen" auto]
+description = Setzen Sie die achte Flanschschraube in ihren Sitz.
+tool        = hand
+drag        = vite_flangia_8 distance 1.5 snap offset (0, 0, 0.01)
+
+[step "Flanschschraube 1 festziehen" highlight]
+element     = vite_flangia_1
+description = Kreuzsequenz (1/8): Schraube 1 mit dem 10-mm-Schlüssel anziehen.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 5 festziehen"]
+element     = vite_flangia_5
+description = Kreuzsequenz (2/8): Schraube 5 anziehen – gegenüber 1.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 3 festziehen"]
+element     = vite_flangia_3
+description = Kreuzsequenz (3/8): Schraube 3 anziehen.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 7 festziehen"]
+element     = vite_flangia_7
+description = Kreuzsequenz (4/8): Schraube 7 anziehen – gegenüber 3.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 2 festziehen"]
+element     = vite_flangia_2
+description = Kreuzsequenz (5/8): Schraube 2 anziehen.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 6 festziehen"]
+element     = vite_flangia_6
+description = Kreuzsequenz (6/8): Schraube 6 anziehen – gegenüber 2.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 4 festziehen"]
+element     = vite_flangia_4
+description = Kreuzsequenz (7/8): Schraube 4 anziehen.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Flanschschraube 8 festziehen"]
+element     = vite_flangia_8
+description = Kreuzsequenz (8/8): Schraube 8 anziehen – gegenüber 4.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Fettrohr wiederanbringen"]
+description = Verbinden Sie das Fettrohr mit dem Flansch. Der Flansch muss bereits montiert sein.
+tool        = hand
+drag        = tubograsso distance 0.3
+
+[step "Zylinderkopf einsetzen" highlight]
+camera      = position (-0.35, 0.42, 0.92), target (0.3, 0.12, 0.1), rotation (-0.35, -0.64, -0.22), pivot (0.3, 0.12, 0.1), distance 1.08, fov 75
+description = Positionieren Sie den Zylinderkopf auf dem Pumpengehäuse. Alle Flanschschrauben müssen angezogen sein.
+tool        = hand
+drag        = culatta distance 0.3
+
+[step "Lange Zylinderkopfschrauben einsetzen" highlight]
+description = Setzen Sie die 2 langen Zylinderkopfschrauben in beliebiger Reihenfolge in ihre Sitze. Die Schrauben werden noch nicht angezogen.
+tool        = hand
+drag        = vite_culatta_1, vite_culatta_2 distance 1.5 snap offset (0, 0, 0.02)
+
+[step "Kurze Zylinderkopfschrauben einsetzen" highlight]
+description = Setzen Sie die 2 kurzen Zylinderkopfschrauben in beliebiger Reihenfolge in ihre Sitze. Die Schrauben werden noch nicht angezogen.
+tool        = hand
+drag        = vite_culatta_3, vite_culatta_4 distance 1.5 snap offset (0, 0, 0.02)
+
+[step "Zylinderkopfschraube 1 festziehen" highlight]
+element     = vite_culatta_1
+description = Ziehen Sie die erste Zylinderkopfschraube mit dem 6-mm-Inbusschlüssel an.
+tool        = hex_key
+do          : screw distance 0.02
+
+[step "Zylinderkopfschraube 2 festziehen" auto]
+element     = vite_culatta_2
+description = Ziehen Sie die zweite Zylinderkopfschraube mit dem 6-mm-Inbusschlüssel an.
+tool        = hex_key
+do          : screw distance 0.02
+
+[step "Zylinderkopfschraube 3 festziehen" auto]
+element     = vite_culatta_3
+description = Ziehen Sie die dritte Zylinderkopfschraube mit dem 6-mm-Inbusschlüssel an.
+tool        = hex_key
+do          : screw distance 0.02
+
+[step "Zylinderkopfschraube 4 festziehen" auto]
+element     = vite_culatta_4
+description = Ziehen Sie die vierte Zylinderkopfschraube mit dem 6-mm-Inbusschlüssel an. Damit ist die Pumpenmontage abgeschlossen.
+tool        = hex_key
+do          : screw distance 0.02

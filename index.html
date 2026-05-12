@@ -838,6 +838,8 @@
                 <option value="">-- nessuna --</option>
                 <option value="it">Italiano (it)</option>
                 <option value="eng">English (eng)</option>
+                <option value="fra">Français (fra)</option>
+                <option value="deu">Deutsch (deu)</option>
             `;
 
             const rows = users.map((u, i) => `
@@ -917,7 +919,7 @@
         function _esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
         function _langSelectOptions(current) {
-            const langs = [['','-- nessuna --'],['it','Italiano (it)'],['eng','English (eng)']];
+            const langs = [['','-- nessuna --'],['it','Italiano (it)'],['eng','English (eng)'],['fra','Français (fra)'],['deu','Deutsch (deu)']];
             return langs.map(([v,l]) => `<option value="${v}" ${current===v?'selected':''}>${l}</option>`).join('');
         }
 
