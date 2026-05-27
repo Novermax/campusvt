@@ -1603,8 +1603,8 @@ body.tool-brugola-active [role="button"] {
         }
         100% {
             left: 10px;
-            top: 30%;
-            transform: translateY(-50%) scale(1);
+            top: 55px;
+            transform: scale(1);
             z-index: 9600;
         }
     }

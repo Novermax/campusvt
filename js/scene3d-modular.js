@@ -325,31 +325,16 @@ const Scene3D = {
         console.log('  FOV:', cameraInfo.fov);
         console.log('  Near/Far:', `${cameraInfo.near}/${cameraInfo.far}`);
         
-        // Formatta per tutorial.cvtscript — blocco pronto per copia/incolla
-        const fmt = v => {
-            const n = parseFloat(v) || 0; // corregge -0
-            return parseFloat(n.toFixed(2));
-        };
-        const p = cameraInfo.position;
-        const r = cameraInfo.rotation;
-        const pv = cameraInfo.pivot;
-        const lines = [
-            `CameraPos=(${fmt(p.x)},${fmt(p.y)},${fmt(p.z)})`,
-            pv ? `CameraTarget=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
-            `CameraRotation=(${fmt(r.x)},${fmt(r.y)},${fmt(r.z)})`,
-            pv ? `CameraPivot=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
-            cameraInfo.distance ? `CameraDistance=${fmt(cameraInfo.distance)}` : null,
-            `CameraFOV=${fmt(cameraInfo.fov)}`,
-            'CameraTransitionTime=1.0'
-        ].filter(Boolean);
-        const block = lines.join('\n');
-        console.log('\n📋 TUTORIAL SYNTAX (copia e incolla):\n' + block);
-        
+        // Formatta per tutorial.cvtscript v3 — riga pronta per copia/incolla
+        const script = this.getCameraScript();
+        console.log('\n📋 CVTScript v3 (copia e incolla):\n' + script);
+
         return cameraInfo;
     },
 
     /**
-     * Ritorna il blocco camera pronto per copia/incolla nel tutorial.cvtscript
+     * Ritorna la riga camera CVTScript v3 pronta per copia/incolla nel tutorial.cvtscript.
+     * Formato: camera = position (x,y,z), target (x,y,z), pivot (x,y,z), distance D, fov F, rotation (rx,ry,rz), fade T
      * Uso: Scene3D.getCameraScript()
      */
     getCameraScript: function() {
@@ -358,17 +343,17 @@ const Scene3D = {
         const pos = this.camera.position;
         const rot = this.camera.rotation;
         const pv = this.mouseControls && this.mouseControls.pivotPoint;
-        const dist = pv ? Math.round(this.camera.position.distanceTo(pv) * 100) / 100 : null;
-        const lines = [
-            `CameraPos=(${fmt(pos.x)},${fmt(pos.y)},${fmt(pos.z)})`,
-            pv ? `CameraTarget=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
-            `CameraRotation=(${fmt(rot.x)},${fmt(rot.y)},${fmt(rot.z)})`,
-            pv ? `CameraPivot=(${fmt(pv.x)},${fmt(pv.y)},${fmt(pv.z)})` : null,
-            dist !== null ? `CameraDistance=${fmt(dist)}` : null,
-            `CameraFOV=${fmt(this.camera.fov)}`,
-            'CameraTransitionTime=1.0'
-        ].filter(Boolean).join('\n');
-        return lines;
+        const dist = pv ? fmt(this.camera.position.distanceTo(pv)) : null;
+        const parts = [
+            `position (${fmt(pos.x)}, ${fmt(pos.y)}, ${fmt(pos.z)})`,
+            pv ? `target (${fmt(pv.x)}, ${fmt(pv.y)}, ${fmt(pv.z)})` : null,
+            pv ? `pivot (${fmt(pv.x)}, ${fmt(pv.y)}, ${fmt(pv.z)})` : null,
+            dist !== null ? `distance ${dist}` : null,
+            `fov ${fmt(this.camera.fov)}`,
+            `rotation (${fmt(rot.x)}, ${fmt(rot.y)}, ${fmt(rot.z)})`,
+            'fade 1.0'
+        ].filter(Boolean);
+        return `camera = ${parts.join(', ')}`;
     },
 
     /**
@@ -4204,6 +4189,18 @@ const Scene3D = {
             this.cameraAnimation.targetPosition = new THREE.Vector3()
                 .copy(this.cameraAnimation.targetTarget)
                 .addScaledVector(dir, this.cameraAnimation.targetDistance);
+        }
+
+        // Se CameraTarget è specificato senza CameraPos, mantieni l'offset corrente
+        // camera→pivot per non alterare involontariamente il livello di zoom.
+        // Senza questa correzione la camera rimane ferma mentre il pivot si sposta,
+        // provocando un apparente allontanamento visivo.
+        if (this.cameraAnimation.targetTarget &&
+            !this.cameraAnimation.targetPosition &&
+            !this.cameraAnimation.targetZoom) {
+            const currentOffset = this.camera.position.clone().sub(this.mouseControls.pivotPoint);
+            this.cameraAnimation.targetPosition = this.cameraAnimation.targetTarget.clone().add(currentOffset);
+            console.log(`📹 CAMERA: targetPosition derivato da offset corrente → (${this.cameraAnimation.targetPosition.x.toFixed(3)}, ${this.cameraAnimation.targetPosition.y.toFixed(3)}, ${this.cameraAnimation.targetPosition.z.toFixed(3)})`);
         }
 
         // Salva FOV iniziale per interpolazione

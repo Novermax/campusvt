@@ -240,287 +240,175 @@ window.UI = {
         console.log('🏠🏠🏠 [goHome] currentPage:', this.currentPage);
         AppConfig.log(2, '[goHome] 🏠 Avvio reset completo per ritorno alla home...');
 
-        // === FASE 1: RESET CURSORI E TOOL ===
-        // Disattiva tutti i tool
-        this.deactivateAllTools();
+        this._resetTools();
+        this._resetDragDrop();
+        this._resetAssembly();
+        this._resetScene3D();
+        this._resetParticles();
+        this._resetHoldable();
+        this._resetHighlights();
+        this._resetTutorialState();
 
-        // Ferma eventuali animazioni cursore in corso
+        this.updateStatus('Home');
+        this.showPage('home');
+        this._scheduleUICleanup();
+
+        AppConfig.log(2, '[goHome] ✅ Reset completo terminato - ritorno alla home');
+    },
+
+    _resetTools: function() {
+        this.deactivateAllTools();
         if (window.Scene3D && window.Scene3D.stopCursorAnimation) {
             window.Scene3D.stopCursorAnimation();
         }
-
-        // Rimuovi TUTTE le classi cursori personalizzati dal body
         document.body.classList.remove(
-            'tool-aria-active',
-            'tool-chiave_inglese-active',
-            'tool-brugola-active',
-            'tool-mano-active',
-            'cursor-frame-1',
-            'cursor-frame-2',
-            'mouse-pressed'
+            'tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active',
+            'tool-mano-active', 'cursor-frame-1', 'cursor-frame-2', 'mouse-pressed'
         );
-
-        // Rimuovi anche classi cursore dal canvas
         const canvas = document.querySelector('#canvas3d, canvas');
         if (canvas) {
             canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-            canvas.style.cursor = ''; // Reset inline style se presente
+            canvas.style.cursor = '';
         }
-
-        // Reset inline style cursor su body
         document.body.style.cursor = '';
-
         AppConfig.log(3, '[goHome] Tool e cursori resettati');
+    },
 
-        // === FASE 2: RESET DRAG & DROP ===
-        if (window.DragDropSystem) {
-            // Reset completo del sistema drag & drop
-            if (window.DragDropSystem.reset) {
-                window.DragDropSystem.reset();
-            } else if (window.DragDropSystem.disable) {
-                window.DragDropSystem.disable();
-            }
-            // Reset tracking snap
-            if (window.DragDropSystem.resetSnapTracking) {
-                window.DragDropSystem.resetSnapTracking();
-            }
-            // Reset posizioni occupate
-            if (window.DragDropSystem.resetOccupiedPositions) {
-                window.DragDropSystem.resetOccupiedPositions();
-            }
-            AppConfig.log(3, '[goHome] DragDropSystem resettato');
+    _resetDragDrop: function() {
+        if (!window.DragDropSystem) return;
+        if (window.DragDropSystem.reset) {
+            window.DragDropSystem.reset();
+        } else if (window.DragDropSystem.disable) {
+            window.DragDropSystem.disable();
         }
+        if (window.DragDropSystem.resetSnapTracking) window.DragDropSystem.resetSnapTracking();
+        if (window.DragDropSystem.resetOccupiedPositions) window.DragDropSystem.resetOccupiedPositions();
+        AppConfig.log(3, '[goHome] DragDropSystem resettato');
+    },
 
-        // === FASE 3: RESET ASSEMBLY SYSTEM ===
+    _resetAssembly: function() {
         if (window.AssemblySystem && window.AssemblySystem.disableAssemblyMode) {
             window.AssemblySystem.disableAssemblyMode();
             AppConfig.log(3, '[goHome] AssemblySystem disabilitato');
         }
+    },
 
-        // === FASE 4: RESET SCENE 3D ===
-        if (window.Scene3D) {
-            // Reset tutorial tracker
-            if (window.Scene3D.resetTutorialTracker) {
-                window.Scene3D.resetTutorialTracker();
+    _resetScene3D: function() {
+        if (!window.Scene3D) return;
+        if (window.Scene3D.resetTutorialTracker) window.Scene3D.resetTutorialTracker();
+        if (window.Scene3D.animationSystem) {
+            window.Scene3D.animationSystem.activeAnimations = [];
+            window.Scene3D.animationSystem.clickEnabled = true;
+            if (window.Scene3D.animationSystem.multiStepAnimations) {
+                window.Scene3D.animationSystem.multiStepAnimations.clear();
             }
-
-            // Ferma tutte le animazioni attive
-            if (window.Scene3D.animationSystem) {
-                window.Scene3D.animationSystem.activeAnimations = [];
-                window.Scene3D.animationSystem.clickEnabled = true;
-                if (window.Scene3D.animationSystem.multiStepAnimations) {
-                    window.Scene3D.animationSystem.multiStepAnimations.clear();
-                }
-            }
-
-            // Rimuovi highlight attivi
-            if (window.Scene3D.removeHighlight) {
-                window.Scene3D.removeHighlight();
-            }
-
-            // Reset posizioni iniziali salvate
-            if (window.Scene3D.initialModelPositions) {
-                window.Scene3D.initialModelPositions.clear();
-            }
-            if (window.Scene3D.scenarioOriginalPositions) {
-                window.Scene3D.scenarioOriginalPositions.clear();
-            }
-
-            // Pulisci la scena 3D (rimuove tutti i modelli)
-            if (window.Scene3D.clearAllModels) {
-                window.Scene3D.clearAllModels();
-            }
-
-            AppConfig.log(3, '[goHome] Scene3D resettata');
         }
+        if (window.Scene3D.removeHighlight) window.Scene3D.removeHighlight();
+        if (window.Scene3D.initialModelPositions) window.Scene3D.initialModelPositions.clear();
+        if (window.Scene3D.scenarioOriginalPositions) window.Scene3D.scenarioOriginalPositions.clear();
+        if (window.Scene3D.clearAllModels) window.Scene3D.clearAllModels();
+        AppConfig.log(3, '[goHome] Scene3D resettata');
+    },
 
-        // === FASE 5: RESET PARTICLE SYSTEM ===
+    _resetParticles: function() {
         if (window.ParticleSystem && window.ParticleSystem.clearAllEffects) {
             window.ParticleSystem.clearAllEffects();
             AppConfig.log(3, '[goHome] ParticleSystem pulito');
         }
+    },
 
-        // === FASE 6: RESET HOLDABLE SYSTEM ===
+    _resetHoldable: function() {
         if (window.HoldableSystem && window.HoldableSystem.reset) {
             window.HoldableSystem.reset();
             AppConfig.log(3, '[goHome] HoldableSystem resettato');
         }
+    },
 
-        // === FASE 7: RESET EVIDENZIAZIONI PULSANTI ===
-        // Rimuovi cerchi gialli lampeggianti dai pulsanti evidenziati
+    _resetHighlights: function() {
         if (window.InteractiveObject3D && window.InteractiveObject3D.clearButtonHighlights) {
             window.InteractiveObject3D.clearButtonHighlights();
             AppConfig.log(3, '[goHome] Evidenziazioni pulsanti rimosse');
         }
-
-        // Rimuovi cerchi evidenziazione DragDrop
         if (window.Scene3D && window.Scene3D.highlightCircleManager) {
             window.Scene3D.highlightCircleManager.clearAllCircles();
             AppConfig.log(3, '[goHome] Cerchi evidenziazione DragDrop rimossi');
         }
+        this._removeHighlightCircles();
+    },
 
-        // === CLEANUP FORZATO CERCHI GIALLI ===
-        // Rimuovi tutti i cerchi gialli (indicatori highlight) dalla scena
-        if (window.Scene3D && window.Scene3D.scene) {
-            const objectsToRemove = [];
-            window.Scene3D.scene.traverse((object) => {
-                // Trova oggetti con nome che indica cerchi di highlight
-                if (object.name && (object.name.includes('highlightCircle') || object.name.includes('highlight_circle'))) {
-                    objectsToRemove.push(object);
-                }
-            });
-
-            objectsToRemove.forEach(obj => {
-                if (obj.parent) {
-                    obj.parent.remove(obj);
-                    if (obj.geometry) obj.geometry.dispose();
-                    if (obj.material) obj.material.dispose();
-                }
-            });
-
-            if (objectsToRemove.length > 0) {
-                console.log(`🟡 [goHome] Rimossi ${objectsToRemove.length} cerchi highlight dalla scena`);
+    _removeHighlightCircles: function() {
+        if (!window.Scene3D || !window.Scene3D.scene) return;
+        const toRemove = [];
+        window.Scene3D.scene.traverse((obj) => {
+            if (obj.name && (obj.name.includes('highlightCircle') || obj.name.includes('highlight_circle') || obj.name.includes('highlight'))) {
+                toRemove.push(obj);
             }
+        });
+        toRemove.forEach(obj => {
+            if (!obj.parent) return;
+            obj.parent.remove(obj);
+            if (obj.geometry) obj.geometry.dispose();
+            if (Array.isArray(obj.material)) {
+                obj.material.forEach(m => m.dispose());
+            } else if (obj.material) {
+                obj.material.dispose();
+            }
+        });
+        if (toRemove.length > 0) {
+            console.log(`🟡 [goHome] Rimossi ${toRemove.length} cerchi highlight dalla scena`);
         }
+    },
 
-        // === FASE 8: RESET STATO TUTORIAL ===
+    _resetTutorialState: function() {
         this.tutorialSteps = [];
         this.availableTutorials = [];
         this.currentTutorial = null;
         this.currentStepIndex = 0;
-        this.stepCameraState = null; // Posizione camera dello step corrente
-        this.resetCameraPosition = 'bottom-left'; // Posizione pulsante reset camera (top-right/top-left/top-center/bottom-right/bottom-left/bottom-center) — default allineato a interfaceconfig.ini
-
-        // Reset stato scenario
+        this.stepCameraState = null;
+        this.resetCameraPosition = 'bottom-left';
         this.currentScenario = null;
 
-        // Nasconde la barra tutorial e il fumetto
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
-
-        // Nasconde pulsante reset camera
         this.hideResetCameraButton();
 
-        // === CLEANUP FORZATO ELEMENTI UI ===
-        // Force nascondimento fumetto (backup)
+        const congratsModal = document.querySelector('.congratulations-modal');
+        if (congratsModal) congratsModal.classList.remove('show');
+
+        const infoModal = document.getElementById('infoModal');
+        if (infoModal) infoModal.style.display = 'none';
+
+        AppConfig.log(3, '[goHome] Stato tutorial resettato');
+    },
+
+    // Nasconde fumetto e pulsante reset con !important per vincere le transizioni CSS.
+    // Chiamato immediatamente + una volta ritardata per intercettare eventuali re-show.
+    _forceHideUI: function() {
+        if (this.currentPage !== 'home') return;
+
         const bubble = document.getElementById('stepSpeechBubble');
         if (bubble) {
             bubble.classList.remove('flash', 'pulse', 'dramatic-intro');
             bubble.classList.add('hidden');
-            bubble.style.display = 'none';
-            bubble.style.visibility = 'hidden';
-            console.log('💬 [goHome] Fumetto forzatamente nascosto');
+            bubble.setAttribute('style', 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;');
         }
 
-        // Force nascondimento pulsante reset (backup)
         const resetBtn = document.getElementById('resetCameraBtn');
         if (resetBtn) {
             resetBtn.classList.remove('pulse', 'animating');
             resetBtn.classList.add('hidden');
-            resetBtn.style.display = 'none';
-            resetBtn.style.visibility = 'hidden';
-            console.log('📷 [goHome] Pulsante reset forzatamente nascosto');
+            resetBtn.setAttribute('style', 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;');
         }
 
-        // Nascondi modal congratulazioni se presente
-        const congratsModal = document.querySelector('.congratulations-modal');
-        if (congratsModal) {
-            congratsModal.classList.remove('show');
-        }
-
-        // Nascondi modal info se presente
-        const infoModal = document.getElementById('infoModal');
-        if (infoModal) {
-            infoModal.style.display = 'none';
-        }
-
-        AppConfig.log(3, '[goHome] Stato tutorial resettato');
-
-        // === FASE 9: MOSTRA HOME PAGE ===
-        this.updateStatus('Home');
-        this.showPage('home');
-
-        // === CLEANUP AGGRESSIVO CON MULTIPLI TENTATIVI ===
-        const forceHideElements = () => {
-            // Guard: esegui solo se siamo ancora sulla home page
-            if (this.currentPage !== 'home') {
-                console.log('🧹 [goHome] Cleanup saltato - utente già nello scenario');
-                return;
-            }
-            console.log('🧹 [goHome] Esecuzione cleanup UI...');
-
-            // Fumetto: inline style con !important per override totale
-            const bubble = document.getElementById('stepSpeechBubble');
-            if (bubble) {
-                console.log('💬 [goHome] Trovato fumetto, nascondendolo...');
-                // Rimuovi classi animazione
-                bubble.classList.remove('flash', 'pulse', 'dramatic-intro');
-                bubble.classList.add('hidden');
-                // Inline style che override qualsiasi altro CSS
-                bubble.setAttribute('style', 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;');
-                console.log('💬 [goHome] ✅ Fumetto nascosto con inline style !important');
-            } else {
-                console.log('💬 [goHome] ⚠️ Fumetto NON trovato nel DOM');
-            }
-
-            // Pulsante reset: inline style con !important per override totale
-            const resetBtn = document.getElementById('resetCameraBtn');
-            if (resetBtn) {
-                console.log('📷 [goHome] Trovato pulsante reset, nascondendolo...');
-                // Rimuovi classi animazione
-                resetBtn.classList.remove('pulse', 'animating');
-                resetBtn.classList.add('hidden');
-                // Inline style che override qualsiasi altro CSS
-                resetBtn.setAttribute('style', 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;');
-                console.log('📷 [goHome] ✅ Pulsante reset nascosto con inline style !important');
-            } else {
-                console.log('📷 [goHome] ⚠️ Pulsante reset NON trovato nel DOM');
-            }
-
-            // Rimuovi tutti i cerchi gialli dalla scena 3D
-            if (window.Scene3D && window.Scene3D.scene) {
-                const toRemove = [];
-                window.Scene3D.scene.traverse((obj) => {
-                    if (obj.name && (obj.name.includes('highlightCircle') || obj.name.includes('highlight_circle') || obj.name.includes('highlight'))) {
-                        toRemove.push(obj);
-                    }
-                });
-
-                toRemove.forEach(obj => {
-                    if (obj.parent) {
-                        obj.parent.remove(obj);
-                        if (obj.geometry) obj.geometry.dispose();
-                        if (obj.material) {
-                            if (Array.isArray(obj.material)) {
-                                obj.material.forEach(m => m.dispose());
-                            } else {
-                                obj.material.dispose();
-                            }
-                        }
-                    }
-                });
-
-                if (toRemove.length > 0) {
-                    console.log(`🟡 [goHome] Rimossi ${toRemove.length} cerchi highlight dalla scena`);
-                }
-            }
-        };
-
-        // Esegui cleanup IMMEDIATAMENTE
-        forceHideElements();
-
-        // Esegui cleanup RITARDATO (backup) - multipli tentativi
-        setTimeout(forceHideElements, 0);
-        setTimeout(forceHideElements, 50);
-        setTimeout(forceHideElements, 100);
-        setTimeout(forceHideElements, 200);
-        setTimeout(forceHideElements, 500);
-
-        console.log('🧹 [goHome] Cleanup UI schedulato: immediato + 5 tentativi ritardati');
-
-        AppConfig.log(2, '[goHome] ✅ Reset completo terminato - ritorno alla home');
+        this._removeHighlightCircles();
     },
-    
+
+    _scheduleUICleanup: function() {
+        this._forceHideUI();
+        setTimeout(() => this._forceHideUI(), 200);
+        console.log('🧹 [goHome] Cleanup UI schedulato');
+    },
+
     /**
      * Callback quando viene mostrata la pagina scenario
      */

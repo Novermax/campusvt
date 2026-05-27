@@ -613,11 +613,13 @@
         margin: 0 2px;
     }
 
-    /* Fumetto compatto su touch */
+    /* Fumetto compatto su touch - posizionato sotto l'header fisso */
     .step-speech-bubble {
         max-width: 250px;
         min-width: 180px;
         left: 10px;
+        top: 55px;
+        transform: translateY(0);
     }
 
     .speech-bubble-content {

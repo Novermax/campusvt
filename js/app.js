@@ -228,6 +228,14 @@ window.App = {
                 } catch (debugError) {
                     console.warn('⚠️ Debug helpers non caricati (opzionale):', debugError.message);
                 }
+
+                // Carica event handlers e drag lifecycle (mixin su DragDropSystem)
+                try {
+                    await this.loadModule('./js/core/DragDropEvents.js?v=1000001');
+                    console.log('✅ Event handlers drag & drop caricati');
+                } catch (eventsError) {
+                    console.warn('⚠️ DragDropEvents non caricato (opzionale):', eventsError.message);
+                }
             } catch (error) {
                 console.warn('⚠️ DragDropSystem non caricato (opzionale):', error.message);
             }

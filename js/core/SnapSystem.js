@@ -38,7 +38,7 @@ window.SnapSystem = {
 
         this.dragDropSystem = dragDropSystem;
         this.interchangeableTracker = window.InterchangeableTracker;
-        this.assemblySystem = window.AssemblySystem;
+        this.assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
         this.scene = dragDropSystem.scene;
 
         if (!this.dragDropSystem || !this.scene) {

@@ -590,7 +590,7 @@ window.DragDropSystem = {
     },
     
     /**
-     * Rimuove tutti gli indicatori snap
+     * Rimuove tutti gli indicatori snap (delega a SnapSystem se disponibile)
      */
     removeAllSnapIndicators: function() {
         this.snapIndicators.forEach(indicator => {
@@ -599,879 +599,51 @@ window.DragDropSystem = {
             indicator.material?.dispose();
         });
         this.snapIndicators.clear();
+        this.snapSystem?.removeAllSnapIndicators();
     },
 
     /**
-     * Aggiorna gli indicatori snap in base al componente correntemente trascinato
-     * Mostra punti di snap originali + quelli intercambiabili
+     * Aggiorna gli indicatori snap per l'oggetto trascinato (delega a SnapSystem)
      */
     updateSnapIndicators: function() {
-        // Se gli indicatori sono disabilitati, non creare nulla
-        if (!this.showSnapIndicators) {
+        if (this.snapSystem) {
+            this.snapSystem.updateSnapIndicators(this.draggedObject);
             return;
         }
-
-        // Prima rimuovi tutti gli indicatori esistenti
+        // Fallback se SnapSystem non disponibile
+        if (!this.showSnapIndicators || !this.draggedObject) return;
         this.removeAllSnapIndicators();
-
-        // Se non c'è un oggetto trascinato, non mostrare indicatori
-        if (!this.draggedObject) {
-            return;
-        }
-
-        const objectName = this.draggedObject.name.toLowerCase().trim();
-        console.log(`[DragDropSystem] 🔄 Aggiornamento indicatori snap per "${objectName}"`);
-
-        // 1. Crea indicatore per posizione originale (sempre)
         const originalPos = this.originalPositions.get(this.draggedObject.uuid);
         if (originalPos) {
-            this.createSingleSnapIndicator(this.draggedObject.uuid, originalPos, 0x00ff00, `Original_${objectName}`);
-            console.log(`[DragDropSystem] ➕ Indicatore posizione originale creato`);
+            this.createSingleSnapIndicator(this.draggedObject.uuid, originalPos, 0x00ff00,
+                `Original_${this.draggedObject.name.toLowerCase().trim()}`);
         }
-
-        // 2. Crea indicatori per posizioni originali di altri componenti intercambiabili
-        if (window.AssemblySystem && window.AssemblySystem.assemblyMode && window.AssemblySystem.currentConfig) {
-            const interchangeableTargets = window.AssemblySystem.getInterchangeableSnapTargets(objectName);
-
-            if (interchangeableTargets.length > 0) {
-                console.log(`[DragDropSystem] 🎯 Creazione ${interchangeableTargets.length} indicatori per posizioni intercambiabili`);
-
-                interchangeableTargets.forEach((target, index) => {
-                    // DEBUG: Verifica posizioni
-                    console.log(`[DragDropSystem] 🔍 Target ${index + 1}: "${target.targetName}" alla posizione (${target.position.x.toFixed(3)}, ${target.position.y.toFixed(3)}, ${target.position.z.toFixed(3)})`);
-
-                    // Colore arancione per posizioni di altri componenti intercambiabili
-                    const color = 0xff8800;
-                    const uniqueId = `${this.draggedObject.uuid}_interchangeable_${index}`;
-
-                    this.createSingleSnapIndicator(uniqueId, target.position, color, `Interch_${target.targetName}`);
-                });
-
-                console.log(`[DragDropSystem] ✅ Creati ${interchangeableTargets.length} indicatori intercambiabili`);
-            } else {
-                console.log(`[DragDropSystem] ℹ️ Nessun target intercambiabile trovato per "${objectName}"`);
-            }
-        }
-
-        console.log(`[DragDropSystem] 📊 Totale indicatori snap attivi: ${this.snapIndicators.size}`);
     },
 
     /**
-     * Crea un singolo indicatore snap
+     * Crea un singolo indicatore snap (delega a SnapSystem se disponibile)
      * @param {string} id - ID univoco per l'indicatore
      * @param {THREE.Vector3} position - Posizione dell'indicatore
      * @param {number} color - Colore esadecimale
      * @param {string} name - Nome dell'indicatore
      */
     createSingleSnapIndicator: function(id, position, color, name) {
+        if (this.snapSystem) {
+            this.snapSystem.createSingleSnapIndicator(id, position, color, name);
+            return;
+        }
+        // Fallback se SnapSystem non disponibile
         const sphereGeometry = new THREE.SphereGeometry(0.05, 12, 8);
-        const material = new THREE.MeshBasicMaterial({
-            color: color,
-            transparent: true,
-            opacity: 0.7,
-            wireframe: false
-        });
-
+        const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.7 });
         const sphere = new THREE.Mesh(sphereGeometry, material);
         sphere.position.copy(position);
         sphere.name = `SnapIndicator_${name}`;
-        sphere.visible = true; // Visibile quando viene creato durante il drag
-
+        sphere.visible = true;
         this.snapIndicators.set(id, sphere);
         this.scene.add(sphere);
-
         console.log(`[DragDropSystem] 🎯 Indicatore "${name}" creato alla posizione (${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)})`);
     },
     
-    /* ===== EVENT HANDLERS ===== */
-    
-    /**
-     * Gestisce l'evento mousedown per iniziare il drag
-     */
-    onMouseDown: function(event) {
-        if (!this.enabled || event.button !== 0) return; // Solo tasto sinistro
-        
-        // Aggiorna stato mouse
-        this.mouseState.isDown = true;
-        this.mouseState.startX = event.clientX;
-        this.mouseState.startY = event.clientY;
-        this.mouseState.currentX = event.clientX;
-        this.mouseState.currentY = event.clientY;
-        this.mouseState.hasMoved = false;
-        
-        // Calcola coordinate normalizzate
-        const rect = this.canvas.getBoundingClientRect();
-        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
-        // Raycasting per trovare oggetto cliccato
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.draggableObjects, true);
-        
-        if (intersects.length > 0) {
-            const clickedObject = intersects[0].object;
-            const targetModel = this.findRootModel(clickedObject);
-
-            console.log(`🔥🔥🔥 [DragDropSystem] VERSIONE 1.3.0 - CLICK RILEVATO SU: ${targetModel?.name} 🔥🔥🔥`);
-
-            if (targetModel && this.isDraggableObject(targetModel)) {
-                console.log(`🔥🔥🔥 [DragDropSystem] VERSIONE 1.3.0 - OGGETTO DRAGGABILE, CONTROLLO UTENSILE... 🔥🔥🔥`);
-
-                // ⭐ CONTROLLO UTENSILE: Verifica che l'utensile "Mano" sia attivo
-                if (!this.isCorrectToolActive()) {
-                    console.log(`🔥🔥🔥 [DragDropSystem] ❌ DRAG BLOCCATO - UTENSILE "MANO" NON ATTIVO 🔥🔥🔥`);
-                    alert('UTENSILE MANO NON ATTIVO - SELEZIONA PRIMA L\'UTENSILE MANO!');
-
-                    // Feedback visivo per l'utente
-                    this.showToolRequiredMessage();
-                    return;
-                }
-
-                console.log(`🔥🔥🔥 [DragDropSystem] ✅ UTENSILE MANO ATTIVO - AVVIO DRAG 🔥🔥🔥`);
-                this.startDrag(targetModel, intersects[0].point);
-                event.preventDefault(); // Previene comportamenti di default
-            }
-        }
-    },
-    
-    /**
-     * Gestisce l'evento mousemove per il drag
-     */
-    onMouseMove: function(event) {
-        if (!this.enabled) return;
-        
-        this.mouseState.currentX = event.clientX;
-        this.mouseState.currentY = event.clientY;
-        
-        // Calcola se il mouse si è mosso significativamente
-        const deltaX = Math.abs(this.mouseState.currentX - this.mouseState.startX);
-        const deltaY = Math.abs(this.mouseState.currentY - this.mouseState.startY);
-        
-        if (!this.mouseState.hasMoved && (deltaX > 5 || deltaY > 5)) {
-            this.mouseState.hasMoved = true;
-        }
-        
-        // Se stiamo draggando, aggiorna posizione
-        if (this.isDragging && this.draggedObject) {
-            this.updateDragPosition(event);
-            event.preventDefault();
-        }
-    },
-    
-    /**
-     * Gestisce l'evento mouseup per terminare il drag
-     */
-    onMouseUp: function(event) {
-        console.log(`[DragDropSystem] 🖱️ MOUSE UP - enabled: ${this.enabled}, isDragging: ${this.isDragging}, hasMoved: ${this.mouseState.hasMoved}`);
-        console.log(`[DragDropSystem] 🖱️ MOUSE UP - draggedObject: ${this.draggedObject?.name || 'null'}`);
-
-        if (!this.enabled) {
-            console.log(`[DragDropSystem] 🖱️ Sistema disabilitato - reset forzato stato drag`);
-            this.forceResetDragState();
-            return;
-        }
-
-        const hadMoved = this.mouseState.hasMoved;
-
-        // Reset stato mouse
-        this.mouseState.isDown = false;
-        this.mouseState.hasMoved = false;
-
-        if (this.isDragging) {
-            console.log(`[DragDropSystem] 🛑 MOUSE UP durante drag di: ${this.draggedObject?.name || 'UNKNOWN'} - chiamando endDrag()`);
-
-            // IMPORTANTE: Ferma IMMEDIATAMENTE la propagazione dell'evento per evitare interferenze
-            event.preventDefault();
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-
-            this.endDrag();
-            return; // Non eseguire click se stavamo draggando
-        }
-
-        // Se il mouse non si è mosso, potrebbe essere un click normale
-        // Lascia che il sistema esistente gestisca il click
-        if (!hadMoved && event.button === 0) {
-            console.log('[DragDropSystem] Click rilevato, passando al sistema esistente...');
-            // Non preventDefault() per permettere al sistema click esistente di funzionare
-        }
-    },
-
-    /**
-     * Gestisce il tasto ESC per reset di emergenza
-     */
-    onKeyDown: function(event) {
-        // Tasto ESC = reset forzato
-        if (event.key === 'Escape' && this.isDragging) {
-            console.log(`[DragDropSystem] 🚨 ESC premuto durante drag - FORCE RESET`);
-            this.forceResetDragState();
-            event.preventDefault();
-        }
-    },
-
-    /* ===== DRAG LOGIC ===== */
-    
-    /**
-     * Inizia il drag di un oggetto
-     * @param {THREE.Object3D} object - Oggetto da trascinare
-     * @param {THREE.Vector3} intersectionPoint - Punto di intersezione iniziale
-     */
-    startDrag: function(object, intersectionPoint, options) {
-        const isTouch = options && options.isTouch;
-        console.log(`[DragDropSystem] 🎯 Inizio drag di: ${object.name}${isTouch ? ' (TOUCH)' : ''}`);
-
-        this.isDragging = true;
-        this.isTouchDrag = !!isTouch;
-        this.draggedObject = object;
-
-        // Memorizza posizione iniziale del drag
-        this.dragStartPosition.copy(object.position);
-
-        // Calcola offset tra centro oggetto e punto cliccato
-        this.dragOffset.copy(intersectionPoint).sub(object.position);
-
-        // IMPORTANTE: Manteniamo l'highlight giallo durante il drag per coerenza visiva
-        // Gli oggetti draggabili rimangono evidenziati finché non fanno snap con successo
-        console.log(`[DragDropSystem] 🎨 Mantengo highlight su ${object.name} durante drag`);
-
-        // NUOVO: Crea piano di drag perpendicolare alla camera, passando per il punto cliccato
-        this.updateDragPlaneToCamera(intersectionPoint);
-
-        // Aggiorna indicatori snap per mostrare punti disponibili (originali + intercambiabili)
-        if (this.snapSystem) {
-            this.snapSystem.updateSnapIndicators(this.draggedObject);
-        }
-
-        // Cambia cursore (solo per mouse, non per touch)
-        if (!isTouch) {
-            this.canvas.style.cursor = 'grabbing';
-        }
-
-        // Disabilita sistema click esistente durante drag
-        if (window.Scene3D && window.Scene3D.animationSystem) {
-            window.Scene3D.animationSystem.clickEnabled = false;
-        }
-
-        // Disabilita controlli camera durante drag (solo per mouse, touch gestito da TouchSystem)
-        if (!isTouch && window.Scene3D && window.Scene3D.mouseControls) {
-            this.cameraControlsWereEnabled = window.Scene3D.mouseControls.enabled;
-            window.Scene3D.mouseControls.enabled = false;
-            console.log(`[DragDropSystem] 🚫 Controlli camera disabilitati durante drag`);
-        }
-    },
-    
-    /**
-     * Aggiorna la posizione dell'oggetto durante il drag
-     * @param {MouseEvent} event - Evento mouse
-     */
-    updateDragPosition: function(event) {
-        if (!this.draggedObject) return;
-
-        // Calcola coordinate normalizzate
-        const rect = this.canvas.getBoundingClientRect();
-        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-        // NUOVO: Raycast intelligente per assemblaggio VS rimozione
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-
-        // Verifica se stiamo vicini a una zona di snap (assemblaggio) o siamo in movimento libero (rimozione)
-        const isNearSnapZone = this.isNearAnySnapZone(this.draggedObject);
-        const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
-        let raycastTargets = [];
-
-        if (isNearSnapZone) {
-            // MODALITÀ ASSEMBLAGGIO: Usa corpo + coperchio per assemblaggio completo
-            raycastTargets = [];
-
-            if (corpoModel) {
-                raycastTargets.push(corpoModel);
-            }
-
-            // Aggiungi coperchio per assemblaggio viti coperchio
-            const coperchioModel = this.scene.children.find(obj => obj.name === 'coperchio');
-            if (coperchioModel) {
-                raycastTargets.push(coperchioModel);
-            }
-
-            console.log(`[DEBUG] 🎯 ASSEMBLAGGIO: Raycast targeting CORPO + COPERCHIO per snap di "${this.draggedObject.name}"`);
-            console.log(`[DEBUG] 🎯 Targets disponibili: [${raycastTargets.map(obj => obj.name).join(', ')}]`);
-        } else {
-            // MODALITÀ RIMOZIONE: Usa superficie estesa per movimento libero
-            raycastTargets = this.scene.children.filter(obj =>
-                obj !== this.draggedObject &&
-                obj.type !== 'DirectionalLight' &&
-                obj.type !== 'AmbientLight' &&
-                !obj.name.startsWith('SnapIndicator') &&
-                // Permetti coperchio per rimozione viti, ma non altre viti/tappini
-                !obj.name.includes('vite') &&
-                !obj.name.includes('tappino')
-            );
-            console.log(`[DEBUG] 🆓 RIMOZIONE: Raycast con ${raycastTargets.length} oggetti per movimento libero di "${this.draggedObject.name}"`);
-        }
-
-        const sceneIntersects = this.raycaster.intersectObjects(raycastTargets, true);
-
-        // DEBUG: Log raycast results solo se problematici
-        if (this.draggedObject && sceneIntersects.length === 0) {
-            console.log(`[DEBUG] ❌ Raycast fallito durante drag di "${this.draggedObject.name}"`);
-            console.log(`  📊 Oggetti raycast target: ${raycastTargets.length}`);
-            console.log(`  🎯 Target utilizzati:`, raycastTargets.slice(0, 5).map(obj => obj.name || obj.type));
-        }
-
-        if (sceneIntersects.length > 0) {
-            // Aggiorna il piano in base al punto intersectato
-            const intersectionPoint = sceneIntersects[0].point;
-
-            // Solo aggiorna se il punto è cambiato significativamente (per performance)
-            if (!this.lastPlanePoint || this.lastPlanePoint.distanceTo(intersectionPoint) > 0.01) {
-                this.updateDragPlaneToCamera(intersectionPoint);
-                this.lastPlanePoint = intersectionPoint.clone();
-            }
-        } else {
-            // FALLBACK: Se raycast fallisce, crea piano di drag per movimento libero
-            if (!this.lastPlanePoint) {
-                console.log(`[DEBUG] 🔄 Fallback: Creazione piano drag per movimento libero`);
-
-                // OPZIONE 1: Prova corpo della pompa
-                const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
-                if (corpoModel) {
-                    const corpoCenter = new THREE.Vector3();
-                    const box = new THREE.Box3().setFromObject(corpoModel);
-                    box.getCenter(corpoCenter);
-                    this.updateDragPlaneToCamera(corpoCenter);
-                    this.lastPlanePoint = corpoCenter.clone();
-                    console.log(`[DEBUG] ✅ Fallback: Usato centro corpo per piano drag`);
-                } else {
-                    // OPZIONE 2: Prova pavimento
-                    const pavimento = this.scene.children.find(obj => obj.name === 'pavimento');
-                    if (pavimento) {
-                        const pavimentoCenter = new THREE.Vector3();
-                        const box = new THREE.Box3().setFromObject(pavimento);
-                        box.getCenter(pavimentoCenter);
-                        this.updateDragPlaneToCamera(pavimentoCenter);
-                        this.lastPlanePoint = pavimentoCenter.clone();
-                        console.log(`[DEBUG] ✅ Fallback: Usato pavimento per piano drag`);
-                    } else {
-                        // OPZIONE 3: Crea piano alla posizione corrente oggetto
-                        const currentPos = this.draggedObject.position.clone();
-                        this.updateDragPlaneToCamera(currentPos);
-                        this.lastPlanePoint = currentPos.clone();
-                        console.log(`[DEBUG] ✅ Fallback: Creato piano alla posizione oggetto corrente`);
-                    }
-                }
-            }
-        }
-
-        // Proietta su piano di drag aggiornato
-        const planeIntersects = this.raycaster.intersectObjects([this.dragPlane], false);
-
-        if (planeIntersects.length > 0) {
-            const newPosition = planeIntersects[0].point.sub(this.dragOffset);
-
-            // Aggiorna posizione oggetto
-            this.draggedObject.position.copy(newPosition);
-
-            // Controlla e evidenzia zone di snap
-            if (this.snapSystem) {
-                this.snapSystem.checkSnapZones(this.draggedObject);
-            }
-        }
-    },
-    
-    /**
-     * Aggiorna posizione drag da coordinate touch normalizzate (-1..1)
-     * Usa la stessa logica di updateDragPosition ma senza bisogno di un MouseEvent
-     * @param {number} normalizedX - Coordinata X normalizzata (-1..1)
-     * @param {number} normalizedY - Coordinata Y normalizzata (-1..1)
-     */
-    updateDragPositionFromTouch: function(normalizedX, normalizedY) {
-        if (!this.draggedObject) return;
-
-        // Usa coordinate normalizzate direttamente
-        this.mouse.x = normalizedX;
-        this.mouse.y = normalizedY;
-
-        // Raycast intelligente (stessa logica di updateDragPosition)
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-
-        const isNearSnapZone = this.isNearAnySnapZone(this.draggedObject);
-        let raycastTargets = [];
-
-        if (isNearSnapZone) {
-            const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
-            if (corpoModel) raycastTargets.push(corpoModel);
-            const coperchioModel = this.scene.children.find(obj => obj.name === 'coperchio');
-            if (coperchioModel) raycastTargets.push(coperchioModel);
-        } else {
-            raycastTargets = this.scene.children.filter(obj =>
-                obj !== this.draggedObject &&
-                obj.type !== 'DirectionalLight' &&
-                obj.type !== 'AmbientLight' &&
-                !obj.name.startsWith('SnapIndicator') &&
-                !obj.name.includes('vite') &&
-                !obj.name.includes('tappino')
-            );
-        }
-
-        const sceneIntersects = this.raycaster.intersectObjects(raycastTargets, true);
-
-        if (sceneIntersects.length > 0) {
-            const intersectionPoint = sceneIntersects[0].point;
-            if (!this.lastPlanePoint || this.lastPlanePoint.distanceTo(intersectionPoint) > 0.01) {
-                this.updateDragPlaneToCamera(intersectionPoint);
-                this.lastPlanePoint = intersectionPoint.clone();
-            }
-        } else if (!this.lastPlanePoint) {
-            const corpoModel = this.scene.children.find(obj => obj.name === 'corpo');
-            if (corpoModel) {
-                const box = new THREE.Box3().setFromObject(corpoModel);
-                const center = box.getCenter(new THREE.Vector3());
-                this.updateDragPlaneToCamera(center);
-                this.lastPlanePoint = center.clone();
-            } else {
-                const currentPos = this.draggedObject.position.clone();
-                this.updateDragPlaneToCamera(currentPos);
-                this.lastPlanePoint = currentPos.clone();
-            }
-        }
-
-        // Proietta su piano di drag
-        const planeIntersects = this.raycaster.intersectObjects([this.dragPlane], false);
-        if (planeIntersects.length > 0) {
-            const newPosition = planeIntersects[0].point.sub(this.dragOffset);
-            this.draggedObject.position.copy(newPosition);
-
-            if (this.snapSystem) {
-                this.snapSystem.checkSnapZones(this.draggedObject);
-            }
-        }
-    },
-
-    /**
-     * Termina il drag e controlla se eseguire snap
-     */
-    endDrag: function() {
-        console.log(`[DragDropSystem] 🏁 INIZIO endDrag() - isDragging: ${this.isDragging}, draggedObject: ${this.draggedObject?.name || 'null'}`);
-
-        if (!this.isDragging || !this.draggedObject) {
-            console.log(`[DragDropSystem] ⚠️ endDrag() chiamato ma nessun drag in corso - USCITA EARLY`);
-            return;
-        }
-
-        console.log(`[DragDropSystem] 🏁 Fine drag di: ${this.draggedObject.name}`);
-        console.log(`[DragDropSystem] 📍 Posizione corrente: (${this.draggedObject.position.x.toFixed(3)}, ${this.draggedObject.position.y.toFixed(3)}, ${this.draggedObject.position.z.toFixed(3)})`);
-
-        // DEBUG: Log distanza dal punto di snap al momento del drop (PRIMA di findSnapTarget)
-        const originalPos = this.originalPositions.get(this.draggedObject.uuid);
-        console.log(`[DragDropSystem] 🔍 DEBUG POSIZIONI ORIGINALI - Totale salvate: ${this.originalPositions.size}`);
-
-        if (originalPos) {
-            const currentBoundingBox = new THREE.Box3().setFromObject(this.draggedObject);
-            const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
-            const distanceFromTarget = currentCenter.distanceTo(originalPos);
-
-            console.log(`[DragDropSystem] 📏 DISTANZA AL DROP per ${this.draggedObject.name}:`);
-            console.log(`  📦 Centro BB corrente: (${currentCenter.x.toFixed(3)}, ${currentCenter.y.toFixed(3)}, ${currentCenter.z.toFixed(3)})`);
-            console.log(`  🎯 Target originale: (${originalPos.x.toFixed(3)}, ${originalPos.y.toFixed(3)}, ${originalPos.z.toFixed(3)})`);
-            console.log(`  📏 Distanza centro BB → target: ${distanceFromTarget.toFixed(3)} unità`);
-            console.log(`  ⚖️ Soglia snap configurata: ${this.snapDistance.toFixed(3)} unità`);
-            console.log(`  ${distanceFromTarget <= this.snapDistance ? '✅ DOVREBBE FARE SNAP' : '❌ NON DOVREBBE FARE SNAP'}`);
-        } else {
-            console.log(`[DragDropSystem] ❌ ERRORE: Nessuna posizione originale salvata per ${this.draggedObject.name} (UUID: ${this.draggedObject.uuid})`);
-            console.log(`[DragDropSystem] 🔍 Posizioni salvate:`, Array.from(this.originalPositions.keys()));
-        }
-
-        // Controlla se l'oggetto è abbastanza vicino alla posizione originale
-        console.log(`[DragDropSystem] 🎯 Cercando snap target per ${this.draggedObject.name}...`);
-        console.log(`[DragDropSystem] 🎯 Custom snap targets configurati: ${this.customSnapTargets.size}`);
-        if (this.customSnapTargets.has(this.draggedObject.uuid)) {
-            const customTarget = this.customSnapTargets.get(this.draggedObject.uuid);
-            console.log(`[DragDropSystem] 🎯 Custom snap target trovato per ${this.draggedObject.name}:`, customTarget);
-        }
-
-        // Utilizza prima AssemblySystemSimplified, poi fallback al SnapSystem
-        let snapTarget = null;
-
-        if (window.AssemblySystemSimplified && window.AssemblySystemSimplified.assemblyMode) {
-            // Sistema semplificato: usa snap targets del gruppo corrente
-            const groupSnapTargets = window.AssemblySystemSimplified.getCurrentGroupSnapTargets(this.draggedObject.name);
-            console.log(`[DragDropSystem] 🎯 AssemblySystemSimplified trovato ${groupSnapTargets.length} snap targets`);
-
-            if (groupSnapTargets.length > 0) {
-                // Trova il target più vicino
-                const currentBoundingBox = new THREE.Box3().setFromObject(this.draggedObject);
-                const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
-
-                let closestTarget = null;
-                let closestDistance = Infinity;
-                let closestTargetName = null;
-
-                groupSnapTargets.forEach(target => {
-                    // FIX: Verifica che la posizione non sia già occupata da un altro oggetto
-                    const posKey = this.createSnapPositionKey(target.targetName, target.position);
-                    if (this.isSnapPositionOccupied(posKey, this.draggedObject)) return;
-
-                    const distance = currentCenter.distanceTo(target.position);
-                    if (distance <= this.snapDistance && distance < closestDistance) {
-                        closestTarget = target.position;
-                        closestDistance = distance;
-                        closestTargetName = target.targetName;
-                    }
-                });
-
-                if (closestTarget) {
-                    snapTarget = closestTarget;
-                    // Associa chiave posizione al Vector3 per occupation tracking dopo snap
-                    if (closestTargetName) {
-                        const snapKey = this.createSnapPositionKey(closestTargetName, null);
-                        this.snapPositionKeys.set(closestTarget, snapKey);
-                    }
-                    console.log(`[DragDropSystem] 🎯 Snap target trovato tramite AssemblySystemSimplified: (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)}) → "${closestTargetName}"`);
-                }
-            }
-        }
-
-        // Fallback al sistema vecchio se nessun target trovato
-        if (!snapTarget && this.snapSystem) {
-            snapTarget = this.snapSystem.findSnapTarget(this.draggedObject);
-            console.log(`[DragDropSystem] 🎯 Fallback SnapSystem risultato:`, snapTarget ? `Posizione (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})` : 'null');
-        }
-
-        console.log(`[DragDropSystem] 🎯 findSnapTarget finale:`, snapTarget ? `Posizione (${snapTarget.x.toFixed(3)}, ${snapTarget.y.toFixed(3)}, ${snapTarget.z.toFixed(3)})` : 'null');
-
-        // SEMPRE fare cleanup base prima di tutto
-        const wasTouchDrag = this.isTouchDrag;
-        console.log(`[DragDropSystem] 🧹 CLEANUP BASE: hiding snap indicators e reset cursore...${wasTouchDrag ? ' (TOUCH)' : ''}`);
-        this.hideAllSnapIndicators();
-
-        // Reset cursore (solo per mouse, non per touch)
-        if (!wasTouchDrag) {
-            this.canvas.style.cursor = '';
-            console.log(`[DragDropSystem] 🖱️ Cursore canvas inline resettato, classi CSS attive`);
-
-            // Ferma animazione cursore di Scene3D
-            if (window.Scene3D && typeof window.Scene3D.stopCursorAnimation === 'function') {
-                window.Scene3D.stopCursorAnimation();
-                console.log(`[DragDropSystem] ⏹️ Animazione cursore Scene3D fermata`);
-            }
-        }
-
-        // Riabilita sistema click esistente
-        if (window.Scene3D && window.Scene3D.animationSystem) {
-            window.Scene3D.animationSystem.clickEnabled = true;
-            console.log(`[DragDropSystem] 🎯 Click animation system riabilitato`);
-        }
-
-        // Riabilita controlli camera (solo per mouse, touch gestito da TouchSystem)
-        if (!wasTouchDrag && window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
-            window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
-            console.log(`[DragDropSystem] ✅ Controlli camera riabilitati: ${this.cameraControlsWereEnabled}`);
-            this.cameraControlsWereEnabled = undefined;
-        }
-
-        // NUOVO: Riapplica cursore strumento attivo tramite ToolsManager
-        if (window.ToolsManager && typeof window.ToolsManager.updateCanvasCursor === 'function') {
-            console.log(`[DragDropSystem] 🔧 Richiedendo aggiornamento cursore a ToolsManager...`);
-
-            // Debug stato strumenti PRIMA di updateCanvasCursor
-            if (typeof window.ToolsManager.getActiveTool === 'function') {
-                const activeTool = window.ToolsManager.getActiveTool();
-                console.log(`[DragDropSystem] 🔍 Tool attivo prima update: "${activeTool}"`);
-
-                if (typeof window.ToolsManager.getToolsState === 'function') {
-                    const toolsState = window.ToolsManager.getToolsState();
-                    console.log(`[DragDropSystem] 🔍 Stato completo tools:`, toolsState);
-                }
-            }
-
-            window.ToolsManager.updateCanvasCursor();
-            console.log(`[DragDropSystem] 🔧 ToolsManager updateCanvasCursor completato`);
-
-            // Debug stato DOPO updateCanvasCursor
-            if (typeof window.ToolsManager.getActiveTool === 'function') {
-                const activeToolAfter = window.ToolsManager.getActiveTool();
-                console.log(`[DragDropSystem] 🔍 Tool attivo dopo update: "${activeToolAfter}"`);
-            }
-        } else {
-            console.log(`[DragDropSystem] ⚠️ ToolsManager non disponibile per aggiornamento cursore`);
-            console.log(`[DragDropSystem] 🔍 Debug: window.ToolsManager = ${window.ToolsManager ? 'presente' : 'assente'}`);
-            if (window.ToolsManager) {
-                console.log(`[DragDropSystem] 🔍 Debug: updateCanvasCursor = ${typeof window.ToolsManager.updateCanvasCursor}`);
-            }
-
-            // FALLBACK: Applica cursore mano usando sistema body class unificato
-            document.body.classList.remove('tool-aria-active', 'tool-chiave_inglese-active', 'tool-brugola-active', 'tool-mano-active');
-            document.body.classList.add('tool-mano-active');
-            console.log(`[DragDropSystem] 🔧 Fallback: Cursore mano applicato via body class`);
-
-            const canvas = document.querySelector('#canvas3d, canvas');
-            if (canvas) {
-                canvas.classList.remove('cursor-default', 'cursor-mano', 'cursor-brugola', 'cursor-chiave', 'cursor-aria');
-            }
-        }
-
-        if (snapTarget) {
-            // IMPORTANTE: Salva stato da resettare dopo l'animazione
-            // Debug dettagliato per sistema Assembly
-            const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
-            const assemblyEnabled = assemblySystem && assemblySystem.assemblyMode;
-            const componentName = this.getCleanModelName(this.draggedObject.name);
-
-            console.log(`[DragDropSystem] 🏗️ DEBUG ASSEMBLY INTEGRATION:`);
-            console.log(`  assemblySystem: ${assemblySystem ? (window.AssemblySystemSimplified ? 'AssemblySystemSimplified' : 'AssemblySystem') : 'assente'}`);
-            console.log(`  assemblyMode: ${assemblySystem?.assemblyMode}`);
-            console.log(`  assemblyEnabled: ${assemblyEnabled}`);
-            console.log(`  componentName: "${componentName}"`);
-
-            const snapContext = {
-                draggedObject: this.draggedObject,
-                assemblyIntegration: {
-                    enabled: assemblyEnabled,
-                    componentName: componentName,
-                    snapTargetPosition: snapTarget
-                }
-            };
-
-            // Esegui snap animato e rimuovi highlight dopo snap riuscito
-            if (this.snapSystem) {
-                // Aggiungi callback per integrazione AssemblySystem
-                snapContext.onComplete = this.handleSnapComplete.bind(this);
-                this.snapSystem.performSnap(this.draggedObject, snapTarget, snapContext);
-            }
-
-            // IMPORTANTE: Rimuovi highlight dopo snap riuscito per indicare che l'oggetto è "sistemato"
-            // Ripristina materiale originale per questo oggetto specifico
-            if (this.originalMaterialsMap && this.originalMaterialsMap.has(this.draggedObject.uuid)) {
-                const originalMaterials = this.originalMaterialsMap.get(this.draggedObject.uuid);
-                this.draggedObject.traverse((child) => {
-                    if (child.isMesh && originalMaterials.has(child.uuid)) {
-                        child.material = originalMaterials.get(child.uuid);
-                        child.renderOrder = 0;
-                    }
-                });
-                console.log(`[DragDropSystem] ✅ Snap riuscito - rimosso highlight da ${this.draggedObject.name}`);
-            }
-            this.silhouetteBlocked.delete(this.draggedObject.name);
-
-            // Reset stato SEMPRE - performSnap gestirà la sua parte
-        } else {
-            // Snap fallito - rimuovi dal blocco e riapplica highlight
-            this.silhouetteBlocked.delete(this.draggedObject.name);
-            if (window.Scene3D && typeof window.Scene3D.highlightModel === 'function') {
-                window.Scene3D.highlightModel(this.draggedObject);
-                console.log(`[DragDropSystem] ❌ Snap fallito - riapplicato highlight giallo a ${this.draggedObject.name}`);
-            }
-
-            // TRACKING OCCUPAZIONI: Delega al modulo InterchangeableTracker (snap fallito)
-            if (this.interchangeableTracker) {
-                const currentBoundingBox = new THREE.Box3().setFromObject(this.draggedObject);
-                const currentCenter = currentBoundingBox.getCenter(new THREE.Vector3());
-                this.interchangeableTracker.handlePositionChange(this.draggedObject, currentCenter);
-            }
-        }
-
-        // Reset stato SEMPRE (anche con snap riuscito)
-        this.isDragging = false;
-        this.isTouchDrag = false;
-        this.draggedObject = null;
-        this.dragOffset.set(0, 0, 0);
-        this.dragStartPosition.set(0, 0, 0);
-        this.lastPlanePoint = null;  // Reset cache piano
-
-        console.log(`[DragDropSystem] 🔄 RESET COMPLETO: isDragging=${this.isDragging}, draggedObject=${this.draggedObject ? this.draggedObject.name : 'null'}`);
-    },
-
-    /**
-     * Forza il reset dello stato di drag (per situazioni di emergenza)
-     * FIX: Aggiunto reset tracking occupazioni e cancellazione retry pendenti
-     */
-    forceResetDragState: function() {
-        console.log(`[DragDropSystem] 🚨 FORCE RESET DRAG STATE`);
-
-        // FIX: Cancella retry pendenti per avanzamento tutorial
-        if (this.advanceRetryTimeoutId) {
-            clearTimeout(this.advanceRetryTimeoutId);
-            this.advanceRetryTimeoutId = null;
-            console.log(`[DragDropSystem] 🔄 Retry avanzamento cancellato`);
-        }
-
-        // FIX: Reset tracking occupazioni snap
-        this.occupiedSnapPositions.clear();
-        this.objectSnapPosition.clear();
-        console.log(`[DragDropSystem] 🔄 Tracking occupazioni snap resettato`);
-
-        // Reset completo stato
-        this.isDragging = false;
-        this.isTouchDrag = false;
-        this.draggedObject = null;
-        this.dragOffset.set(0, 0, 0);
-        this.dragStartPosition.set(0, 0, 0);
-        this.lastPlanePoint = null;
-
-        // Reset stato mouse
-        this.mouseState.isDown = false;
-        this.mouseState.hasMoved = false;
-
-        // Nascondi indicatori snap
-        this.hideAllSnapIndicators();
-
-        // Riabilita controlli camera se erano disabilitati
-        if (window.Scene3D && window.Scene3D.mouseControls && this.cameraControlsWereEnabled !== undefined) {
-            window.Scene3D.mouseControls.enabled = this.cameraControlsWereEnabled;
-            console.log(`[DragDropSystem] 🔄 Controlli camera riabilitati forzatamente: ${this.cameraControlsWereEnabled}`);
-            this.cameraControlsWereEnabled = undefined;
-        }
-
-        // Riapplica cursore tool tramite ToolsManager
-        if (window.ToolsManager && typeof window.ToolsManager.updateCanvasCursor === 'function') {
-            window.ToolsManager.updateCanvasCursor();
-            console.log(`[DragDropSystem] 🔧 Cursore tool riapplicato forzatamente`);
-        }
-
-        console.log(`[DragDropSystem] ✅ Force reset completato`);
-    },
-
-    /**
-     * Aggiorna il piano di drag per essere perpendicolare alla camera
-     * @param {THREE.Vector3} intersectionPoint - Punto di intersezione del raycast
-     */
-    updateDragPlaneToCamera: function(intersectionPoint) {
-        if (!this.camera || !this.dragPlane) return;
-
-        // Calcola la direzione dal camera verso il punto di intersezione
-        const cameraToPoint = new THREE.Vector3();
-        cameraToPoint.subVectors(intersectionPoint, this.camera.position).normalize();
-
-        // La normale del piano deve essere parallela alla direzione della camera
-        // Per un piano perpendicolare alla vista della camera
-        this.dragPlane.position.copy(intersectionPoint);
-
-        // Imposta rotazione del piano: normale parallela al vettore camera-punto
-        const up = new THREE.Vector3(0, 1, 0);
-        const right = new THREE.Vector3().crossVectors(cameraToPoint, up).normalize();
-        const finalUp = new THREE.Vector3().crossVectors(right, cameraToPoint).normalize();
-
-        // Costruisci matrice rotazione per il piano
-        this.dragPlane.matrix.makeBasis(right, finalUp, cameraToPoint);
-        this.dragPlane.matrix.setPosition(intersectionPoint);
-        this.dragPlane.matrixAutoUpdate = false;
-        this.dragPlane.matrixWorldNeedsUpdate = true;
-    },
-
-    /**
-     * Gestisce il completamento di uno snap (callback da SnapSystem)
-     * @param {THREE.Object3D} object - Oggetto che ha fatto snap
-     * @param {THREE.Vector3} targetPosition - Posizione finale
-     * @param {Object} snapContext - Contesto del snap
-     */
-    handleSnapComplete: function(object, targetPosition, snapContext) {
-        console.log(`[DragDropSystem] 🎯 Handling snap completion per ${object.name}`);
-
-        // Occupa la posizione di snap per impedire ad altri oggetti di usarla
-        const snapKey = this.snapPositionKeys.get(targetPosition);
-        if (snapKey) {
-            this.occupySnapPosition(snapKey, object);
-        }
-
-        // Usa AssemblySystemSimplified se disponibile, altrimenti fallback a AssemblySystem
-        const assemblySystem = window.AssemblySystemSimplified || window.AssemblySystem;
-        const shouldResetDragState = snapContext !== null;
-
-        console.log(`[DragDropSystem] 🔍 VERIFICA INTEGRAZIONE ASSEMBLY:`);
-        console.log(`  shouldResetDragState: ${shouldResetDragState}`);
-        console.log(`  snapContext: ${snapContext ? 'presente' : 'assente'}`);
-        console.log(`  assemblySystem: ${assemblySystem ? (window.AssemblySystemSimplified ? 'AssemblySystemSimplified' : 'AssemblySystem') : 'assente'}`);
-        console.log(`  assemblyMode: ${assemblySystem?.assemblyMode}`);
-
-        if (shouldResetDragState && snapContext && assemblySystem && assemblySystem.assemblyMode) {
-            try {
-                const componentName = snapContext.assemblyIntegration.componentName;
-                console.log(`[DragDropSystem] 🏗️ CHIAMANDO markComponentMounted con:`);
-                console.log(`  componentName: "${componentName}"`);
-                console.log(`  targetPosition: (${targetPosition.x.toFixed(3)}, ${targetPosition.y.toFixed(3)}, ${targetPosition.z.toFixed(3)})`);
-
-                assemblySystem.markComponentMounted(componentName, targetPosition);
-                console.log(`[DragDropSystem] 🏗️ Componente "${componentName}" marcato come montato nel sistema assemblaggio`);
-
-                // Rimuovi cerchio evidenziazione DragDrop per questo componente
-                if (window.Scene3D && window.Scene3D.highlightCircleManager) {
-                    window.Scene3D.highlightCircleManager.removeCircle(`dragdrop_${componentName}`);
-                }
-
-                // Verifica se il passo corrente è completato
-                const assemblyStatus = assemblySystem.getAssemblyStatus();
-                console.log(`[DragDropSystem] 📋 Stato Assembly dopo mount:`);
-                console.log(`  currentStep: "${assemblyStatus.currentStep}"`);
-                console.log(`  currentStepComplete: ${assemblyStatus.currentStepComplete}`);
-                console.log(`  mountedComponents: [${assemblyStatus.mountedComponents.join(', ')}]`);
-                console.log(`  allowedComponents: [${assemblyStatus.allowedComponents.join(', ')}]`);
-                console.log(`  canAdvanceToNext: ${assemblyStatus.canAdvanceToNext}`);
-
-                if (assemblyStatus.currentStepComplete) {
-                    console.log(`[DragDropSystem] 🎯 Step "${assemblyStatus.currentStep}" completato!`);
-
-                    // Check if we can advance to next step
-                    if (assemblyStatus.canAdvanceToNext) {
-                        console.log(`[DragDropSystem] 🎯 Step completato e avanzamento consentito, chiamando getNextStep()...`);
-                        const nextStep = assemblySystem.getNextStep();
-
-                        if (nextStep) {
-                            console.log(`[DragDropSystem] ⏭️ Avanzamento interno assembly a step: "${nextStep}"`);
-                            assemblySystem.setCurrentStep(nextStep);
-                        } else {
-                            console.log(`[DragDropSystem] 🎉 getNextStep() ha restituito null - delegando avanzamento a UI tutorial`);
-                            // Avanza il tutorial UI quando l'assembly system indica step management delegato
-                            this.tryAdvanceTutorialStep('assembly_step_completed');
-                        }
-                    } else {
-                        console.log(`[DragDropSystem] ⏸️ Step completato ma canAdvanceToNext: false`);
-                    }
-                }
-            } catch (error) {
-                console.warn(`[DragDropSystem] ⚠️ Errore integrazione AssemblySystem:`, error);
-            }
-        }
-
-        // NUOVO: Tracking snap completati per auto-avanzamento step (senza assembly system)
-        if (this.autoAdvanceEnabled && this.requiredSnapObjects.size > 0) {
-            const objectName = object.name.replace(/^models\//, '').replace(/\.(glb|obj|stl)$/, '');
-
-            // Aggiungi oggetto alla lista completati
-            this.completedSnapObjects.add(objectName);
-            console.log(`[DragDropSystem] ✅ Oggetto "${objectName}" snappato con successo`);
-
-            // Rimuovi cerchio evidenziazione DragDrop per questo oggetto
-            if (window.Scene3D && window.Scene3D.highlightCircleManager) {
-                window.Scene3D.highlightCircleManager.removeCircle(`dragdrop_${objectName}`);
-            }
-            console.log(`[DragDropSystem] 📊 Progress: ${this.completedSnapObjects.size}/${this.requiredSnapObjects.size} oggetti snappati`);
-
-            // Controlla se tutti gli oggetti richiesti hanno fatto snap
-            const allSnapped = Array.from(this.requiredSnapObjects).every(req => this.completedSnapObjects.has(req));
-
-            if (allSnapped) {
-                console.log(`[DragDropSystem] 🎉 TUTTI GLI OGGETTI RICHIESTI SONO STATI SNAPPATI!`);
-                console.log(`[DragDropSystem] ⏭️ Auto-avanzamento allo step successivo...`);
-
-                // Piccolo delay per permettere all'animazione snap di completarsi
-                setTimeout(() => {
-                    this.tryAdvanceTutorialStep('all_snaps_completed');
-                }, 500);
-            }
-        }
-        // FALLBACK: DragDrop semplice senza assembly né autoAdvance
-        // Se nessuno dei sistemi sopra ha gestito l'avanzamento, avanza direttamente
-        else if (!assemblySystem || !assemblySystem.assemblyMode) {
-            if (this.shouldAdvanceAfterSnap()) {
-                console.log(`[DragDropSystem] ⏭️ DragDrop semplice: snap completato, avanzamento step...`);
-                setTimeout(() => {
-                    this.tryAdvanceTutorialStep('simple_dragdrop_snap');
-                }, 500);
-            }
-        }
-    },
-
     /* ===== SNAP SYSTEM DELEGATION ===== */
     
     /**
@@ -1794,24 +966,12 @@ window.DragDropSystem = {
     },
     
     /**
-     * Controlla le zone di snap durante il drag e fornisce feedback visivo
+     * Controlla le zone di snap durante il drag (delega a SnapSystem)
      */
     checkSnapZones: function() {
         if (!this.draggedObject) return;
-        
-        const snapTarget = this.findSnapTarget(this.draggedObject);
-        const indicator = this.snapIndicators.get(this.draggedObject.uuid);
-        
-        if (snapTarget && indicator) {
-            // Mostra feedback positivo (zona snap attiva)
-            indicator.material.color.setHex(0x00ff00); // Verde
-            indicator.material.opacity = 0.8;
-            this.canvas.style.cursor = 'grab'; // Cursore diverso per indicare snap possibile
-        } else if (indicator) {
-            // Feedback neutro
-            indicator.material.color.setHex(0xffffff); // Bianco
-            indicator.material.opacity = 0.3;
-            this.canvas.style.cursor = 'grabbing';
+        if (this.snapSystem) {
+            this.snapSystem.checkSnapZones(this.draggedObject);
         }
     },
     
@@ -2169,34 +1329,13 @@ window.DragDropSystem = {
     },
     
     /* ===== VISUAL FEEDBACK ===== */
-    
-    /**
-     * Mostra indicatori snap per tutti gli oggetti tranne quello draggato
-     * @param {THREE.Object3D} draggedObject - Oggetto attualmente draggato
-     */
-    showSnapIndicators: function(draggedObject) {
-        this.snapIndicators.forEach((indicator, uuid) => {
-            if (uuid === draggedObject.uuid) {
-                // Mostra l'indicatore della posizione originale dell'oggetto trascinato
-                indicator.visible = true;
-                indicator.material.opacity = 0.8;
-                indicator.material.color.set(0x00ff00); // Verde per la posizione originale
 
-                console.log(`[DragDropSystem] 🎯 Mostro indicatore snap per: ${draggedObject.name}`);
-            } else {
-                // Nasconde indicatori di altri oggetti per chiarezza
-                indicator.visible = false;
-            }
-        });
-    },
-    
     /**
-     * Nasconde tutti gli indicatori snap
+     * Nasconde tutti gli indicatori snap (delega a SnapSystem se disponibile)
      */
     hideAllSnapIndicators: function() {
-        this.snapIndicators.forEach(indicator => {
-            indicator.visible = false;
-        });
+        this.snapIndicators.forEach(indicator => { indicator.visible = false; });
+        this.snapSystem?.hideSnapIndicators();
     },
     
     /* ===== UTILITY FUNCTIONS ===== */
@@ -2238,192 +1377,6 @@ window.DragDropSystem = {
         return false;
     },
 
-    /**
-     * Verifica se dovremmo avanzare lo step dopo uno snap
-     * Controlla se l'AssemblySystem considera lo step corrente completo
-     * @returns {boolean}
-     */
-    shouldAdvanceAfterSnap: function() {
-        // Se non è in modalità assemblaggio, avanza sempre
-        if (!window.AssemblySystem || !window.AssemblySystem.enabled) {
-            console.log(`[DragDropSystem] 🔄 Non in modalità assembly - avanzamento consentito`);
-            return true;
-        }
-
-        // Verifica se il current step assembly è completo
-        try {
-            const isStepComplete = window.AssemblySystem.isCurrentStepComplete();
-            console.log(`[DragDropSystem] 🔍 Assembly step completo: ${isStepComplete}`);
-
-            if (window.AssemblySystem.currentStepName) {
-                console.log(`[DragDropSystem] 📝 Step corrente: ${window.AssemblySystem.currentStepName}`);
-            }
-
-            return isStepComplete;
-        } catch (error) {
-            console.warn(`[DragDropSystem] ⚠️ Errore verifica completamento assembly:`, error);
-            // In caso di errore, non bloccare l'avanzamento
-            return true;
-        }
-    },
-
-    /**
-     * Avanza il tutorial step con retry intelligente per risolvere timing issues
-     * @param {string} context - Contesto della chiamata per debug
-     */
-    advanceTutorialStep: function(context = 'unknown') {
-        this.tryAdvanceTutorialStep(context, 0);
-    },
-
-    /**
-     * Tentativo di avanzamento tutorial con retry
-     * @param {string} context - Contesto della chiamata
-     * @param {number} attempt - Numero tentativo corrente
-     */
-    tryAdvanceTutorialStep: function(context, attempt) {
-        const maxRetries = this.tutorialAdvanceRetries;
-        const retryDelay = this.tutorialAdvanceRetryDelay;
-
-        console.log(`[DragDropSystem] 🎯 Tentativo ${attempt + 1}/${maxRetries + 1} avanzamento step (${context})`);
-
-        // MULTI-PATH APPROACH: Cerca TutorialManager in diversi modi + Approccio legacy
-        let tutorialManager = null;
-        let accessPath = '';
-        let useDirectMethod = false;
-
-        // Percorso 1: window.UI.tutorialManager (nuovo getter)
-        if (window.UI && window.UI.tutorialManager && typeof window.UI.tutorialManager.nextStep === 'function') {
-            tutorialManager = window.UI.tutorialManager;
-            accessPath = 'window.UI.tutorialManager';
-        }
-        // Percorso 2: window.UI._tutorialManager (accesso diretto)
-        else if (window.UI && window.UI._tutorialManager && typeof window.UI._tutorialManager.nextStep === 'function') {
-            tutorialManager = window.UI._tutorialManager;
-            accessPath = 'window.UI._tutorialManager';
-        }
-        // Percorso 3: Istanza globale diretta
-        else if (window.TutorialManager && window.TutorialManagerInstance && typeof window.TutorialManagerInstance.nextStep === 'function') {
-            tutorialManager = window.TutorialManagerInstance;
-            accessPath = 'window.TutorialManagerInstance';
-        }
-        // Percorso 4: Legacy UI system con nextStep method
-        else if (window.UI && typeof window.UI.nextStep === 'function') {
-            useDirectMethod = true;
-            accessPath = 'window.UI.nextStep (legacy)';
-        }
-        // Percorso 5: Legacy UI system con goToStep method
-        else if (window.UI && typeof window.UI.goToStep === 'function' && typeof window.UI.currentStepIndex === 'number') {
-            useDirectMethod = true;
-            accessPath = 'window.UI.goToStep (legacy)';
-        }
-
-        // Verifica completa disponibilità TutorialManager o metodi legacy
-        if ((tutorialManager && !tutorialManager._isTransitioning) || useDirectMethod) {
-
-            try {
-                console.log(`[DragDropSystem] ➡️ Avanzamento step (${context})`);
-                console.log(`[DragDropSystem] 🎯 Percorso accesso: ${accessPath}`);
-                console.log(`[DragDropSystem] 🔍 Step corrente prima avanzamento: ${window.UI?.currentStepIndex || 'N/A'}`);
-                console.log(`[DragDropSystem] 🔍 Tutorial attivo: ${window.UI?.currentTutorial?.name || 'nessuno'}`);
-
-                // CONTROLLO STEP FINALE: Se siamo all'ultimo step, mostra congratulazioni invece di avanzare
-                const currentIndex = window.UI?.currentStepIndex || 0;
-                const totalSteps = window.UI?.tutorialSteps?.length || 0;
-
-                if (totalSteps > 0 && currentIndex === totalSteps - 1) {
-                    console.log(`[DragDropSystem] 🎉 STEP FINALE COMPLETATO! Mostrando congratulazioni invece di avanzare (${currentIndex + 1}/${totalSteps})`);
-
-                    // Usa Scene3D per mostrare congratulazioni se disponibile
-                    if (window.Scene3D && typeof window.Scene3D.showTutorialCompletionCongratulations === 'function') {
-                        // Blocca interazioni
-                        if (window.Scene3D.tutorialTracker) {
-                            window.Scene3D.tutorialTracker.interactionsBlocked = true;
-                            console.log('[DragDropSystem] 🔒 INTERAZIONI BLOCCATE: Tutorial completato');
-                        }
-
-                        setTimeout(() => {
-                            window.Scene3D.showTutorialCompletionCongratulations();
-                            console.log(`[DragDropSystem] ✅ Congratulazioni mostrate (${context})`);
-                        }, 500);
-                    } else {
-                        console.warn(`[DragDropSystem] ⚠️ Scene3D.showTutorialCompletionCongratulations non disponibile`);
-                    }
-                    return; // Successo, esci senza avanzare
-                }
-
-                console.log(`[DragDropSystem] 📊 Step intermedio (${currentIndex + 1}/${totalSteps}) - procedo con avanzamento normale`);
-
-                if (useDirectMethod) {
-                    // Usa metodi diretti legacy
-                    if (typeof window.UI.nextStep === 'function') {
-                        window.UI.nextStep();
-                    } else if (typeof window.UI.goToStep === 'function') {
-                        const nextStepIndex = (window.UI.currentStepIndex || 0) + 1;
-                        window.UI.goToStep(nextStepIndex);
-                    }
-                } else {
-                    // Usa TutorialManager refactorizzato
-                    tutorialManager.nextStep();
-                }
-
-                console.log(`[DragDropSystem] ✅ Avanzamento step completato (${context}) via ${accessPath}`);
-                console.log(`[DragDropSystem] 🔍 Step corrente dopo avanzamento: ${window.UI?.currentStepIndex || 'N/A'}`);
-                return; // Successo, esci
-            } catch (error) {
-                console.warn(`[DragDropSystem] ⚠️ Errore avanzamento step (${context}) via ${accessPath}:`, error);
-            }
-        } else {
-            // Debug dettagliato per capire cosa manca
-            console.log(`[DragDropSystem] ⚠️ TutorialManager non disponibile per avanzamento step (${context})`);
-            console.log(`[DragDropSystem] 🔍 Multi-path Debug:`);
-            console.log(`  - window.UI: ${window.UI ? 'presente' : 'assente'}`);
-            if (window.UI) {
-                console.log(`  - window.UI.tutorialManager: ${window.UI.tutorialManager ? 'presente' : 'assente'}`);
-                console.log(`  - window.UI._tutorialManager: ${window.UI._tutorialManager ? 'presente' : 'assente'}`);
-                console.log(`  - window.UI.nextStep (legacy): ${typeof window.UI.nextStep}`);
-                console.log(`  - window.UI.goToStep (legacy): ${typeof window.UI.goToStep}`);
-                console.log(`  - window.UI.currentStepIndex: ${window.UI.currentStepIndex}`);
-                if (window.UI.tutorialManager) {
-                    console.log(`  - nextStep method: ${typeof window.UI.tutorialManager.nextStep}`);
-                    console.log(`  - _isTransitioning: ${window.UI.tutorialManager._isTransitioning}`);
-                }
-                if (window.UI._tutorialManager) {
-                    console.log(`  - _tutorialManager.nextStep: ${typeof window.UI._tutorialManager.nextStep}`);
-                    console.log(`  - _tutorialManager._isTransitioning: ${window.UI._tutorialManager._isTransitioning}`);
-                }
-            }
-            console.log(`  - window.TutorialManagerInstance: ${window.TutorialManagerInstance ? 'presente' : 'assente'}`);
-        }
-
-        // Retry se non abbiamo raggiunto il limite
-        if (attempt < maxRetries) {
-            console.log(`[DragDropSystem] ⏳ Retry ${attempt + 1} tra ${retryDelay}ms (${context})`);
-
-            // FIX: Cancella eventuale retry precedente e salva ID per cancellazione futura
-            if (this.advanceRetryTimeoutId) {
-                clearTimeout(this.advanceRetryTimeoutId);
-            }
-            this.advanceRetryTimeoutId = setTimeout(() => {
-                this.advanceRetryTimeoutId = null;
-                this.tryAdvanceTutorialStep(context, attempt + 1);
-            }, retryDelay);
-        } else {
-            console.log(`[DragDropSystem] ❌ Raggiunto limite retry per avanzamento step (${context})`);
-
-            // FALLBACK: Prova sistema legacy come ultima risorsa
-            if (window.tutorialSystem && typeof window.tutorialSystem.completeCurrentStep === 'function') {
-                try {
-                    console.log(`[DragDropSystem] ➡️ Fallback: Trigger avanzamento sistema legacy (${context})`);
-                    window.tutorialSystem.completeCurrentStep();
-                    console.log(`[DragDropSystem] ✅ Fallback legacy completato (${context})`);
-                } catch (error) {
-                    console.warn(`[DragDropSystem] ⚠️ Errore avanzamento step legacy (${context}):`, error);
-                }
-            } else {
-                console.log(`[DragDropSystem] ❌ Nessun sistema tutorial disponibile dopo tutti i retry (${context})`);
-            }
-        }
-    },
 
     /**
      * Ottiene stato abilitazione
@@ -2467,48 +1420,6 @@ window.DragDropSystem = {
      */
     isDraggingActive: function() {
         return this.isDragging;
-    },
-
-    /**
-     * Verifica se l'utensile corretto è attivo per il drag & drop
-     * @returns {boolean}
-     */
-    isCorrectToolActive: function() {
-        // Verifica se ToolsManager è disponibile
-        if (!window.ToolsManager) {
-            console.log(`[DragDropSystem] ⚠️ ToolsManager non disponibile - drag permesso (fallback)`);
-            return true; // Fallback: permetti drag se ToolsManager non è disponibile
-        }
-
-        // Ottieni utensile attualmente attivo
-        if (!window.ToolsManager || typeof window.ToolsManager.getActiveTool !== 'function') {
-            console.log(`[DragDropSystem] ⚠️ ToolsManager non disponibile o getActiveTool non è una funzione - drag permesso (fallback)`);
-            return true; // Fallback: permetti drag se ToolsManager non è disponibile
-        }
-
-        const activeTool = window.ToolsManager.getActiveTool();
-        const isHandActive = (activeTool === 'mano' || activeTool === 'Mani');
-
-        console.log(`[DragDropSystem] 🔧 Controllo utensile: attivo="${activeTool}", richiesto="mano", permesso=${isHandActive}`);
-
-        return isHandActive;
-    },
-
-    /**
-     * Mostra messaggio che richiede selezione utensile "Mano"
-     */
-    showToolRequiredMessage: function() {
-        // Aggiorna status nell'interfaccia utente se disponibile
-        if (window.UI && window.UI.core && window.UI.core.updateStatus) {
-            window.UI.core.updateStatus('⚠️ Seleziona l\'utensile "Mano" per trascinare gli oggetti');
-        } else {
-            console.warn(`[DragDropSystem] 💡 SELEZIONA UTENSILE "MANO" per trascinare gli oggetti`);
-        }
-
-        // Evidenzia brevemente l'utensile Mano nell'interfaccia
-        if (window.ToolsManager && typeof window.ToolsManager.highlightRequiredTool === 'function') {
-            window.ToolsManager.highlightRequiredTool('mano');
-        }
     },
 
     /**
@@ -2930,82 +1841,79 @@ window.DragDropSystem = {
     },
 
     /* ===== ASSEMBLY MODE API EXTENSIONS ===== */
-    
+
+    /**
+     * Restituisce il sistema di assemblaggio attivo (preferisce AssemblySystemSimplified).
+     * @returns {Object|null}
+     */
+    _getAssemblySystem: function() {
+        return window.AssemblySystemSimplified || window.AssemblySystem || null;
+    },
+
     /**
      * Abilita modalità assemblaggio con configurazione
      * @param {Object} assemblyConfig - Configurazione assemblaggio
      */
     enableAssemblyMode: function(assemblyConfig) {
-        if (!window.AssemblySystem) {
+        const system = this._getAssemblySystem();
+        if (!system) {
             console.error('[DragDropSystem] AssemblySystem non disponibile per modalità assemblaggio');
             return false;
         }
-        
         console.log('[DragDropSystem] 🔧 Delegate to AssemblySystem.enableAssemblyMode()');
-        return window.AssemblySystem.enableAssemblyMode(assemblyConfig);
+        return system.enableAssemblyMode(assemblyConfig);
     },
-    
+
     /**
      * Disabilita modalità assemblaggio
      */
     disableAssemblyMode: function() {
-        if (!window.AssemblySystem) {
-            console.warn('[DragDropSystem] AssemblySystem non disponibile');
-            return;
-        }
-        
+        const system = this._getAssemblySystem();
+        if (!system) return;
         console.log('[DragDropSystem] 🔴 Delegate to AssemblySystem.disableAssemblyMode()');
-        window.AssemblySystem.disableAssemblyMode();
+        system.disableAssemblyMode();
     },
-    
+
     /**
      * Imposta step assemblaggio corrente
      * @param {number} stepIndex - Indice step assemblaggio
      */
     setCurrentAssemblyStep: function(stepIndex) {
-        if (!window.AssemblySystem) {
-            console.warn('[DragDropSystem] AssemblySystem non disponibile');
-            return false;
-        }
-        
-        return window.AssemblySystem.setCurrentAssemblyStep(stepIndex);
+        const system = this._getAssemblySystem();
+        if (!system) return false;
+        return system.setCurrentAssemblyStep ? system.setCurrentAssemblyStep(stepIndex) : false;
     },
-    
+
     /**
      * Ottiene stato assemblaggio
      * @returns {Object} - Stato assemblaggio corrente
      */
     getAssemblyStatus: function() {
-        if (!window.AssemblySystem) {
-            return { enabled: false, assemblyMode: false };
-        }
-        
-        return window.AssemblySystem.getAssemblyStatus();
+        const system = this._getAssemblySystem();
+        if (!system) return { enabled: false, assemblyMode: false };
+        return system.getAssemblyStatus();
     },
-    
+
     /**
      * Valida sequenza assemblaggio
      * @returns {Object} - Risultato validazione con errori
      */
     validateAssemblySequence: function() {
-        if (!window.AssemblySystem) {
-            return { valid: false, errors: ['AssemblySystem non disponibile'] };
-        }
-        
-        return window.AssemblySystem.validateAssemblySequence();
+        const system = this._getAssemblySystem();
+        if (!system) return { valid: false, errors: ['AssemblySystem non disponibile'] };
+        return system.validateAssemblySequence ? system.validateAssemblySequence()
+            : { valid: true, errors: [] };
     },
-    
+
     /**
      * Ottiene punti di snap disponibili per componente
      * @param {string} componentName - Nome componente
      * @returns {Array} - Array punti di snap disponibili
      */
     getAvailableSnapPoints: function(componentName) {
-        if (!window.AssemblySystem) {
-            return [];
-        }
-        
-        return window.AssemblySystem.getAvailableSnapPoints(componentName);
+        const system = this._getAssemblySystem();
+        if (!system) return [];
+        return system.getAvailableSnapPoints ? system.getAvailableSnapPoints(componentName) : [];
     },
     
     /**
