@@ -99,7 +99,9 @@ window.TouchInputRouter = {
 
             // 2b. PRIORITÀ CERCHIO: se il tocco cade dentro un cerchio giallo lampeggiante,
             // trattalo come tap sull'elemento associato ANCHE se il raycast ha colpito un altro oggetto.
-            // Supporta: dragdrop_* (DragDrop), elemento_* (Elemento azionabile), altri (pulsanti interattivi)
+            // Supporta: dragdrop_* (DragDrop), elemento_* (Elemento azionabile),
+            // pulsanti interattivi registrati, ed elementi-azione non-pulsante con
+            // AcceptTrigger_Physical (es. a500.porta) — questi ultimi vanno a OBJECT_3D.
             const circleHit = this.checkHighlightCircleHit(touch.clientX, touch.clientY);
             if (circleHit) {
                 // Distingui cerchi OBJECT_3D (dragdrop_* e elemento_*) da cerchi pulsanti interattivi
@@ -112,8 +114,8 @@ window.TouchInputRouter = {
                         target: rootModel || circleHit.mesh,
                         hitPoint: raycastResult.point
                     };
-                } else {
-                    // CERCHIO PULSANTE: instrada al layer INTERACTIVE_3D
+                } else if (this.isInteractiveButtonMesh(circleHit.mesh)) {
+                    // CERCHIO PULSANTE INTERATTIVO REGISTRATO: instrada al layer INTERACTIVE_3D
                     if (this.gestureRecognizer) {
                         this.gestureRecognizer.setInteractiveElement(true);
                     }
@@ -121,6 +123,18 @@ window.TouchInputRouter = {
                     return {
                         layer: this.LAYERS.INTERACTIVE_3D,
                         target: circleHit.mesh,
+                        hitPoint: raycastResult.point
+                    };
+                } else {
+                    // CERCHIO ELEMENTO-AZIONE non-pulsante (es. a500.porta con AcceptTrigger_Physical):
+                    // la mesh non è un pulsante registrato → instrada a OBJECT_3D verso il root model,
+                    // come i cerchi elemento_/dragdrop_. Così il TouchDragHandler esegue l'azione
+                    // tutorial (stesso percorso del tap diretto sulla silhouette).
+                    const rootModelAction = this.findRootModel(circleHit.mesh);
+                    console.log(`[TouchInputRouter] 🟡 Cerchio elemento-azione "${circleHit.triggerId}" → OBJECT_3D (root: ${rootModelAction ? rootModelAction.name : 'N/A'})`);
+                    return {
+                        layer: this.LAYERS.OBJECT_3D,
+                        target: rootModelAction || circleHit.mesh,
                         hitPoint: raycastResult.point
                     };
                 }
@@ -159,13 +173,23 @@ window.TouchInputRouter = {
                     target: rootModel || circleHitFallback.mesh,
                     hitPoint: null
                 };
-            } else {
+            } else if (this.isInteractiveButtonMesh(circleHitFallback.mesh)) {
                 if (this.gestureRecognizer) {
                     this.gestureRecognizer.setInteractiveElement(true);
                 }
                 return {
                     layer: this.LAYERS.INTERACTIVE_3D,
                     target: circleHitFallback.mesh,
+                    hitPoint: null
+                };
+            } else {
+                // CERCHIO ELEMENTO-AZIONE non-pulsante senza raycast (es. a500.porta):
+                // instrada a OBJECT_3D verso il root model (come elemento_/dragdrop_).
+                const rootModelAction = this.findRootModel(circleHitFallback.mesh);
+                console.log(`[TouchInputRouter] 🟡 Fallback cerchio elemento-azione "${circleHitFallback.triggerId}" → OBJECT_3D`);
+                return {
+                    layer: this.LAYERS.OBJECT_3D,
+                    target: rootModelAction || circleHitFallback.mesh,
                     hitPoint: null
                 };
             }
@@ -213,6 +237,40 @@ window.TouchInputRouter = {
         }
 
         return null;
+    },
+
+    /**
+     * Verifica se la mesh di un cerchio è un PULSANTE INTERATTIVO REGISTRATO
+     * (InteractiveObject3D con interactiveConfig: pulpito.*, remote.*, ecc.).
+     *
+     * Serve a distinguere i cerchi dei pulsanti veri — che vanno gestiti come
+     * INTERACTIVE_3D (TouchInteractive3DHandler.handleButtonClick → notifyStepController) —
+     * dai cerchi creati per elementi-azione NON-pulsante che hanno AcceptTrigger_Physical
+     * (es. step "Apri/Chiudi la porta": element = a500.porta + do: rotate). Per questi
+     * ultimi getInteractiveConfig() ritorna null e vanno instradati a OBJECT_3D, dove il
+     * TouchDragHandler esegue l'azione tutorial (handleModelAction).
+     *
+     * @param {THREE.Object3D} mesh - Mesh associata al cerchio
+     * @returns {boolean}
+     */
+    isInteractiveButtonMesh: function(mesh) {
+        if (!mesh) return false;
+
+        // Criterio autorevole: è esattamente ciò che decide handleButtonClick vs
+        // handleGenericInteractiveClick nel TouchInteractive3DHandler.
+        if (this.interactive3DHandler && typeof this.interactive3DHandler.getInteractiveConfig === 'function') {
+            return this.interactive3DHandler.getInteractiveConfig(mesh) !== null;
+        }
+
+        // Fallback (handler non registrato): risali la gerarchia cercando interactiveConfig.
+        let current = mesh;
+        while (current) {
+            if (current.userData && (current.userData.interactiveConfig || current.userData.interactive)) {
+                return true;
+            }
+            current = current.parent;
+        }
+        return false;
     },
 
     /**
