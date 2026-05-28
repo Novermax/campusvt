@@ -32,7 +32,7 @@ after       : schermo = schermo003
 
 [step "Prendi il telecomando Tecpad" highlight]
 description = Prendi il telecomando Tecpad
-camera      = position (0.94, 1.29, 4.07), target (0.97, 1.15, 3.52), rotation (-0.25, -0.04, -0.01), pivot (0.97, 1.15, 3.52), fov 75.0, fade 2.0, distance 0.5
+camera = position (1.17, 1.15, 4.12), target (1.02, 0.83, 3.63), pivot (1.02, 0.83, 3.63), zoom 0.59, fov 75, rotation (-0.58, 0.25, 0.16), fade 1.0
 tool        = hand
 hold        = pick remote at (-0.25, -0.07, 0.25) facing (0, 5, 0)
 view        = main

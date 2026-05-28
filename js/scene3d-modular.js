@@ -334,7 +334,7 @@ const Scene3D = {
 
     /**
      * Ritorna la riga camera CVTScript v3 pronta per copia/incolla nel tutorial.cvtscript.
-     * Formato: camera = position (x,y,z), target (x,y,z), pivot (x,y,z), distance D, fov F, rotation (rx,ry,rz), fade T
+     * Formato: camera = position (x,y,z), target (x,y,z), pivot (x,y,z), zoom D, fov F, rotation (rx,ry,rz), fade T
      * Uso: Scene3D.getCameraScript()
      */
     getCameraScript: function() {
@@ -348,7 +348,7 @@ const Scene3D = {
             `position (${fmt(pos.x)}, ${fmt(pos.y)}, ${fmt(pos.z)})`,
             pv ? `target (${fmt(pv.x)}, ${fmt(pv.y)}, ${fmt(pv.z)})` : null,
             pv ? `pivot (${fmt(pv.x)}, ${fmt(pv.y)}, ${fmt(pv.z)})` : null,
-            dist !== null ? `distance ${dist}` : null,
+            dist !== null ? `zoom ${dist}` : null,
             `fov ${fmt(this.camera.fov)}`,
             `rotation (${fmt(rot.x)}, ${fmt(rot.y)}, ${fmt(rot.z)})`,
             'fade 1.0'

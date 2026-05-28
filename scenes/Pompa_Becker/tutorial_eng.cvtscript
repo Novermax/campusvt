@@ -294,7 +294,7 @@ tool        = hand
 drag        = vite_culatta_1, vite_culatta_2 distance 0 snap targets estrattoresx_original, estrattoredx_original
 
 [step "Tighten Puller Screws" highlight]
-camera      = position (0.01,0.44,0.54), target (-0.03,0.24,0.27), rotation (-0.64,0.13,0.1), pivot (-0.03,0.24,0.27), distance 0.11, fov 75, fade 1.0
+camera      = position (-0.01, 0.34, 0.41), target (-0.03, 0.24, 0.27), pivot (-0.03, 0.24, 0.27), zoom 0.17, fov 75, rotation (-0.64, 0.13, 0.09), fade 1.0
 description = Tighten cylinder head screw 1 with the Allen key.
 tool        = hex_key
 element     = vite_culatta_1

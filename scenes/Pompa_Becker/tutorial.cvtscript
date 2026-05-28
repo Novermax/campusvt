@@ -295,7 +295,7 @@ drag        = vite_culatta_1, vite_culatta_2 distance 0 snap targets estrattores
 
 [step "Stringi viti estrattore" highlight]
 
-camera      = position (0,0.38,0.46), target (-0.03,0.24,0.27), rotation (-0.64,0.12,0.09), pivot (-0.03,0.24,0.27), distance 0.33, fov 75, fade 1.0
+camera      = position (-0.01, 0.34, 0.41), target (-0.03, 0.24, 0.27), pivot (-0.03, 0.24, 0.27), zoom 0.17, fov 75, rotation (-0.64, 0.13, 0.09), fade 1.0
 description = Stringi la vite culatta 1 con la chiave a brugola
 tool        = hex_key
 element     = vite_culatta_1

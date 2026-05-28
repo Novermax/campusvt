@@ -231,6 +231,14 @@ class TutorialManager {
                             // Lo step sovrascrive questa proprietà
                             inheritedCamera[prop] = step.properties[prop];
                         } else if (inheritedCamera[prop] !== undefined) {
+                            // CameraZoom ereditato non va applicato se lo step ha CameraPos o
+                            // CameraDistance: la posizione esplicita codifica già la distanza,
+                            // e lo zoom ereditato sovrascriverebbe la posizione durante l'animazione.
+                            if (prop === 'CameraZoom' &&
+                                (step.properties['CameraPos'] !== undefined ||
+                                 step.properties['CameraDistance'] !== undefined)) {
+                                continue;
+                            }
                             // Eredita dal contesto precedente
                             step.properties[prop] = inheritedCamera[prop];
                         }
