@@ -1666,6 +1666,35 @@ window.DragDropSystem = {
     },
 
     /**
+     * Imposta lo snap su un ScreenSnap (frame monitor). Quando l'oggetto entra
+     * nella distanza di snap del frame, SnapSystem allinea posizione/rotazione
+     * e applica un fit "contain" basato su mesh.userData.aspect.
+     *
+     * @param {string} objectName     - nome del mesh PngScreen in scena
+     * @param {string} screenSnapId   - id del blocco [ScreenSnap:id]
+     */
+    setScreenSnapTarget: function(objectName, screenSnapId) {
+        if (!window.Scene3D) {
+            console.warn('[DragDropSystem] Scene3D non disponibile per configurare ScreenSnap');
+            return;
+        }
+        const object = window.Scene3D.findModelByName(objectName);
+        if (!object) {
+            console.warn(`[DragDropSystem] Oggetto "${objectName}" non trovato per ScreenSnap`);
+            return;
+        }
+        if (!window.ScreenSnapRegistry || !window.ScreenSnapRegistry.get(screenSnapId)) {
+            console.warn(`[DragDropSystem] ScreenSnap "${screenSnapId}" non registrato`);
+            return;
+        }
+        this.customSnapTargets.set(object.uuid, {
+            isScreenSnap: true,
+            screenSnapId: screenSnapId
+        });
+        console.log(`[DragDropSystem] 📺 Snap schermo per "${objectName}" → "${screenSnapId}"`);
+    },
+
+    /**
      * Imposta target di snap multipli intercambiabili per un oggetto
      * @param {string} objectName - Nome dell'oggetto
      * @param {Array<string>} targetNames - Array di nomi target (possono includere "_original")

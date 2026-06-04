@@ -76,6 +76,9 @@
     <!-- 4. Stili specifici per le diverse pagine -->
     <link rel="stylesheet" href="css/pages.css">
 
+    <!-- 5. Editor di scenari (Fase 1) -->
+    <link rel="stylesheet" href="css/editor.css?v=1">
+
     <!-- ===== PRECONNESSIONI ===== -->
     <!-- Ottimizzazione: preconnessione ai CDN per ridurre latenza -->
     <!-- Preconnect rimosso - versione offline -->
@@ -231,6 +234,7 @@
                 </h1>
                 <div id="userBar">
                     <span id="userBarName"></span>
+                    <button id="openEditorBtn" style="display:none;">✏️ Editor</button>
                     <button id="manageUsersBtn" onclick="openUserManager()" style="display:none;">👥 Gestione Utenti</button>
                     <button id="changeUserBtn" onclick="logoutUser()">🔄 Cambia utente</button>
                 </div>
@@ -347,6 +351,42 @@
             <div class="speech-bubble-arrow"></div>
         </div>
 
+    </div>
+
+    <!-- ===== EDITOR DI SCENARI (Fase 1) ===== -->
+    <div id="editorPage" class="hidden">
+        <div class="editor-toolbar">
+            <div class="ed-title">✏️ Editor scenari</div>
+            <select id="editorScenarioSelect" aria-label="Scegli scena">
+                <option value="">— scegli scena —</option>
+            </select>
+            <button id="editorAddStepBtn" class="ed-btn">＋ Step</button>
+            <div class="ed-spacer"></div>
+            <div id="editorStatus" class="editor-status"></div>
+            <button id="editorSaveBtn" class="ed-btn primary">💾 Salva</button>
+            <button id="editorDownloadBtn" class="ed-btn ghost">⬇ Scarica</button>
+            <button id="editorCloseBtn" class="ed-btn ghost">✕ Chiudi</button>
+        </div>
+        <div class="editor-body">
+            <div id="editorLeft">
+                <div class="editor-section-head"><span>📋 Step</span></div>
+                <div id="editorTimeline" class="editor-timeline"></div>
+                <div class="editor-tabs">
+                    <button data-tab="wizard" class="active">🧩 Wizard</button>
+                    <button data-tab="code">‹/› Codice</button>
+                    <button data-tab="screens">📺 Schermate</button>
+                </div>
+                <div class="editor-pane">
+                    <div id="editorWizard"></div>
+                    <div id="editorCodePanel" class="hidden"></div>
+                    <div id="editorScreenPanel" class="hidden"></div>
+                </div>
+            </div>
+            <div id="editorSplitter"></div>
+            <div id="editorPreviewHost">
+                <div class="editor-preview-hint">Anteprima 3D reale — ruota/zoom con il mouse</div>
+            </div>
+        </div>
     </div>
 
     <!-- ===== ELEMENTI UI OVERLAY ===== -->
@@ -995,6 +1035,15 @@
     <script src="js/touch/TouchUIHandler.js?v=1000001"></script>
     <script src="js/touch/TouchInteractive3DHandler.js?v=1000001"></script>
     <script src="js/touch/index.js?v=1000001"></script>
+
+    <!-- ===== EDITOR DI SCENARI (Fase 1) - moduli in ordine di dipendenza ===== -->
+    <script src="js/editor/V3Document.js?v=2"></script>
+    <script src="js/editor/PreviewBridge.js?v=2"></script>
+    <script src="js/editor/StepTimeline.js?v=2"></script>
+    <script src="js/editor/StepWizard.js?v=2"></script>
+    <script src="js/editor/CodeView.js?v=2"></script>
+    <script src="js/editor/ScreenPanel.js?v=1"></script>
+    <script src="js/editor/ScenarioEditor.js?v=3"></script>
 
     <script type="module" src="js/app.js?v=1000011"></script>
 

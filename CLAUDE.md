@@ -548,6 +548,8 @@ TouchSystem.setEnabled(false)
 | UI Tutorial | `js/ui.js` | `window.UI` |
 | Drag & Drop + Snap | `js/core/DragDropSystem.js`, `SnapSystem.js` | `window.DragDropSystem` |
 | Schermi Interattivi | `js/core/ScreenSystem.js` | `window.ScreenSystem` |
+| Snap schermate (ScreenSnap) | `js/core/ScreenSnapRegistry.js` | `window.ScreenSnapRegistry` |
+| PNG→GLB utility | `js/core/PngToGlbUtility.js` | `window.PngToGlbUtility` |
 | Oggetti in Mano | `js/core/HoldableSystem.js` | `window.HoldableSystem` |
 | Pulsanti/LED 3D | `js/core/InteractiveObject3D.js` | `window.InteractiveObject3D` |
 | Trigger Step | `js/core/StepController.js` | `window.StepController` |
@@ -559,6 +561,52 @@ TouchSystem.setEnabled(false)
 | AutoMode Mobile | `js/AutoMode.js` | `window.AutoMode` |
 | Mobile Browser UI | `js/MobileBrowserUI.js` | `window.MobileBrowserUI` |
 | Mobile Optimizer | `js/MobileOptimizer.js` | `window.MobileOptimizer` |
+| Pannello editor Schermate | `js/editor/ScreenPanel.js` | `window.EditorScreenPanel` |
+
+---
+
+## PNG→GLB utility (schermate software macchina)
+
+**Obiettivo**: una schermata 2D del software macchina (PNG screen-grab) viene trasformata in un quad 3D (`PlaneGeometry(1, 1/aspect)`) con `MeshBasicMaterial` map+`toneMapped:false`+`SRGBColorSpace` → schermo sempre "acceso", non oscurato dalle luci di scena. Il quad viene poi agganciato automaticamente al frame del monitor di un modello macchina già in scena, con fit "contain".
+
+**API** (`window.PngToGlbUtility`):
+- `loadPngTexture(File|Blob|Uint8Array|url) → Promise<{texture, image, pngBytes, width, height, aspect}>`
+- `buildScreenMesh(textureData) → THREE.Mesh` (con `userData.aspect`, `userData.isPngScreen`)
+- `exportMeshAsGlb(mesh, {pngBytes, meshName?, filename?, download?}) → Promise<Blob>` (`model/gltf-binary`)
+- `pngToGlb(input, opts) → Promise<{blob, mesh, width, height, aspect}>` — pipeline end-to-end
+
+Il GLB esportato dichiara `KHR_materials_unlit`: ricaricato dal `GLTFLoader` esistente, il materiale viene mappato a `MeshBasicMaterial` (schermo acceso). L'aspect viene salvato in `node.extras` e su `mesh.userData.aspect`.
+
+### Snap point "screen" — sintassi `[ScreenSnap:id]`
+
+Definisce il frame di un monitor (posa + dimensioni reali in metri). Dichiarato come blocco globale del `tutorial.cvtscript` (o `config.cvtscript`):
+
+```ini
+[ScreenSnap:monitor_a500]
+Name=Monitor Principale         # opzionale
+Position=(0.32, 1.05, -0.18)    # centro del frame in coord. mondo
+Rotation=(0, -15, 0)            # gradi (alternativa a Normal)
+# Normal=(0, 0, 1)              # vettore normale al frame (alternativa a Rotation)
+Width=0.32                      # metri
+Height=0.18                     # metri
+Target=a500.SchermoMonitor      # opzionale: ref al child del modello macchina
+```
+
+Registrazione: il parser `UITutorialParser` accumula i blocchi in `screenDefinitions.screenSnaps` e li passa a `window.ScreenSnapRegistry.register(id, props)`.
+
+### Snap runtime
+
+`DragDropSystem.setScreenSnapTarget(objectName, screenSnapId)` registra l'aggancio. Al drag, `SnapSystem.findSnapTarget` rileva la condizione `isScreenSnap` e ritorna la posizione del frame con offset `+0.001` lungo la normale (anti z-fighting). `SnapSystem._performScreenSnap` allinea rotazione al frame e applica il fit "contain": `scale = min(Width, Height * aspect)` (uniforme).
+
+Un solo schermo per frame: lo slot viene marcato occupato con chiave `screensnap:<id>` nello `occupiedSnapPositions`.
+
+### UI editor — tab "Schermate"
+
+Aperto via Editor scenari (richiede ruolo admin). Flusso:
+1. Drop/selezione PNG → preview + aspect
+2. "Carica in viewport" → mesh aggiunto alla scena live, draggabile
+3. Dropdown ScreenSnap registrati nella scena corrente → "Aggancia allo schermo" simula lo snap con la stessa logica del runtime
+4. "Esporta GLB" → scarica `<nome>.glb` (`model/gltf-binary`) ricaricabile come modello di scenario.
 
 ---
 

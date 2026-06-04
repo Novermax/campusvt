@@ -1,882 +1,474 @@
-:8000/favicon.png:1  Failed to load resource: the server responded with a status of 404 (File not found)
-:8000/scenes/homeconfig_ita.ini?v=1778434305229:1  Failed to load resource: the server responded with a status of 404 (File not found)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_coperchio_1"
- 🧭 Direction loaded for vite_coperchio_1: Object
- 🔍 Ricerca config per modello: "estrattoredx"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="estrattoredx", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="estrattoredx", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="estrattoredx", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="estrattoredx", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="estrattoredx", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="estrattoredx", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="estrattoredx", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="estrattoredx", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="estrattoredx", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="estrattoredx", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="estrattoredx", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="estrattoredx", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="estrattoredx", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="estrattoredx", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="estrattoredx", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="estrattoredx", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="estrattoredx", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="estrattoredx", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="estrattoredx", fileName="estrattoredx", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "estrattoredx": models/estrattoredx.glb with direction: Object
- 🔍✅ Config trovato per "estrattoredx": Object
+:8000/scenes/homeconfig_ita.ini?v=1780259208475:1  Failed to load resource: the server responded with a status of 404 (File not found)
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.017 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.017 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.018 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.018 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.045 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.045 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: Material.046 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: Material.046 colorSum=0
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
+ 🎨 NUOVO COLORE: 7c7c7c
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.006 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.006 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.006
+ ✅ Materiale corretto: Object
+ 🎯 GLTF/GLB processato, chiamando onSuccess
+ ✅ Modello 2/4 caricato: pulpito.glb
+ 🌐 Progress: 2/4 - pulpito.glb
+ 📊 Progress aggiornato: 50% - pulpito.glb
+ 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
+ 📹 TUTORIAL: CameraPos globale = (0.97,1.25,3.92)
+ 📹 TUTORIAL: CameraTarget globale = (0.97,1.15,3.52)
+ 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino - lubrificazione"
+ 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
+ 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_mdi"
+ ✅ HIGHLIGHT: Trovato child "Pulsante_mdi" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: Pulsante_mdi
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_mdi
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_mdi (non bloccato, colore=0xffff00)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_mdi" (originalmente invisibile, mantengo invisibile)
+ [10:32:07 PM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
+ [DEBUG] 🚀 Step properties: Object
+ [10:32:07 PM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
+ [StepController] 📋 Step 0 auto-configurato da proprietà:
+ [StepController]    Triggers Physical: [pulpito.Pulsante_mdi]
+ [StepController]    Actions Physical: 1 azioni
+ [StepController]      1. setVariant: schermo=schermo002
+ 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
+ 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
+ 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+ 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+ 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_mdi"
+ 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 0
+ 💡 [InteractiveObject3D] Oggetto non in registry, cercando modello "pulpito" nella scena...
+ 💡 [InteractiveObject3D] ✓ Modello parent "pulpito" trovato nella scena, cercando child...
+ 💡 [InteractiveObject3D] ✓ Trovata Mesh diretta: "Pulsante_mdi"
+ 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+ 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_mdi
+ 💡 [InteractiveObject3D] Mesh ha material: true
+ 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+ 💡 [InteractiveObject3D] Material ha emissive: true
+ 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+ 💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
+ 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_mdi" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ 🔵 [HighlightCircleManager] Cerchio creato per "pulpito.Pulsante_mdi" (size: 80px, opacity: 0.2)
+ 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "pulpito.Pulsante_mdi" con opacità 0.2
+ 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI" con opacità 0.2
+ 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
+ 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+ 📹 CAMERA: Distance = 0.42
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ 📷 [UI] CameraTransitionTime: 2s (2000ms)
+ ✅ GLTF/GLB caricato con successo: Object
+ 🎨 Fixing material: Matte Porcelain Tile Beige Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 1 1 1
+ 🎨 Color sum: 3
+ 🔍 Controllo material: Matte Porcelain Tile Beige colorSum=3
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎯 GLTF/GLB processato, chiamando onSuccess
+ ✅ Modello 3/4 caricato: pavimento.glb
+ 🌐 Progress: 3/4 - pavimento.glb
+ 📊 Progress aggiornato: 75% - pavimento.glb
+ ✅ GLTF/GLB caricato con successo: Object
+ 🎨 Fixing material: bianco.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: bianco.002 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
+ 🎨 Color sum: 0.06933585740625858
+ 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
+ ⚠️ Metalness troppo alta, riducendo
+ ⚠️ Roughness troppo bassa, aumentando
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_4.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.1946178525686264 0.20507876574993134 0.1946178525686264
+ 🎨 Color sum: 0.5943144708871841
+ 🔍 Controllo material: mat_4.001 colorSum=0.5943144708871841
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_6.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.7874122262001038 0.7874122262001038 0.7874122262001038
+ 🎨 Color sum: 2.3622366786003113
+ 🔍 Controllo material: mat_6.001 colorSum=2.3622366786003113
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_7.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.013411748223006725 0.5225215554237366 0.013411748223006725
+ 🎨 Color sum: 0.54934505186975
+ 🔍 Controllo material: mat_7.001 colorSum=0.54934505186975
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_8.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.7304608821868896 0.16202940046787262 0
+ 🎨 Color sum: 0.8924902826547623
+ 🔍 Controllo material: mat_8.001 colorSum=0.8924902826547623
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_9.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.010022825561463833 0.010022825561463833 0.010022825561463833
+ 🎨 Color sum: 0.0300684766843915
+ 🔍 Controllo material: mat_9.001 colorSum=0.0300684766843915
+ ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 1a1a1a
+ 🎨 NUOVO COLORE: 7c7c7c
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_10.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.7874122262001038 0.7874122262001038 0
+ 🎨 Color sum: 1.5748244524002075
+ 🔍 Controllo material: mat_10.001 colorSum=1.5748244524002075
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_11.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.4479883909225464 0.013411748223006725 0.013411748223006725
+ 🎨 Color sum: 0.47481188736855984
+ 🔍 Controllo material: mat_11.001 colorSum=0.47481188736855984
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_12.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.7874122262001038 0 0
+ 🎨 Color sum: 0.7874122262001038
+ 🔍 Controllo material: mat_12.001 colorSum=0.7874122262001038
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: mat_13.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.1946178525686264 0.20507876574993134 0.1946178525686264
+ 🎨 Color sum: 0.5943144708871841
+ 🔍 Controllo material: mat_13.001 colorSum=0.5943144708871841
+ ✅ Colore OK, non modificato
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: vuoto Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: vuoto colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: vuoto.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: vuoto.001 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: vuoto.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
+ 🎨 Color sum: 2.400000035762787
+ 🔍 Controllo material: vuoto.002 colorSum=2.400000035762787
+ ✅ Colore OK, non modificato
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: schermo_remote.001 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: schermo_remote.001 colorSum=0
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: schermo_remote.001
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎨 Fixing material: schermo_remote.002 Type: MeshStandardMaterial Color: Color
+ 🎨 Color RGB values: 0 0 0
+ 🎨 Color sum: 0
+ 🔍 Controllo material: schermo_remote.002 colorSum=0
+ 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: schermo_remote.002
+ ⚠️ Metalness troppo alta, riducendo
+ ✅ Materiale corretto: Object
+ 🎯 GLTF/GLB processato, chiamando onSuccess
+ ✅ Modello 4/4 caricato: remote.glb
+ 🌐 Progress: 4/4 - remote.glb
+ 📊 Progress aggiornato: 100% - remote.glb
+ ✅ Caricamento completato: 4 successi, 0 fallimenti
+ ✅ Tutti i modelli caricati, rendering finale...
+ 🎨 Batch rendering completato
+ 🌐 Modelli caricati, chiamando onModelLoadComplete: Array(4)
+ [10:32:08 PM] INFO: Modelli caricati con successo: 4
+ 🔍 Ricerca config per modello: "a500"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="a500", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="a500", fileName="pulpito", exactMatch=false, direction= Object
+ 🔍 Test file "models/remote.glb": modelName="a500", fileName="remote", exactMatch=false, direction= Object
+ 🔍 Test file "models/a500.glb": modelName="a500", fileName="a500", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "a500": models/a500.glb with direction: Object
+ 🔍✅ Config trovato per "a500": Object
  📐 Bounding box per undefined:
-    Min: (0.098, 0.234, 0.191)
-    Max: (0.102, 0.239, 0.196)
-    Center: (0.100, 0.236, 0.193)
-    Size: (0.004, 0.004, 0.004)
- 💾 Posizione iniziale salvata per modello: estrattoredx - Centro BB: (0.100, 0.236, 0.193)
+    Min: (-4.109, -0.005, -1.835)
+    Max: (3.978, 2.793, 3.176)
+    Center: (-0.066, 1.394, 0.671)
+    Size: (8.086, 2.798, 5.011)
+ 💾 Posizione iniziale salvata per modello: a500 - Centro BB: (-0.066, 1.394, 0.671)
  📐 Bounding box per undefined:
-    Min: (0.098, 0.234, 0.191)
-    Max: (0.102, 0.239, 0.196)
-    Center: (0.100, 0.236, 0.193)
-    Size: (0.004, 0.004, 0.004)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: estrattoredx - Centro BB: (0.100, 0.236, 0.193)
- 📋 [DEBUG] Gerarchia oggetti in "estrattoredx" (2 totali):
-    estrattoredx(G)
-      estrattoredx(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "estrattoredx"
- 🧭 Direction loaded for estrattoredx: Object
- 🔍 Ricerca config per modello: "estrattoresx"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="estrattoresx", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="estrattoresx", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="estrattoresx", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="estrattoresx", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="estrattoresx", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="estrattoresx", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="estrattoresx", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="estrattoresx", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="estrattoresx", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="estrattoresx", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="estrattoresx", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="estrattoresx", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="estrattoresx", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="estrattoresx", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="estrattoresx", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="estrattoresx", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="estrattoresx", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="estrattoresx", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="estrattoresx", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="estrattoresx", fileName="estrattoresx", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "estrattoresx": models/estrattoresx.glb with direction: Object
- 🔍✅ Config trovato per "estrattoresx": Object
+    Min: (-4.109, -0.005, -1.835)
+    Max: (3.978, 2.793, 3.176)
+    Center: (-0.066, 1.394, 0.671)
+    Size: (8.086, 2.798, 5.011)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: a500 - Centro BB: (-0.066, 1.394, 0.671)
+ 🔍 [InteractiveObject3D] Child disponibili in "a500": Array(66)
+ 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(0)
+ 🔗 [InteractiveObject3D] Modello "a500" collegato con 0 figli interattivi
+ 📋 [DEBUG] Gerarchia oggetti in "a500" (66 totali):
+    a500(G)
+      A500(M)
+        Basamento_BarraFissaDx(G)
+          Basamento_BarraFissaDx_1(M)
+          Basamento_BarraFissaDx_2(M)
+          Basamento_BarraFissaDx_3(M)
+        Basamento_BarraFissaSx(G)
+          Basamento_BarraFissaSx_1(M)
+          Basamento_BarraFissaSx_2(M)
+          Basamento_BarraFissaSx_3(M)
+        Basamento_BarraTondaAnteriore(M)
+        Basamento_BarreTonde_BarraDx(G)
+          Basamento_BarreTonde_BarraDx_1(M)
+          Basamento_BarreTonde_BarraDx_2(M)
+        Basamento_BarreTonde_BarraDx(2)(G)
+          Basamento_BarreTonde_BarraDx(2)_1(M)
+          Basamento_BarreTonde_BarraDx(2)_2(M)
+        Basamento_BarreTonde_BarraDx(3)(G)
+          Basamento_BarreTonde_BarraDx(3)_1(M)
+          Basamento_BarreTonde_BarraDx(3)_2(M)
+        Basamento_BarreTonde_BarraDx(4)(G)
+          Basamento_BarreTonde_BarraDx(4)001(M)
+          Basamento_BarreTonde_BarraDx(4)001_1(M)
+        Basamento_BarreTonde_BarraSx(M)
+        Basamento_BarreTonde_BarraSx(2)(G)
+          Basamento_BarreTonde_BarraSx(2)_1(M)
+          Basamento_BarreTonde_BarraSx(2)_2(M)
+        Basamento_BarreTonde_BarraSx(3)(G)
+          Basamento_BarreTonde_BarraSx(3)_1(M)
+          Basamento_BarreTonde_BarraSx(3)_2(M)
+        Basamento_BarreTonde_BarraSx(4)(G)
+          Basamento_BarreTonde_BarraSx(4)_1(M)
+          Basamento_BarreTonde_BarraSx(4)_2(M)
+        Basamento_Portale(M)
+          Basamento_Portale_BraccioQuadro(M)
+          Basamento_Portale_CarroY(M)
+            Basamento_Portale_CarroY_CarroZ(M)
+              Basamento_Portale_CarroY_CarroZ_Prisma(M)
+                Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa(G)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_1(M)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_2(M)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna(G)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna_1(M)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna_2(M)
+                Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC(M)
+                  Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB(G)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB_1(M)
+                    Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB_2(M)
+                    naso(M)
+                    tool1(G)
+                      A0001(M)
+                      A0001_1(M)
+            Basamento_Portale_CarroY_CarroZG(M)
+          Basamento_Portale_MagazzinoInternoX1(G)
+            Basamento_Portale_MagazzinoInternoX1_1(M)
+            Basamento_Portale_MagazzinoInternoX1_2(M)
+            Basamento_Portale_MagazzinoInternoX1_3(M)
+            tool0(G)
+              A0(M)
+              A0_1(M)
+          Basamento_Portale_MisuratoreAltezzaUtensileP(M)
+          Basamento_Portale_ProtezioneTraslante(G)
+            Basamento_Portale_ProtezioneTraslante_1(M)
+            Basamento_Portale_ProtezioneTraslante_2(M)
+            Basamento_Portale_ProtezioneTraslante_3(M)
+          porta(M)
+ 🔧 [DEBUG] Trovati oggetti con "tool" nel nome: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "chiave": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "start": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "emergenza": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo": trovate 0/9 varianti
+    Varianti mancanti: Array(9)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ✅ StateGroup "tool": TROVATO Group "tool1" (visibile)
+    ✅ StateGroup "tool": TROVATO Group "tool0" (nascosta)
+ 🔀 [InteractiveObject3D] Collegate 2 mesh a StateGroups
+ 🧭 Direction loaded for a500: Object
+ 🔍 Ricerca config per modello: "pulpito"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="pulpito", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="pulpito", fileName="pulpito", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "pulpito": models/pulpito.glb with direction: Object
+ 🔍✅ Config trovato per "pulpito": Object
  📐 Bounding box per undefined:
-    Min: (-0.102, 0.234, 0.191)
-    Max: (-0.098, 0.239, 0.196)
-    Center: (-0.100, 0.236, 0.193)
-    Size: (0.004, 0.004, 0.004)
- 💾 Posizione iniziale salvata per modello: estrattoresx - Centro BB: (-0.100, 0.236, 0.193)
+    Min: (0.739, 0.004, 3.460)
+    Max: (1.251, 1.276, 3.947)
+    Center: (0.995, 0.640, 3.703)
+    Size: (0.512, 1.273, 0.487)
+ 💾 Posizione iniziale salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
  📐 Bounding box per undefined:
-    Min: (-0.102, 0.234, 0.191)
-    Max: (-0.098, 0.239, 0.196)
-    Center: (-0.100, 0.236, 0.193)
-    Size: (0.004, 0.004, 0.004)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: estrattoresx - Centro BB: (-0.100, 0.236, 0.193)
- 📋 [DEBUG] Gerarchia oggetti in "estrattoresx" (2 totali):
-    estrattoresx(G)
-      estrattoresx(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "estrattoresx"
- 🧭 Direction loaded for estrattoresx: Object
- 🔍 Ricerca config per modello: "flangia"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="flangia", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="flangia", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="flangia", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="flangia", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="flangia", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="flangia", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="flangia", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="flangia", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="flangia", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="flangia", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="flangia", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="flangia", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="flangia", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="flangia", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="flangia", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="flangia", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="flangia", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="flangia", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="flangia", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="flangia", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="flangia", fileName="flangia", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "flangia": models/flangia.glb with direction: Object
- 🔍✅ Config trovato per "flangia": Object
- 📐 Bounding box per undefined:
-    Min: (-0.113, 0.132, 0.178)
-    Max: (0.113, 0.341, 0.261)
-    Center: (0.000, 0.236, 0.219)
-    Size: (0.225, 0.209, 0.083)
- 💾 Posizione iniziale salvata per modello: flangia - Centro BB: (0.000, 0.236, 0.219)
- 📐 Bounding box per undefined:
-    Min: (-0.113, 0.132, 0.178)
-    Max: (0.113, 0.341, 0.261)
-    Center: (0.000, 0.236, 0.219)
-    Size: (0.225, 0.209, 0.083)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: flangia - Centro BB: (0.000, 0.236, 0.219)
- 📋 [DEBUG] Gerarchia oggetti in "flangia" (2 totali):
-    flangia(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1003(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "flangia"
- 🧭 Direction loaded for flangia: Object
- 🔍 Ricerca config per modello: "vite_flangia_2"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_2", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_2", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_2", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_2", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_2", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_2", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_2", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_2", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_2", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_2", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_2", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_2", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_2", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_2", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_2", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_2", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_2", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_2", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_2", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_2", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_2", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_2", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_2", fileName="vite_flangia_2", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_2": models/vite_flangia_2.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_2": Object
- 📐 Bounding box per undefined:
-    Min: (0.032, 0.321, 0.168)
-    Max: (0.045, 0.336, 0.199)
-    Center: (0.038, 0.329, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_2 - Centro BB: (0.038, 0.329, 0.184)
- 📐 Bounding box per undefined:
-    Min: (0.032, 0.321, 0.168)
-    Max: (0.045, 0.336, 0.199)
-    Center: (0.038, 0.329, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_2 - Centro BB: (0.038, 0.329, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_2" (2 totali):
-    vite_flangia_2(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1009(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_2"
- 🧭 Direction loaded for vite_flangia_2: Object
- 🔍 Ricerca config per modello: "vite_flangia_3"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_3", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_3", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_3", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_3", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_3", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_3", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_3", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_3", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_3", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_3", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_3", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_3", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_3", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_3", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_3", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_3", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_3", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_3", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_3", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_3", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_3", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_3", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_3", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="vite_flangia_3", fileName="vite_flangia_3", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_3": models/vite_flangia_3.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_3": Object
- 📐 Bounding box per undefined:
-    Min: (-0.045, 0.321, 0.168)
-    Max: (-0.032, 0.336, 0.199)
-    Center: (-0.038, 0.329, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_3 - Centro BB: (-0.038, 0.329, 0.184)
- 📐 Bounding box per undefined:
-    Min: (-0.045, 0.321, 0.168)
-    Max: (-0.032, 0.336, 0.199)
-    Center: (-0.038, 0.329, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_3 - Centro BB: (-0.038, 0.329, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_3" (2 totali):
-    vite_flangia_3(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1002(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_3"
- 🧭 Direction loaded for vite_flangia_3: Object
- 🔍 Ricerca config per modello: "vite_flangia_5"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_5", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_5", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_5", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_5", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_5", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_5", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_5", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_5", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_5", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_5", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_5", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_5", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_5", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_5", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_5", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_5", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_5", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_5", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_5", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_5", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_5", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_5", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_5", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="vite_flangia_5", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="vite_flangia_5", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="vite_flangia_5", fileName="vite_flangia_5", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_5": models/vite_flangia_5.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_5": Object
- 📐 Bounding box per undefined:
-    Min: (-0.099, 0.191, 0.168)
-    Max: (-0.086, 0.206, 0.199)
-    Center: (-0.092, 0.198, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_5 - Centro BB: (-0.092, 0.198, 0.184)
- 📐 Bounding box per undefined:
-    Min: (-0.099, 0.191, 0.168)
-    Max: (-0.086, 0.206, 0.199)
-    Center: (-0.092, 0.198, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_5 - Centro BB: (-0.092, 0.198, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_5" (2 totali):
-    vite_flangia_5(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1014(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_5"
- 🧭 Direction loaded for vite_flangia_5: Object
- 🔍 Ricerca config per modello: "vite_flangia_6"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_6", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_6", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_6", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_6", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_6", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_6", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_6", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_6", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_6", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_6", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_6", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_6", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_6", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_6", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_6", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_6", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_6", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_6", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_6", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_6", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_6", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_6", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_6", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="vite_flangia_6", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="vite_flangia_6", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="vite_flangia_6", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="vite_flangia_6", fileName="vite_flangia_6", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_6": models/vite_flangia_6.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_6": Object
- 📐 Bounding box per undefined:
-    Min: (-0.045, 0.137, 0.168)
-    Max: (-0.032, 0.152, 0.199)
-    Center: (-0.038, 0.144, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_6 - Centro BB: (-0.038, 0.144, 0.184)
- 📐 Bounding box per undefined:
-    Min: (-0.045, 0.137, 0.168)
-    Max: (-0.032, 0.152, 0.199)
-    Center: (-0.038, 0.144, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_6 - Centro BB: (-0.038, 0.144, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_6" (2 totali):
-    vite_flangia_6(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1013(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_6"
- 🧭 Direction loaded for vite_flangia_6: Object
- 🔍 Ricerca config per modello: "vite_flangia_7"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_7", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_7", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_7", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_7", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_7", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_7", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_7", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_7", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_7", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_7", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_7", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_7", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_7", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_7", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_7", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_7", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_7", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_7", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_7", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_7", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_7", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_7", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_7", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="vite_flangia_7", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="vite_flangia_7", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="vite_flangia_7", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="vite_flangia_7", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="vite_flangia_7", fileName="vite_flangia_7", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_7": models/vite_flangia_7.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_7": Object
- 📐 Bounding box per undefined:
-    Min: (0.032, 0.137, 0.168)
-    Max: (0.045, 0.152, 0.199)
-    Center: (0.038, 0.144, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_7 - Centro BB: (0.038, 0.144, 0.184)
- 📐 Bounding box per undefined:
-    Min: (0.032, 0.137, 0.168)
-    Max: (0.045, 0.152, 0.199)
-    Center: (0.038, 0.144, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_7 - Centro BB: (0.038, 0.144, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_7" (2 totali):
-    vite_flangia_7(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1012(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_7"
- 🧭 Direction loaded for vite_flangia_7: Object
- 🔍 Ricerca config per modello: "vite_flangia_8"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_8", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_8", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_8", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_8", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_8", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_8", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_8", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_8", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_8", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_8", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_8", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_8", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_8", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_8", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_8", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_8", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_8", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_8", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_8", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_8", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_8", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_8", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_8", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="vite_flangia_8", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="vite_flangia_8", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="vite_flangia_8", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="vite_flangia_8", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="vite_flangia_8", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="vite_flangia_8", fileName="vite_flangia_8", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_8": models/vite_flangia_8.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_8": Object
- 📐 Bounding box per undefined:
-    Min: (0.086, 0.191, 0.168)
-    Max: (0.099, 0.206, 0.199)
-    Center: (0.092, 0.198, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_8 - Centro BB: (0.092, 0.198, 0.184)
- 📐 Bounding box per undefined:
-    Min: (0.086, 0.191, 0.168)
-    Max: (0.099, 0.206, 0.199)
-    Center: (0.092, 0.198, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_8 - Centro BB: (0.092, 0.198, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_8" (2 totali):
-    vite_flangia_8(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1011(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_8"
- 🧭 Direction loaded for vite_flangia_8: Object
- 🔍 Ricerca config per modello: "paletta1"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="paletta1", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="paletta1", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="paletta1", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="paletta1", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="paletta1", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="paletta1", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="paletta1", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="paletta1", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="paletta1", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="paletta1", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="paletta1", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="paletta1", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="paletta1", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="paletta1", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="paletta1", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="paletta1", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="paletta1", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="paletta1", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="paletta1", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="paletta1", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="paletta1", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="paletta1", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="paletta1", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="paletta1", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="paletta1", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="paletta1", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="paletta1", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="paletta1", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="paletta1", fileName="vite_flangia_8", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta1.glb": modelName="paletta1", fileName="paletta1", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "paletta1": models/paletta1.glb with direction: Object
- 🔍✅ Config trovato per "paletta1": Object
- 📐 Bounding box per undefined:
-    Min: (0.016, 0.228, -0.171)
-    Max: (0.070, 0.270, 0.184)
-    Center: (0.043, 0.249, 0.006)
-    Size: (0.054, 0.042, 0.355)
- 💾 Posizione iniziale salvata per modello: paletta1 - Centro BB: (0.043, 0.249, 0.006)
- 📐 Bounding box per undefined:
-    Min: (0.016, 0.228, -0.171)
-    Max: (0.070, 0.270, 0.184)
-    Center: (0.043, 0.249, 0.006)
-    Size: (0.054, 0.042, 0.355)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: paletta1 - Centro BB: (0.043, 0.249, 0.006)
- 📋 [DEBUG] Gerarchia oggetti in "paletta1" (2 totali):
-    paletta1(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1008(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "paletta1"
- 🧭 Direction loaded for paletta1: Object
- 🔍 Ricerca config per modello: "paletta2"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="paletta2", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="paletta2", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="paletta2", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="paletta2", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="paletta2", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="paletta2", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="paletta2", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="paletta2", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="paletta2", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="paletta2", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="paletta2", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="paletta2", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="paletta2", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="paletta2", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="paletta2", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="paletta2", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="paletta2", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="paletta2", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="paletta2", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="paletta2", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="paletta2", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="paletta2", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="paletta2", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="paletta2", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="paletta2", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="paletta2", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="paletta2", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="paletta2", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="paletta2", fileName="vite_flangia_8", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta1.glb": modelName="paletta2", fileName="paletta1", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta2.glb": modelName="paletta2", fileName="paletta2", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "paletta2": models/paletta2.glb with direction: Object
- 🔍✅ Config trovato per "paletta2": Object
- 📐 Bounding box per undefined:
-    Min: (0.001, 0.259, -0.171)
-    Max: (0.026, 0.322, 0.184)
-    Center: (0.014, 0.291, 0.006)
-    Size: (0.025, 0.062, 0.355)
- 💾 Posizione iniziale salvata per modello: paletta2 - Centro BB: (0.014, 0.291, 0.006)
- 📐 Bounding box per undefined:
-    Min: (0.001, 0.259, -0.171)
-    Max: (0.026, 0.322, 0.184)
-    Center: (0.014, 0.291, 0.006)
-    Size: (0.025, 0.062, 0.355)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: paletta2 - Centro BB: (0.014, 0.291, 0.006)
- 📋 [DEBUG] Gerarchia oggetti in "paletta2" (2 totali):
-    paletta2(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1001(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "paletta2"
- 🧭 Direction loaded for paletta2: Object
- 🔍 Ricerca config per modello: "vite_flangia_4"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_4", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_4", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_4", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_4", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_4", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_4", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_4", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_4", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_4", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_4", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_4", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_4", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_4", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_4", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_4", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_4", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_4", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_4", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_4", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_4", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_4", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_4", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="vite_flangia_4", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="vite_flangia_4", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="vite_flangia_4", fileName="vite_flangia_4", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_4": models/vite_flangia_4.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_4": Object
- 📐 Bounding box per undefined:
-    Min: (-0.099, 0.267, 0.168)
-    Max: (-0.086, 0.282, 0.199)
-    Center: (-0.092, 0.275, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_4 - Centro BB: (-0.092, 0.275, 0.184)
- 📐 Bounding box per undefined:
-    Min: (-0.099, 0.267, 0.168)
-    Max: (-0.086, 0.282, 0.199)
-    Center: (-0.092, 0.275, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_4 - Centro BB: (-0.092, 0.275, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_4" (2 totali):
-    vite_flangia_4(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1015(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_4"
- 🧭 Direction loaded for vite_flangia_4: Object
- 🔍 Ricerca config per modello: "paletta3"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="paletta3", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="paletta3", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="paletta3", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="paletta3", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="paletta3", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="paletta3", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="paletta3", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="paletta3", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="paletta3", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="paletta3", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="paletta3", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="paletta3", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="paletta3", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="paletta3", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="paletta3", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="paletta3", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="paletta3", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="paletta3", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="paletta3", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="paletta3", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="paletta3", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="paletta3", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="paletta3", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="paletta3", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="paletta3", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="paletta3", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="paletta3", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="paletta3", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="paletta3", fileName="vite_flangia_8", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta1.glb": modelName="paletta3", fileName="paletta1", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta2.glb": modelName="paletta3", fileName="paletta2", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta3.glb": modelName="paletta3", fileName="paletta3", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "paletta3": models/paletta3.glb with direction: Object
- 🔍✅ Config trovato per "paletta3": Object
- 📐 Bounding box per undefined:
-    Min: (-0.068, 0.273, -0.171)
-    Max: (-0.003, 0.278, 0.184)
-    Center: (-0.035, 0.275, 0.006)
-    Size: (0.065, 0.005, 0.355)
- 💾 Posizione iniziale salvata per modello: paletta3 - Centro BB: (-0.035, 0.275, 0.006)
- 📐 Bounding box per undefined:
-    Min: (-0.068, 0.273, -0.171)
-    Max: (-0.003, 0.278, 0.184)
-    Center: (-0.035, 0.275, 0.006)
-    Size: (0.065, 0.005, 0.355)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: paletta3 - Centro BB: (-0.035, 0.275, 0.006)
- 📋 [DEBUG] Gerarchia oggetti in "paletta3" (2 totali):
-    paletta3(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1004(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "paletta3"
- 🧭 Direction loaded for paletta3: Object
- 🔍 Ricerca config per modello: "vite_flangia_1"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="vite_flangia_1", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="vite_flangia_1", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="vite_flangia_1", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="vite_flangia_1", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="vite_flangia_1", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="vite_flangia_1", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="vite_flangia_1", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="vite_flangia_1", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="vite_flangia_1", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="vite_flangia_1", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="vite_flangia_1", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="vite_flangia_1", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="vite_flangia_1", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="vite_flangia_1", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="vite_flangia_1", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="vite_flangia_1", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="vite_flangia_1", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="vite_flangia_1", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="vite_flangia_1", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="vite_flangia_1", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="vite_flangia_1", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="vite_flangia_1", fileName="vite_flangia_1", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "vite_flangia_1": models/vite_flangia_1.glb with direction: Object
- 🔍✅ Config trovato per "vite_flangia_1": Object
- 📐 Bounding box per undefined:
-    Min: (0.086, 0.267, 0.168)
-    Max: (0.099, 0.282, 0.199)
-    Center: (0.092, 0.275, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 💾 Posizione iniziale salvata per modello: vite_flangia_1 - Centro BB: (0.092, 0.275, 0.184)
- 📐 Bounding box per undefined:
-    Min: (0.086, 0.267, 0.168)
-    Max: (0.099, 0.282, 0.199)
-    Center: (0.092, 0.275, 0.184)
-    Size: (0.013, 0.015, 0.030)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: vite_flangia_1 - Centro BB: (0.092, 0.275, 0.184)
- 📋 [DEBUG] Gerarchia oggetti in "vite_flangia_1" (2 totali):
-    vite_flangia_1(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1010(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "vite_flangia_1"
- 🧭 Direction loaded for vite_flangia_1: Object
- 🔍 Ricerca config per modello: "paletta5"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="paletta5", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="paletta5", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="paletta5", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="paletta5", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="paletta5", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="paletta5", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="paletta5", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="paletta5", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="paletta5", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="paletta5", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="paletta5", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="paletta5", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="paletta5", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="paletta5", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="paletta5", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="paletta5", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="paletta5", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="paletta5", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="paletta5", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="paletta5", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="paletta5", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="paletta5", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="paletta5", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="paletta5", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="paletta5", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="paletta5", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="paletta5", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="paletta5", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="paletta5", fileName="vite_flangia_8", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta1.glb": modelName="paletta5", fileName="paletta1", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta2.glb": modelName="paletta5", fileName="paletta2", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta3.glb": modelName="paletta5", fileName="paletta3", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta4.glb": modelName="paletta5", fileName="paletta4", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta5.glb": modelName="paletta5", fileName="paletta5", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "paletta5": models/paletta5.glb with direction: Object
- 🔍✅ Config trovato per "paletta5": Object
- 📐 Bounding box per undefined:
-    Min: (-0.014, 0.187, -0.171)
-    Max: (0.041, 0.229, 0.184)
-    Center: (0.013, 0.208, 0.006)
-    Size: (0.055, 0.041, 0.355)
- 💾 Posizione iniziale salvata per modello: paletta5 - Centro BB: (0.013, 0.208, 0.006)
- 📐 Bounding box per undefined:
-    Min: (-0.014, 0.187, -0.171)
-    Max: (0.041, 0.229, 0.184)
-    Center: (0.013, 0.208, 0.006)
-    Size: (0.055, 0.041, 0.355)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: paletta5 - Centro BB: (0.013, 0.208, 0.006)
- 📋 [DEBUG] Gerarchia oggetti in "paletta5" (2 totali):
-    paletta5(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1007(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "paletta5"
- 🧭 Direction loaded for paletta5: Object
- 🔍 Ricerca config per modello: "paletta4"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="paletta4", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="paletta4", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="paletta4", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="paletta4", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="paletta4", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="paletta4", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="paletta4", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="paletta4", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="paletta4", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="paletta4", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="paletta4", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="paletta4", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="paletta4", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="paletta4", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="paletta4", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="paletta4", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="paletta4", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="paletta4", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="paletta4", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="paletta4", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="paletta4", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="paletta4", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="paletta4", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="paletta4", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="paletta4", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="paletta4", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="paletta4", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="paletta4", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="paletta4", fileName="vite_flangia_8", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta1.glb": modelName="paletta4", fileName="paletta1", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta2.glb": modelName="paletta4", fileName="paletta2", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta3.glb": modelName="paletta4", fileName="paletta3", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta4.glb": modelName="paletta4", fileName="paletta4", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "paletta4": models/paletta4.glb with direction: Object
- 🔍✅ Config trovato per "paletta4": Object
- 📐 Bounding box per undefined:
-    Min: (-0.048, 0.192, -0.171)
-    Max: (-0.023, 0.256, 0.184)
-    Center: (-0.035, 0.224, 0.006)
-    Size: (0.024, 0.063, 0.355)
- 💾 Posizione iniziale salvata per modello: paletta4 - Centro BB: (-0.035, 0.224, 0.006)
- 📐 Bounding box per undefined:
-    Min: (-0.048, 0.192, -0.171)
-    Max: (-0.023, 0.256, 0.184)
-    Center: (-0.035, 0.224, 0.006)
-    Size: (0.024, 0.063, 0.355)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: paletta4 - Centro BB: (-0.035, 0.224, 0.006)
- 📋 [DEBUG] Gerarchia oggetti in "paletta4" (2 totali):
-    paletta4(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1005(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "paletta4"
- 🧭 Direction loaded for paletta4: Object
- 🔍 Ricerca config per modello: "filtro"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="filtro", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="filtro", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="filtro", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="filtro", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="filtro", fileName="filtro", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "filtro": models/filtro.glb with direction: Object
- 🔍✅ Config trovato per "filtro": Object
- 📐 Bounding box per undefined:
-    Min: (-0.319, 0.142, -0.108)
-    Max: (-0.201, 0.357, 0.108)
-    Center: (-0.260, 0.249, -0.000)
-    Size: (0.118, 0.216, 0.216)
- 💾 Posizione iniziale salvata per modello: filtro - Centro BB: (-0.260, 0.249, -0.000)
- 📐 Bounding box per undefined:
-    Min: (-0.319, 0.142, -0.108)
-    Max: (-0.201, 0.357, 0.108)
-    Center: (-0.260, 0.249, -0.000)
-    Size: (0.118, 0.216, 0.216)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: filtro - Centro BB: (-0.260, 0.249, -0.000)
- 📋 [DEBUG] Gerarchia oggetti in "filtro" (5 totali):
-    filtro(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1038(G)
-        G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1040(M)
-        G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1040_1(M)
-        G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1040_2(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "filtro"
- 🧭 Direction loaded for filtro: Object
- 🔍 Ricerca config per modello: "tubograsso"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="tubograsso", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="tubograsso", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="tubograsso", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="tubograsso", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="tubograsso", fileName="filtro", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="tubograsso", fileName="pavimento", exactMatch=false, direction= Object
- 🔍 Test file "models/planaxis.glb": modelName="tubograsso", fileName="planaxis", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_1.glb": modelName="tubograsso", fileName="vite_coperchio_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_2.glb": modelName="tubograsso", fileName="vite_coperchio_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_3.glb": modelName="tubograsso", fileName="vite_coperchio_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_coperchio_4.glb": modelName="tubograsso", fileName="vite_coperchio_4", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_sx.glb": modelName="tubograsso", fileName="tappino_grasso_sx", exactMatch=false, direction= Object
- 🔍 Test file "models/tappino_grasso_dx.glb": modelName="tubograsso", fileName="tappino_grasso_dx", exactMatch=false, direction= Object
- 🔍 Test file "models/ingrassatore.glb": modelName="tubograsso", fileName="ingrassatore", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_1.glb": modelName="tubograsso", fileName="vite_culatta_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_2.glb": modelName="tubograsso", fileName="vite_culatta_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_3.glb": modelName="tubograsso", fileName="vite_culatta_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_culatta_4.glb": modelName="tubograsso", fileName="vite_culatta_4", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoredx.glb": modelName="tubograsso", fileName="estrattoredx", exactMatch=false, direction= Object
- 🔍 Test file "models/estrattoresx.glb": modelName="tubograsso", fileName="estrattoresx", exactMatch=false, direction= Object
- 🔍 Test file "models/flangia.glb": modelName="tubograsso", fileName="flangia", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_1.glb": modelName="tubograsso", fileName="vite_flangia_1", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_2.glb": modelName="tubograsso", fileName="vite_flangia_2", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_3.glb": modelName="tubograsso", fileName="vite_flangia_3", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_4.glb": modelName="tubograsso", fileName="vite_flangia_4", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_5.glb": modelName="tubograsso", fileName="vite_flangia_5", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_6.glb": modelName="tubograsso", fileName="vite_flangia_6", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_7.glb": modelName="tubograsso", fileName="vite_flangia_7", exactMatch=false, direction= Object
- 🔍 Test file "models/vite_flangia_8.glb": modelName="tubograsso", fileName="vite_flangia_8", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta1.glb": modelName="tubograsso", fileName="paletta1", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta2.glb": modelName="tubograsso", fileName="paletta2", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta3.glb": modelName="tubograsso", fileName="paletta3", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta4.glb": modelName="tubograsso", fileName="paletta4", exactMatch=false, direction= Object
- 🔍 Test file "models/paletta5.glb": modelName="tubograsso", fileName="paletta5", exactMatch=false, direction= Object
- 🔍 Test file "models/tubograsso.glb": modelName="tubograsso", fileName="tubograsso", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "tubograsso": models/tubograsso.glb with direction: Object
- 🔍✅ Config trovato per "tubograsso": Object
- 📐 Bounding box per undefined:
-    Min: (-0.131, 0.323, -0.102)
-    Max: (0.003, 0.377, 0.213)
-    Center: (-0.064, 0.350, 0.056)
-    Size: (0.133, 0.054, 0.315)
- 💾 Posizione iniziale salvata per modello: tubograsso - Centro BB: (-0.064, 0.350, 0.056)
- 📐 Bounding box per undefined:
-    Min: (-0.131, 0.323, -0.102)
-    Max: (0.003, 0.377, 0.213)
-    Center: (-0.064, 0.350, 0.056)
-    Size: (0.133, 0.054, 0.315)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: tubograsso - Centro BB: (-0.064, 0.350, 0.056)
- 📋 [DEBUG] Gerarchia oggetti in "tubograsso" (2 totali):
-    tubograsso(G)
-      BézierCurve(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "tubograsso"
- 🧭 Direction loaded for tubograsso: Object
- 🔍 Ricerca config per modello: "culatta"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="culatta", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="culatta", fileName="culatta", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "culatta": models/culatta.glb with direction: Object
- 🔍✅ Config trovato per "culatta": Object
- 📐 Bounding box per undefined:
-    Min: (-0.259, 0.107, 0.110)
-    Max: (0.259, 0.413, 0.277)
-    Center: (-0.000, 0.260, 0.194)
-    Size: (0.518, 0.306, 0.167)
- 💾 Posizione iniziale salvata per modello: culatta - Centro BB: (-0.000, 0.260, 0.194)
- 📐 Bounding box per undefined:
-    Min: (-0.259, 0.107, 0.110)
-    Max: (0.259, 0.413, 0.277)
-    Center: (-0.000, 0.260, 0.194)
-    Size: (0.518, 0.306, 0.167)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: culatta - Centro BB: (-0.000, 0.260, 0.194)
- 📋 [DEBUG] Gerarchia oggetti in "culatta" (2 totali):
-    culatta(G)
-      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1031(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "culatta"
- 🧭 Direction loaded for culatta: Object
+    Min: (0.739, 0.004, 3.460)
+    Max: (1.251, 1.276, 3.947)
+    Center: (0.995, 0.640, 3.703)
+    Size: (0.512, 1.273, 0.487)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
+ 🔍 [InteractiveObject3D] Child disponibili in "pulpito": Array(39)
+ 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(11)
+    ✓ Figlio interattivo (Mesh): "chiave0" (button)
+    ✓ Figlio interattivo (Mesh): "chiave1" (button)
+    ✓ Figlio interattivo (Mesh): "emergenza_off" (button)
+    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off001" (button)
+    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off001_1" (button)
+    ✓ Figlio interattivo (Group): "pstart0" (button)
+    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on001" (button)
+    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on001_1" (button)
+    ✓ Figlio interattivo (Group): "pstart1" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_electrospindle" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_LU" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_mdi" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_tool" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_WH" (button)
+ 💡 [InteractiveObject3D] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1[0]
+ 🔗 [InteractiveObject3D] Modello "pulpito" collegato con 10 figli interattivi
+ 📋 [DEBUG] Gerarchia oggetti in "pulpito" (39 totali):
+    pulpito(G)
+      pulpito001(G)
+        telaio002(M)
+        telaio002_1(M)
+        chiave0(M)
+        chiave1(M)
+        emergenza_off(M)
+        emergenza_on001(M)
+        pstart0(G)
+          p_off001(M)
+          p_off001_1(M)
+        pstart1(G)
+          p_on001(M)
+          p_on001_1(M)
+        Pulsante_electrospindle(M)
+        Pulsante_LU(M)
+        Pulsante_mdi(M)
+        Pulsante_tool(M)
+        Pulsante_WH(M)
+        pulsanti001(G)
+          simbolini002(M)
+          simbolini002_1(M)
+          simbolini002_2(M)
+          simbolini002_3(M)
+          simbolini002_4(M)
+          simbolini002_5(M)
+          simbolini002_6(M)
+          simbolini002_7(M)
+          simbolini002_8(M)
+        schermo001(M)
+        schermo002(M)
+        schermo003(M)
+        schermo004(M)
+        schermo007(M)
+        schermo008(M)
+        schermo009(M)
+        schermo010(M)
+        schermo011(M)
+        tastiera(M)
+ 🔧 [DEBUG] Trovati oggetti con "tool" nel nome: Array(1)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ✅ StateGroup "chiave": TROVATO Mesh "chiave0" (visibile)
+    ✅ StateGroup "chiave": TROVATO Mesh "chiave1" (nascosta)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ✅ StateGroup "start": TROVATO Group "pstart0" (nascosta)
+    ✅ StateGroup "start": TROVATO Group "pstart1" (visibile)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ✅ StateGroup "emergenza": TROVATO Mesh "emergenza_off" (visibile)
+ [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
+    Varianti mancanti: Array(1)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo001" (visibile)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo002" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo003" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo004" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo007" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo008" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo009" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo010" (nascosta)
+    ✅ StateGroup "schermo": TROVATO Mesh "schermo011" (nascosta)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔀 [InteractiveObject3D] Collegate 14 mesh a StateGroups
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo001, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo002, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo003, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo004, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo007, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo008, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo009, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo010, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: schermo011, emissiveIntensity=0.5
+ 🏷️ [Scene3D] Trasparenza attivata per materiale: simbolini.002 su mesh simbolini002
+ 💡 [Scene3D] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1[0], emissiveIntensity=3
+ 🧭 Direction loaded for pulpito: Object
  🔍 Ricerca config per modello: "pavimento"
- 🔍 Files scenario disponibili: Array(35)
- 🔍 Test file "scenario_pump_maintenance_description": modelName="pavimento", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/culatta.glb": modelName="pavimento", fileName="culatta", exactMatch=false, direction= Object
- 🔍 Test file "models/corpo.glb": modelName="pavimento", fileName="corpo", exactMatch=false, direction= Object
- 🔍 Test file "models/coperchio.glb": modelName="pavimento", fileName="coperchio", exactMatch=false, direction= Object
- 🔍 Test file "models/filtro.glb": modelName="pavimento", fileName="filtro", exactMatch=false, direction= Object
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="pavimento", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="pavimento", fileName="pulpito", exactMatch=false, direction= Object
+ 🔍 Test file "models/remote.glb": modelName="pavimento", fileName="remote", exactMatch=false, direction= Object
+ 🔍 Test file "models/a500.glb": modelName="pavimento", fileName="a500", exactMatch=false, direction= Object
  🔍 Test file "models/pavimento.glb": modelName="pavimento", fileName="pavimento", exactMatch=true, direction= Object
  ✅ EXACT MATCH FOUND for "pavimento": models/pavimento.glb with direction: Object
  🔍✅ Config trovato per "pavimento": Object
@@ -896,110 +488,524 @@
     pavimento(G)
       Plane001(M)
  🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "pavimento"
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
+    Varianti mancanti: Array(1)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
+    Varianti mancanti: Array(2)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
  🧭 Direction loaded for pavimento: Object
-ui.js?nocache=1000041:1742 🔍 Ricerca config per modello: "coperchio"
-ui.js?nocache=1000041:1743 🔍 Files scenario disponibili: Array(35)
-ui.js?nocache=1000041:1753 🔍 Test file "scenario_pump_maintenance_description": modelName="coperchio", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
-ui.js?nocache=1000041:1753 🔍 Test file "models/culatta.glb": modelName="coperchio", fileName="culatta", exactMatch=false, direction= Object
-ui.js?nocache=1000041:1753 🔍 Test file "models/corpo.glb": modelName="coperchio", fileName="corpo", exactMatch=false, direction= Object
-ui.js?nocache=1000041:1753 🔍 Test file "models/coperchio.glb": modelName="coperchio", fileName="coperchio", exactMatch=true, direction= Object
-ui.js?nocache=1000041:1756 ✅ EXACT MATCH FOUND for "coperchio": models/coperchio.glb with direction: Object
-ui.js?nocache=1000041:1763 🔍✅ Config trovato per "coperchio": Object
-scene3d-modular.js?nocache=1000032:2451 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000032:2452    Min: (-0.338, 0.106, -0.189)
-scene3d-modular.js?nocache=1000032:2453    Max: (-0.261, 0.392, 0.171)
-scene3d-modular.js?nocache=1000032:2454    Center: (-0.299, 0.249, -0.009)
-scene3d-modular.js?nocache=1000032:2455    Size: (0.077, 0.286, 0.359)
-scene3d-modular.js?nocache=1000032:3222 💾 Posizione iniziale salvata per modello: coperchio - Centro BB: (-0.299, 0.249, -0.009)
-scene3d-modular.js?nocache=1000032:2451 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000032:2452    Min: (-0.338, 0.106, -0.189)
-scene3d-modular.js?nocache=1000032:2453    Max: (-0.261, 0.392, 0.171)
-scene3d-modular.js?nocache=1000032:2454    Center: (-0.299, 0.249, -0.009)
-scene3d-modular.js?nocache=1000032:2455    Size: (0.077, 0.286, 0.359)
-scene3d-modular.js?nocache=1000032:3242 🏠 Posizione ORIGINALE SCENARIO salvata per modello: coperchio - Centro BB: (-0.299, 0.249, -0.009)
-InteractiveObject3D.js?v=1000003:820 📋 [DEBUG] Gerarchia oggetti in "coperchio" (2 totali):
-InteractiveObject3D.js?v=1000003:821    coperchio(G)
-InteractiveObject3D.js?v=1000003:821      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1020(M)
-InteractiveObject3D.js?v=1000003:844 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "coperchio"
-scene3d-modular.js?nocache=1000032:1424 🧭 Direction loaded for coperchio: Object
-ui.js?nocache=1000041:1742 🔍 Ricerca config per modello: "corpo"
-ui.js?nocache=1000041:1743 🔍 Files scenario disponibili: Array(35)
-ui.js?nocache=1000041:1753 🔍 Test file "scenario_pump_maintenance_description": modelName="corpo", fileName="scenario_pump_maintenance_description", exactMatch=false, direction= null
-ui.js?nocache=1000041:1753 🔍 Test file "models/culatta.glb": modelName="corpo", fileName="culatta", exactMatch=false, direction= Object
-ui.js?nocache=1000041:1753 🔍 Test file "models/corpo.glb": modelName="corpo", fileName="corpo", exactMatch=true, direction= Object
-ui.js?nocache=1000041:1756 ✅ EXACT MATCH FOUND for "corpo": models/corpo.glb with direction: Object
-ui.js?nocache=1000041:1763 🔍✅ Config trovato per "corpo": Object
-scene3d-modular.js?nocache=1000032:2451 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000032:2452    Min: (-0.289, 0.001, -0.805)
-scene3d-modular.js?nocache=1000032:2453    Max: (0.306, 0.531, 0.254)
-scene3d-modular.js?nocache=1000032:2454    Center: (0.009, 0.266, -0.276)
-scene3d-modular.js?nocache=1000032:2455    Size: (0.595, 0.530, 1.060)
-scene3d-modular.js?nocache=1000032:3222 💾 Posizione iniziale salvata per modello: corpo - Centro BB: (0.009, 0.266, -0.276)
-scene3d-modular.js?nocache=1000032:2451 📐 Bounding box per undefined:
-scene3d-modular.js?nocache=1000032:2452    Min: (-0.289, 0.001, -0.805)
-scene3d-modular.js?nocache=1000032:2453    Max: (0.306, 0.531, 0.254)
-scene3d-modular.js?nocache=1000032:2454    Center: (0.009, 0.266, -0.276)
-scene3d-modular.js?nocache=1000032:2455    Size: (0.595, 0.530, 1.060)
-scene3d-modular.js?nocache=1000032:3242 🏠 Posizione ORIGINALE SCENARIO salvata per modello: corpo - Centro BB: (0.009, 0.266, -0.276)
-InteractiveObject3D.js?v=1000003:820 📋 [DEBUG] Gerarchia oggetti in "corpo" (4 totali):
-InteractiveObject3D.js?v=1000003:821    corpo(G)
-InteractiveObject3D.js?v=1000003:821      G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1018(G)
-InteractiveObject3D.js?v=1000003:821        G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1018_1(M)
-InteractiveObject3D.js?v=1000003:821        G051696_VTLF_2250_0-791VSVRSV_SCM_EUII_IE3_WAT_v1018_2(M)
-InteractiveObject3D.js?v=1000003:844 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "corpo"
-scene3d-modular.js?nocache=1000032:1424 🧭 Direction loaded for corpo: Object
-ui.js?nocache=1000041:2071 Pannello controlli visibilità modelli non trovato
-createModelVisibilityControls @ ui.js?nocache=1000041:2071
-ui.js?nocache=1000041:2016 📊 Progress bar modelli nascosta
-ui.js?nocache=1000041:2023 🔓 Pulsanti tutorial riabilitati dopo caricamento 3D
-ui.js?nocache=1000041:1795 🔧 DRAG&DROP: Salvataggio posizioni originali post-caricamento modelli
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per planaxis: (0.000, 0.000, 0.000)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_coperchio_3: (-0.284, 0.133, 0.094)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_coperchio_2: (-0.284, 0.365, 0.094)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_coperchio_4: (-0.293, 0.133, -0.162)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per ingrassatore: (-0.225, 0.217, -0.375)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_culatta_1: (-0.100, 0.383, 0.197)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per tappino_grasso_dx: (-0.280, 0.249, 0.133)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_culatta_2: (0.100, 0.383, 0.197)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_culatta_3: (0.100, 0.121, 0.187)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_culatta_4: (-0.100, 0.121, 0.187)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per tappino_grasso_sx: (-0.280, 0.249, -0.162)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_coperchio_1: (-0.293, 0.365, -0.162)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per estrattoredx: (0.100, 0.236, 0.193)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per estrattoresx: (-0.100, 0.236, 0.193)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per flangia: (0.000, 0.236, 0.219)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_2: (0.038, 0.329, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_3: (-0.038, 0.329, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_5: (-0.092, 0.198, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_6: (-0.038, 0.144, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_7: (0.038, 0.144, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_8: (0.092, 0.198, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per paletta1: (0.043, 0.249, 0.006)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per paletta2: (0.014, 0.291, 0.006)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_4: (-0.092, 0.275, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per paletta3: (-0.035, 0.275, 0.006)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per vite_flangia_1: (0.092, 0.275, 0.184)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per paletta5: (0.013, 0.208, 0.006)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per paletta4: (-0.035, 0.224, 0.006)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per filtro: (-0.260, 0.249, -0.000)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per tubograsso: (-0.064, 0.350, 0.056)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per culatta: (-0.000, 0.260, 0.194)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per coperchio: (-0.299, 0.249, -0.009)
-DragDropSystem.js?nocache=1000031:534 [DragDropSystem] 📍 Memorizzata posizione originale per corpo: (0.009, 0.266, -0.276)
-DragDropSystem.js?nocache=1000031:538 [DragDropSystem] ✅ Salvate 34 posizioni originali
-InterchangeableTracker.js?v=1000001:184 [InterchangeableTracker] ℹ️ AssemblySystem non in modalità assemblaggio - skip inizializzazione occupazioni
-ui.js?nocache=1000041:1815 🔧 MODELLI POST-LOAD: Posizione (1 modelli)
-ui.js?nocache=1000041:1826 🔧 MODELLI POST-LOAD: Applicazione impostazioni modelli post-caricamento per "Pulizia Filtro e ingrassaggio"
-scene3d-modular.js?nocache=1000032:4289 🔧 MODEL: Posizione applicata a "planaxis": (-0.5, 0.01, -0.5)
-ui.js?nocache=1000041:1846 🎮 [UI] Inizializzazione StepController...
-StepController.js?v=1000008:89 [StepController] Inizializzazione...
-StepController.js?v=1000008:106 [StepController] Event listeners configurati
-StepController.js?v=1000008:95 [StepController] ✅ Inizializzato
-config.js?nocache=999999:242 [7:31:48 PM] INFO: Scenario Manutenzione pompa del vuoto caricato completamente
-ui.js?nocache=1000041:5657 🎬 [UI] Animazione drammatica completata
-scene3d-modular.js?nocache=1000032:4474 📹 CAMERA: Animazione completata
-ui.js?nocache=1000041:6470 ✅ [UI] Animazione pulse pulsanti completata
-ui.js?nocache=1000041:6507 ❌ [UI] Overlay selezione tutorial nascosto
-
-ui.js?nocache=1000041:2236 📱 Finestra ridimensionata, controllo mobile...
+ 🔍 Ricerca config per modello: "remote"
+ 🔍 Files scenario disponibili: Array(5)
+ 🔍 Test file "scenario_spindle_maintenance_description": modelName="remote", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
+ 🔍 Test file "models/pulpito.glb": modelName="remote", fileName="pulpito", exactMatch=false, direction= Object
+ 🔍 Test file "models/remote.glb": modelName="remote", fileName="remote", exactMatch=true, direction= Object
+ ✅ EXACT MATCH FOUND for "remote": models/remote.glb with direction: Object
+ 🔍✅ Config trovato per "remote": Object
+ 📐 Bounding box per undefined:
+    Min: (0.863, 0.779, 3.591)
+    Max: (1.094, 0.916, 3.653)
+    Center: (0.979, 0.848, 3.622)
+    Size: (0.231, 0.136, 0.062)
+ 💾 Posizione iniziale salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
+ 📐 Bounding box per undefined:
+    Min: (0.863, 0.779, 3.591)
+    Max: (1.094, 0.916, 3.653)
+    Center: (0.979, 0.848, 3.622)
+    Size: (0.231, 0.136, 0.062)
+ 🏠 Posizione ORIGINALE SCENARIO salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
+ 🔍 [InteractiveObject3D] Child disponibili in "remote": Array(18)
+ 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(3)
+    ✓ Figlio interattivo (Mesh): "pulsante_r_play" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_r_status" (button)
+    ✓ Figlio interattivo (Mesh): "Pulsante_r_unlock" (button)
+ 🔗 [InteractiveObject3D] Modello "remote" collegato con 3 figli interattivi
+ 📋 [DEBUG] Gerarchia oggetti in "remote" (18 totali):
+    remote(G)
+      remote(G)
+        07L0676941A_001002(M)
+        07L0676941A_001002_1(M)
+        07L0676941A_001002_2(M)
+        07L0676941A_001002_3(M)
+        07L0676941A_001002_4(M)
+        07L0676941A_001002_5(M)
+        07L0676941A_001002_6(M)
+        07L0676941A_001002_7(M)
+        07L0676941A_001002_8(M)
+        07L0676941A_001002_9(M)
+        07L0676941A_001002_10(M)
+        pulsante_r_play(M)
+        Pulsante_r_status(M)
+        Pulsante_r_unlock(M)
+        Schermo_R000(M)
+        Schermo_R001(M)
+ 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "remote"
+ 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
+    Varianti mancanti: Array(1)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
+    ✅ StateGroup "schermo_remote": TROVATO Mesh "Schermo_R000" (visibile)
+    ✅ StateGroup "schermo_remote": TROVATO Mesh "Schermo_R001" (nascosta)
+ 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
+    ⚠️ Nessun match esatto trovato, provo match parziale...
+ 🔀 [InteractiveObject3D] Collegate 2 mesh a StateGroups
+ 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R000, emissiveIntensity=0.5
+ 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R001, emissiveIntensity=0.5
+ 🧭 Direction loaded for remote: Object
+ Pannello controlli visibilità modelli non trovato
+ 📊 Progress bar modelli nascosta
+ 🔓 Pulsanti tutorial riabilitati dopo caricamento 3D
+ 🔧 DRAG&DROP: Salvataggio posizioni originali post-caricamento modelli
+ [DragDropSystem] 📍 Memorizzata posizione originale per a500: (-0.066, 1.394, 0.671)
+ [DragDropSystem] 📍 Memorizzata posizione originale per pulpito: (0.995, 0.640, 3.703)
+ [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
+ [DragDropSystem] 📍 Memorizzata posizione originale per remote: (0.979, 0.848, 3.622)
+ [DragDropSystem] 📍 Memorizzata posizione originale per a500: (-0.066, 1.394, 0.671)
+ [DragDropSystem] 📍 Memorizzata posizione originale per pulpito: (0.995, 0.640, 3.703)
+ [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
+ [DragDropSystem] 📍 Memorizzata posizione originale per remote: (0.979, 0.848, 3.622)
+ [DragDropSystem] ✅ Salvate 8 posizioni originali
+ [InterchangeableTracker] ℹ️ AssemblySystem non in modalità assemblaggio - skip inizializzazione occupazioni
+ 🔀 [UI] Ricerca varianti StateGroup in tutta la scena...
+ 🔍 [InteractiveObject3D] Cercando varianti StateGroup in TUTTA la scena...
+    ✅ StateGroup "emergenza": MATCH PARZIALE in scena Mesh "emergenza_on001" → variante "emergenza_on" (nascosta)
+ ✅ [InteractiveObject3D] StateGroup "chiave": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "start": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "emergenza": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "schermo": tutte le 9 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "schermo_remote": tutte le 2 varianti trovate
+ ✅ [InteractiveObject3D] StateGroup "tool": tutte le 2 varianti trovate
+ 🔀 [InteractiveObject3D] Collegate 1 mesh a StateGroups dalla scena
+ [10:32:08 PM] INFO: Scenario Manutenzione Elettromandrino caricato completamente
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_mdi"
+ ✅ HIGHLIGHT: Trovato child "Pulsante_mdi" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: Pulsante_mdi
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_mdi
+ 🔍 HIGHLIGHT: Rimozione highlight precedente
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_mdi (non bloccato, colore=0xffff00)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_mdi" (originalmente invisibile, mantengo invisibile)
+ 📷 [UI] Attesa completamento transizione camera: 2300ms
+ 🎬 [UI] Animazione drammatica completata
+ 🎬 [UI] Animazione drammatica completata
+ 📹 CAMERA: Animazione completata
+ [Scene3D] 📹 CAMERA INFO:
+   Position: (0.97, 1.25, 3.93)
+   Rotation: (-0.24, 0, 0)
+   Pivot Point: (0.97, 1.15, 3.52)
+   Distance to Pivot: 0.42
+   FOV: 75
+   Near/Far: 0.1/1000
+ 
+📋 CVTScript v3 (copia e incolla):
+camera = position (0.97, 1.25, 3.93), target (0.97, 1.15, 3.52), pivot (0.97, 1.15, 3.52), zoom 0.42, fov 75, rotation (-0.24, 0, 0), fade 1.0
+ 📷 [UI] Posizione camera memorizzata per step: Step 1 - Vai alla schermata MDI
+ 📷 [UI] Camera state: Object
+ 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: null
+ [Scene3D] ⚠️ Nessun tool attivo, esco
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_mdi
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_mdi" (parent: pulpito)
+ 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_mdi (mesh: Pulsante_mdi) → setVariant:schermo=schermo002
+ 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click
+ 🔵 [HighlightCircleManager] Cerchio rimosso per "pulpito.Pulsante_mdi"
+ 🔵 [InteractiveObject3D] Cerchio rimosso per "pulpito.Pulsante_mdi" dopo click
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_mdi"
+ [StepController] 🔍 currentStepIndex=0
+ [StepController] 🔍 stepConfigs.size=1
+ [StepController] 🔍 stepConfigs.keys=[0]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "pulpito.Pulsante_mdi" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
+ [StepController]    1. setVariant: Object
+ [StepController] 🔀 setVariant: schermo=schermo002
+ 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo001" → "schermo002"
+ [StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni
+ [StepController] ⏭️ Auto-avanzamento schedulato per step 0
+    ✓ Gestito da StepController
+    ⏭️ Azione locale "setVariant:schermo=schermo002" ignorata (già gestito da StepController)
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
+ [StepController] ⏭️ Avanzamento allo step successivo
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 1
+ [UI] 🚫 Cancellato timeout auto-avanzamento pendente
+ [DEBUG] ⏭️ Navigazione a step: "Step 2 - Scarica l'utensile"
+ [10:32:11 PM] INFO: Navigazione a step 2: Step 2 - Scarica l'utensile
+ [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ [UI] 🧹 Rimossa evidenziazione modello corrente
+ [UI] 🧹 Rimosse evidenziazioni pulsanti
+ 🔵 [HighlightCircleManager] Rimozione 0 cerchi
+ [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 2 - Scarica l'utensile"
+ [DEBUG] 🚀 Step properties: Object
+ [10:32:11 PM] INFO: Esecuzione step: Step 2 - Scarica l'utensile Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 1 Step 2 - Scarica l'utensile
+ [StepController] 📋 Step 1 auto-configurato da proprietà:
+ [StepController]    Triggers Physical: [pulpito.Pulsante_tool]
+ [StepController]    Actions Physical: 1 azioni
+ [StepController]      1. setVariant: schermo=schermo003
+ 🚦 [StepGating] Step 0 → 1 ("Step 2 - Scarica l'utensile")
+ 🚦 [StepGating] Pulsanti attivi: [Pulsante_tool]
+ 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+ 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+ 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_tool"
+ 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 10
+ 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
+ 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+ 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_tool
+ 💡 [InteractiveObject3D] Mesh ha material: true
+ 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+ 💡 [InteractiveObject3D] Material ha emissive: true
+ 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+ 💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=1, opacity=0
+ 💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
+ 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_tool" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ 🔵 [HighlightCircleManager] Cerchio creato per "pulpito.Pulsante_tool" (size: 80px, opacity: 0.2)
+ 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "pulpito.Pulsante_tool" con opacità 0.2
+ 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 2 - Scarica l'utensile" con opacità 0.2
+ 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
+ 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
+ 📹 CAMERA: Distance = 0.42
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ 📷 [UI] CameraTransitionTime: 2s (2000ms)
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_tool"
+ ✅ HIGHLIGHT: Trovato child "Pulsante_tool" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: Pulsante_tool
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_tool
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_tool (non bloccato, colore=0xffff00)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_tool" (originalmente invisibile, mantengo invisibile)
+ 📷 [UI] Attesa completamento transizione camera: 2300ms
+ 📹 CAMERA: Animazione completata
+ 🎬 [UI] Animazione drammatica completata
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: null
+ [Scene3D] ⚠️ Nessun tool attivo, esco
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_tool
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_tool" (parent: pulpito)
+ 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_tool (mesh: Pulsante_tool) → setVariant:schermo=schermo003
+ 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_tool" dopo click
+ 🔵 [HighlightCircleManager] Cerchio rimosso per "pulpito.Pulsante_tool"
+ 🔵 [InteractiveObject3D] Cerchio rimosso per "pulpito.Pulsante_tool" dopo click
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_tool"
+ [StepController] 🔍 currentStepIndex=1
+ [StepController] 🔍 stepConfigs.size=2
+ [StepController] 🔍 stepConfigs.keys=[0, 1]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "pulpito.Pulsante_tool" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
+ [StepController]    1. setVariant: Object
+ [StepController] 🔀 setVariant: schermo=schermo003
+ 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo002" → "schermo003"
+ [StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni
+ [StepController] ⏭️ Auto-avanzamento schedulato per step 1
+    ✓ Gestito da StepController
+    ⏭️ Azione locale "setVariant:schermo=schermo003" ignorata (già gestito da StepController)
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
+ [Scene3D] 📹 CAMERA INFO:
+   Position: (0.97, 1.25, 3.93)
+   Rotation: (-0.24, 0, 0)
+   Pivot Point: (0.97, 1.15, 3.52)
+   Distance to Pivot: 0.42
+   FOV: 75
+   Near/Far: 0.1/1000
+ 
+📋 CVTScript v3 (copia e incolla):
+camera = position (0.97, 1.25, 3.93), target (0.97, 1.15, 3.52), pivot (0.97, 1.15, 3.52), zoom 0.42, fov 75, rotation (-0.24, 0, 0), fade 1.0
+ 📷 [UI] Posizione camera memorizzata per step: Step 2 - Scarica l'utensile
+ 📷 [UI] Camera state: Object
+ 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ [StepController] ⏭️ Avanzamento allo step successivo
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 2
+ [UI] 🚫 Cancellato timeout auto-avanzamento pendente
+ [DEBUG] ⏭️ Navigazione a step: "Step 3 - Prendi il telecomando Tecpad"
+ [10:32:14 PM] INFO: Navigazione a step 3: Step 3 - Prendi il telecomando Tecpad
+ [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ [UI] 🧹 Rimossa evidenziazione modello corrente
+ [UI] 🧹 Rimosse evidenziazioni pulsanti
+ 🔵 [HighlightCircleManager] Rimozione 0 cerchi
+ [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 3 - Prendi il telecomando Tecpad"
+ [DEBUG] 🚀 Step properties: Object
+ [10:32:14 PM] INFO: Esecuzione step: Step 3 - Prendi il telecomando Tecpad Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 2 Step 3 - Prendi il telecomando Tecpad
+ [StepController] ⏭️ Step 2 skippato (nessun trigger definito)
+ 🚦 [StepGating] Step 1 → 2 ("Step 3 - Prendi il telecomando Tecpad")
+ [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
+ 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
+ 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ 🟡 [ToolsManager] ✓ Elemento tool trovato: 
+ 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon required tool-highlight
+ 📹 CAMERA: Posizione assoluta (1.17, 1.15, 4.12)
+ 📹 CAMERA: Target assoluto (1.02, 0.83, 3.63)
+ 📹 CAMERA: Zoom = 0.59
+ 📹 CAMERA: Distance = 0.42
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 1s
+ 📹 CAMERA: Avvio animazione camera (durata: 1s)
+ [UI] 📝 Registrazione oggetto "remote" come holdable
+ [HoldableSystem] 📝 registerHoldable chiamato per: "remote"
+ [HoldableSystem] 📝 Config ricevuta: Object
+ [HoldableSystem] 📝 Stato sistema: initialized=true, camera=true
+ [HoldableSystem] ✅ Oggetto registrato come prendibile: "remote" Object
+ [HoldableSystem] 📊 Totale holdables: 1 Array(1)
+ [UI] 🤚 HoldAction=pick configurato - in attesa click utente su elemento
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ 📷 [UI] CameraTransitionTime: 1s (1000ms)
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: Evidenzio: remote
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: remote
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per remote (non bloccato, colore=0xffff00)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "pulsante_r_play" (originalmente invisibile, mantengo invisibile)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_r_status" (originalmente invisibile, mantengo invisibile)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_r_unlock" (originalmente invisibile, mantengo invisibile)
+ 🔵 [HighlightCircleManager] Cerchio creato per "elemento_remote" (size: 60px, opacity: 0.7)
+ [UI] 🟡 Cerchio selezione creato per Elemento "remote"
+ 📷 [UI] Attesa completamento transizione camera: 1300ms
+ 📹 CAMERA: Animazione completata
+ [Scene3D] 📹 CAMERA INFO:
+   Position: (1.17, 1.14, 4.11)
+   Rotation: (-0.58, 0.25, 0.16)
+   Pivot Point: (1.02, 0.83, 3.63)
+   Distance to Pivot: 0.59
+   FOV: 75
+   Near/Far: 0.1/1000
+ 
+📋 CVTScript v3 (copia e incolla):
+camera = position (1.17, 1.14, 4.11), target (1.02, 0.83, 3.63), pivot (1.02, 0.83, 3.63), zoom 0.59, fov 75, rotation (-0.58, 0.25, 0.16), fade 1.0
+ 📷 [UI] Posizione camera memorizzata per step: Step 3 - Prendi il telecomando Tecpad
+ 📷 [UI] Camera state: Object
+ 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ 🎬 [UI] Animazione drammatica completata
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [10:32:16 PM] INFO: [ToolsManager] Strumento attivato: mano
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🌟 Modello evidenziato attivo: remote, cerco priorità...
+ [Scene3D] ✨ PRIORITA' SILHOUETTE: Selezionato modello evidenziato "remote" (posizione 1/20 nel raycast)
+ [Scene3D] Click su modello - ToolsManager: mano, Body class aria: false, Body class spray: false
+ [Scene3D] 🎯 Click rilevato su modello: remote
+ [Scene3D] 📺 Uso sistema tutorial legacy per: remote
+ [DEBUG] 🎬 handleModelAction chiamato per: remote
+ [DEBUG] 📋 Current step: Step 3 - Prendi il telecomando Tecpad
+ [DEBUG] 🎯 Model filename: "remote", Step element: "models/remote.glb", TargetChild: "none"
+ [DEBUG] 🎯 Clean model: "remote", Clean step: "remote"
+ [DEBUG] 🤚 HoldAction=pick - Eseguo pickObject per: remote
+ [DEBUG] 🤚 HoldableSystem stato: initialized=true, holdables=1
+ [HoldableSystem] 🤚 pickObject chiamato per: "remote"
+ [HoldableSystem] 📊 Stato sistema: initialized=true, camera=true
+ [HoldableSystem] 📊 Holdables registrati: 1 Array(1)
+ [HoldableSystem] ✅ Modello trovato: remote
+ [HoldableSystem] 🎬 Animazione PICK avviata per "remote"
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+HoldableSystem.js?v=1000007:351 [HoldableSystem] ✅ Animazione PICK completata per "remote"
+HoldableSystem.js?v=1000007:232 [HoldableSystem] 🤚 Oggetto "remote" preso in mano
+scene3d-modular.js?nocache=1000032:2200 [DEBUG] ⏭️ Avanzo allo step successivo dopo pick
+ui.js?nocache=1000041:3813 [DEBUG] ⏭️ GOTO STEP chiamata con index: 3
+ui.js?nocache=1000041:3850 [DEBUG] ⏭️ Navigazione a step: "Step 4 - Premi il pulsante start"
+config.js?nocache=999999:242 [10:32:17 PM] INFO: Navigazione a step 4: Step 4 - Premi il pulsante start
+ui.js?nocache=1000041:3893 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ui.js?nocache=1000041:3898 [UI] 🧹 Rimossa evidenziazione modello corrente
+ui.js?nocache=1000041:3904 [UI] 🧹 Rimosse evidenziazioni pulsanti
+HighlightCircleManager.js?v=1000025:163 🔵 [HighlightCircleManager] Rimozione 1 cerchi
+ui.js?nocache=1000041:3910 [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ui.js?nocache=1000041:5544 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ui.js?nocache=1000041:3950 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 4 - Premi il pulsante start"
+ui.js?nocache=1000041:3951 [DEBUG] 🚀 Step properties: Object
+config.js?nocache=999999:242 [10:32:17 PM] INFO: Esecuzione step: Step 4 - Premi il pulsante start Object
+ui.js?nocache=1000041:6290 📷 [UI] Pulsante reset camera nascosto
+ui.js?nocache=1000041:3984 📷 [UI] Reset stepCameraState per nuovo step
+StepController.js?v=1000008:159 [StepController] 📍 Step corrente: 3 Step 4 - Premi il pulsante start
+StepController.js?v=1000008:251 [StepController] 📋 Step 3 auto-configurato da proprietà:
+StepController.js?v=1000008:252 [StepController]    Triggers Physical: [remote.pulsante_r_play]
+StepController.js?v=1000008:253 [StepController]    Actions Physical: 1 azioni
+StepController.js?v=1000008:256 [StepController]      1. setVariant: schermo=schermo004
+StepGatingManager.js?v=1000001:140 🚦 [StepGating] Step 2 → 3 ("Step 4 - Premi il pulsante start")
+StepGatingManager.js?v=1000001:143 🚦 [StepGating] Pulsanti attivi: [pulsante_r_play]
+InteractiveObject3D.js?v=1000003:1209 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+InteractiveObject3D.js?v=1000003:1210 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+InteractiveObject3D.js?v=1000003:1221 💡 [InteractiveObject3D] Cercando pulsante: parent="remote", button="pulsante_r_play"
+InteractiveObject3D.js?v=1000003:1230 💡 [InteractiveObject3D] ✓ Oggetto "remote" trovato in registry, childMeshes: 3
+InteractiveObject3D.js?v=1000003:1253 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
+InteractiveObject3D.js?v=1000003:1319 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+InteractiveObject3D.js?v=1000003:1333 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: pulsante_r_play
+InteractiveObject3D.js?v=1000003:1334 💡 [InteractiveObject3D] Mesh ha material: true
+InteractiveObject3D.js?v=1000003:1335 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+InteractiveObject3D.js?v=1000003:1336 💡 [InteractiveObject3D] Material ha emissive: true
+InteractiveObject3D.js?v=1000003:1346 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+InteractiveObject3D.js?v=1000003:1363 💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=1, opacity=0
+InteractiveObject3D.js?v=1000003:1370 💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
+InteractiveObject3D.js?v=1000003:1402 💡 [InteractiveObject3D] ✓ Pulsante "pulsante_r_play" evidenziato e aggiunto a highlightedButtons (totale: 1)
+HighlightCircleManager.js?v=1000025:140 🔵 [HighlightCircleManager] Cerchio creato per "remote.pulsante_r_play" (size: 80px, opacity: 0.2)
+InteractiveObject3D.js?v=1000003:1408 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "remote.pulsante_r_play" con opacità 0.2
+ui.js?nocache=1000041:4027 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 4 - Premi il pulsante start" con opacità 0.2
+ToolRegistry.js?v=1000021:364 [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
+getToolByTutorialName @ ToolRegistry.js?v=1000021:364
+ToolsManager.js?nocache=1000024:304 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
+ToolsManager.js?nocache=1000024:308 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ToolsManager.js?nocache=1000024:319 🟡 [ToolsManager] ✓ Elemento tool trovato: <div class=​"tool-icon active required tool-highlight" data-tool=​"mano" title=​"Mano">​…​</div>​
+ToolsManager.js?nocache=1000024:328 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon active required tool-highlight
+scene3d-modular.js?nocache=1000032:4085 📹 CAMERA: Posizione assoluta (2.52, 1.3, 4.55)
+scene3d-modular.js?nocache=1000032:4106 📹 CAMERA: Target assoluto (2.37, 1.15, 3.6)
+scene3d-modular.js?nocache=1000032:4131 📹 CAMERA: Zoom = 0.59
+scene3d-modular.js?nocache=1000032:4142 📹 CAMERA: Distance = 0.98
+scene3d-modular.js?nocache=1000032:4152 📹 CAMERA: FOV = 75
+scene3d-modular.js?nocache=1000032:4161 📹 CAMERA: Durata transizione = 2s
+scene3d-modular.js?nocache=1000032:4211 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ui.js?nocache=1000041:4313 [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ui.js?nocache=1000041:4988 📷 [UI] CameraTransitionTime: 2s (2000ms)
+scene3d-modular.js?nocache=1000032:1594 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+scene3d-modular.js?nocache=1000032:1622 🔍 HIGHLIGHT: TargetChild specificato: "pulsante_r_play"
+scene3d-modular.js?nocache=1000032:1633 ✅ HIGHLIGHT: Trovato child "pulsante_r_play" da evidenziare
+scene3d-modular.js?nocache=1000032:1644 🔍 HIGHLIGHT: Evidenzio: pulsante_r_play
+scene3d-modular.js?nocache=1000032:1470 🔍 HIGHLIGHT: highlightModel() chiamata per: pulsante_r_play
+scene3d-modular.js?nocache=1000032:1541 🔍 HIGHLIGHT: ✅ APPLICAZIONE per pulsante_r_play (non bloccato, colore=0xffff00)
+scene3d-modular.js?nocache=1000032:1543 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+scene3d-modular.js?nocache=1000032:1555 🔍 HIGHLIGHT: ⏭️ Skip mesh "pulsante_r_play" (originalmente invisibile, mantengo invisibile)
+ui.js?nocache=1000041:5033 📷 [UI] Attesa completamento transizione camera: 2300ms
+scene3d-modular.js?nocache=1000032:4471 📹 CAMERA: Animazione completata
+ui.js?nocache=1000041:5554 🎬 [UI] Animazione drammatica completata
+scene3d-modular.js?nocache=1000032:318 [Scene3D] 📹 CAMERA INFO:
+scene3d-modular.js?nocache=1000032:319   Position: (2.46, 1.24, 4.18)
+scene3d-modular.js?nocache=1000032:320   Rotation: (-0.16, 0.15, 0.02)
+scene3d-modular.js?nocache=1000032:322   Pivot Point: (2.37, 1.15, 3.6)
+scene3d-modular.js?nocache=1000032:323   Distance to Pivot: 0.59
+scene3d-modular.js?nocache=1000032:325   FOV: 75
+scene3d-modular.js?nocache=1000032:326   Near/Far: 0.1/1000
+scene3d-modular.js?nocache=1000032:330 
+📋 CVTScript v3 (copia e incolla):
+camera = position (2.46, 1.24, 4.18), target (2.37, 1.15, 3.6), pivot (2.37, 1.15, 3.6), zoom 0.59, fov 75, rotation (-0.16, 0.15, 0.02), fade 1.0
+ui.js?nocache=1000041:5038 📷 [UI] Posizione camera memorizzata per step: Step 4 - Premi il pulsante start
+ui.js?nocache=1000041:5039 📷 [UI] Camera state: Object
+ui.js?nocache=1000041:6271 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: pointerup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: mouseup
+scene3d-modular.js?nocache=1000032:2042 [Scene3D] 🎯 PIVOT CLICK: punto esatto (-0.625, 0.000, 1.972) su mesh "Plane001"
+scene3d-modular.js?nocache=1000032:2079 🎯 Animazione pivot: da (2.37, 1.15, 3.60) a (-0.62, 0.00, 1.97)
+scene3d-modular.js?nocache=1000032:4507 🎯 Animazione pivot completata
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:376 [Scene3D] 📹 setCameraFromInfo: Object
+scene3d-modular.js?nocache=1000032:432 [Scene3D] 🎬 Animazione camera avviata (sistema nativo, durata: 0.8s)
+ui.js?nocache=1000041:6319 📷 [UI] Camera ripristinata alla posizione iniziale dello step
+scene3d-modular.js?nocache=1000032:4471 📹 CAMERA: Animazione completata
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: pointerup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: mouseup
+scene3d-modular.js?nocache=1000032:2042 [Scene3D] 🎯 PIVOT CLICK: punto esatto (0.893, 0.092, 1.722) su mesh "A500"
+scene3d-modular.js?nocache=1000032:2079 🎯 Animazione pivot: da (2.37, 1.15, 3.60) a (0.89, 0.09, 1.72)
+scene3d-modular.js?nocache=1000032:4507 🎯 Animazione pivot completata
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:376 [Scene3D] 📹 setCameraFromInfo: Object
+scene3d-modular.js?nocache=1000032:432 [Scene3D] 🎬 Animazione camera avviata (sistema nativo, durata: 0.8s)
+ui.js?nocache=1000041:6319 📷 [UI] Camera ripristinata alla posizione iniziale dello step
+scene3d-modular.js?nocache=1000032:4471 📹 CAMERA: Animazione completata
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: pointerup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: mouseup
+scene3d-modular.js?nocache=1000032:2042 [Scene3D] 🎯 PIVOT CLICK: punto esatto (0.936, 0.784, 3.650) su mesh "07L0676941A_001002_1"
+scene3d-modular.js?nocache=1000032:2079 🎯 Animazione pivot: da (2.37, 1.15, 3.60) a (0.94, 0.78, 3.65)
+scene3d-modular.js?nocache=1000032:4507 🎯 Animazione pivot completata
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
+scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
+scene3d-modular.js?nocache=1000032:1018 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:1044 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:959 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:1706 [Scene3D] 🌟 Modello evidenziato attivo: pulsante_r_play, cerco priorità...
+scene3d-modular.js?nocache=1000032:1739 [Scene3D] Click su modello - ToolsManager: mano, Body class aria: false, Body class spray: false
+scene3d-modular.js?nocache=1000032:1756 [Scene3D] 🎯 Click rilevato su modello: a500
+scene3d-modular.js?nocache=1000032:1763 [Scene3D] 📺 Uso sistema tutorial legacy per: a500
+scene3d-modular.js?nocache=1000032:2115 [DEBUG] 🎬 handleModelAction chiamato per: a500
+scene3d-modular.js?nocache=1000032:2118 [DEBUG] 📋 Current step: Step 4 - Premi il pulsante start
+scene3d-modular.js?nocache=1000032:2128 [DEBUG] 🎯 Model filename: "a500", Step element: "models/remote.glb", TargetChild: "pulsante_r_play"
+scene3d-modular.js?nocache=1000032:2138 [DEBUG] 🎯 Clean model: "a500", Clean step: "remote"
+scene3d-modular.js?nocache=1000032:2141 [DEBUG] ❌ Model/element mismatch - USCITA EARLY
+scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ui.js?nocache=1000041:2136 📱 Finestra ridimensionata, controllo mobile...
+ui.js?nocache=1000041:2136 📱 Finestra ridimensionata, controllo mobile...

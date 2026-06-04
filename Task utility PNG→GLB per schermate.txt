@@ -1,0 +1,92 @@
+# Task: utility PNG→GLB per schermate software (Campus Virtual Training)
+
+## Step 0 — Leggi prima di scrivere
+Ispeziona il repo e leggi i file dell'engine 3D esistente, in particolare
+SnapSystem e DragDropSystem (cercali per nome se non sono ovvi). Adatta tutto
+il nuovo codice a naming, struttura e convenzioni già presenti.
+Prima di procedere, riassumi in 2 righe come sono organizzati gli snap point.
+
+## Obiettivo
+Trasformare una schermata 2D (PNG, es. screen-grab del software macchina) in un
+elemento 3D posizionabile e scalabile, che si agganci automaticamente sopra il
+monitor di un modello già presente in scena.
+NON è ricostruzione geometrica: lo schermo è piatto → un quad con la PNG come texture.
+
+## Funzionalità core
+1. Funzione pngToGlb(file|url):
+   - carica la PNG, legge larghezza/altezza reali
+   - PlaneGeometry(1, 1/aspect) per non distorcere l'immagine
+   - MeshBasicMaterial con map=texture, toneMapped:false,
+     texture.colorSpace = SRGBColorSpace → lo schermo appare "acceso",
+     non scurito dalle luci di scena
+   - salva mesh.userData.aspect
+   - esporta GLB binario con GLTFExporter, ritorna Blob model/gltf-binary
+     (+ opzione download)
+
+## Integrazione snap (riusa il SnapSystem esistente, non reinventarlo)
+2. Il modello macchina espone il monitor come snap point dedicato:
+   { name, type:"screen", width, height }  (dimensioni in metri).
+   Aggiungi il supporto a questo type se manca.
+3. Quando l'elemento schermata viene agganciato a uno snap "screen":
+   - allinea posizione + rotazione al frame dello schermo
+   - offset +0.001 lungo la normale del frame (anti z-fighting)
+   - fit "contain": confronta aspect PNG vs aspect frame e scala mantenendo
+     le proporzioni (un lato riempie, l'altro lascia margine)
+
+## Modulo opzionale (dietro un flag, default OFF)
+4. Deskew 4-punti: se la PNG è una FOTO di un monitor ripresa di sbieco,
+   l'utente clicca i 4 angoli → correzione prospettica (omografia) → ritaglio
+   raddrizzato → passa il risultato a pngToGlb. Per screen-grab puliti, salta.
+
+## UI minima
+Drop/selezione PNG → preview del piano in viewport → "Aggancia allo schermo"
+(usa lo snap esistente) → "Esporta GLB".
+
+## Criteri di accettazione
+- PNG 16:9 e 4:3 entrambe non distorte
+- agganciata al monitor: nessun z-fighting
+- schermata sempre luminosa, indipendente dalle luci di scena
+- il GLB esportato si ricarica correttamente in scena
+
+
+# Addendum: pulsanti virtuali sulle schermate (Campus VT)
+
+## Concetto
+Pulsante virtuale = BoxGeometry trasparente sovrapposto a un elemento UI della
+screenshot, raycast-pickable, con piccola profondità per l'animazione di
+pressione. NON è geometria baked nel GLB: è dato nel manifest, generato a runtime.
+
+## Definizione (nel manifest dello screen)
+Ogni screen porta una lista di pulsanti in coordinate normalizzate (0..1)
+relative al quad della screenshot:
+  buttons: [ { id, rect: [u, v, w, h], label, depth: 0.004 } ]
+rect è in spazio schermo 2D → i pulsanti restano incollati alla screenshot
+qualunque sia posizione/scala dello schermo in scena.
+
+## Generazione 3D (riusa il fit dello screen già implementato)
+Per ogni button: crea un Box alla regione [u,v,w,h] sul piano dello schermo,
+orientato come il frame, offset +0.002 lungo la normale (lo screen content è a
++0.001 → niente z-fighting). Materiale: transparent:true, opacity:0 a runtime
+(resta raycastabile), opacity ~0.15 + bordo in modalità editor.
+
+## Interazione
+Raycast pointer (riusa il raycaster del DragDropSystem). Su hit:
+- hover: leggero highlight
+- press: anima la box di -0.003 lungo la normale e ritorno + flash emissive
+- emette evento { buttonId }
+
+## Gating tutorial
+Uno step può richiedere la pressione di un pulsante specifico: solo quello è
+attivo/evidenziato, gli altri inerti. Pressione corretta → step completato →
+avanza. Prevedi anche una modalità "libera" (tutti attivi) come fallback.
+
+## Authoring (tecnici non-3D)
+Modalità editor 2D: mostra la screenshot piatta, l'utente trascina rettangoli
+sopra gli elementi UI → ogni rettangolo diventa un button (rect in 0..1).
+Nessuna manipolazione 3D.
+
+## Criteri di accettazione
+- pulsante invisibile a runtime ma cliccabile
+- resta allineato all'elemento UI anche ruotando/scalando lo schermo
+- nessun z-fighting tra screenshot e pulsanti
+- in editor i rettangoli disegnati in 2D corrispondono ai box in 3D

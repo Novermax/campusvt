@@ -200,14 +200,32 @@ window.HoldableSystem = {
             return true;
         }
 
-        // Trova il modello nella scena
-        const model = window.Scene3D ? window.Scene3D.findModelByName(cleanName) : null;
+        // Trova il modello nella scena.
+        // IMPORTANTE: preferisci il root in Scene3D.loadedModels (il Group esterno
+        // aggiunto alla scena) invece del risultato di findModelByName, perché alcuni
+        // GLB hanno un doppio Group annidato con lo STESSO nome (es. remote.glb:
+        // outer "remote" → inner "remote" → meshes). findModelByName fa un traverse
+        // e ritorna l'ULTIMO match (l'inner), quindi animeremmo solo il sotto-Group
+        // lasciando l'outer fermo: visivamente sembra un "telecomando duplicato"
+        // rimasto nella posizione di partenza (vedi log: "Gerarchia oggetti in remote"
+        // con due Group "remote(G)" annidati).
+        let model = null;
+        if (window.Scene3D && Array.isArray(window.Scene3D.loadedModels)) {
+            model = window.Scene3D.loadedModels.find(m => {
+                const fname = (m.userData && m.userData.originalFilename) || m.name || '';
+                const fclean = fname.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
+                return fclean === cleanName;
+            }) || null;
+        }
+        if (!model && window.Scene3D && typeof window.Scene3D.findModelByName === 'function') {
+            model = window.Scene3D.findModelByName(cleanName);
+        }
         if (!model) {
             console.error(`[HoldableSystem] ❌ Modello "${cleanName}" non trovato in scena`);
             return false;
         }
 
-        console.log(`[HoldableSystem] ✅ Modello trovato:`, model.name);
+        console.log(`[HoldableSystem] ✅ Modello trovato:`, model.name, '(root in loadedModels:', window.Scene3D?.loadedModels?.includes(model), ')');
 
         const config = this.holdableConfigs.get(cleanName);
 
@@ -254,8 +272,20 @@ window.HoldableSystem = {
             return false;
         }
 
-        // Trova il modello
-        const model = window.Scene3D ? window.Scene3D.findModelByName(cleanName) : null;
+        // Trova il modello (stesso ordine di pickObject: prima loadedModels poi findModelByName,
+        // per coerenza con il root usato in pick — vedi nota in pickObject sui GLB con
+        // doppio Group annidato).
+        let model = null;
+        if (window.Scene3D && Array.isArray(window.Scene3D.loadedModels)) {
+            model = window.Scene3D.loadedModels.find(m => {
+                const fname = (m.userData && m.userData.originalFilename) || m.name || '';
+                const fclean = fname.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
+                return fclean === cleanName;
+            }) || null;
+        }
+        if (!model && window.Scene3D && typeof window.Scene3D.findModelByName === 'function') {
+            model = window.Scene3D.findModelByName(cleanName);
+        }
         if (!model) {
             console.error(`[HoldableSystem] ❌ Modello "${cleanName}" non trovato`);
             return false;

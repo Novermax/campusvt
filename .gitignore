@@ -44,3 +44,6 @@ logs/
 editor/
 neweditor/
 admin.html
+
+# CVTScript vscode addon
+tools/

@@ -208,17 +208,33 @@ window.App = {
                 console.warn('⚠️ InterchangeableTracker non caricato (opzionale):', error.message);
             }
 
+            // Carica ScreenSnapRegistry prima di SnapSystem (target schermate)
+            try {
+                await this.loadModule('./js/core/ScreenSnapRegistry.js?v=1');
+                console.log('✅ ScreenSnap registry caricato');
+            } catch (error) {
+                console.warn('⚠️ ScreenSnapRegistry non caricato (opzionale):', error.message);
+            }
+
             // Carica SnapSystem prima di DragDropSystem (richiesto per logica snap)
             try {
-                await this.loadModule('./js/core/SnapSystem.js?v=1000001');
+                await this.loadModule('./js/core/SnapSystem.js?v=1000002');
                 console.log('✅ Sistema snap caricato');
             } catch (error) {
                 console.warn('⚠️ SnapSystem non caricato (opzionale):', error.message);
             }
 
+            // Carica PngToGlbUtility (utility editor — usato dal pannello Schermate)
+            try {
+                await this.loadModule('./js/core/PngToGlbUtility.js?v=1');
+                console.log('✅ PNG→GLB utility caricata');
+            } catch (error) {
+                console.warn('⚠️ PngToGlbUtility non caricato (opzionale):', error.message);
+            }
+
             // Carica DragDropSystem opzionale (può fallire senza rompere l'app)
             try {
-                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000031');
+                await this.loadModule('./js/core/DragDropSystem.js?nocache=1000032');
                 console.log('✅ Sistema drag & drop caricato');
 
                 // Carica debug helpers per DragDropSystem

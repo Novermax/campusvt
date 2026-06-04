@@ -109,6 +109,34 @@ window.SnapSystem = {
         }
 
         if (customTarget) {
+            // ═══════════════════════════════════════════════════════════════
+            // SCREEN SNAP: target è un ScreenSnap (frame monitor)
+            // ═══════════════════════════════════════════════════════════════
+            if (customTarget.isScreenSnap && customTarget.screenSnapId && window.ScreenSnapRegistry) {
+                const snap = window.ScreenSnapRegistry.get(customTarget.screenSnapId);
+                if (!snap) {
+                    console.warn(`[SnapSystem] ⚠️ ScreenSnap "${customTarget.screenSnapId}" non registrato`);
+                    return null;
+                }
+                // Offset +0.001 lungo la normale (anti z-fighting con il frame del monitor)
+                const ZFIGHT_OFFSET = 0.001;
+                const targetPos = snap.position.clone().add(
+                    snap.normal.clone().multiplyScalar(ZFIGHT_OFFSET)
+                );
+                const distance = currentCenter.distanceTo(targetPos);
+                if (distance <= this.snapDistance) {
+                    console.log(`[SnapSystem] 📺 ScreenSnap "${customTarget.screenSnapId}" disponibile per "${object.name}" (distanza: ${distance.toFixed(3)})`);
+                    // Annota i parametri necessari a performSnap
+                    targetPos.isScreenSnap = true;
+                    targetPos.screenSnap = snap;
+                    targetPos.objectAspect = (object.userData && object.userData.aspect) || 1;
+                    return targetPos;
+                } else {
+                    console.log(`[SnapSystem] ⚠️ ScreenSnap "${customTarget.screenSnapId}" fuori distanza (${distance.toFixed(3)} > ${this.snapDistance.toFixed(3)})`);
+                    return null;
+                }
+            }
+
             // NUOVO: Multi-target intercambiabili
             if (customTarget.isMultiTarget && customTarget.targets) {
                 console.log(`[SnapSystem] 🔄 Verifica ${customTarget.targets.length} snap targets intercambiabili per "${object.name}"`);
@@ -405,9 +433,17 @@ window.SnapSystem = {
     performSnap: function(object, targetPosition, snapContext = null) {
         if (!this.enabled) return;
 
+        // ═══════════════════════════════════════════════════════════════════
+        // SCREEN SNAP: allinea posizione+rotazione al frame, fit "contain"
+        // ═══════════════════════════════════════════════════════════════════
+        if (targetPosition.isScreenSnap && targetPosition.screenSnap) {
+            this._performScreenSnap(object, targetPosition, snapContext);
+            return;
+        }
+
         // NUOVO: Controlla se è modalità pivot (salvato su targetPosition da findSnapTarget)
         const usePivotMode = targetPosition.usePivot || false;
-        
+
         console.log(`[SnapSystem] 🎯 Esecuzione snap per ${object.name} [usePivot=${usePivotMode}]`);
 
         const shouldResetDragState = snapContext !== null;
@@ -499,6 +535,75 @@ window.SnapSystem = {
         } else {
             // Fallback senza TWEEN: snap immediato
             object.position.copy(correctedTargetPosition);
+            onCompleteCallback();
+        }
+    },
+
+    /**
+     * Snap su frame schermo (ScreenSnap): allinea posizione + rotazione,
+     * applica fit "contain" basato sull'aspect del PNG, offset anti z-fight.
+     *
+     * @param {THREE.Object3D} object - mesh PngScreen (userData.aspect richiesto)
+     * @param {THREE.Vector3}  targetPosition - posizione già offsettata lungo la normale
+     *                          (porta gli annotation: screenSnap, objectAspect)
+     * @param {Object} snapContext - opzionale
+     */
+    _performScreenSnap: function (object, targetPosition, snapContext) {
+        const snap   = targetPosition.screenSnap;
+        const aspect = targetPosition.objectAspect || 1;
+
+        console.log(`[SnapSystem] 📺 Screen snap → "${snap.id}" (frame ${snap.width.toFixed(3)}×${snap.height.toFixed(3)} m, aspect PNG=${aspect.toFixed(3)})`);
+
+        // 1) Allineamento rotazione al frame
+        if (snap.rotation) {
+            object.rotation.copy(snap.rotation);
+        }
+
+        // 2) Fit "contain": scale uniforme massimo che mantiene il quad dentro il frame
+        const scale = window.ScreenSnapRegistry
+            ? window.ScreenSnapRegistry.computeContainScale(snap, aspect)
+            : Math.min(snap.width, snap.height * aspect);
+        const startScale = object.scale.clone();
+        const targetScale = new THREE.Vector3(scale, scale, scale);
+        console.log(`[SnapSystem] 📐 Contain fit scale=${scale.toFixed(4)} (W=${snap.width.toFixed(3)}, H=${snap.height.toFixed(3)})`);
+
+        // 3) Animazione posizione + scala
+        const startPosition = object.position.clone();
+        const finalPosition = targetPosition.clone();
+
+        const onCompleteCallback = () => {
+            console.log(`[SnapSystem] ✅ Screen snap completato per "${object.name}"`);
+            // Tracking: occupa il posto del ScreenSnap (un solo schermo per frame)
+            if (this.dragDropSystem) {
+                const snapKey = `screensnap:${snap.id}`;
+                this.dragDropSystem.occupySnapPosition(snapKey, object);
+            }
+            if (snapContext && snapContext.onComplete) {
+                snapContext.onComplete(object, targetPosition, snapContext);
+            }
+        };
+
+        if (window.TWEEN) {
+            const state = {
+                px: startPosition.x, py: startPosition.y, pz: startPosition.z,
+                sx: startScale.x,    sy: startScale.y,    sz: startScale.z
+            };
+            const target = {
+                px: finalPosition.x, py: finalPosition.y, pz: finalPosition.z,
+                sx: targetScale.x,   sy: targetScale.y,   sz: targetScale.z
+            };
+            const tween = new TWEEN.Tween(state)
+                .to(target, this.snapAnimationDuration * 1000)
+                .easing(TWEEN.Easing.Back.Out)
+                .onUpdate((s) => {
+                    object.position.set(s.px, s.py, s.pz);
+                    object.scale.set(s.sx, s.sy, s.sz);
+                })
+                .onComplete(onCompleteCallback);
+            tween.start();
+        } else {
+            object.position.copy(finalPosition);
+            object.scale.copy(targetScale);
             onCompleteCallback();
         }
     },

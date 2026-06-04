@@ -82,7 +82,8 @@
             hotspots: new Map(),
             actions: new Map(),
             interactiveObjects: new Map(),  // InteractiveObject3D
-            stateGroups: new Map()          // StateGroup per varianti mutuamente esclusive
+            stateGroups: new Map(),         // StateGroup per varianti mutuamente esclusive
+            screenSnaps: new Map()          // [ScreenSnap:id] — frame monitor per PngScreen
         };
 
         for (let line of lines) {
@@ -168,6 +169,18 @@
                     const objectId = sectionName.substring(18).trim(); // Rimuovi "InteractiveObject:"
                     currentScreenSection = { type: 'interactiveObject', id: objectId, properties: {} };
                     console.log(`🎮 [PARSER] Sezione InteractiveObject rilevata: "${objectId}"`);
+                    continue;
+                }
+
+                // [ScreenSnap:id] - Definizione snap point per agganciare quad-schermate ai monitor
+                if (sectionName.startsWith('ScreenSnap:')) {
+                    if (currentScreenSection) {
+                        this.saveScreenSection(currentScreenSection, screenDefinitions);
+                    }
+
+                    const snapId = sectionName.substring(11).trim(); // Rimuovi "ScreenSnap:"
+                    currentScreenSection = { type: 'screenSnap', id: snapId, properties: {} };
+                    console.log(`📺 [PARSER] Sezione ScreenSnap rilevata: "${snapId}"`);
                     continue;
                 }
 
@@ -465,6 +478,9 @@
             case 'stateGroup':
                 definitions.stateGroups.set(section.id, section.properties);
                 break;
+            case 'screenSnap':
+                definitions.screenSnaps.set(section.id, section.properties);
+                break;
         }
     };
 
@@ -541,6 +557,17 @@
                 window.InteractiveObject3D.registerStateGroupFromTutorial(id, props);
             });
             console.log(`🔀 [UI] StateGroups: Registrati ${definitions.stateGroups.size} gruppi di varianti`);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // SCREEN SNAPS: Registra snap point per agganciare quad-schermate ai monitor
+        // ═══════════════════════════════════════════════════════════════
+        if (window.ScreenSnapRegistry && definitions.screenSnaps.size > 0) {
+            window.ScreenSnapRegistry.clear();
+            definitions.screenSnaps.forEach((props, id) => {
+                window.ScreenSnapRegistry.register(id, props);
+            });
+            console.log(`📺 [UI] ScreenSnaps: Registrati ${definitions.screenSnaps.size} snap point monitor`);
         }
     };
 

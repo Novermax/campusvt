@@ -1,0 +1,1339 @@
+                MANUALE DI MANUTENZIONE
+
+                                                     ISTRUZIONI ORIGINALI
+    Questo manuale è da conservare per futuri riferimenti e dovrà sempre seguire la macchina
+
+                                                      TIPO
+
+                                 FRE001
+
+                                                  MODELLO
+
+                         ACCORD 500
+
+                                            FORA-FRESATRICE A CN
+
+FORA-FRESATRICE A CONTROLLO NUMERICO PER LA LAVORAZIONE DEL
+        LEGNO E DI MATERIE CON CARATTERISTICHE FISICHE SIMILI
+
+AA10003887  Ed. 05-2021 / Rev. 00 ce                                                                               IT
+
+            IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+COSTRUTTORE:            SCM GROUP S.p.A.
+
+INDIRIZZO:              Via Emilia, 77 - I - 47921 Rimini (RN) - ITALY
+
+SEDE LEGALE
+
+IMPORTATORE:
+
+INDIRIZZO IMPORTATORE:
+
+DESIGNAZIONE:           FORA-FRESATRICE A CN
+
+DENOMINAZIONE:          FORA-FRESATRICE A CONTROLLO NUMERICO PER LA
+                        LAVORAZIONE DEL LEGNO E DI MATERIE CON
+                        CARATTERISTICHE FISICHE SIMILI
+
+MARCA:                  SCM
+
+ANNO DI COSTRUZIONE:
+
+MATRICOLA:              AA10003887
+CLIENTE:
+
+TIPO:                   FRE001
+
+MODELLO:                ACCORD 500
+
+COMPOSIZIONE:
+
+COMMESSA:
+
+TIPO CNC:
+
+TIPO DI DOCUMENTO:      MANUALE DI MANUTENZIONE
+
+CODICE DEL DOCUMENTO:
+
+EDIZIONE:               Ed. 05-2021 / Rev. 00 ce
+
+CONFORMITA:
+
+            IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+                        INDICE
+
+20      Manutenzione 1
+
+        20.1      Raccomandazioni ..................................................................................... 2
+
+        20.2      Pulizia ........................................................................................................ 4
+
+        .         Gruppo di trattamento aria ...................................................................... 5
+
+        .         Pulizia filtri apparecchiatura elettrica.....................................................6
+
+        .         Condizionatore per armadi elettrici (Opzionale) ................................... 7
+
+        .         MANUTENZIONE POMPA VUOTO (BECKER) ........................................ 8
+
+        .         Prefiltro aspirazione pompa vuoto (se presente) .................................. 9
+
+        .         Filtro pompa del vuoto.............................................................................9
+
+        .         Procedura sostituzione batteria encoder assoluti Yaskawa..............10
+
+        20.3.2    SCAMBIATORE DI CALORE (se presente) .......................................... 11
+
+        .         LUBRIFICAZIONE POMPA VUOTO BECKER ....................................... 13
+
+        .         Manutenzione elettromandrini e coni HSK63 ...................................... 14
+
+        .         Manutenzione coni HSK63 .................................................................... 17
+        20.4.2    Punti di lubrificazione manuale ............................................................ 18
+
+PLB21c  Piano di lavoro tipo "MATIC" - Rel. 1.0 ............................................................................ 1
+
+        PLB21c.9  Manutenzione ........................................................................................... 2
+
+TGL1    Unità di foratura F7 - F12 - F12L - F16 - F18L - F26L - Rel. 1.4 ...................................... 1
+
+        TGL1.4    Manutenzione e lubrificazione ................................................................ 2
+
+EM04d   Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0 ......................................................... 1
+
+        EM04d.6   Manutenzione e lubrificazione ................................................................ 2
+
+        .         Manutenzione elettromandrini e coni HSK63 ........................................ 3
+
+        .         Lubrificazione trascinatore cuffia/paletta .............................................. 7
+
+           IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                     20 - Manutenzione
+
+  IT                                            INDICE
+
+                 20.1    Raccomandazioni .......................................................................................................... 2
+                 20.2    Pulizia .............................................................................................................................. 4
+                 .       Gruppo di trattamento aria ............................................................................................ 5
+                 .       Pulizia filtri apparecchiatura elettrica ............................................................................ 6
+                 .       Condizionatore per armadi elettrici (Opzionale)..........................................................7
+                 .       MANUTENZIONE POMPA VUOTO (BECKER) ....................................................... 8
+                 .       Prefiltro aspirazione pompa vuoto (se presente) ........................................................ 9
+                 .       Filtro pompa del vuoto ................................................................................................... 9
+                 .       Procedura sostituzione batteria encoder assoluti Yaskawa....................................10
+                 20.3.2  SCAMBIATORE DI CALORE (se presente) ............................................................11
+                 .       LUBRIFICAZIONE POMPA VUOTO BECKER ......................................................13
+                 .       Manutenzione elettromandrini e coni HSK63 ...........................................................14
+                 .       Manutenzione coni HSK63.........................................................................................17
+                 20.4.2  Punti di lubrificazione manuale...................................................................................18
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. 20  - Pag. 1/18
+                    20 - Manutenzione                                                                                                                                                                                                                                                                                                                                                                                                                                                       ACCORD 500
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       IT
+
+                              20.1                      Raccomandazioni
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               (M200-06-2019_M-ACT-00_20.1)
+
+06L0528355E - 06L0528354C - 06L0528394G - 06L0528433A - 06L0528359D - 06L0528398F - 06L0528401C - 06L0528342G - 06L0528420C - 06L0528424B - 06L0528363B - 06L0528412F - 06L0528417G - 06L0528415C - 06L0528329A - 06L0528350D - 06L0528391A - 06L0528392C - 06L0528356G - 06L0528389G - 06L0528390H - 06L0528328H - 06L0528327F - 06L0528316C - 06L0528413H - 06L0528432H - 06L0528428A - 06L0528347H - 06L0528404L - 06L0528408H - 06L0528409A
+
+                             NOTA: PRESTARE ATTENZIONE AI MESSAGGI A VIDEO
+
+                    Obbligo  Si raccomanda di far eseguire l'intervento dal personale del service autorizzato dal Fabbricante.
+
+                             Non eseguire nessuna riparazione e/o intervento non contemplato nel presente manuale.
+
+                             Solo il personale ben addestrato e munito di autorizzazione può usare la macchina ed eseguire
+                             operazioni di manutenzione.
+                             Tutte le operazioni che richiedono smontaggio di parti vanno affidate a personale tecnico
+                             autorizzato dal costruttore
+                             Dovendo sostituire parti della macchina utilizzare esclusivamente ricambi originali
+                             Osservare le norme antinfortunistiche, le regole di sicurezza ed igiene sul lavoro durante le fasi
+                             manutentive
+                             Il costruttore non si assume nessuna responsabilità per danni derivanti dall'impiego di ricambi non
+                             originali.
+
+Attenz_1 / SMB005a           ATTENZIONE: durante le operazioni di manutenzione, controllo, pulizia, lubrificazione assicurarsi
+
+                             che la macchina sia isolata elettricamente e pneumaticamente, cioè in condizioni di non essere
+
+                             avviata accidentalmente:
+
+                             ISOLAMENTO DELLA MACCHINA DALLE FONTI DI ENERGIA
+                             - per isolare la macchina elettricamente occorre ruotare l'interruttore generale (SZ01) in posizione
+                             "0" e lucchettarlo;
+                             - per isolare la macchina pneumaticamente occorre ruotare la manopola (SZ02) e bloccarla con
+                             lucchetto.
+
+                    Obbligo  Segnalare con un cartello l'intervento in corso dopo aver spento l'interruttore generale della
+
+                             corrente.
+
+                             ATTENZIONE: Quando la macchina viene isolata pneumaticamente l'aria nell'impianto non viene
+                             completamente scaricata: eventuali operazioni di controllo o manutenzione devono essere
+                             eseguite da personale specializzato poichè lo scollegamento di tubi potrebbe provocare movimenti
+                             inattesi a organi della macchina.
+                             Tutti i cilindri pneumatici dei dispositivi ON-OFF in direzione "Z" rimangono in pressione.
+
+                             NOTA SOLO PER TECNICI SPECIALIZZATI: dopo lo scarico dell'aria dall'impianto, le camere di
+                             alcuni cilindri rimangono in pressione tramite le valvole di blocco V
+                             In caso di manutenzione (sostituzione del cilindro o necessità di abbassare il gruppo operatore)
+                             per scaricare l'aria nel cilindro occorre:
+                             - estrarre il tubo dell'aria V1
+                             - con una pistola ad aria compressa pilotare la valvola dal raccordo V2 per scaricare l'aria dal
+                             cilindro
+                             - questa operazione consente la discesa del gruppo operatore
+                             ATTENZIONE: NON SMONTARE LA VALVOLA PRIMA DI AVER EFFETTUATO QUESTA
+                             OPERAZIONE !
+
+                               SZ01                     SZ02             SZ02
+
+                                     I ON                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    V1
+
+                    $-UM534b                                                                                                                                                                                                                                                                                                                                                                                                                                                                OFF
+                             O OFF
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 CMD_SZ02g                                 V2
+
+                                            O                                        ON                                                                                                                                                                                                                                                                                                                                                                                                     V
+                                           OFF
+                                                        CMD_SZ02e1       CMD_SZ02g1                                                                                                                                                                                                                                                                                                                                                                                                            CPN-143
+
+                    Chap. 20               - Pag. 2/18              IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                                         20 - Manutenzione
+
+  IT
+
+Obbligo  AVVERTENZE:
+
+         Le chiavi dei lucchetti per l'interruttore generale dell'alimentazione dell'energia elettrica e per le
+
+         valvole di scarico rapido dell'aria compressa sui gruppi filtro, e l'utensile per l'apertura degli
+
+         sportelli dell'apparecchiatura elettrica, devono essere date in dotazione a personale autorizzato.
+
+         Tutte le operazioni devono essere eseguite dall'operatore addetto alla manutenzione o da
+
+         personale tecnico e qualificato
+
+           PREMESSA: Il rispetto dei tempi e delle operazioni di manutenzione sono la condizione essenziale
+           per un corretto funzionamento della macchina nel tempo. Il buon funzionamento riguarda sia la
+           parte produttiva della macchina, sia la parte connessa alla sicurezza.
+           Gli intervalli fra gli interventi sono indicativi e possono variare a seconda dell'ambiente in cui e'
+           installata la macchina e del tipo di materiale che si lavora
+           NOTA: Gli intervalli consigliati per le operazioni di manutenzione sono stati calcolati con un utilizzo
+           della macchina di c.a. 8 ore al giorno. Se la macchina viene utilizzata più intensamente (ad esempio
+           più turni di lavoro al giorno) occorre aumentare la frequenza delle operazioni di manutenzione.
+
+           AVVERTENZE: quando si eseguono lavorazioni su "medio density" o materiali che creano polveri o
+           trucioli particolarmente fini occorre abbreviare gli intervalli di manutenzione e lubrificazione.
+
+Per iniettare il grasso utilizzare l' apposita pompa P in dotazione ; tenere presente che ogni pompata completa
+corrisponde a ca 0.7cm³ di grasso.
+
+         NOTA: Le pompe per il grasso sono fornite vuote, di seguito i codici delle cartucce dei grassi
+         utilizzati sulla macchina (vedi anche cap. "tabella grassi e oli").
+
+               - KLÜBER "ISOFLEX NBU 15" - cartuccia da 400g : cod. 00L0297948B
+               - AGIP "GR MU EP 0" - cartuccia da 300g : cod. 00L0289525D
+
+                                                                                                       P  ACS-28a
+
+         Data scadenza batteria Controllo Numerico: tenere presente che il controllo numerico è dotato di
+         una batteria tampone la cui durata media è superiore a 5 anni. Si consiglia comunque di
+         provvedere alla sua sostituzione allo scadere del 5° anno di utilizzo della macchina.
+
+         In via generale, la prima avvisaglia del decadimento della batteria è la perdita ripetuta dei dati
+         tamponati, uno fra tutti il "numero di utensile inserito nell'elettromandrino". E' bene non attendere
+         questo evento ed agire in maniera preventiva, pena la perdita inaspettata di tutti i dati del Controllo
+         Numerico.
+
+         Per maggiori delucidazioni in merito consulatare il Servizio Assistenza.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA              Chap. 20  - Pag. 3/18
+                    20 - Manutenzione                                                           ACCORD 500
+
+                                                                                                           IT
+
+                              20.2         Pulizia
+
+                                                                                                (M200-06-2019_M-ACT-00_20.2)
+
+Attenz_1 / SMB005a  ATTENZIONE: se non diversamente indicato, durante le operazioni di regolazione, manutenzione,
+
+                    controllo, pulizia e lubrificazione, assicurarsi che la macchina sia isolata elettricamente e
+
+                    pneumaticamente, cioè in condizioni di non essere avviata accidentalmente.
+
+                    Vedi cap. Raccomandazioni --> ISOLAMENTO DELLA MACCHINA DALLE FONTI DI ENERGIA.
+
+Ogni giorno, al termine del lavoro, pulire con cura il piano di lavoro e le zone circostanti, utilizzando un aspiratore.
+
+Per una corretta pulizia della macchina seguire le indicazioni di seguito riportate:
+
+                    - Aspirare i trucioli (non soffiare con aria compressa: lo sporco potrebbe infilarsi in punti delicati
+                    compromettendo l'efficenza della macchina).
+                    - Tenere sempre pulite le guide, le viti e le cremagliere di spostamento assi.
+                    - Tenere sempre puliti i piani di lavoro ed i dispositivi di bloccaggio pezzi.
+                    - Tenere pulita la zona di lavoro intorno alla macchina.
+
+Gruppo operatore: una corretta aspirazione favorisce il buon funzionamento del gruppo ed evita guasti dovuti al
+surriscaldamento. Settimanalmente controllare la perfetta efficienza di tutto il sistema di aspirazione.
+
+                    Chap. 20  - Pag. 4/18           IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                             20 - Manutenzione
+
+  IT
+
+.                          Gruppo di trattamento aria
+
+                                                                                                                 (M100_092018_00_20.3a)
+
+Verifica pressione
+
+Frequenza intervento                              Tempo di utilizzo                                    Tempo di calendario
+                                                             -                                                 1 giorno
+
+Controllare periodicamente (ogni giorno) che la pressione indicata dal manometro (D) si mantenga sul valore
+ottimale: 6,5 bar.
+Le correzioni necessarie si effettuano mediante la manopola (G).
+
+NOTA: per accedere al gruppo di trattamento aria occorre smontare il carter (A3)
+
+06L0528328H
+
+Verifica livello condensa
+
+Frequenza intervento                              Tempo di utilizzo                                    Tempo di calendario
+                                                             -                                                  1 mese
+
+Verificare il livello dell'acqua (condensa) nella campana A: non deve superare l'indice stampigliato.
+Se il livello dell'acqua supera l'indice stampigliato occorre verificare immediatamente il funzionamento del
+galleggiante interno che attiva lo scarico automatico:
+
+     - scaricare la pressione con il sezionatore pneumatico (SZ02)
+     - smontare la campana (A);
+     - con un cacciavite sbloccare il galleggiante spingendolo verso il basso (con questa operazione si apre la
+
+      valvola di spurgo)
+     - eseguire una prova di riempimento della campana con acqua per verificare se il galleggiante è funzionante:
+
+      se sì rimontare la campana, altrimenti provvedere alla sua sostituzione con una nuova.
+
+06L0528327F
+
+Sostituzione dell'elemento filtrante (cartuccia)
+
+Frequenza intervento                              Tempo di utilizzo                                    Tempo di calendario
+                                                             -                                                  12 mesi
+
+- portare i gruppi operatori in parcheggio
+- scaricare la pressione con il sezionatore pneumatico (SZ02)
+- smontare la campana A
+- per estrarre il gruppo filtrante E svitare solo la ghiera E1
+- eseguire la sostituzione o la pulizia tramite soffiaggio con aria compressa dall'interno del filtro F
+- rimontare il tutto
+
+Quando la macchina si ferma a causa di un calo di pressione nell'alimentazione dell'aria
+compressa, verificare prima di tutto l'impianto di erogazione. Se l'impianto fornisce sufficiente aria
+occorre cambiare il filtro F e tutti i silenziatori.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. 20  - Pag. 5/18
+ 20 - Manutenzione                         Pulizia filtri apparecchiatura elettrica                     ACCORD 500
+
+              .                                                          Tempo di utilizzo                      IT
+                                                                                     -
+06L0528355E                                                                                                                                   (A632_CEB1.0-20.3c_inp)
+
+Pulizia filtri                                                                              Tempo di calendario
+Frequenza intervento                                                                                 7 giorni
+
+Attenz_1 / SMB005a  ATTENZIONE: durante le operazioni di pulizia assicurarsi che l'apparecchiatura elettrica sia isolata
+
+                    elettricamente: ruotare l'interruttore generale in posizione zero e bloccarlo con lucchetto.
+
+Per la pulizia dei filtri occorre procedere come segue:
+
+- smontare il coperchio (A) facendo leva con un cacciavite nella fessura (B);
+- estrarre il filtro (C) e pulirlo con un soffio d'aria compressa.
+
+                    NOTA: nel caso il filtro fosse particolarmente sporco, occorre sostituirlo con uno di egual setaccio
+
+                    Chap. 20  - Pag. 6/18  IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                             20 - Manutenzione
+
+  IT                  Condizionatore per armadi elettrici (Opzionale)
+
+              .                                                                                                             (condiz.-A.E._1.0)
+
+06L0528342G           Tempo di utilizzo                                                                Tempo di calendario
+                                 -                                                                              3 mesi
+Pulizia
+Frequenza intervento
+
+Obbligo  ATTENZIONE: durante le operazioni di pulizia assicurarsi che l'apparecchiatura elettrica sia isolata
+
+         elettricamente: ruotare l'interruttore generale in posizione zero e bloccarlo con lucchetto .
+
+         NOTA: le indicazioni e le immagini che seguono potrebbero non corrispondere all'apparecchiatura
+         montata: controllare le istruzioni sul manuale del costruttore del condizionatore (a corredo della
+         macchina)
+         Aprendo la porta dell'armadio elettrico, il condizionatore smette di funzionare: in alcuni modelli di
+         condizionatore, la ventola di raffreddamento rimane in funzione per alcuni minuti.
+
+            .-                                                                                                   (condiz.-A.E._20.3e_1.0b)
+
+Pulizia del condensatore:                                                                                             B
+- smontare il coperchio esterno                                                                                        B1
+- scollegare il connettore del display (B) ed estrarre il cavo
+
+ dal morsetto guida-cavo (B1)
+- pulire le alette mediante aria compressa (max 4 bar) :
+
+ soffiare con aria compressa prestando attenzione a non
+ danneggiare o piegare le alette di alluminio.
+- nel rimontare il coperchio, prima collegare il connettore del
+ display (B) ed inserire il cavo nel morsetto guida-cavo
+ (B1)
+Controllare l'efficenza dello scarico condensa.
+
+                                                                                                                              Cavo_Condizionatore
+
+            .-
+
+                                                                                                                                                                                                                                                                                                                                                                 (condiz.-A.E._1.0c)
+
+Sulle macchine per la lavorazione di pezzi rivestiti in alluminio (sulle quali viene montata la catena portacavi
+dell'asse "X" chiusa), vengono montati anche filtri metallici sulla ventola del condizionatore.
+Sfilare il filtro dall'apposita fessura (A) .
+Periodicamente controllare lo stato del filtro e provvedere alla pulizia con detergenti sgrassanti avendo cura di
+asciugarlo prima del montaggio.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. 20  - Pag. 7/18
+ 20 - Manutenzione                                                                   ACCORD 500
+
+              .                                                                                 IT
+
+06L0528354C - 06L0528394G  MANUTENZIONE POMPA VUOTO (BECKER)
+
+Controllo palette                                                                    (=A632_CEB1.0-20.3d_inp_becker)
+Frequenza intervento
+                           Tempo di utilizzo  Tempo di calendario
+                                 3000 ore                   -
+
+Obbligo  Prima di iniziare qualsiasi manutenzione sulla pompa attendere almeno 5 minuti o verificare che
+
+         non vi siano parti calde che possono provocare ustioni e scollegare la corrente elettrica.
+
+Obbligo  Le relative istruzioni sono nella documentazione a corredo della macchina.
+
+         AVVERTENZE: LA MANCATA OSSERVANZA DELLE NORME DI MANUTENZIONE E
+         LUBRIFICAZIONE DELLA POMPA PROVOCA IL SURRISCALDAMENTO ED IL DANNEGGIAMENTO
+         DELLA STESSA.
+
+         (1)AVVERTENZE: La qualità dell'aria nell'ambiente di lavoro influisce sugli intervalli di
+         manutenzione: maggiore è la quantità di polveri presenti nell'aria, più frequenti dovranno essere le
+         procedure di manutenzione / lubrificazione.
+
+         (2)NOTA: Se i filtri fossero sporchi di olio o grasso bisogna assolutamente sostituirli
+
+         ATTENZIONE: L'eventuale presenza di trucioli in alluminio nel filtro della pompa vuoto non
+         rappresenta un problema.
+         Per l'impossibilità di eliminare completamente tutti i residui della lavorazione del piano, un
+         accumulo di trucioli nel filtro è da considerarsi normale nelle prime ore di lavoro della macchina.
+         Eseguire la pulizia del filtro come da normale prassi.
+
+Chap. 20  - Pag. 8/18      IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                                       20 - Manutenzione
+
+  IT
+
+                    .            Prefiltro aspirazione pompa vuoto (se presente)
+
+06L0528354C                      Tempo di utilizzo                                                                                                               (=A632_CEB1.0-20.3b_inp)
+                                            -
+Pulizia filtri                                                                                                   Tempo di calendario
+                                                                                                                          7 giorni
+Frequenza intervento
+
+- Spegnere la pompa del vuoto
+
+- Aprire le molle di chiusura A e togliere il coperchio B                                              A                      A
+- Estrarre il filtro e pulirlo soffiando aria compressa dall'interno
+
+- Rimontare la cartuccia ed il coperchio B controllando che la guarnizione
+
+all'interno di quest'ultimo sia posizionata in maniera corretta
+
+                                                                                                                 BA
+
+                                                                                                                           C
+
+                                                                                                       $-UM229c
+
+                    .            Filtro pompa del vuoto
+
+06L0528354C                      Tempo di utilizzo                                                                                                                 (=Filtro_pompa_250_seq)
+                                       100 ore
+Pulizia filtri                                                                                                   Tempo di calendario
+                                                                                                                               -
+Frequenza intervento
+
+Periodicamente verificare visivamente lo stato del filtro A.
+
+Attenz_1 / SMB005a  ATTENZIONE: durante le operazioni di pulizia assicurarsi che
+
+                    l'apparecchiatura elettrica sia isolata elettricamente: ruotare
+
+                    l'interruttore generale in posizione zero e bloccarlo con
+
+                    lucchetto .
+
+Per la pulizia occorre:
+     - smontare il coperchio trasparente
+     - smontare il filtro
+     - aspirare all'interno della sede del filtro
+     - pulire il filtro soffiando dall'interno verso l'esterno
+     Al termine delle operazioni rimontare filtro e coperchio facendo attenzione a posizionare correttamente le
+     guarnizioni.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA            Chap. 20     - Pag. 9/18
+20 - Manutenzione                                                             ACCORD 500
+
+                                                                                         IT
+
+          .                        Procedura sostituzione batteria encoder assoluti Yaskawa
+
+06L0528316C                                Tempo di utilizzo                                                           (Sost-batt-enc-Yaskawa)
+                                                      -
+Sostituzione batteria encoder assoluti                             Tempo di calendario
+                                                                            60 mesi
+Frequenza intervento
+
+Obbligo  SOLO PERSONALE QUALIFICATO AD ESEGUIRE MANUTENZIONI AI MACCHINARI CON QUADRI
+
+         ELETTRICI SOTTO TENSIONE PUÒ FARE LA SEGUENTE PROCEDURA.
+
+La procedura di sostituzione è la seguente:
+SENZA TOGLIERE TENSIONE aprire il quadro elettrico
+Aprire il contenitore che racchiude la batteria come in figura.
+
+Scollegare il connettore collegato alla batteria.
+Inserire la nuova batteria (Cod. 00L0031016B).
+Richiudere il contenitore.
+
+Nota: Ad ogni sostituzione si consiglia di segnare la data di sostituzione nel contenitore della batteria per
+un più rapido controllo.
+
+                 .-                                                           (M100_Ed-122016_03_20.3c)
+
+         RIF.        SEGNALE                    TIPO             DESCRIZIONE
+
+Ai38a                CALIBRAZIONE PERSA,   Informazione          Adesivo applicato sui connettori
+                               SE ROTTA     importante           degli encoder assoluti.
+                                                                 La rottura dell'adesivo significa:
+                       LOST CALIBRATION,                         - possibilità che il connettore
+                              IF BROKEN                          dell'encoder possa essere stato
+                                                                 disconnesso con conseguente
+                         cod. 03L0425911D                        perdita della taratura
+                                                                 - necessità di eseguire nuova
+                                                                 calibrazione
+
+Chap. 20             - Pag. 10/18          IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                               20 - Manutenzione
+
+  IT
+
+                             20.3.2  SCAMBIATORE DI CALORE (se presente)
+
+                                                                                                                      (P200_052017_00_20.3.2)
+
+06L0528389G - 06L0528390H
+
+Verifica livello liquido refrigerante
+
+Frequenza intervento                                                Tempo di utilizzo                    Tempo di calendario
+                                                                               -                                  1 mese
+
+Controllare il livello del fluido refrigerante attraverso la finestrella (A1).
+Quando ci si avvicina al livello "MIN" rabboccare attraverso il bocchettone (A2) fino al raggiungimento del livello
+"MAX".
+Per poter accedere al bocchettone (A2) occorre svitare le viti (A4) ed estrarre lo scambiatore di calore dal carter
+(B)
+
+                    Obbligo  Prima di riempire il serbatoio, controllare che il motore della pompa giri liberamente.
+
+                             Non fare mai girare "a secco" la pompa per un tempo superiore ai 30 sec.
+
+Utilizzare esclusivamente fluido (da ordinare all'ufficio ricambi) con il codice 0736238634E.
+Non diluire con acqua.
+Servirsi, per il rabbocco, di recipienti perfettamente puliti.
+
+Attenz_1 / SMB005a           Fare attenzione: il fluido è tossico.
+
+                    Obbligo  A fine operazione riposizionare lo scambiatore e fissarlo con le viti (A4)
+
+Un flussostato invia al C.N. un messaggio di allarme quando la portata scende al di sotto del valore di taratura.
+Pulire frequentemente le batterie di raffreddamento (A3) con aria compressa (pressione max 10 bar)
+
+                    Obbligo  IN CASO DI PROLUNGATA INATTIVITÀ, SVUOTARE COMPLETAMENTE IL SERBATOIO.
+
+                             OGNI 4 ANNI SOSTITUIRE COMPLETAMENTE IL LIQUIDO REFRIGERANTE.
+
+                             PER LE PROCEDURE CONTATTARE IL SERVIZIO ASSISTENZA.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA    Chap. 20     - Pag. 11/18
+ 20 - Manutenzione                                           ACCORD 500
+Pulizia griglia refrigeratore
+                                                                        IT
+
+Frequenza intervento                      Tempo di utilizzo  Tempo di calendario
+                                                     -                7 giorni
+
+Settimanalmente pulire la zona della griglia del refrigeratore:
+
+- se la macchina è in funzione arrestare la lavorazione in corso;
+- se presente, togliere il carter (C): rimuovere la vite superiore (C1), allentare le viti sulla parete verticale (C2),
+
+ sollevare il carter e rimuoverlo:
+
+- aspirare i trucioli nei punti indicati (non soffiare con aria compressa: lo sporco potrebbe infilarsi in punti delicati
+ compromettendo l'efficienza della macchina);
+
+- rimontare il carter (C) (se presente).
+
+Chap. 20  - Pag. 12/18                    IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                             20 - Manutenzione
+
+  IT
+
+         .            LUBRIFICAZIONE POMPA VUOTO BECKER
+
+                                                                                                                 (Author m100_072016_00_)
+
+06L0528350D
+
+Lubrificazione pompa del vuoto
+
+Frequenza intervento            Tempo di utilizzo                                                      Tempo di calendario
+                                           -                                                                    6 mesi
+
+         (1)AVVERTENZE: La qualità dell'aria nell'ambiente di lavoro influisce sugli intervalli di
+         manutenzione: maggiore è la quantità di polveri presenti nell'aria, più frequenti dovranno essere le
+         procedure di manutenzione / lubrificazione.
+
+Obbligo  Le relative istruzioni sono nella documentazione a corredo della macchina.
+
+         AVVERTENZE: LA MANCATA OSSERVANZA DELLE NORME DI MANUTENZIONE E
+         LUBRIFICAZIONE DELLA POMPA PROVOCA IL SURRISCALDAMENTO ED IL DANNEGGIAMENTO
+         DELLA STESSA.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. 20  - Pag. 13/18
+20 - Manutenzione                                                                     ACCORD 500
+
+                                                                                                 IT
+
+               .                     Manutenzione elettromandrini e coni HSK63
+
+                                                                                      (M100F-06-2019_M-ACTIVE-00_20.4)
+
+Rodaggio
+
+Gli elettromandrini sono dotati di cuscinetti ad alta precisione lubrificati a vita ("for life") con grasso speciale per alta
+
+velocità.
+
+Prima della consegna, l'elettromandrino è stato sottoposto ad un ciclo di rodaggio automatico al fine di distribuire
+
+uniformemente il grasso lubrificante lungo le piste di rotolamento dei cuscinetti.
+
+Non sono necessarie ulteriori procedure di rodaggio.
+
+Nel caso in cui la macchina rimanesse inutilizzata per più di 6 mesi è necessario eseguire la seguente procedura
+di rodaggio a steps PRIMA di accendere l'elettromandrino e cominciare a lavorare.
+
+Sia Vmax= velocità massima dell'elettromandrino.
+
+           Step                      Velocità %            Velocità [Rpm]             Durata [min.]
+                                                                                              15
+           1                         6.3                                0,063 * Vmax           5
+                                                                                              15
+           2                                     Elettromandrino fermo                         5
+                                                                                              15
+           3                         12                                 0,12 * Vmax            5
+                                                                                              15
+           4                                     Elettromandrino fermo                         5
+                                                                                              10
+           5                         19                                 0,19 * Vmax            5
+                                                                                              10
+           6                                     Elettromandrino fermo                         5
+                                                                                              10
+           7                         25                                 0,25 * Vmax
+
+           8                                     Elettromandrino fermo
+
+           9                         38                                 0,38 * Vmax
+
+           10                                    Elettromandrino fermo
+
+           11                        50                                 0,50 * Vmax
+
+           12                                    Elettromandrino fermo
+
+           13                        67                                 0,67 * Vmax
+
+La durata della procedura di rodaggio a steps è di 2 ore.
+
+Preriscaldo
+Al momento del primo avvio giornaliero far compiere all'elettromandrino il seguente ciclo di preriscaldo al fine di
+ottimizzare i precarichi e le condizioni di lubrificazione dei cuscinetti.
+Il ciclo di preriscaldo permette di allungare la vita dell'elettromandrino.
+Il ciclo di preriscaldo va eseguito con il portautensile inserito privo di utensile e senza compiere lavorazioni.
+
+Sia Vmax= velocità massima dell'elettromandrino.
+
+           Step                      Velocità %            Velocità [Rpm]             Durata [min.]
+             1                             50                 0,50 * Vmax                      2
+             2                             75                 0,75 * Vmax                      2
+             3                             90                 0,90 * Vmax                      1
+
+Il ciclo di preriscaldo va eseguito ogni volta che la macchina rimane inattiva per un tempo sufficiente a raffreddare
+l'elettromandrino fino alla temperatura ambiente.
+
+06L0528417G
+
+Dispositivo di bloccaggio ed espulsione del portautensile
+
+Obbligo    Durante la vita dell'elettromandrino il rendimento del pacco molle può diminuire per effetto della
+
+           degradazione delle condizioni di lubrificazione (vibrazioni, calore) e per usura meccanica delle
+
+           molle. Conseguentemente il tiro sul portautensile si riduce. Si prescrive di controllare dopo
+
+           500000(1) cicli di cambio utensile il tiro esercitato sulll'utensile. Il controllo va eseguito dopo avere
+
+           preventivamente pulito e lubrificato la pinza portautensile secondo quanto descritto qui di seguito.
+
+           Se il tiro scende al di sotto di 8 kN dopo pulitura e lubrificazione pinza, l'elettromandrino deve
+
+           essere revisionato. Oltrepassati i 500000(1) cambio utensili il controllo del tiro va ripetuto ogni
+
+           150000 cicli. Il controllo deve essere eseguito da un tecnico specializzato incaricato dal
+
+           Fabbricante.
+
+Obbligo    (1) il valore indicato corrisponde a 1 cambio utensile al minuto, per 2 turni al giorno, per circa 3 anni
+
+           di lavoro.
+
+Chap. 20               - Pag. 14/18                        IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500            Tempo di utilizzo                                                                 20 - Manutenzione
+                            100 ore
+  IT                                                                                                   Tempo di calendario
+                                                                                                               30 giorni
+06L0528415C
+
+Lubrificazione pinza
+
+Frequenza intervento
+
+Lubrificare il dispositivo di bloccaggio del cono portautensili con il grasso spray:
+- KLUBER GRAFLOSCON - codice: (A) 00L0400390A - (B)00L0400391C
+oppure
+- LUSIN LUB PM 1001 - codice: (A)+(B) 0002400035C
+
+Scaricare l'utensile nel magazzino
+Spostare il gruppo operatore in posizione accessibile.
+Inserire la cannula della bomboletta in una delle fessure tra i "petali" della pinza e, tenendo la bomboletta verticale,
+spruzzare; ripetere l'operazione per le altre fessure.
+
+                                                             B
+                                                              A
+
+                                                                                                                                                                                                           $-UM487
+
+Per distribuire uniformemente il grasso tra i petali della pinza occorre attivare la funzione di blocco/sblocco cono
+portautensile nello stato di emergenza. Eseguire questa sequenza:
+- stato macchina operativo
+
+- selezionare la pagina di MDI
+- selezionare la card:
+
+      - "Parti della macchina" > "Teste di lavoro" > "Elettromandrino" > "Abilita blocco/sblocco mandrino"
+
+   - attivare l'emergenza macchina: il tasto "T06" si attiva
+- eseguire i cicli blocco/sblocco con il tasto "T06" (almeno 10/15 cicli)
+
+Al ripristino dallo stato d'emergenza il tasto "T06" si disabilita
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. 20  - Pag. 15/18
+20 - Manutenzione                                                                     ACCORD 500
+
+                                                                                                 IT
+
+Rif.      Immagine                                                                    Descrizione / Funzione
+                                                                                      Uso e/o indicazione
+                                                                   16 1    2          Pulsante per il blocco-sblocco del cono HSK63 : attivo in modalità "MDI" -
+                                                              15               3      "Manuale" : non attivo in modalità "Automatico"
+                                                                                      La spia accesa indica che il cono è bloccato
+                                                           14                      4
+                                                                                      Pulsante per il blocco-sblocco del cono HSK63 : attivo in modalità "MDI" -
+                                                           13              5          "Manuale" : non attivo in modalità "Automatico"
+
+                                                           12                      6  Pulsante per il blocco-sblocco del cono HSK63 : attivo in modalità "MDI" -
+                                                                                      "Manuale" : non attivo in modalità "Automatico"
+                                                              11               7      -
+                                                                   10 9    8
+
+T06a                                                       X
+
+                                                   CMD_27                  F1 F2
+
+                                                           Pigna_Sepri_01
+
+T06b
+
+          Lock/Unlock
+
+          CMD_27_Sintesi
+
+T06g
+
+          Lock/Unlock
+
+          CMD_T06g
+
+Inserire un cono vuoto e far ruotare l'elettromandrino a 18000 giri per circa un minuto.
+
+  Alla fine rifermare la macchina, estrarre il cono portautensili ed eliminare il grasso eventualmente depositato sulle
+pareti interne dell'albero dell'elettromandrino con uno straccio e ,se necessario, con detergente sgrassante a base
+d'acqua.
+
+      Non dirigere MAI getti d'aria all'interno del mandrino, spingerebbe polvere e sporcizia che
+      creerebbe danni irreparabili al mandrino.
+
+Pulire anche la parte cava del cono portautensili
+
+Chap. 20                                                   - Pag. 16/18               IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                                             20 - Manutenzione
+
+  IT
+
+                             .  Manutenzione coni HSK63
+
+06L0528347H                                                      Tempo di utilizzo                                                           (=TR12_hsk63_3.42.5b_implat-inp)
+                                                                            -
+Pulizia                                                                                                Tempo di calendario
+                                                                                                               14 giorni
+Frequenza intervento
+
+Pulire il cono esternamente ed internamente con uno straccio asciutto e pulito.
+Pulire con detergente sgrassante a base d'acqua la zona dei coni portautensili (evidenziata
+in grigio in figura) che va ad accoppiarsi col mandrino. Poi spruzzarla col lubrificante solido
+secco (LOCTITE LB 8192 - 00L0400389L) idrofugo e protettivo dalla polvere: determinante
+per un corretto "sbloccaggio" dei coni.
+
+                    Obbligo  N.B. Questa operazione, sui coni portautensili non forniti dal costruttore, va
+
+                             effettuata anche al primo impiego.
+
+                             AVVERTENZE: Nel caso la macchina dovesse rimanere ferma per periodi                 LOCTITE LB 8192   HSK63_05c
+                             abbastanza lunghi (più di una settimana) è indispensabile eseguire                  Cod. 00L0400389L
+
+                             un'operazione accurata di pulizia e lubrificazione sul cono che rimarrà
+
+                             montato sull'elettromandrino.
+
+Attenz_1 / SMB005a           ATTENZIONE: OLTRE A OSSERVARE LE INDICAZIONI DI AVVERTENZE RIPORTATE SULLA
+
+                             BOMBOLETTA, OCCORRE PORRE ATTENZIONE A:
+
+                             - NON INALARE VAPORI O NEBULIZZAZIONI
+
+                             - VENTILARE L'AMBIENTE DOVE VIENE UTILIZZATO
+
+                             - USARE GUANTI PROTETTIVI IN CASO DI CONTATTO PROLUNGATO
+
+                             - USARE OCCHIALI DI PROTEZIONE
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. 20  - Pag. 17/18
+20 - Manutenzione              Punti di lubrificazione manuale                                                    ACCORD 500
+
+             20.4.2                                                                                                          IT
+
+                                                                                                                                 (A500_05-2021_00_20.4.2)
+
+Frequenza intervento                             Tempo di utilizzo                  Tempo di calendario
+                                                            -                               14 giorni
+
+Rif.  Frequenza  Dispositivo                     Utenza (Unità / Gruppo) Procedura                                Tipo di lubrificante
+      - ore
+                                                 1 - cuffia pneumatica
+                                                 gruppo 3 assi / 5 assi
+
+                                                 2 - om-off verticale
+
+                                                 magazzino on-board
+
+F1 100           Guide / pattini a ricircolo di  3 - pick-up lama on-board  Iniettare in ogni ingrassatore circa  AGIP GRMU EP0
+                 sfere                                                      1cm³ di grasso (ca. 2 pompate)
+                                                                            pulendo eventuali fuoriuscite
+
+                                                 4 - on-off foratrice/BRC
+
+                                                 5 - pattini magazzino TRI
+
+                                                 6 - pattini magazzino TRI
+
+      INFORMAZIONI: Per eseguire queste operazioni di manutenzione occorre utilizzare una scala: vedi
+      paragrafo "Operazioni di manutenzione che richiedono l'uso della scala"
+
+Chap. 20         - Pag. 18/18                    IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                            PLB21c - Piano di lavoro tipo "MATIC" - Rel. 1.0
+
+  IT                                              INDICE
+
+                 PLB21c.9  Manutenzione................................................................................................................. 2
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. PLB21c  - Pag. 1/2
+PLB21c - Piano di lavoro tipo "MATIC" - Rel. 1.0                                                      ACCORD 500
+
+              PLB21c.9 Manutenzione                                                                         IT
+
+06L0528356G                                                                                                                                                      (PL-MATIC_1.0_M1.8)
+
+Il piano di lavoro non necessita di particolare                                  B
+manutenzione:
+                                                                                           EC
+- Giornalmente pulire le barre di scorrimento (B) del                D
+piano, soprattutto nella zona di scorrimento (C) dove
+
+il truciolo fine si impasta con il lubrificante delle
+
+bussole a ricircolo di sfere; dopo la pulizia passare
+
+un panno leggermente inumidito con olio neutro
+
+sulle barre di scorrimento (B).
+
+         AVVERTENZE: Quando non vengono
+         montati gli accessori D, montare la
+         protezione E sulla base per evitare che
+         sporco e trucioli si depositino sulla base.
+
+                                                       PDL_MATIC_07
+
+Pulizia delle cremagliere dei piani automatici
+
+Obbligo  La manutenzione deve essere eseguita da personale
+
+         addestrato .
+
+È buona norma eseguire la pulizia giornalmente come descritto di seguito:
+
+- posizionare le barre e i carrelli porta accessori da un lato e procedere alla
+
+pulizia della cremagliera aspirando polvere e trucioli aiutandosi con
+
+spazzole non abrasive (con setole in plastica).                                  PDL_MATIC_PLB04-8-4a
+
+- posizionare le barre e i carrelli porta accessori dal lato opposto al
+
+precedente e procedere alla pulizia delle parti di cremagliera precedentemente occupate dalle barre e carrelli
+
+porta accessorri, sempre utilizzando un aspirapolvere.
+
+Chap. PLB21c  - Pag. 2/2                                IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500               TGL1 - Unità di foratura F7 - F12 - F12L - F16 - F18L - F26L - Rel. 1.4
+
+  IT                                            INDICE
+
+                 TGL1.4  Manutenzione e lubrificazione ...................................................................................... 2
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. TGL1  - Pag. 1/3
+                    TGL1 - Unità di foratura F7 - F12 - F12L - F16 - F18L - F26L - Rel. 1.4         ACCORD 500
+
+                                                                                                               IT
+
+                                TGL1.4           Manutenzione e lubrificazione
+
+                                                                                                    (=T12/18m_1.0_8.3.3_inp)
+
+                    Obbligo  ATTENZIONE: tutte le operazioni di pulizia e manutenzione vanno effettuate da personale
+
+                             qualificato, dopo avere messo a "zero" gli interruttori generali (elettrico e pneumatico) ed averli
+
+                             lucchettati.
+
+                             Raccomandiamo di non eseguire alcuna riparazione od intervento non contemplati nel presente
+                             manuale.
+
+Solo il personale ben addestrato e munito di autorizzazione può usare la macchina ed eseguire operazioni di
+manutenzione.
+Tutte le operazioni che richiedono smontaggio di parti, vanno affidate al personale tecnico autorizzato.
+Dovendo sostituire parti della macchina, impiegare esclusivamente ricambi originali. Il costruttore non si assume
+alcuna responsabilità per danni derivanti dall'impiego di elementi non originali.
+Osservare le norme antinfortunistiche, le regole di sicurezza generale e quelle della medicina del lavoro.
+
+Attenz_1 / SMB005a           ATTENZIONE! LA MANCATA EFFETTUAZIONE DI QUESTE OPERAZIONI DI MANUTENZIONE PUÒ
+
+                             PREGIUDICARE LA QUALITÀ DELLA LAVORAZIONE E PREGIUDICARE LA FUNZIONALITÀ DEL
+
+                             GRUPPO
+
+                             AVVERTENZE: quando si eseguono lavorazioni su "medio density" o materiali che creano polveri o
+                             trucioli particolarmente fini occorre abbreviare gli intervalli di manutenzione e lubrificazione.
+
+            .-                                   Tempo di utilizzo                                                                                                     (TF_F26L.3a)
+                                                       1000 ore
+06L0528428A                                                                                         Tempo di calendario
+                                                                                                             12 mesi
+Testa a forare
+
+Frequenza intervento
+
+Per una corretta lubrificazione operare come segue:
+
+- Iniettare in ogni ingrassatore T circa 1cm³ di grasso (ca. 1 pompate                                 P
+- Tipo KLUBER ISOFLEX NBU15(1)).
+
+                             (1)ATTENZIONE: NON UTILIZZARE/MISCELARE TIPI O
+                             MARCHE DI GRASSI DIVERSI
+
+                    Obbligo  UTILIZZARE L'APPOSITA POMPA IN DOTAZIONE (P)       Q
+
+                                                                                                    T
+
+                                                                             TF-F18L_Accord-FX_02c
+
+            .-                                   Tempo di utilizzo                                                                                                  (TF_F26/L2.3b)
+                                                       1000 ore
+06L0528428A                                                                                         Tempo di calendario
+                                                                                                             12 mesi
+Testa a forare
+
+Frequenza intervento
+
+Lubrificazione mandrini orizzontali:
+- Iniettare in ogni ingrassatore Q circa 2cm³ di grasso (circa 2 pompate - Tipo KLUBER ISOFLEX NBU15(1)).
+
+                    Chap. TGL1       - Pag. 2/3      IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                 TGL1 - Unità di foratura F7 - F12 - F12L - F16 - F18L - F26L - Rel. 1.4
+
+  IT
+
+            .-                        Tempo di utilizzo                                                                                                                       (=TF_TAGL1.3_implat_inp)
+                                            1000 ore
+06L0528432H - 06L0528428A                                                                                                     Tempo di calendario
+                                                                                                                                       12 mesi
+Testa a forare
+
+Frequenza intervento
+
+Lubrificazione gruppo fresa a disco:
+
+- Iniettare nell'ingrassatore A circa 3cm³ di grasso (ca. 3 pompate - Tipo                                                                P
+"KLÜBER - ISOFLEX NBU 15"(1))
+
+Obbligo  UTILIZZARE L'APPOSITA POMPA IN DOTAZIONE (P)
+
+                                                                                                       FR-Disco_Integrata_01  A
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA                         Chap. TGL1  - Pag. 3/3
+ACCORD 500                             EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0
+
+  IT                                             INDICE
+
+                 EM04d.6  Manutenzione e lubrificazione ...................................................................................... 2
+                 .        Manutenzione elettromandrini e coni HSK63 ............................................................. 3
+                 .        Lubrificazione trascinatore cuffia/paletta......................................................................7
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. EM04d  - Pag. 1/7
+                    EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0                                          ACCORD 500
+
+                                                                                                                                IT
+
+                                 EM04d.6 Manutenzione e lubrificazione
+
+                                                                                                                     (=R_6_iso30_3.20.3_inp)
+
+                    Obbligo  ATTENZIONE: tutte le operazioni di pulizia e manutenzione vanno effettuate da personale
+
+                             qualificato, dopo avere messo a "zero" gli interruttori generali (elettrico e pneumatico) ed averli
+
+                             lucchettati.
+
+           Raccomandiamo di non eseguire alcuna riparazione od intervento non contemplati nel presente
+           manuale.
+
+Solo il personale ben addestrato e munito di autorizzazione può usare la macchina ed eseguire operazioni di
+manutenzione.
+Tutte le operazioni che richiedono smontaggio di parti, vanno affidate al personale tecnico autorizzato.
+Dovendo sostituire parti della macchina, impiegare esclusivamente ricambi originali. Il costruttore non si assume
+alcuna responsabilità per danni derivanti dall'impiego di elementi non originali.
+Osservare le norme antinfortunistiche, le regole di sicurezza generale e quelle della medicina del lavoro.
+
+Attenz_1 / SMB005a           ATTENZIONE! LA MANCATA EFFETTUAZIONE DI QUESTE OPERAZIONI DI MANUTENZIONE PUO'
+
+                             PREGIUDICARE LA QUALITA' DELLA LAVORAZIONE ED AUMENTARE IL RISCHIO DI ROTTURA
+
+                             DELL'UTENSILE.
+
+                             NOTA: In ambienti particolarmente polverosi (lavorazione di "agglomerati") i tempi di
+                             manutenzione indicati potrebbero risultare inadeguati. Per garantire un corretto funzionamento
+                             della macchina dovranno quindi essere ridotti in base alle particolari esigenze.
+
+                    Obbligo  Una corretta aspirazione favorisce il buon funzionamento del gruppo ed evita guasti dovuti al
+
+                             surriscaldamento.
+
+                             Settimanalmente controllare la perfetta efficienza di tutto il sistema di aspirazione.
+
+                    Chap. EM04d  - Pag. 2/7     IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                    EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0
+
+  IT
+
+               .         Manutenzione elettromandrini e coni HSK63
+
+                                                                                                                                    (M100F-06-2019_M-ACTIVE-00_20.4)
+
+Rodaggio
+
+Gli elettromandrini sono dotati di cuscinetti ad alta precisione lubrificati a vita ("for life") con grasso speciale per alta
+
+velocità.
+
+Prima della consegna, l'elettromandrino è stato sottoposto ad un ciclo di rodaggio automatico al fine di distribuire
+
+uniformemente il grasso lubrificante lungo le piste di rotolamento dei cuscinetti.
+
+Non sono necessarie ulteriori procedure di rodaggio.
+
+Nel caso in cui la macchina rimanesse inutilizzata per più di 6 mesi è necessario eseguire la seguente procedura
+di rodaggio a steps PRIMA di accendere l'elettromandrino e cominciare a lavorare.
+
+Sia Vmax= velocità massima dell'elettromandrino.
+
+           Step          Velocità %                                                                    Velocità [Rpm]  Durata [min.]
+                                                                                                                               15
+           1             6.3                                                                           0,063 * Vmax             5
+                                                                                                                               15
+           2                         Elettromandrino fermo                                                                      5
+                                                                                                                               15
+           3             12                                                                            0,12 * Vmax              5
+                                                                                                                               15
+           4                         Elettromandrino fermo                                                                      5
+                                                                                                                               10
+           5             19                                                                            0,19 * Vmax              5
+                                                                                                                               10
+           6                         Elettromandrino fermo                                                                      5
+                                                                                                                               10
+           7             25                                                                            0,25 * Vmax
+
+           8                         Elettromandrino fermo
+
+           9             38                                                                            0,38 * Vmax
+
+           10                        Elettromandrino fermo
+
+           11            50                                                                            0,50 * Vmax
+
+           12                        Elettromandrino fermo
+
+           13            67                                                                            0,67 * Vmax
+
+La durata della procedura di rodaggio a steps è di 2 ore.
+
+Preriscaldo
+Al momento del primo avvio giornaliero far compiere all'elettromandrino il seguente ciclo di preriscaldo al fine di
+ottimizzare i precarichi e le condizioni di lubrificazione dei cuscinetti.
+Il ciclo di preriscaldo permette di allungare la vita dell'elettromandrino.
+Il ciclo di preriscaldo va eseguito con il portautensile inserito privo di utensile e senza compiere lavorazioni.
+
+Sia Vmax= velocità massima dell'elettromandrino.
+
+           Step          Velocità %                                                                    Velocità [Rpm]  Durata [min.]
+             1                 50                                                                         0,50 * Vmax           2
+             2                 75                                                                         0,75 * Vmax           2
+             3                 90                                                                         0,90 * Vmax           1
+
+Il ciclo di preriscaldo va eseguito ogni volta che la macchina rimane inattiva per un tempo sufficiente a raffreddare
+l'elettromandrino fino alla temperatura ambiente.
+
+06L0528417G
+
+Dispositivo di bloccaggio ed espulsione del portautensile
+
+Obbligo    Durante la vita dell'elettromandrino il rendimento del pacco molle può diminuire per effetto della
+
+           degradazione delle condizioni di lubrificazione (vibrazioni, calore) e per usura meccanica delle
+
+           molle. Conseguentemente il tiro sul portautensile si riduce. Si prescrive di controllare dopo
+
+           500000(1) cicli di cambio utensile il tiro esercitato sulll'utensile. Il controllo va eseguito dopo avere
+
+           preventivamente pulito e lubrificato la pinza portautensile secondo quanto descritto qui di seguito.
+
+           Se il tiro scende al di sotto di 8 kN dopo pulitura e lubrificazione pinza, l'elettromandrino deve
+
+           essere revisionato. Oltrepassati i 500000(1) cambio utensili il controllo del tiro va ripetuto ogni
+
+           150000 cicli. Il controllo deve essere eseguito da un tecnico specializzato incaricato dal
+
+           Fabbricante.
+
+Obbligo    (1) il valore indicato corrisponde a 1 cambio utensile al minuto, per 2 turni al giorno, per circa 3 anni
+
+           di lavoro.
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA                  Chap. EM04d    - Pag. 3/7
+EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0                                ACCORD 500
+
+06L0528415C              Tempo di utilizzo                                                     IT
+                               100 ore
+Lubrificazione pinza                                                       Tempo di calendario
+                                                                                   30 giorni
+Frequenza intervento
+
+Lubrificare il dispositivo di bloccaggio del cono portautensili con il grasso spray:
+- KLUBER GRAFLOSCON - codice: (A) 00L0400390A - (B)00L0400391C
+oppure
+- LUSIN LUB PM 1001 - codice: (A)+(B) 0002400035C
+
+Scaricare l'utensile nel magazzino
+Spostare il gruppo operatore in posizione accessibile.
+Inserire la cannula della bomboletta in una delle fessure tra i "petali" della pinza e, tenendo la bomboletta verticale,
+spruzzare; ripetere l'operazione per le altre fessure.
+
+                                                             B
+                                                              A
+
+                                                                                                                                                                                                           $-UM487
+
+Per distribuire uniformemente il grasso tra i petali della pinza occorre attivare la funzione di blocco/sblocco cono
+portautensile nello stato di emergenza. Eseguire questa sequenza:
+- stato macchina operativo
+
+- selezionare la pagina di MDI
+- selezionare la card:
+
+      - "Parti della macchina" > "Teste di lavoro" > "Elettromandrino" > "Abilita blocco/sblocco mandrino"
+
+   - attivare l'emergenza macchina: il tasto "T06" si attiva
+- eseguire i cicli blocco/sblocco con il tasto "T06" (almeno 10/15 cicli)
+
+Al ripristino dallo stato d'emergenza il tasto "T06" si disabilita
+
+Chap. EM04d  - Pag. 4/7  IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                                                            EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0
+
+  IT
+
+Rif.  Immagine                                                                        Descrizione / Funzione
+                                                                                      Uso e/o indicazione
+                                                                   16 1    2          Pulsante per il blocco-sblocco del cono HSK63 : attivo in modalità "MDI" -
+                                                              15               3      "Manuale" : non attivo in modalità "Automatico"
+                                                                                      La spia accesa indica che il cono è bloccato
+                                                           14                      4
+                                                                                      Pulsante per il blocco-sblocco del cono HSK63 : attivo in modalità "MDI" -
+                                                           13              5          "Manuale" : non attivo in modalità "Automatico"
+
+                                                           12                      6  Pulsante per il blocco-sblocco del cono HSK63 : attivo in modalità "MDI" -
+                                                                                      "Manuale" : non attivo in modalità "Automatico"
+                                                              11               7      -
+                                                                   10 9    8
+
+T06a                                                       X
+
+                                                   CMD_27                  F1 F2
+
+                                                           Pigna_Sepri_01
+
+T06b
+
+      Lock/Unlock
+
+      CMD_27_Sintesi
+
+T06g
+
+      Lock/Unlock
+
+      CMD_T06g
+
+Inserire un cono vuoto e far ruotare l'elettromandrino a 18000 giri per circa un minuto.
+
+  Alla fine rifermare la macchina, estrarre il cono portautensili ed eliminare il grasso eventualmente depositato sulle
+pareti interne dell'albero dell'elettromandrino con uno straccio e ,se necessario, con detergente sgrassante a base
+d'acqua.
+
+      Non dirigere MAI getti d'aria all'interno del mandrino, spingerebbe polvere e sporcizia che
+      creerebbe danni irreparabili al mandrino.
+
+Pulire anche la parte cava del cono portautensili
+
+            .-                                                                        Tempo di utilizzo                                       (TR12_hsk63_3.42.5b_imp-lat_seq)
+                                                                                                 -
+06L0528347H                                                                                              Tempo di calendario
+                                                                                                                 14 giorni
+Pulizia
+
+Frequenza intervento
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA    Chap. EM04d  - Pag. 5/7
+ EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0                                                     ACCORD 500
+
+Ogni settimana pulire il cono esternamente ed internamente con uno straccio asciutto e                                  IT
+pulito.
+Ogni mese pulire con detergente sgrassante a base d'acqua la zona dei coni portautensili
+(evidenziata in grigio in figura) che va ad accoppiarsi col mandrino. Poi spruzzarla col
+lubrificante solido secco fornito a corredo (LOCTITE LB 8192) idrofugo e protettivo dalla
+polvere: determinante per un corretto "sbloccaggio" dei coni.
+
+                    Obbligo  N.B. Questa operazione, sui coni portautensili non forniti dal costruttore, va
+
+                             effettuata anche al primo impiego.                                              LOCTITE LB 8192   HSK63_05c
+                             AVVERTENZE: Nel caso la macchina dovesse rimanere ferma per periodi             Cod. 00L0400389L
+
+                             abbastanza lunghi (più di una settimana) è indispensabile eseguire
+
+                             un'operazione accurata di pulizia e lubrificazione sul cono che rimarrà
+
+                             montato sull'elettromandrino.
+
+Attenz_1 / SMB005a           ATTENZIONE: OLTRE A OSSERVARE LE INDICAZIONI DI AVVERTENZE RIPORTATE SULLA
+
+                             BOMBOLETTA, OCCORRE PORRE ATTENZIONE A:
+
+                             - NON INALARE VAPORI O NEBULIZZAZIONI
+
+                             - VENTILARE L'AMBIENTE DOVE VIENE UTILIZZATO
+
+                             - USARE GUANTI PROTETTIVI IN CASO DI CONTATTO PROLUNGATO
+
+                             - USARE OCCHIALI DI PROTEZIONE
+
+                    Chap. EM04d  - Pag. 6/7                         IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA
+ACCORD 500                                       EM04d - Gruppo operatore 5 Assi "Prisma KPX" - Rel. 1.0
+
+  IT
+
+      .                       Lubrificazione trascinatore cuffia/paletta
+
+                                                                                                                                             (EM_Prisma_KPX_1.0_CE_20.4.1)
+
+Lubrificazione dispositivo trascinatore cuffia/paletta:
+
+Rif.  Frequenza  Dispositivo                     Utenza (Unità / Gruppo) Procedura                                                           Tipo di lubrificante
+      - ore
+
+     250         Guide / pattini a ricircolo di  Trascinatore cuffia/paletta                           Iniettare in ogni ingrassatore circa  AGIP GRMU EP0
+     (Almeno     sfere                                                                                 0,5cm³ di grasso (ca. 1 pompate)
+F una volta                                                                                            pulendo eventuali fuoriuscite
+     ogni 3
+     mesi)
+
+IL PRESENTE MANUALE È PROPRIETÀ DELLA SCM GROUP S.P.A. - OGNI RIPRODUZIONE, ANCHE PARZIALE, È VIETATA  Chap. EM04d                           - Pag. 7/7
+
