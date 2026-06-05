@@ -3297,6 +3297,14 @@ window.UI = {
             AppConfig.log(2, `🚫 DRAG & DROP: Sistema disabilitato per nuovo tutorial "${this.availableTutorials[tutorialIndex].name}"`);
         }
 
+        // RESET: HoldableSystem — rilascia oggetti held e riporta i modelli alla
+        // posizione originale (uscendo da holdContainer). Senza questo, un oggetto
+        // preso in mano nel tutorial precedente resta agganciato alla camera.
+        if (window.HoldableSystem && window.HoldableSystem.reset) {
+            window.HoldableSystem.reset();
+            AppConfig.log(2, `🤚 HOLDABLE: Reset per nuovo tutorial`);
+        }
+
         // RESET: StepController - pulisci configurazioni trigger da tutorial precedente
         // Previene che stepConfigs stantie interferiscano con trigger del nuovo tutorial
         if (window.StepController && window.StepController.reset) {

@@ -93,6 +93,17 @@ window.HoldableSystem = {
             return false;
         }
 
+        // Assicura che la camera sia parte del grafo della scene: il renderer
+        // traversa scene.children, quindi gli oggetti sotto camera.children
+        // (come holdContainer) vengono renderizzati solo se la camera stessa
+        // appartiene alla scene. Three.js continua a usare la camera passata
+        // a render(scene, camera) per la view matrix — aggiungerla alla scene
+        // è no-op per la proiezione, abilita solo il rendering dei suoi figli.
+        if (this.camera.parent !== this.scene) {
+            this.scene.add(this.camera);
+            console.log('[HoldableSystem] 📷 Camera aggiunta alla scene (per rendering holdContainer)');
+        }
+
         // Crea gruppo contenitore attaccato alla camera
         this.holdContainer = new THREE.Group();
         this.holdContainer.name = 'holdContainer';
@@ -297,6 +308,15 @@ window.HoldableSystem = {
             this.currentlyHeldList.splice(index, 1);
         }
 
+        // Se il modello è stato riparentato a holdContainer (durante il pick),
+        // riattaccalo alla scene preservando il world transform attuale: così
+        // animateRelease può lerpare model.position (locale alla scene = world)
+        // dalla posizione corrente in mano fino alla originalPosition salvata.
+        const restoreParent = state.originalParent || this.scene;
+        if (restoreParent && model.parent !== restoreParent) {
+            restoreParent.attach(model);
+        }
+
         // Anima il release
         this.animateRelease(model, state, () => {
             // Aggiorna stato
@@ -344,6 +364,26 @@ window.HoldableSystem = {
             child.frustumCulled = false;
         });
 
+        // Calcola offset del centro visivo rispetto all'origine del modello, nel
+        // frame LOCALE del modello (costante, dipende solo dalla mesh data del GLB).
+        // Serve a compensare GLB con origine sbilanciata rispetto al corpo visibile
+        // (es. remote.glb: origine a (0,0,0) ma mesh centrata a ~(1.8, 1.4, 3.1)).
+        // Senza questo, ancoreremmo l'origine al hold point e il corpo visibile
+        // finirebbe fuori inquadratura.
+        model.updateMatrixWorld(true);
+        const bboxWorld = new THREE.Box3().setFromObject(model);
+        const bboxCenterWorld = new THREE.Vector3();
+        bboxWorld.getCenter(bboxCenterWorld);
+        const modelWorldPos = new THREE.Vector3();
+        model.getWorldPosition(modelWorldPos);
+        const modelWorldQuat = new THREE.Quaternion();
+        model.getWorldQuaternion(modelWorldQuat);
+        const visibleCenterLocal = bboxCenterWorld.clone()
+            .sub(modelWorldPos)
+            .applyQuaternion(modelWorldQuat.clone().invert());
+        model.userData.visibleCenterLocal = visibleCenterLocal;
+        console.log(`[HoldableSystem] 📦 Centro visivo (local frame): (${visibleCenterLocal.x.toFixed(3)}, ${visibleCenterLocal.y.toFixed(3)}, ${visibleCenterLocal.z.toFixed(3)})`);
+
         console.log(`[HoldableSystem] 🎬 Animazione PICK avviata per "${model.name}"`);
 
         // Animazione con TWEEN
@@ -357,18 +397,26 @@ window.HoldableSystem = {
                 .onUpdate(() => {
                     model.userData.pickAnimationProgress = tweenData.progress;
 
-                    // Calcola posizione target (relativa alla camera)
-                    const targetPosition = new THREE.Vector3();
-                    targetPosition.copy(holdOffset);
-                    targetPosition.applyQuaternion(this.camera.quaternion);
-                    targetPosition.add(this.camera.position);
-
                     // Calcola rotazione target
                     const cameraQuat = this.camera.quaternion.clone();
                     const localQuat = new THREE.Quaternion();
                     localQuat.setFromEuler(holdRotation);
                     const targetQuat = new THREE.Quaternion();
                     targetQuat.multiplyQuaternions(cameraQuat, localQuat);
+
+                    // Calcola posizione target dell'ORIGINE del modello: la sottrazione
+                    // del centro visivo (ruotato dalla quaternione target) garantisce
+                    // che il CENTRO VISIBILE finisca esattamente a holdOffset (camera local),
+                    // non l'origine.
+                    const targetPosition = new THREE.Vector3();
+                    targetPosition.copy(holdOffset);
+                    targetPosition.applyQuaternion(this.camera.quaternion);
+                    targetPosition.add(this.camera.position);
+                    if (visibleCenterLocal) {
+                        const visibleOffsetWorld = visibleCenterLocal.clone()
+                            .applyQuaternion(targetQuat);
+                        targetPosition.sub(visibleOffsetWorld);
+                    }
 
                     // Interpola posizione
                     model.position.lerpVectors(startPosition, targetPosition, tweenData.progress);
@@ -378,13 +426,23 @@ window.HoldableSystem = {
                 })
                 .onComplete(() => {
                     model.userData.pickAnimationProgress = 1;
-                    console.log(`[HoldableSystem] ✅ Animazione PICK completata per "${model.name}"`);
+                    // Riparenta al holdContainer (figlio della camera): il modello
+                    // segue la camera tramite scene graph, senza calcoli world coords
+                    // ogni frame (che drifftano se camera o parent non sono identity).
+                    // .attach() preserva il world transform attuale convertendolo in local.
+                    if (this.holdContainer) {
+                        this.holdContainer.attach(model);
+                    }
+                    console.log(`[HoldableSystem] ✅ Animazione PICK completata per "${model.name}" (parent: ${model.parent?.name || '?'})`);
                     if (onComplete) onComplete();
                 })
                 .start();
         } else {
-            // Fallback senza TWEEN - posizionamento immediato
+            // Fallback senza TWEEN - posizionamento immediato + riparenting
             this.updateHeldObjectPosition(model);
+            if (this.holdContainer) {
+                this.holdContainer.attach(model);
+            }
             console.log(`[HoldableSystem] ⚠️ TWEEN non disponibile - posizionamento immediato`);
             if (onComplete) onComplete();
         }
@@ -493,8 +551,29 @@ window.HoldableSystem = {
 
         // Aggiorna la posizione di tutti gli oggetti held per seguire la camera
         this.currentlyHeldList.forEach(objectName => {
-            const model = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
+            // Stessa lookup di pickObject/releaseObject: prima loadedModels (root esterno),
+            // fallback findModelByName. Necessario per GLB con doppio Group annidato
+            // (es. remote.glb: outer "remote" → inner "remote"): findModelByName ritorna
+            // l'inner che non ha isBeingHeld=true, l'update fallirebbe silenziosamente e
+            // il modello resterebbe alla posizione del pick senza seguire la camera.
+            const cleanName = objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+            let model = null;
+            if (window.Scene3D && Array.isArray(window.Scene3D.loadedModels)) {
+                model = window.Scene3D.loadedModels.find(m => {
+                    const fname = (m.userData && m.userData.originalFilename) || m.name || '';
+                    const fclean = fname.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
+                    return fclean === cleanName;
+                }) || null;
+            }
+            if (!model && window.Scene3D && typeof window.Scene3D.findModelByName === 'function') {
+                model = window.Scene3D.findModelByName(cleanName);
+            }
             if (model && model.userData.isBeingHeld) {
+                // Se già riparentato a holdContainer, lo scene graph segue la camera —
+                // non toccare model.position (sovrascriverebbe le coords locali con world).
+                if (this.holdContainer && model.parent === this.holdContainer) {
+                    return;
+                }
                 // NON aggiornare durante l'animazione pick (TWEEN gestisce l'interpolazione)
                 if (model.userData.pickAnimationProgress < 1) {
                     return; // Lascia che TWEEN gestisca
@@ -627,19 +706,48 @@ window.HoldableSystem = {
         console.log('[HoldableSystem] 🔄 Avvio reset stato oggetti...');
         console.log(`[HoldableSystem] 🔄 Stato PRE-reset: initialized=${this.initialized}, camera=${!!this.camera}, holdables=${this.holdableConfigs.size}, held=${this.currentlyHeldList.length}`);
 
-        // Prima pulisci lo stato isBeingHeld dai modelli nella scena
-        // Questo è CRITICO per evitare che modelli ricaricati abbiano stato residuo
+        // Per ogni oggetto attualmente held: riparentalo alla scene (uscendo da
+        // holdContainer) e ripristina posizione/rotazione/scale originali.
+        // Senza questo, il modello resta agganciato alla camera fra tutorial.
+        // Cerca prima in loadedModels (root esterno) — coerente con pickObject —
+        // poi fallback a findModelByName.
         this.currentlyHeldList.forEach(objectName => {
-            const model = window.Scene3D ? window.Scene3D.findModelByName(objectName) : null;
-            if (model) {
-                model.userData.isBeingHeld = false;
-                model.userData.holdOffset = null;
-                model.userData.holdRotation = null;
-                model.userData.pickAnimationProgress = 0;
-                console.log(`[HoldableSystem] 🧹 Pulito userData di "${objectName}"`);
-            } else {
-                console.log(`[HoldableSystem] 🧹 Modello "${objectName}" non trovato in scena (già rimosso)`);
+            const cleanName = objectName.replace(/\.(glb|gltf|obj|stl)$/i, '');
+            let model = null;
+            if (window.Scene3D && Array.isArray(window.Scene3D.loadedModels)) {
+                model = window.Scene3D.loadedModels.find(m => {
+                    const fname = (m.userData && m.userData.originalFilename) || m.name || '';
+                    const fclean = fname.split('/').pop().replace(/\.(glb|gltf|obj|stl)$/i, '');
+                    return fclean === cleanName;
+                }) || null;
             }
+            if (!model && window.Scene3D && typeof window.Scene3D.findModelByName === 'function') {
+                model = window.Scene3D.findModelByName(cleanName);
+            }
+            if (!model) {
+                console.log(`[HoldableSystem] 🧹 Modello "${objectName}" non trovato in scena (già rimosso)`);
+                return;
+            }
+
+            // Pulisci flag prima di muovere il modello (così update() lo ignora)
+            model.userData.isBeingHeld = false;
+            model.userData.holdOffset = null;
+            model.userData.holdRotation = null;
+            model.userData.pickAnimationProgress = 0;
+            model.userData.visibleCenterLocal = null;
+
+            // Riparenta alla scene e ripristina lo stato originale salvato
+            const state = this.heldObjects.get(cleanName);
+            const restoreParent = (state && state.originalParent) || this.scene;
+            if (restoreParent && model.parent !== restoreParent) {
+                restoreParent.attach(model);
+            }
+            if (state && state.originalPosition) {
+                model.position.copy(state.originalPosition);
+                model.rotation.copy(state.originalRotation);
+                if (state.originalScale) model.scale.copy(state.originalScale);
+            }
+            console.log(`[HoldableSystem] 🧹 Ripristinato "${objectName}" alla posizione originale`);
         });
 
         // Pulisci registri
