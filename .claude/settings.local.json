@@ -95,7 +95,8 @@
       "Bash(echo \"EXIT:$?\")",
       "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --no-sandbox --no-pdf-header-footer --print-to-pdf=\"C:\\\\Users\\\\mloffredo\\\\campus_virtual_training\\\\docs\\\\Manuale_Demo_ACCORD500.pdf\" \"file:///C:/Users/mloffredo/campus_virtual_training/docs/_Manuale_Demo_ACCORD500.html\")",
       "Bash(del _set_admin.py)",
-      "Bash(awk 'NR>=40')"
+      "Bash(awk 'NR>=40')",
+      "PowerShell(Out-Null *)"
     ],
     "deny": [],
     "ask": [],
