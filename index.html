@@ -718,6 +718,9 @@
                         // Salva anche in localStorage per persistenza
                         localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
 
+                        // VTTracker: notifica inizializzazione sessione (userId, userName, role)
+                        if (window.VTTracker) window.VTTracker.onSessionInit();
+
                         console.log(`✅ Login riuscito per: ${username}`);
                         console.error(`🌍 DEBUG LINGUA: currentUser.language = "${window.currentUser.language}", _userLanguage = "${window._userLanguage}"`);
 
@@ -1048,6 +1051,9 @@
     <script src="js/editor/ScenarioEditor.js?v=3"></script>
 
     <script type="module" src="js/app.js?v=1000011"></script>
+
+    <!-- VTTracker: tracciamento tempi/errori/punteggio sessione tutorial (window.VTTracker) -->
+    <script src="js/scorm/VTTracker.js?v=1"></script>
 
     <!-- ===== SCRIPT ANALYTICS (opzionale) ===== -->
     <!-- Rimuovi o modifica secondo necessità -->

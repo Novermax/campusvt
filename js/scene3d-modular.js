@@ -2219,6 +2219,8 @@ const Scene3D = {
 
         if (cleanModelName !== cleanStepElement) {
             console.log(`[DEBUG] ❌ Model/element mismatch - USCITA EARLY`);
+            // VTTracker: l'utente ha cliccato un oggetto diverso da quello richiesto
+            if (window.VTTracker) window.VTTracker.onWrongAction('wrong_element');
             return;
         }
 
@@ -2305,6 +2307,11 @@ const Scene3D = {
 
         if (!requiredTool || activeTool !== requiredTool) {
             console.log(`[DEBUG] ❌ Tool mismatch - USCITA EARLY`);
+            // VTTracker: oggetto giusto ma strumento sbagliato. Conta come errore solo
+            // se un tool è effettivamente selezionato (non il caso "nessuno strumento ancora").
+            if (activeTool !== null && activeTool !== undefined) {
+                if (window.VTTracker) window.VTTracker.onWrongAction('wrong_tool');
+            }
             return;
         }
 
@@ -3500,6 +3507,9 @@ const Scene3D = {
         if (!window.UI || !window.UI.currentTutorial) {
             return;
         }
+
+        // VTTracker: tutorial completato (totalTimeMs, score, stepTimings[])
+        if (window.VTTracker) window.VTTracker.onTutorialComplete();
 
         const tutorialName = window.UI.currentTutorial.name;
         const userName = this.getCurrentUserName();

@@ -3372,6 +3372,9 @@ window.UI = {
 
         AppConfig.log(2, `Tutorial selezionato: ${this.currentTutorial.name} (${this.tutorialSteps.length} step)`);
 
+        // VTTracker: avvio tracciamento tutorial (tutorialId, tutorialName, stepCount)
+        if (window.VTTracker) window.VTTracker.onTutorialStart();
+
         // ═══════════════════════════════════════════════════════════════
         // STEP GATING: Registra configurazioni gating per ogni step
         // ═══════════════════════════════════════════════════════════════
@@ -3895,6 +3898,11 @@ window.UI = {
             clearInterval(this.autoExecuteIntervalId);
             this.autoExecuteIntervalId = null;
         }
+
+        // VTTracker: emette 'vt:step_complete' per lo step PRECEDENTE (durationMs, errors)
+        // e resetta contatore errori + timer. Chiamato PRIMA dell'aggiornamento di
+        // currentStepIndex, così getCurrentStep() ritorna ancora lo step che si lascia.
+        if (window.VTTracker) window.VTTracker.onStepChange(stepIndex, this.getCurrentStep()?.title);
 
         this.currentStepIndex = stepIndex;
         const step = this.tutorialSteps[stepIndex];
