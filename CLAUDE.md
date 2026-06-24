@@ -77,6 +77,11 @@ do : rotate around (px,py,pz) by (rx,ry,rz) duration t
 do : pump along x amplitude 0.08 cycles 10 duration 0.1 from ref
 do : pump from ref between (a,b,c) and (d,e,f) cycles N duration T
 do : idle reset                                       # resetCenteredOriginal
+do : schermo = schermo001 ; tool = tool0             # set di stato DIRETTO (no trigger) →
+                                                      # AutoSetVariant. A livello sezione viene
+                                                      # applicato alla selezione del tutorial.
+                                                      # Usare `do :` (non `after :`) a inizio
+                                                      # sezione: lì non esiste alcun trigger.
 
 # Drag & Drop (singola riga compatta)
 drag = obj1, obj2 distance 0.3 snap offset (x,y,z)
@@ -99,9 +104,12 @@ animation = folder screens/mandrino at (60%, 60%) frame 20ms
 
 # `button = ...` resta come ALIAS DEPRECATO per retrocompatibilità (warning in console).
 
-# Holdable
-hold = pick remote at (-0.25,-0.07,0.25) facing (0,5,0)
-hold = held remote
+# Holdable — l'oggetto è SEMPRE letto da `element = ...` nello stesso step.
+# Forme legacy con obj inline (`pick remote at ...`, `held remote`) restano supportate
+# per retrocompatibilità: l'editor le riscrive in forma nuova alla prima edit.
+element = remote
+hold = pick at (-0.25,-0.07,0.25) facing (0,5,0)
+hold = held
 hold = release
 
 # Posizioni / rotazioni iniziali (per sezione o globali)
@@ -134,10 +142,13 @@ Il pre-processore `window.CVTScriptV3.preprocess(content)` trasforma:
 | `description =` / `message =` / `title =` / `video =` | `Description=` / `Message=` / `MessageTitle=` / `MessageVideo=` | |
 | `do : unscrew distance 0.3` | `Action${n}=unscrew(0.3)` (poi `svita(0.3)`) | auto-numerato per step |
 | `do : move by (x,y,z) duration t` | `Action${n}=translate:(x,y,z,t)` (poi `traslazione:`) | |
+| `do : key = val [; key2 = val2]` | `AutoSetVariant=key=val;key2=val2` | set stato diretto, valido anche a livello sezione |
+| `position = a500.Child at (x,y,z)` | `Posizione=a500.Child:(x,y,z)` | riferimenti annidati risolti da `Scene3D.resolveModelRef` |
 | `do : pump along x amplitude A cycles N duration T from ref` | `Action${n}=pump:ref(axis=x, amplitude=A, ...)` | |
 | `camera = position (..), target (..), zoom Z, fade T` | righe `CameraPos=(...)`, `CameraTarget=(...)`, `CameraZoom=Z`, `CameraTransitionTime=T` | una riga → multiple |
 | `drag = obj distance D snap offset (x,y,z)` | `DragDrop=true` + `DragDropObjects=obj` + `DragDropDistance=D` + `SnapPoint=offset:(x,y,z)` | |
-| `hold = pick obj at (...) facing (...)` | `HoldAction=pick` + `Holdable=true` + `Element=obj` + `HoldPosition=(...)` + `HoldRotation=(...)` | |
+| `hold = pick at (...) facing (...)` | `HoldAction=pick` + `Holdable=true` + `HoldPosition=(...)` + `HoldRotation=(...)` | Oggetto da `element = ...` |
+| `hold = pick obj at (...) facing (...)` | `HoldAction=pick` + `Holdable=true` + `Element=obj` + `HoldPosition=(...)` + `HoldRotation=(...)` | Forma legacy (obj inline) |
 | `element = X` + `after : key = val` (no tool, no do, no auto/machine) | `Element=X` + `Button=X` + `AfterClick=key=val` (poi espanso) | trigger compatto auto-advance |
 | `element = X` + `do : ...` (no tool, no auto/machine) | `Element=X` + `Action${n}=...` + `ActiveButtons=meshName` + `AcceptTrigger_Physical=X` | clic → animazione (no AutoAdvance) |
 | `element = X repeat N` + `do :` o `animation =` | `+ AnimatedMaxTriggers=N` | multi-trigger frame |

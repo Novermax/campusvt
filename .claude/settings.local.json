@@ -96,7 +96,9 @@
       "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --no-sandbox --no-pdf-header-footer --print-to-pdf=\"C:\\\\Users\\\\mloffredo\\\\campus_virtual_training\\\\docs\\\\Manuale_Demo_ACCORD500.pdf\" \"file:///C:/Users/mloffredo/campus_virtual_training/docs/_Manuale_Demo_ACCORD500.html\")",
       "Bash(del _set_admin.py)",
       "Bash(awk 'NR>=40')",
-      "PowerShell(Out-Null *)"
+      "PowerShell(Out-Null *)",
+      "PowerShell(& powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File \"C:\\\\Users\\\\mloffredo\\\\campus_virtual_training\\\\host-portatile\\\\CampusHost.ps1\" -ErrorAction Continue 2>&1 | Select-Object -First 20)",
+      "PowerShell(Stop-Process *)"
     ],
     "deny": [],
     "ask": [],

@@ -1,0 +1,36 @@
+Ci sono due problemi da correggere nel parser/generatore dei comandi.
+
+1. Comando position
+
+Input:
+
+position = a500.Basamento_Portale_CarroY at (0, 0, 2.623)
+
+Attualmente non viene riconosciuto perché a500.Basamento_Portale_CarroY è un modello/oggetto annidato (nested model).
+
+Il parser deve supportare riferimenti gerarchici composti da più livelli separati da . e non assumere che il nome dell'oggetto sia un singolo identificatore.
+
+Esempio valido:
+
+position = a500.Basamento_Portale_CarroY at (0, 0, 2.623)
+
+dove:
+
+a500 è il modello padre
+Basamento_Portale_CarroY è un elemento interno del modello
+l'intera stringa a500.Basamento_Portale_CarroY deve essere interpretata come riferimento all'oggetto target
+
+2. Comando after
+
+Input attuale:
+
+after : tool = tool0
+
+In questo contest, se lo voglio mettere all'inizio della section non esiste alcun trigger/evento a cui agganciare l'istruzione, quindi l'uso di after è semanticamente errato, infatti non viene considerate
+
+
+La sintassi corretta deve essere:
+
+do : tool = tool0
+
+oppure l'equivalente previsto dal DSL per eseguire direttamente l'azione senza trigger.

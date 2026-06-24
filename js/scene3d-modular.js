@@ -1648,6 +1648,28 @@ const Scene3D = {
         }
     },
 
+    /**
+     * Verifica se il click cade dentro il cerchio di evidenziazione di un pulsante.
+     * Usato come fallback quando il raycast manca la mesh sottile del pulsante/elemento.
+     * @param {MouseEvent} event
+     * @param {string} triggerId - id del cerchio (es. "a500.porta" o "pulpito.Pulsante_mdi")
+     * @returns {boolean}
+     */
+    _isClickWithinButtonCircle: function(event, triggerId) {
+        if (!this.highlightCircleManager || !this.highlightCircleManager.circles) return false;
+        const circleData = this.highlightCircleManager.circles.get(triggerId);
+        if (!circleData) return false;
+        const { element } = circleData;
+        if (!element || element.style.display === 'none') return false;
+        const cx = parseFloat(element.style.left);
+        const cy = parseFloat(element.style.top);
+        if (isNaN(cx) || isNaN(cy)) return false;
+        const radius = circleData.size / 2;
+        const dx = event.clientX - cx;
+        const dy = event.clientY - cy;
+        return (dx * dx + dy * dy) <= (radius * radius);
+    },
+
     handleModelClick: function(event) {
         // Verifica se le interazioni sono bloccate dopo completamento tutorial
         if (this.tutorialTracker.interactionsBlocked) {
@@ -1685,11 +1707,24 @@ const Scene3D = {
                 if (window.InteractiveObject3D.highlightedButtons && window.InteractiveObject3D.highlightedButtons.size > 0) {
                     for (const [triggerId, mesh] of window.InteractiveObject3D.highlightedButtons) {
                         const directHits = this.raycaster.intersectObject(mesh, true);
-                        if (directHits.length > 0) {
-                            console.log(`[Scene3D] 🎮 FALLBACK: Click su pulsante evidenziato "${mesh.name}" tramite raycast diretto`);
+                        const withinCircle = this._isClickWithinButtonCircle(event, triggerId);
+                        if (directHits.length > 0 || withinCircle) {
+                            console.log(`[Scene3D] 🎮 FALLBACK: Click su pulsante evidenziato "${mesh.name}" tramite ${withinCircle ? 'cerchio' : 'raycast diretto'}`);
                             const handled = window.InteractiveObject3D.handleClick(mesh);
                             if (handled) {
                                 console.log(`[Scene3D] ✅ FALLBACK: Click gestito da InteractiveObject3D`);
+                                return;
+                            }
+                            // FALLBACK SECONDARIO: la mesh è evidenziata ma non registrata come
+                            // InteractiveChild (es. a500.porta — emesso da v3 come AcceptTrigger_Physical
+                            // senza dichiarazione in objects.ini). Rotta verso handleModelAction sul
+                            // root model, come avviene per il click diretto sulla mesh.
+                            const rootForAction = this.findRootModel(mesh);
+                            if (rootForAction && this.isModelSelectable(rootForAction)) {
+                                console.log(`[Scene3D] 🟡 FALLBACK→handleModelAction: "${mesh.name}" non interattivo → uso root "${rootForAction.name}"`);
+                                if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
+                                    this.handleModelAction(rootForAction);
+                                }
                                 return;
                             }
                         }
@@ -1752,6 +1787,40 @@ const Scene3D = {
                 return; // Non proseguire con azione normale del modello
             }
             
+            // CERCHIO OVERRIDE: se il click cade dentro un cerchio "elemento_" attivo,
+            // usa il modello del cerchio anche se il raycast ha colpito un'altra mesh.
+            // Risolve il caso in cui l'elemento evidenziato è sottile (es. porta
+            // aperta vista di taglio) e il raycast finisce sul pavimento dietro.
+            let circleRootOverride = null;
+            if (this.highlightCircleManager && this.highlightCircleManager.circles.size > 0) {
+                for (const [triggerId, circleData] of this.highlightCircleManager.circles) {
+                    if (!triggerId.startsWith('elemento_')) continue;
+                    const { element, mesh } = circleData;
+                    if (!mesh || !element || element.style.display === 'none') continue;
+                    const cx = parseFloat(element.style.left);
+                    const cy = parseFloat(element.style.top);
+                    if (isNaN(cx) || isNaN(cy)) continue;
+                    const radius = circleData.size / 2;
+                    const dx = event.clientX - cx;
+                    const dy = event.clientY - cy;
+                    if (Math.sqrt(dx * dx + dy * dy) <= radius) {
+                        const circleRoot = this.findRootModel(mesh);
+                        if (circleRoot && this.isModelSelectable(circleRoot)) {
+                            circleRootOverride = circleRoot;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (circleRootOverride && circleRootOverride !== targetModel) {
+                console.log(`[Scene3D] 🟡 CERCHIO OVERRIDE: Click dentro cerchio elemento "${circleRootOverride.name}" (raycast aveva colpito "${targetModel?.name || 'altro'}")`);
+                if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
+                    this.handleModelAction(circleRootOverride);
+                }
+                return;
+            }
+
             if (targetModel && this.isModelSelectable(targetModel)) {
                 console.log(`[Scene3D] 🎯 Click rilevato su modello: ${targetModel.name}`);
 
@@ -1775,11 +1844,22 @@ const Scene3D = {
             if (window.InteractiveObject3D && window.InteractiveObject3D.highlightedButtons && window.InteractiveObject3D.highlightedButtons.size > 0) {
                 for (const [triggerId, mesh] of window.InteractiveObject3D.highlightedButtons) {
                     const directHits = this.raycaster.intersectObject(mesh, true);
-                    if (directHits.length > 0) {
-                        console.log(`[Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "${mesh.name}" tramite raycast diretto`);
+                    const withinCircle = this._isClickWithinButtonCircle(event, triggerId);
+                    if (directHits.length > 0 || withinCircle) {
+                        console.log(`[Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "${mesh.name}" tramite ${withinCircle ? 'cerchio' : 'raycast diretto'}`);
                         const handled = window.InteractiveObject3D.handleClick(mesh);
                         if (handled) {
                             console.log(`[Scene3D] ✅ FALLBACK VUOTO: Click gestito da InteractiveObject3D`);
+                            return;
+                        }
+                        // FALLBACK SECONDARIO: mesh evidenziata ma non InteractiveChild
+                        // (es. a500.porta). Rotta verso handleModelAction sul root model.
+                        const rootForAction = this.findRootModel(mesh);
+                        if (rootForAction && this.isModelSelectable(rootForAction)) {
+                            console.log(`[Scene3D] 🟡 FALLBACK VUOTO→handleModelAction: "${mesh.name}" non interattivo → uso root "${rootForAction.name}"`);
+                            if (!this.dragDropSystem || !this.dragDropSystem.enabled) {
+                                this.handleModelAction(rootForAction);
+                            }
                             return;
                         }
                     }
@@ -4246,8 +4326,26 @@ const Scene3D = {
         });
     },
 
+    /**
+     * Risolve un riferimento a modello che può essere annidato (dot notation).
+     * Es: "a500" → modello root, "a500.Basamento_Portale_CarroY" → child interno.
+     * Prova prima il nome completo (per modelli con punti nel nome), poi
+     * split al primo punto come padre.figlio.
+     */
+    resolveModelRef: function(name) {
+        let obj = this.findModelByName(name);
+        if (!obj) {
+            const dotIdx = name.indexOf('.');
+            if (dotIdx !== -1) {
+                obj = this.findModelByName(name.substring(0, dotIdx), name.substring(dotIdx + 1));
+            }
+        }
+        return obj;
+    },
+
     applyModelPosition: function(key, value) {
         // Parsing: Posizione=modello.glb:(-2,0,0) o Posizione=(-2,0,0) (per tutti i modelli)
+        // Supporta riferimenti annidati: Posizione=a500.Basamento_Portale_CarroY:(0,0,2.623)
         let modelName = null;
         let positionValue = value;
         
@@ -4274,8 +4372,8 @@ const Scene3D = {
         
         // Applica la posizione
         if (modelName) {
-            // Applica a modello specifico
-            const model = this.findModelByName(modelName);
+            // Applica a modello specifico (anche annidato: padre.figlio)
+            const model = this.resolveModelRef(modelName);
             if (model) {
                 // DEBUG: Log speciale per viti_culatta
                 if (modelName.includes('vite_culatta')) {
@@ -4331,8 +4429,8 @@ const Scene3D = {
         
         // Applica la rotazione
         if (modelName) {
-            // Applica a modello specifico
-            const model = this.findModelByName(modelName);
+            // Applica a modello specifico (anche annidato: padre.figlio)
+            const model = this.resolveModelRef(modelName);
             if (model) {
                 model.rotation.copy(rotation);
                 console.log(`🔧 MODEL: Rotazione applicata a "${modelName}": (${angles[0]}°, ${angles[1]}°, ${angles[2]}°)`);

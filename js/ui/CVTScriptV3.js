@@ -210,18 +210,25 @@
     }
 
     /**
-     * Espande `hold = pick obj at (...) facing (...)` o `hold = held obj` o `hold = release`.
+     * Espande la riga `hold = ...` nelle forme:
+     *   - `pick at (...) facing (...)`        ← forma corrente: l'oggetto viene da `element = ...`
+     *   - `pick obj at (...) facing (...)`    ← forma legacy: oggetto inline (emette Element)
+     *   - `held`                              ← forma corrente: oggetto da `element = ...`
+     *   - `held obj`                          ← forma legacy
+     *   - `release`
      */
     function expandHoldLine(value) {
         const out = [];
         const v = value.trim();
         let m;
-        if ((m = v.match(/^pick\s+(\S+)(?:\s+at\s+\(([^)]+)\))?(?:\s+facing\s+\(([^)]+)\))?$/i))) {
+        if ((m = v.match(/^pick(?:\s+(?!at\b|facing\b)(\S+))?(?:\s+at\s+\(([^)]+)\))?(?:\s+facing\s+\(([^)]+)\))?$/i))) {
             out.push('HoldAction=pick');
             out.push('Holdable=true');
-            out.push(`Element=${m[1]}`);
+            if (m[1]) out.push(`Element=${m[1]}`);
             if (m[2]) out.push(`HoldPosition=(${cleanCoords(m[2])})`);
             if (m[3]) out.push(`HoldRotation=(${cleanCoords(m[3])})`);
+        } else if (/^held$/i.test(v)) {
+            out.push('HoldState=held');
         } else if ((m = v.match(/^held\s+(\S+)$/i))) {
             out.push('HoldState=held');
             out.push(`Element=${m[1]}`);
@@ -491,9 +498,25 @@
             const doMatch = trimmed.match(/^do\s*:\s*(.+)$/);
             if (doMatch) {
                 v3Detected = true;
+                const doValue = doMatch[1].trim();
+
+                // `do : key = val [; key2 = val2]` → set di stato DIRETTO (nessun trigger).
+                // Forma corretta per cambi di stato a inizio sezione o in step automatici,
+                // dove `after :` sarebbe semanticamente errato (nessun evento a cui agganciarsi).
+                // Emette AutoSetVariant in place: a livello sezione diventa proprietà del
+                // tutorial (applicata alla selezione), a livello step proprietà dello step.
+                if (/^[\w.]+\s*=\s*[\w.]+(\s*;\s*[\w.]+\s*=\s*[\w.]+)*$/.test(doValue)) {
+                    const assigns = doValue.split(';')
+                        .map(p => p.trim().replace(/^state\./i, '').replace(/\s*=\s*/, '='))
+                        .filter(Boolean)
+                        .join(';');
+                    out.push(`AutoSetVariant=${assigns}`);
+                    continue;
+                }
+
                 actionCounter++;
                 stepDoCount++;
-                out.push(`Action${actionCounter}=${normalizeProseAction(doMatch[1].trim())}`);
+                out.push(`Action${actionCounter}=${normalizeProseAction(doValue)}`);
                 continue;
             }
 

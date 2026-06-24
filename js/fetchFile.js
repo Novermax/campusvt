@@ -14,6 +14,23 @@
  * ============================================================================
  */
 
+// ============================================================================
+// CONFIG MODELLI - Worker autenticato per produzione (GitHub Pages)
+// ============================================================================
+// In locale (Electron file:// o localhost) i modelli .glb vengono serviti
+// direttamente dal filesystem / server locale. In produzione (GitHub Pages,
+// che NON serve i file .glb pesanti) le richieste di modelli vengono
+// instradate a un Cloudflare Worker autenticato tramite header X-API-Key.
+// ============================================================================
+window.MODELS_WORKER_BASE = 'https://campusvt-models.mloffredo.workers.dev/models/';
+window.MODELS_API_KEY = 'cVt-SCM-2024-xK9mP3qL7nR2';
+
+// Rilevamento ambiente: locale (Electron/localhost) vs remoto (GitHub Pages)
+window.IS_LOCAL = window.location.protocol === 'file:'
+    || window.location.hostname === 'localhost';
+
+console.log(`🌍 [fetchFile] Ambiente: ${window.IS_LOCAL ? 'LOCALE (modelli da filesystem)' : 'REMOTO (modelli da Worker autenticato)'}`);
+
 /**
  * Carica un file in modo compatibile con browser e Electron
  * @param {string|Request} url - URL del file (stringa o oggetto Request)
@@ -26,6 +43,40 @@ window.fetchFile = function(url, options = {}) {
     if (url instanceof Request) {
         actualUrl = url.url;
         console.log(`[fetchFile] 📦 Request object rilevato - URL estratto: ${actualUrl}`);
+    }
+
+    // ------------------------------------------------------------------
+    // PRODUZIONE (GitHub Pages): instrada i modelli .glb/.gltf al Worker
+    // autenticato. In locale questo blocco viene saltato e il file viene
+    // caricato normalmente dal filesystem / server locale.
+    // Escludiamo i blob: URL (già scaricati) e gli URL già verso il Worker.
+    // ------------------------------------------------------------------
+    if (!window.IS_LOCAL
+        && typeof actualUrl === 'string'
+        && /\.(glb|gltf)(\?|$)/i.test(actualUrl)
+        && !actualUrl.startsWith('blob:')
+        && actualUrl.indexOf(window.MODELS_WORKER_BASE) === -1) {
+
+        // Estrai il nome file (preservando eventuale cache-buster ?v=...)
+        const qIndex = actualUrl.indexOf('?');
+        const query = qIndex >= 0 ? actualUrl.slice(qIndex) : '';
+        const pathOnly = qIndex >= 0 ? actualUrl.slice(0, qIndex) : actualUrl;
+        const fileName = pathOnly.split('/').pop();
+        const workerUrl = window.MODELS_WORKER_BASE + fileName + query;
+
+        // Aggiungi header di autenticazione mantenendo eventuali header esistenti
+        const authOptions = Object.assign({}, options, {
+            headers: Object.assign({}, options.headers, {
+                'X-API-Key': window.MODELS_API_KEY
+            })
+        });
+
+        console.log(`[fetchFile] 🔐 Modello instradato al Worker: ${actualUrl} → ${workerUrl}`);
+
+        // Fetch autenticato verso il Worker. Il chiamante esistente converte
+        // la Response in blob → File → objectURL → GLTFLoader → revoke.
+        const realFetch = window.__originalFetch || window.fetch;
+        return realFetch(workerUrl, authOptions);
     }
 
     // Rileva se siamo in Electron (protocollo file://)

@@ -2857,6 +2857,11 @@ window.UI = {
                         // Aggiungi la nuova direttiva all'array
                         currentTutorial.properties[key].push(value);
                         console.log(`📝 PARSER: ${key} multipla aggiunta: ${value} (totale: ${currentTutorial.properties[key].length})`);
+                    } else if (key === 'AutoSetVariant' && currentTutorial.properties[key]) {
+                        // Più righe `do : key = val` a livello sezione → unisci con ';'
+                        // (altrimenti l'ultima sovrascriverebbe le precedenti)
+                        currentTutorial.properties[key] += ';' + value;
+                        console.log(`📝 PARSER: AutoSetVariant sezione accumulato: ${currentTutorial.properties[key]}`);
                     } else {
                         // Per tutte le altre proprietà, comportamento normale
                         currentTutorial.properties[key] = value;
@@ -2894,8 +2899,13 @@ window.UI = {
                 }
                 // Se siamo in uno step, sono proprietà dello step
                 else if (currentStep) {
-                    currentStep.properties[key] = value;
-                    
+                    if (key === 'AutoSetVariant' && currentStep.properties[key]) {
+                        // Più righe `do : key = val` nello stesso step → unisci con ';'
+                        currentStep.properties[key] += ';' + value;
+                    } else {
+                        currentStep.properties[key] = value;
+                    }
+
                     // Parsing specifico per proprietà speciali
                     if (key === 'CameraPos') {
                         // NUOVO: Supporta sia coordinate assolute che relative a elementi
@@ -2995,17 +3005,21 @@ window.UI = {
         this.availableTutorials = tutorials;
         
         // Se c'è almeno un tutorial, seleziona il primo come default
-        if (tutorials.length > 0) {
+        // (saltato quando il chiamante imposta this._suppressAutoSelect = true,
+        // es. l'editor che ricarica il testo a ogni edit e gestisce manualmente
+        // sezione + step: senza questo flag, ogni re-parse schedulerebbe un
+        // auto-exec dello Step 1 che sovrascrive la camera del jumpToStep).
+        if (tutorials.length > 0 && !this._suppressAutoSelect) {
             // NUOVO: Resetta il tracker del tutorial per nuovo scenario
             if (window.Scene3D && window.Scene3D.resetTutorialTracker) {
                 window.Scene3D.resetTutorialTracker();
             }
-            
+
             this.selectTutorial(0);
             // L'evidenziazione del primo elemento ora avviene dopo il caricamento dei modelli
             // in onModelLoadComplete() per garantire che i modelli siano disponibili
         }
-        
+
         return tutorials;
     },
 
@@ -3267,10 +3281,18 @@ window.UI = {
     /**
      * Seleziona un tutorial specifico
      */
-    selectTutorial: function(tutorialIndex) {
+    selectTutorial: function(tutorialIndex, options) {
+        options = options || {};
         if (tutorialIndex < 0 || tutorialIndex >= this.availableTutorials.length) {
             AppConfig.log(1, `Indice tutorial non valido: ${tutorialIndex}`);
             return;
+        }
+        // Cancella eventuale auto-exec pendente da una selectTutorial precedente:
+        // senza questo, una nuova navigazione (es. editor che fa jumpToStep subito
+        // dopo selectTutorial) verrebbe sovrascritta dall'auto-exec del Step 1.
+        if (this._selectTutorialAutoTimeout) {
+            clearTimeout(this._selectTutorialAutoTimeout);
+            this._selectTutorialAutoTimeout = null;
         }
 
         // IMPORTANTE: Reset silhouette da tutorial precedente
@@ -3423,7 +3445,8 @@ window.UI = {
         this.updateStepSpeechBubble();
         
         // Evidenzia il primo elemento del tutorial appena selezionato
-        setTimeout(async () => {
+        this._selectTutorialAutoTimeout = setTimeout(async () => {
+            this._selectTutorialAutoTimeout = null;
             // Se i modelli 3D non sono ancora caricati (auto-select dopo loadTutorial,
             // ma loadModels async non ha ancora finito), rinvia tutto a onModelLoadComplete:
             // highlightCurrentTutorialElement cerca il modello in Scene3D.loadedModels e
@@ -3434,6 +3457,14 @@ window.UI = {
             if (!modelsReady) {
                 this._pendingAutoSelectTutorialIndex = tutorialIndex;
                 AppConfig.log(2, `🎯 selectTutorial(${tutorialIndex}): modelli non ancora pronti, esecuzione step 0 rinviata a onModelLoadComplete`);
+                return;
+            }
+
+            // L'editor controlla manualmente lo step da mostrare: saltiamo
+            // applyTutorialCameraSettings e l'auto-exec dello Step 1 per non
+            // sovrascrivere la camera del jumpToStep che arriva subito dopo.
+            if (options.skipAutoExec) {
+                AppConfig.log(2, `🎯 selectTutorial(${tutorialIndex}): skipAutoExec=true → nessun auto-exec`);
                 return;
             }
 
@@ -3612,6 +3643,19 @@ window.UI = {
         // v2: LoadState → carica file .cvtstate esterno
         if (props.LoadState) {
             await this._v2LoadAndApplyState(props.LoadState);
+        }
+
+        // v3: `do : key = val` a livello sezione → AutoSetVariant di sezione,
+        // applicato subito alla selezione del tutorial (nessun trigger richiesto)
+        if (props.AutoSetVariant && window.InteractiveObject3D) {
+            props.AutoSetVariant.split(';').forEach(variantDecl => {
+                const match = variantDecl.trim().match(/^(\w+)=(\w+)$/);
+                if (match) {
+                    const [, groupName, variantName] = match;
+                    console.log(`🔀 TUTORIAL: AutoSetVariant sezione: ${groupName}=${variantName}`);
+                    window.InteractiveObject3D.setStateVariant(groupName, variantName);
+                }
+            });
         }
 
         let hasModelSettings = false;

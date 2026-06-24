@@ -1,836 +1,398 @@
-:8000/scenes/homeconfig_ita.ini?v=1780259208475:1  Failed to load resource: the server responded with a status of 404 (File not found)
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: Material.017 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.017 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: Material.018 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.018 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: Material.045 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.045 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: Material.046 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: Material.046 colorSum=0
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 0
- 🎨 NUOVO COLORE: 7c7c7c
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: nero.006 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
- 🎨 Color sum: 0.06933585740625858
- 🔍 Controllo material: nero.006 colorSum=0.06933585740625858
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.006
- ✅ Materiale corretto: Object
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 2/4 caricato: pulpito.glb
- 🌐 Progress: 2/4 - pulpito.glb
- 📊 Progress aggiornato: 50% - pulpito.glb
- 🚀 Tutorial avviato dall'utente - evidenzio primo elemento
- 📹 TUTORIAL: CameraPos globale = (0.97,1.25,3.92)
- 📹 TUTORIAL: CameraTarget globale = (0.97,1.15,3.52)
- 📹 TUTORIAL: Applicazione impostazioni camera globali per "Manutenzione Elettromandrino - lubrificazione"
- 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
- 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
- 📹 CAMERA: Durata transizione = 2s
- 📹 CAMERA: Avvio animazione camera (durata: 2s)
- 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
- 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_mdi"
- ✅ HIGHLIGHT: Trovato child "Pulsante_mdi" da evidenziare
- 🔍 HIGHLIGHT: Evidenzio: Pulsante_mdi
- 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_mdi
- 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_mdi (non bloccato, colore=0xffff00)
- 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
- 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_mdi" (originalmente invisibile, mantengo invisibile)
- [10:32:07 PM] INFO: 🎯 AUTO-EXEC: Esecuzione automatica Step 1
- [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 1 - Vai alla schermata MDI"
+:8000/favicon.png:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/scenes/homeconfig_ita.ini?v=1780996242735:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+ 🔄 ROTATE AROUND CENTER porta: progress=0.945, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.945): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.241, -0.004, 6.049)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.957, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.957): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.188, -0.004, 6.112)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.967, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.967): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.140, -0.004, 6.166)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.976, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.976): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.097, -0.004, 6.213)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.984, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.984): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.060, -0.004, 6.253)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.990, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.990): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.029, -0.004, 6.285)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.995, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.995): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (-0.006, -0.004, 6.309)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=0.998, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=0.998): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (0.010, -0.004, 6.325)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=1.000, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=1.000): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (0.019, -0.004, 6.334)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=false
+ 🔄 ROTATE AROUND CENTER porta: progress=1.000, currentRotation= Euler modelCenter= Vector3
+ 🔍 DEBUG POSITIONS: initialPos= Vector3 targetPos= Vector3
+ 🔍 LINEAR MOVEMENT (progress=1.000): Vector3
+ 🔄 MultiStep rotazione attorno a pivot (3.195, 1.261, 3.175): nuova pos (0.020, -0.004, 6.335)
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=porta, hasTranslation=false, hasRotation=true, finished=true
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 16
+ [DEBUG] ⏭️ Navigazione a step: "Step 17 - Guarda verso il naso dell'elettromandrino"
+ [11:11:23 AM] INFO: Navigazione a step 17: Step 17 - Guarda verso il naso dell'elettromandrino
+ [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ [UI] 🧹 Rimossa evidenziazione modello corrente
+ 💡 [InteractiveObject3D] Rimozione 1 evidenziazioni pulsanti
+ 💡 [InteractiveObject3D] ✓ Materiale 0 ripristinato (opacity: 1, transparent: false)
+ 💡 [InteractiveObject3D] ✓ Evidenziazione rimossa da "porta"
+ 🔵 [HighlightCircleManager] Cerchio rimosso per "a500.porta"
+ 🔵 [InteractiveObject3D] Cerchio rimosso per "a500.porta"
+ [UI] 🧹 Rimosse evidenziazioni pulsanti
+ 🔵 [HighlightCircleManager] Rimozione 0 cerchi
+ [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 17 - Guarda verso il naso dell'elettromandrino"
  [DEBUG] 🚀 Step properties: Object
- [10:32:07 PM] INFO: Esecuzione step: Step 1 - Vai alla schermata MDI Object
+ [11:11:23 AM] INFO: Esecuzione step: Step 17 - Guarda verso il naso dell'elettromandrino Object
  📷 [UI] Pulsante reset camera nascosto
  📷 [UI] Reset stepCameraState per nuovo step
- [StepController] 📍 Step corrente: 0 Step 1 - Vai alla schermata MDI
- [StepController] 📋 Step 0 auto-configurato da proprietà:
- [StepController]    Triggers Physical: [pulpito.Pulsante_mdi]
- [StepController]    Actions Physical: 1 azioni
- [StepController]      1. setVariant: schermo=schermo002
- 🚦 [StepGating] Step -1 → 0 ("Step 1 - Vai alla schermata MDI")
- 🚦 [StepGating] Pulsanti attivi: [Pulsante_mdi]
- 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
- 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
- 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_mdi"
- 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 0
- 💡 [InteractiveObject3D] Oggetto non in registry, cercando modello "pulpito" nella scena...
- 💡 [InteractiveObject3D] ✓ Modello parent "pulpito" trovato nella scena, cercando child...
- 💡 [InteractiveObject3D] ✓ Trovata Mesh diretta: "Pulsante_mdi"
- 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
- 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_mdi
- 💡 [InteractiveObject3D] Mesh ha material: true
- 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
- 💡 [InteractiveObject3D] Material ha emissive: true
- 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
- 💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
- 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_mdi" evidenziato e aggiunto a highlightedButtons (totale: 1)
- 🔵 [HighlightCircleManager] Cerchio creato per "pulpito.Pulsante_mdi" (size: 80px, opacity: 0.2)
- 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "pulpito.Pulsante_mdi" con opacità 0.2
- 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 1 - Vai alla schermata MDI" con opacità 0.2
- 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
- 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
- 📹 CAMERA: Distance = 0.42
+ [StepController] 📍 Step corrente: 16 Step 17 - Guarda verso il naso dell'elettromandrino
+ [StepController] ⏭️ Step 16 skippato (nessun trigger definito)
+ 🚦 [StepGating] Step 15 → 16 ("Step 17 - Guarda verso il naso dell'elettromandrino")
+ [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
+ 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
+ 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ 🟡 [ToolsManager] ✓ Elemento tool trovato: 
+ 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon active required tool-highlight
+ 📹 CAMERA: Posizione assoluta (2.74, 1.34, 2.45)
+ 📹 CAMERA: Target assoluto (2.79, 1.27, 1.99)
+ 📹 CAMERA: Zoom = 0.59
+ 📹 CAMERA: Distance = 0.47
  📹 CAMERA: FOV = 75
  📹 CAMERA: Durata transizione = 2s
  📹 CAMERA: Avvio animazione camera (durata: 2s)
  [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
- 📷 [UI] CameraTransitionTime: 2s (2000ms)
- ✅ GLTF/GLB caricato con successo: Object
- 🎨 Fixing material: Matte Porcelain Tile Beige Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 1 1 1
- 🎨 Color sum: 3
- 🔍 Controllo material: Matte Porcelain Tile Beige colorSum=3
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: Object
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 3/4 caricato: pavimento.glb
- 🌐 Progress: 3/4 - pavimento.glb
- 📊 Progress aggiornato: 75% - pavimento.glb
- ✅ GLTF/GLB caricato con successo: Object
- 🎨 Fixing material: bianco.002 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: bianco.002 colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: nero.002 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.02311195246875286 0.02311195246875286 0.02311195246875286
- 🎨 Color sum: 0.06933585740625858
- 🔍 Controllo material: nero.002 colorSum=0.06933585740625858
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: nero.002
- ⚠️ Metalness troppo alta, riducendo
- ⚠️ Roughness troppo bassa, aumentando
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_4.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.1946178525686264 0.20507876574993134 0.1946178525686264
- 🎨 Color sum: 0.5943144708871841
- 🔍 Controllo material: mat_4.001 colorSum=0.5943144708871841
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_6.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.7874122262001038 0.7874122262001038 0.7874122262001038
- 🎨 Color sum: 2.3622366786003113
- 🔍 Controllo material: mat_6.001 colorSum=2.3622366786003113
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_7.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.013411748223006725 0.5225215554237366 0.013411748223006725
- 🎨 Color sum: 0.54934505186975
- 🔍 Controllo material: mat_7.001 colorSum=0.54934505186975
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_8.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.7304608821868896 0.16202940046787262 0
- 🎨 Color sum: 0.8924902826547623
- 🔍 Controllo material: mat_8.001 colorSum=0.8924902826547623
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_9.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.010022825561463833 0.010022825561463833 0.010022825561463833
- 🎨 Color sum: 0.0300684766843915
- 🔍 Controllo material: mat_9.001 colorSum=0.0300684766843915
- ⚠️ MATERIALE INVISIBILE! Correggendo colore da: 1a1a1a
- 🎨 NUOVO COLORE: 7c7c7c
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_10.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.7874122262001038 0.7874122262001038 0
- 🎨 Color sum: 1.5748244524002075
- 🔍 Controllo material: mat_10.001 colorSum=1.5748244524002075
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_11.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.4479883909225464 0.013411748223006725 0.013411748223006725
- 🎨 Color sum: 0.47481188736855984
- 🔍 Controllo material: mat_11.001 colorSum=0.47481188736855984
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_12.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.7874122262001038 0 0
- 🎨 Color sum: 0.7874122262001038
- 🔍 Controllo material: mat_12.001 colorSum=0.7874122262001038
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: mat_13.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.1946178525686264 0.20507876574993134 0.1946178525686264
- 🎨 Color sum: 0.5943144708871841
- 🔍 Controllo material: mat_13.001 colorSum=0.5943144708871841
- ✅ Colore OK, non modificato
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: vuoto Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: vuoto colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: Object
- 🎨 Fixing material: vuoto.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: vuoto.001 colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: Object
- 🎨 Fixing material: vuoto.002 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0.800000011920929 0.800000011920929 0.800000011920929
- 🎨 Color sum: 2.400000035762787
- 🔍 Controllo material: vuoto.002 colorSum=2.400000035762787
- ✅ Colore OK, non modificato
- ✅ Materiale corretto: Object
- 🎨 Fixing material: schermo_remote.001 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: schermo_remote.001 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: schermo_remote.001
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎨 Fixing material: schermo_remote.002 Type: MeshStandardMaterial Color: Color
- 🎨 Color RGB values: 0 0 0
- 🎨 Color sum: 0
- 🔍 Controllo material: schermo_remote.002 colorSum=0
- 🖤 MATERIALE INTENZIONALMENTE NERO - Non modificato: schermo_remote.002
- ⚠️ Metalness troppo alta, riducendo
- ✅ Materiale corretto: Object
- 🎯 GLTF/GLB processato, chiamando onSuccess
- ✅ Modello 4/4 caricato: remote.glb
- 🌐 Progress: 4/4 - remote.glb
- 📊 Progress aggiornato: 100% - remote.glb
- ✅ Caricamento completato: 4 successi, 0 fallimenti
- ✅ Tutti i modelli caricati, rendering finale...
- 🎨 Batch rendering completato
- 🌐 Modelli caricati, chiamando onModelLoadComplete: Array(4)
- [10:32:08 PM] INFO: Modelli caricati con successo: 4
- 🔍 Ricerca config per modello: "a500"
- 🔍 Files scenario disponibili: Array(5)
- 🔍 Test file "scenario_spindle_maintenance_description": modelName="a500", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/pulpito.glb": modelName="a500", fileName="pulpito", exactMatch=false, direction= Object
- 🔍 Test file "models/remote.glb": modelName="a500", fileName="remote", exactMatch=false, direction= Object
- 🔍 Test file "models/a500.glb": modelName="a500", fileName="a500", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "a500": models/a500.glb with direction: Object
- 🔍✅ Config trovato per "a500": Object
- 📐 Bounding box per undefined:
-    Min: (-4.109, -0.005, -1.835)
-    Max: (3.978, 2.793, 3.176)
-    Center: (-0.066, 1.394, 0.671)
-    Size: (8.086, 2.798, 5.011)
- 💾 Posizione iniziale salvata per modello: a500 - Centro BB: (-0.066, 1.394, 0.671)
- 📐 Bounding box per undefined:
-    Min: (-4.109, -0.005, -1.835)
-    Max: (3.978, 2.793, 3.176)
-    Center: (-0.066, 1.394, 0.671)
-    Size: (8.086, 2.798, 5.011)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: a500 - Centro BB: (-0.066, 1.394, 0.671)
- 🔍 [InteractiveObject3D] Child disponibili in "a500": Array(66)
- 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(0)
- 🔗 [InteractiveObject3D] Modello "a500" collegato con 0 figli interattivi
- 📋 [DEBUG] Gerarchia oggetti in "a500" (66 totali):
-    a500(G)
-      A500(M)
-        Basamento_BarraFissaDx(G)
-          Basamento_BarraFissaDx_1(M)
-          Basamento_BarraFissaDx_2(M)
-          Basamento_BarraFissaDx_3(M)
-        Basamento_BarraFissaSx(G)
-          Basamento_BarraFissaSx_1(M)
-          Basamento_BarraFissaSx_2(M)
-          Basamento_BarraFissaSx_3(M)
-        Basamento_BarraTondaAnteriore(M)
-        Basamento_BarreTonde_BarraDx(G)
-          Basamento_BarreTonde_BarraDx_1(M)
-          Basamento_BarreTonde_BarraDx_2(M)
-        Basamento_BarreTonde_BarraDx(2)(G)
-          Basamento_BarreTonde_BarraDx(2)_1(M)
-          Basamento_BarreTonde_BarraDx(2)_2(M)
-        Basamento_BarreTonde_BarraDx(3)(G)
-          Basamento_BarreTonde_BarraDx(3)_1(M)
-          Basamento_BarreTonde_BarraDx(3)_2(M)
-        Basamento_BarreTonde_BarraDx(4)(G)
-          Basamento_BarreTonde_BarraDx(4)001(M)
-          Basamento_BarreTonde_BarraDx(4)001_1(M)
-        Basamento_BarreTonde_BarraSx(M)
-        Basamento_BarreTonde_BarraSx(2)(G)
-          Basamento_BarreTonde_BarraSx(2)_1(M)
-          Basamento_BarreTonde_BarraSx(2)_2(M)
-        Basamento_BarreTonde_BarraSx(3)(G)
-          Basamento_BarreTonde_BarraSx(3)_1(M)
-          Basamento_BarreTonde_BarraSx(3)_2(M)
-        Basamento_BarreTonde_BarraSx(4)(G)
-          Basamento_BarreTonde_BarraSx(4)_1(M)
-          Basamento_BarreTonde_BarraSx(4)_2(M)
-        Basamento_Portale(M)
-          Basamento_Portale_BraccioQuadro(M)
-          Basamento_Portale_CarroY(M)
-            Basamento_Portale_CarroY_CarroZ(M)
-              Basamento_Portale_CarroY_CarroZ_Prisma(M)
-                Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa(G)
-                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_1(M)
-                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_2(M)
-                  Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna(G)
-                    Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna_1(M)
-                    Basamento_Portale_CarroY_CarroZ_Prisma_CuffiaPrismaFissa_CuffiaPrismaMobileEsterna_2(M)
-                Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC(M)
-                  Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB(G)
-                    Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB_1(M)
-                    Basamento_Portale_CarroY_CarroZ_Prisma_DeviceRotation_AsseC_DeviceRotation_AsseB_2(M)
-                    naso(M)
-                    tool1(G)
-                      A0001(M)
-                      A0001_1(M)
-            Basamento_Portale_CarroY_CarroZG(M)
-          Basamento_Portale_MagazzinoInternoX1(G)
-            Basamento_Portale_MagazzinoInternoX1_1(M)
-            Basamento_Portale_MagazzinoInternoX1_2(M)
-            Basamento_Portale_MagazzinoInternoX1_3(M)
-            tool0(G)
-              A0(M)
-              A0_1(M)
-          Basamento_Portale_MisuratoreAltezzaUtensileP(M)
-          Basamento_Portale_ProtezioneTraslante(G)
-            Basamento_Portale_ProtezioneTraslante_1(M)
-            Basamento_Portale_ProtezioneTraslante_2(M)
-            Basamento_Portale_ProtezioneTraslante_3(M)
-          porta(M)
- 🔧 [DEBUG] Trovati oggetti con "tool" nel nome: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "chiave": trovate 0/2 varianti
-    Varianti mancanti: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "start": trovate 0/2 varianti
-    Varianti mancanti: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "emergenza": trovate 0/2 varianti
-    Varianti mancanti: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "schermo": trovate 0/9 varianti
-    Varianti mancanti: Array(9)
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
-    Varianti mancanti: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
-    ✅ StateGroup "tool": TROVATO Group "tool1" (visibile)
-    ✅ StateGroup "tool": TROVATO Group "tool0" (nascosta)
- 🔀 [InteractiveObject3D] Collegate 2 mesh a StateGroups
- 🧭 Direction loaded for a500: Object
- 🔍 Ricerca config per modello: "pulpito"
- 🔍 Files scenario disponibili: Array(5)
- 🔍 Test file "scenario_spindle_maintenance_description": modelName="pulpito", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/pulpito.glb": modelName="pulpito", fileName="pulpito", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "pulpito": models/pulpito.glb with direction: Object
- 🔍✅ Config trovato per "pulpito": Object
- 📐 Bounding box per undefined:
-    Min: (0.739, 0.004, 3.460)
-    Max: (1.251, 1.276, 3.947)
-    Center: (0.995, 0.640, 3.703)
-    Size: (0.512, 1.273, 0.487)
- 💾 Posizione iniziale salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
- 📐 Bounding box per undefined:
-    Min: (0.739, 0.004, 3.460)
-    Max: (1.251, 1.276, 3.947)
-    Center: (0.995, 0.640, 3.703)
-    Size: (0.512, 1.273, 0.487)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pulpito - Centro BB: (0.995, 0.640, 3.703)
- 🔍 [InteractiveObject3D] Child disponibili in "pulpito": Array(39)
- 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(11)
-    ✓ Figlio interattivo (Mesh): "chiave0" (button)
-    ✓ Figlio interattivo (Mesh): "chiave1" (button)
-    ✓ Figlio interattivo (Mesh): "emergenza_off" (button)
-    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off001" (button)
-    ✓ Figlio interattivo (via Group "pstart0"): mesh "p_off001_1" (button)
-    ✓ Figlio interattivo (Group): "pstart0" (button)
-    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on001" (button)
-    ✓ Figlio interattivo (via Group "pstart1"): mesh "p_on001_1" (button)
-    ✓ Figlio interattivo (Group): "pstart1" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_electrospindle" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_LU" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_mdi" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_tool" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_WH" (button)
- 💡 [InteractiveObject3D] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1[0]
- 🔗 [InteractiveObject3D] Modello "pulpito" collegato con 10 figli interattivi
- 📋 [DEBUG] Gerarchia oggetti in "pulpito" (39 totali):
-    pulpito(G)
-      pulpito001(G)
-        telaio002(M)
-        telaio002_1(M)
-        chiave0(M)
-        chiave1(M)
-        emergenza_off(M)
-        emergenza_on001(M)
-        pstart0(G)
-          p_off001(M)
-          p_off001_1(M)
-        pstart1(G)
-          p_on001(M)
-          p_on001_1(M)
-        Pulsante_electrospindle(M)
-        Pulsante_LU(M)
-        Pulsante_mdi(M)
-        Pulsante_tool(M)
-        Pulsante_WH(M)
-        pulsanti001(G)
-          simbolini002(M)
-          simbolini002_1(M)
-          simbolini002_2(M)
-          simbolini002_3(M)
-          simbolini002_4(M)
-          simbolini002_5(M)
-          simbolini002_6(M)
-          simbolini002_7(M)
-          simbolini002_8(M)
-        schermo001(M)
-        schermo002(M)
-        schermo003(M)
-        schermo004(M)
-        schermo007(M)
-        schermo008(M)
-        schermo009(M)
-        schermo010(M)
-        schermo011(M)
-        tastiera(M)
- 🔧 [DEBUG] Trovati oggetti con "tool" nel nome: Array(1)
- 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
-    ✅ StateGroup "chiave": TROVATO Mesh "chiave0" (visibile)
-    ✅ StateGroup "chiave": TROVATO Mesh "chiave1" (nascosta)
- 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
-    ✅ StateGroup "start": TROVATO Group "pstart0" (nascosta)
-    ✅ StateGroup "start": TROVATO Group "pstart1" (visibile)
- 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
-    ✅ StateGroup "emergenza": TROVATO Mesh "emergenza_off" (visibile)
- [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
-    Varianti mancanti: Array(1)
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo001" (visibile)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo002" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo003" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo004" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo007" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo008" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo009" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo010" (nascosta)
-    ✅ StateGroup "schermo": TROVATO Mesh "schermo011" (nascosta)
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
-    Varianti mancanti: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔀 [InteractiveObject3D] Collegate 14 mesh a StateGroups
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo001, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo002, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo003, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo004, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo007, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo008, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo009, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo010, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: schermo011, emissiveIntensity=0.5
- 🏷️ [Scene3D] Trasparenza attivata per materiale: simbolini.002 su mesh simbolini002
- 💡 [Scene3D] Materiale luminoso potenziato: Luminoso.002 su mesh p_on001_1[0], emissiveIntensity=3
- 🧭 Direction loaded for pulpito: Object
- 🔍 Ricerca config per modello: "pavimento"
- 🔍 Files scenario disponibili: Array(5)
- 🔍 Test file "scenario_spindle_maintenance_description": modelName="pavimento", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/pulpito.glb": modelName="pavimento", fileName="pulpito", exactMatch=false, direction= Object
- 🔍 Test file "models/remote.glb": modelName="pavimento", fileName="remote", exactMatch=false, direction= Object
- 🔍 Test file "models/a500.glb": modelName="pavimento", fileName="a500", exactMatch=false, direction= Object
- 🔍 Test file "models/pavimento.glb": modelName="pavimento", fileName="pavimento", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "pavimento": models/pavimento.glb with direction: Object
- 🔍✅ Config trovato per "pavimento": Object
- 📐 Bounding box per undefined:
-    Min: (-6.119, 0.000, -7.115)
-    Max: (8.110, 0.000, 7.115)
-    Center: (0.996, 0.000, 0.000)
-    Size: (14.229, 0.000, 14.229)
- 💾 Posizione iniziale salvata per modello: pavimento - Centro BB: (0.996, 0.000, 0.000)
- 📐 Bounding box per undefined:
-    Min: (-6.119, 0.000, -7.115)
-    Max: (8.110, 0.000, 7.115)
-    Center: (0.996, 0.000, 0.000)
-    Size: (14.229, 0.000, 14.229)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: pavimento - Centro BB: (0.996, 0.000, 0.000)
- 📋 [DEBUG] Gerarchia oggetti in "pavimento" (2 totali):
-    pavimento(G)
-      Plane001(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "pavimento"
- 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
-    Varianti mancanti: Array(1)
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "schermo_remote": trovate 0/2 varianti
-    Varianti mancanti: Array(2)
- 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🧭 Direction loaded for pavimento: Object
- 🔍 Ricerca config per modello: "remote"
- 🔍 Files scenario disponibili: Array(5)
- 🔍 Test file "scenario_spindle_maintenance_description": modelName="remote", fileName="scenario_spindle_maintenance_description", exactMatch=false, direction= null
- 🔍 Test file "models/pulpito.glb": modelName="remote", fileName="pulpito", exactMatch=false, direction= Object
- 🔍 Test file "models/remote.glb": modelName="remote", fileName="remote", exactMatch=true, direction= Object
- ✅ EXACT MATCH FOUND for "remote": models/remote.glb with direction: Object
- 🔍✅ Config trovato per "remote": Object
- 📐 Bounding box per undefined:
-    Min: (0.863, 0.779, 3.591)
-    Max: (1.094, 0.916, 3.653)
-    Center: (0.979, 0.848, 3.622)
-    Size: (0.231, 0.136, 0.062)
- 💾 Posizione iniziale salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
- 📐 Bounding box per undefined:
-    Min: (0.863, 0.779, 3.591)
-    Max: (1.094, 0.916, 3.653)
-    Center: (0.979, 0.848, 3.622)
-    Size: (0.231, 0.136, 0.062)
- 🏠 Posizione ORIGINALE SCENARIO salvata per modello: remote - Centro BB: (0.979, 0.848, 3.622)
- 🔍 [InteractiveObject3D] Child disponibili in "remote": Array(18)
- 🔍 [InteractiveObject3D] InteractiveChildren registrati: Array(3)
-    ✓ Figlio interattivo (Mesh): "pulsante_r_play" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_r_status" (button)
-    ✓ Figlio interattivo (Mesh): "Pulsante_r_unlock" (button)
- 🔗 [InteractiveObject3D] Modello "remote" collegato con 3 figli interattivi
- 📋 [DEBUG] Gerarchia oggetti in "remote" (18 totali):
-    remote(G)
-      remote(G)
-        07L0676941A_001002(M)
-        07L0676941A_001002_1(M)
-        07L0676941A_001002_2(M)
-        07L0676941A_001002_3(M)
-        07L0676941A_001002_4(M)
-        07L0676941A_001002_5(M)
-        07L0676941A_001002_6(M)
-        07L0676941A_001002_7(M)
-        07L0676941A_001002_8(M)
-        07L0676941A_001002_9(M)
-        07L0676941A_001002_10(M)
-        pulsante_r_play(M)
-        Pulsante_r_status(M)
-        Pulsante_r_unlock(M)
-        Schermo_R000(M)
-        Schermo_R001(M)
- 🔧 [DEBUG] NESSUN oggetto con "tool" nel nome trovato in "remote"
- 🔍 [DEBUG] Cercando varianti per StateGroup "chiave": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔍 [DEBUG] Cercando varianti per StateGroup "start": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔍 [DEBUG] Cercando varianti per StateGroup "emergenza": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- [InteractiveObject3D] StateGroup "emergenza": trovate 1/2 varianti
-    Varianti mancanti: Array(1)
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo": Array(9)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔍 [DEBUG] Cercando varianti per StateGroup "schermo_remote": Array(2)
-    ✅ StateGroup "schermo_remote": TROVATO Mesh "Schermo_R000" (visibile)
-    ✅ StateGroup "schermo_remote": TROVATO Mesh "Schermo_R001" (nascosta)
- 🔍 [DEBUG] Cercando varianti per StateGroup "tool": Array(2)
-    ⚠️ Nessun match esatto trovato, provo match parziale...
- 🔀 [InteractiveObject3D] Collegate 2 mesh a StateGroups
- 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R000, emissiveIntensity=0.5
- 🖥️ [Scene3D] Schermo auto-illuminato: Schermo_R001, emissiveIntensity=0.5
- 🧭 Direction loaded for remote: Object
- Pannello controlli visibilità modelli non trovato
- 📊 Progress bar modelli nascosta
- 🔓 Pulsanti tutorial riabilitati dopo caricamento 3D
- 🔧 DRAG&DROP: Salvataggio posizioni originali post-caricamento modelli
- [DragDropSystem] 📍 Memorizzata posizione originale per a500: (-0.066, 1.394, 0.671)
- [DragDropSystem] 📍 Memorizzata posizione originale per pulpito: (0.995, 0.640, 3.703)
- [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
- [DragDropSystem] 📍 Memorizzata posizione originale per remote: (0.979, 0.848, 3.622)
- [DragDropSystem] 📍 Memorizzata posizione originale per a500: (-0.066, 1.394, 0.671)
- [DragDropSystem] 📍 Memorizzata posizione originale per pulpito: (0.995, 0.640, 3.703)
- [DragDropSystem] 📍 Memorizzata posizione originale per pavimento: (0.996, 0.000, 0.000)
- [DragDropSystem] 📍 Memorizzata posizione originale per remote: (0.979, 0.848, 3.622)
- [DragDropSystem] ✅ Salvate 8 posizioni originali
- [InterchangeableTracker] ℹ️ AssemblySystem non in modalità assemblaggio - skip inizializzazione occupazioni
- 🔀 [UI] Ricerca varianti StateGroup in tutta la scena...
- 🔍 [InteractiveObject3D] Cercando varianti StateGroup in TUTTA la scena...
-    ✅ StateGroup "emergenza": MATCH PARZIALE in scena Mesh "emergenza_on001" → variante "emergenza_on" (nascosta)
- ✅ [InteractiveObject3D] StateGroup "chiave": tutte le 2 varianti trovate
- ✅ [InteractiveObject3D] StateGroup "start": tutte le 2 varianti trovate
- ✅ [InteractiveObject3D] StateGroup "emergenza": tutte le 2 varianti trovate
- ✅ [InteractiveObject3D] StateGroup "schermo": tutte le 9 varianti trovate
- ✅ [InteractiveObject3D] StateGroup "schermo_remote": tutte le 2 varianti trovate
- ✅ [InteractiveObject3D] StateGroup "tool": tutte le 2 varianti trovate
- 🔀 [InteractiveObject3D] Collegate 1 mesh a StateGroups dalla scena
- [10:32:08 PM] INFO: Scenario Manutenzione Elettromandrino caricato completamente
- 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
- 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_mdi"
- ✅ HIGHLIGHT: Trovato child "Pulsante_mdi" da evidenziare
- 🔍 HIGHLIGHT: Evidenzio: Pulsante_mdi
- 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_mdi
- 🔍 HIGHLIGHT: Rimozione highlight precedente
- 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_mdi (non bloccato, colore=0xffff00)
- 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
- 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_mdi" (originalmente invisibile, mantengo invisibile)
- 📷 [UI] Attesa completamento transizione camera: 2300ms
- 🎬 [UI] Animazione drammatica completata
- 🎬 [UI] Animazione drammatica completata
- 📹 CAMERA: Animazione completata
- [Scene3D] 📹 CAMERA INFO:
-   Position: (0.97, 1.25, 3.93)
-   Rotation: (-0.24, 0, 0)
-   Pivot Point: (0.97, 1.15, 3.52)
-   Distance to Pivot: 0.42
-   FOV: 75
-   Near/Far: 0.1/1000
- 
-📋 CVTScript v3 (copia e incolla):
-camera = position (0.97, 1.25, 3.93), target (0.97, 1.15, 3.52), pivot (0.97, 1.15, 3.52), zoom 0.42, fov 75, rotation (-0.24, 0, 0), fade 1.0
- 📷 [UI] Posizione camera memorizzata per step: Step 1 - Vai alla schermata MDI
- 📷 [UI] Camera state: Object
- 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
- [Scene3D] 🚀 startCursorAnimation() chiamato
- [Scene3D] 🔍 Tool attivo: null
- [Scene3D] ⚠️ Nessun tool attivo, esco
- [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
- [Scene3D] 🧹 Pulizia classi cursore...
- [Scene3D] ✅ Classi dopo pulizia: Array(0)
- [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
- [Scene3D] 🧹 Pulizia classi cursore...
- [Scene3D] ✅ Classi dopo pulizia: Array(0)
- [Scene3D] 🎮 Click su figlio interattivo: Pulsante_mdi
- 🖱️ [InteractiveObject3D] Click su "Pulsante_mdi" (parent: pulpito)
- 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_mdi (mesh: Pulsante_mdi) → setVariant:schermo=schermo002
- 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_mdi" dopo click
- 🔵 [HighlightCircleManager] Cerchio rimosso per "pulpito.Pulsante_mdi"
- 🔵 [InteractiveObject3D] Cerchio rimosso per "pulpito.Pulsante_mdi" dopo click
- [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_mdi"
- [StepController] 🔍 currentStepIndex=0
- [StepController] 🔍 stepConfigs.size=1
- [StepController] 🔍 stepConfigs.keys=[0]
- [StepController] 🔍 Configurazione trovata: Object
- [StepController] ✅ Trigger "pulpito.Pulsante_mdi" accettato da sorgente "physical"
- [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
- [StepController]    1. setVariant: Object
- [StepController] 🔀 setVariant: schermo=schermo002
- 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo001" → "schermo002"
- [StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni
- [StepController] ⏭️ Auto-avanzamento schedulato per step 0
-    ✓ Gestito da StepController
-    ⏭️ Azione locale "setVariant:schermo=schermo002" ignorata (già gestito da StepController)
- [Scene3D] ✅ Click gestito da InteractiveObject3D
- [Scene3D] 🛑 stopCursorAnimation() chiamato
- [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
- [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
- [StepController] ⏭️ Avanzamento allo step successivo
- [DEBUG] ⏭️ GOTO STEP chiamata con index: 1
+ 📷 [UI] Nessun elemento, CameraTransitionTime: 2s (2300ms)
+ [UI] 🤖 AutoExecute attivo per step: "Step 17 - Guarda verso il naso dell'elettromandrino"
+ [UI] ⚠️ AutoExecute: Nessun target valido per animazione
+ [UI] ⏭️ AutoAdvance=true → avanzo comunque
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 17
  [UI] 🚫 Cancellato timeout auto-avanzamento pendente
- [DEBUG] ⏭️ Navigazione a step: "Step 2 - Scarica l'utensile"
- [10:32:11 PM] INFO: Navigazione a step 2: Step 2 - Scarica l'utensile
+ [DEBUG] ⏭️ Navigazione a step: "Step 18 - Ingrassa con lo spray"
+ [11:11:23 AM] INFO: Navigazione a step 18: Step 18 - Ingrassa con lo spray
  [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
  [UI] 🧹 Rimossa evidenziazione modello corrente
  [UI] 🧹 Rimosse evidenziazioni pulsanti
  🔵 [HighlightCircleManager] Rimozione 0 cerchi
  [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
- 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
- [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 2 - Scarica l'utensile"
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 18 - Ingrassa con lo spray"
  [DEBUG] 🚀 Step properties: Object
- [10:32:11 PM] INFO: Esecuzione step: Step 2 - Scarica l'utensile Object
+ [11:11:23 AM] INFO: Esecuzione step: Step 18 - Ingrassa con lo spray Object
  📷 [UI] Pulsante reset camera nascosto
  📷 [UI] Reset stepCameraState per nuovo step
- [StepController] 📍 Step corrente: 1 Step 2 - Scarica l'utensile
- [StepController] 📋 Step 1 auto-configurato da proprietà:
- [StepController]    Triggers Physical: [pulpito.Pulsante_tool]
+ [StepController] 📍 Step corrente: 17 Step 18 - Ingrassa con lo spray
+ [StepController] ⏭️ Step 17 skippato (nessun trigger definito)
+ 🚦 [StepGating] Step 16 → 17 ("Step 18 - Ingrassa con lo spray")
+ 🚦 [StepGating] 📷 Camera SBLOCCATA per questo step
+ 📷 [StepGating] Camera SBLOCCATA - rotazione libera (minPhi=0.01, maxPhi=3.13)
+ 🟡 [ToolsManager] highlightRequiredTool chiamato per: "spray"
+ 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ 🟡 [ToolsManager] ✓ Elemento tool trovato: 
+ 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon required tool-highlight
+ 📹 CAMERA: Posizione assoluta (2.78, 0.91, 2.29)
+ 📹 CAMERA: Target assoluto (2.79, 1.27, 1.99)
+ 📹 CAMERA: Zoom = 0.59
+ 📹 CAMERA: Distance = 0.47
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ [11:11:23 AM] INFO: [UI] Mostrando modal informativo per step: Step 18 - Ingrassa con lo spray
+ [DEBUG] 📋 MODAL: Attendo chiusura modal per step "Step 18 - Ingrassa con lo spray" (DragDrop=undefined, isNavigating=true, _infoModalResolve=false)
+ [11:11:23 AM] INFO: [UI] Video aggiunto: media/lubelett.mp4
+ [11:11:23 AM] INFO: [UI] Modal informativo mostrato: "Usa lo spray lubrificante per ingrassare il naso d..."
+:8000/favicon.png:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+ 🎬 [UI] Animazione drammatica completata
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ 📹 CAMERA: Animazione completata
+ [Scene3D] 📹 CAMERA INFO:
+   Position: (2.78, 0.82, 2.37)
+   Rotation: (0.88, -0.02, 0.03)
+   Pivot Point: (2.79, 1.27, 1.99)
+   Distance to Pivot: 0.59
+   FOV: 75
+   Near/Far: 0.1/1000
+ 
+📋 CVTScript v3 (copia e incolla):
+camera = position (2.78, 0.82, 2.37), target (2.79, 1.27, 1.99), pivot (2.79, 1.27, 1.99), zoom 0.59, fov 75, rotation (0.88, -0.02, 0.03), fade 1.0
+ 📷 [UI] Posizione camera memorizzata per step (nessun elemento): Step 17 - Guarda verso il naso dell'elettromandrino
+ 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ [DEBUG] ✅ MODAL: Modal chiuso per step "Step 18 - Ingrassa con lo spray" - proseguo con esecuzione
+ [11:11:26 AM] INFO: [UI] Modal informativo chiuso
+ [DEBUG] 📋 hasOnlyMessage=false (Elemento=true, AssemblyMode=false, DragDrop=undefined)
+ [11:11:26 AM] INFO: [UI] Modal chiuso - continuo esecuzione step con azioni aggiuntive
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ 📷 [UI] CameraTransitionTime: 2s (2000ms)
+ 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
+ 🔍 HIGHLIGHT: TargetChild specificato: "naso"
+ ✅ HIGHLIGHT: Trovato child "naso" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: naso
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: naso
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per naso (non bloccato, colore=0xffff00)
+ 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "naso" (originalmente invisibile, mantengo invisibile)
+ 🔵 [HighlightCircleManager] Cerchio creato per "elemento_a500" (size: 60px, opacity: 0.7)
+ [UI] 🟡 Cerchio selezione creato per Elemento "a500" (TargetChild: naso)
+ 📷 [UI] Attesa completamento transizione camera: 2300ms
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [11:11:27 AM] INFO: [ToolsManager] Strumento attivato: spray
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: spray
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/spray_premuto.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: spray
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🌟 Modello evidenziato attivo: naso, cerco priorità...
+ [Scene3D] ✨ PRIORITA' SILHOUETTE OCCLUSA: "naso" selezionato attraverso geometria occludante
+ [Scene3D] Click su modello - ToolsManager: spray, Body class aria: false, Body class spray: true
+ [Scene3D] 🖤 Attivazione effetto spray su click (rilevato da body class)!
+ [Scene3D] 🖤 Spray nero dal cursore all'oggetto Object
+ [ParticleSystem] Getto aria creato: airJet_1780996288653
+ [ParticleSystem] 🖤 Spray nero creato: airJet_1780996288653
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [Scene3D] 📹 CAMERA INFO:
+   Position: (2.78, 0.82, 2.37)
+   Rotation: (0.88, -0.02, 0.03)
+   Pivot Point: (2.79, 1.27, 1.99)
+   Distance to Pivot: 0.59
+   FOV: 75
+   Near/Far: 0.1/1000
+ 
+📋 CVTScript v3 (copia e incolla):
+camera = position (2.78, 0.82, 2.37), target (2.79, 1.27, 1.99), pivot (2.79, 1.27, 1.99), zoom 0.59, fov 75, rotation (0.88, -0.02, 0.03), fade 1.0
+ 📷 [UI] Posizione camera memorizzata per step: Step 18 - Ingrassa con lo spray
+ 📷 [UI] Camera state: Object
+ 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ [DEBUG] 🎬 handleModelAction chiamato per: a500
+ [DEBUG] 📋 Current step: Step 18 - Ingrassa con lo spray
+ [DEBUG] 🎯 Model filename: "a500", Step element: "models/a500.glb", TargetChild: "naso"
+ [DEBUG] 🎯 Clean model: "a500", Clean step: "a500"
+ [DEBUG] 🔍 TARGETCHILD: Cercando child "naso" dentro "a500"
+ [DEBUG] ✅ TARGETCHILD: Trovato child "naso" (tipo: Mesh)
+ [DEBUG] 🔧 Tool required: "spray", active: "spray"
+ [DEBUG] ✅ Tutti i controlli passati - chiamando startModelAnimation
+ [Scene3D] 🎬 startModelAnimation: Modello da animare: "naso"
+ [Scene3D] 🎬 startModelAnimation: Usando parent "a500" per home_config
+ 🔍 [PARSE_STEPS] Inizio parsing per modelFilename="a500"
+ 🔍 [PARSE_STEPS] Proprietà disponibili: Array(20)
+ 🔍 [PARSE_STEPS] Trovata Azione1: "traslazione:(0,0,0,0.5)"
+ 🔍 [PARSE_STEPS] Step 1 parsato con successo: Object
+ 🔍 [PARSE_STEPS] Risultato finale: 1 step trovati
+ 🎬 startMultiStepMovement: MODELLO RICEVUTO: Object
+ 🔧 FIX GLB CHILD: Forzando matrixAutoUpdate e aggiornamento parent chain
+ 🔧 FIX GLB CHILD: matrixAutoUpdate=true, parent chain aggiornata
+ 🎬 executeCurrentMultiStep: ANIMANDO MODELLO: Object
+ 📐 Bounding box per undefined:
+    Min: (2.794, 1.552, 1.911)
+    Max: (2.827, 1.585, 1.944)
+    Center: (2.811, 1.569, 1.928)
+    Size: (0.033, 0.033, 0.033)
+ ✅ [ANIM_ADDED] Animazione aggiunta a activeAnimations!
+    Model: naso
+    hasTranslation: true, hasRotation: false
+    Totale animazioni attive: 1
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🎯 ANIM LOOP [naso]: progress=0.20, pos=(0.000, -0.008, 0.000), hasParent=true
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🎯 ANIM LOOP [naso]: progress=0.77, pos=(0.000, -0.008, 0.000), hasParent=true
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔍 ANIM DEBUG [naso]: hasTranslation=true, hasRotation=false, modelCenter=false, hasSvita=false, hasAvvita=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔍 ANIM DEBUG [naso]: hasTranslation=true, hasRotation=false, modelCenter=false, hasSvita=false, hasAvvita=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=false
+ 🔄 [UPDATE_ANIMS] Animazioni attive: 1
+    [0] model=naso, hasTranslation=true, hasRotation=false, finished=true
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 18
+ [DEBUG] ⏭️ Navigazione a step: "Step 19 - Cambia schermata sul tecpad"
+ [11:11:29 AM] INFO: Navigazione a step 19: Step 19 - Cambia schermata sul tecpad
+ [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ [UI] 🧹 Rimossa evidenziazione modello corrente
+ [UI] 🧹 Rimosse evidenziazioni pulsanti
+ 🔵 [HighlightCircleManager] Rimozione 1 cerchi
+ [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 19 - Cambia schermata sul tecpad"
+ [DEBUG] 🚀 Step properties: Object
+ [11:11:29 AM] INFO: Esecuzione step: Step 19 - Cambia schermata sul tecpad Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 18 Step 19 - Cambia schermata sul tecpad
+ [StepController] 📋 Step 18 auto-configurato da proprietà:
+ [StepController]    Triggers Physical: [remote.Pulsante_r_status]
  [StepController]    Actions Physical: 1 azioni
- [StepController]      1. setVariant: schermo=schermo003
- 🚦 [StepGating] Step 0 → 1 ("Step 2 - Scarica l'utensile")
- 🚦 [StepGating] Pulsanti attivi: [Pulsante_tool]
+ [StepController]      1. setVariant: schermo_remote=Schermo_R001
+ 🚦 [StepGating] Step 17 → 18 ("Step 19 - Cambia schermata sul tecpad")
+ 🚦 [StepGating] Pulsanti attivi: [Pulsante_r_status]
  💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
  💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
- 💡 [InteractiveObject3D] Cercando pulsante: parent="pulpito", button="Pulsante_tool"
- 💡 [InteractiveObject3D] ✓ Oggetto "pulpito" trovato in registry, childMeshes: 10
+ 💡 [InteractiveObject3D] Cercando pulsante: parent="remote", button="Pulsante_r_status"
+ 💡 [InteractiveObject3D] ✓ Oggetto "remote" trovato in registry, childMeshes: 3
  💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
  💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
- 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_tool
+ 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_r_status
  💡 [InteractiveObject3D] Mesh ha material: true
  💡 [InteractiveObject3D] Material type: MeshStandardMaterial
  💡 [InteractiveObject3D] Material ha emissive: true
  💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
  💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=1, opacity=0
  💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
- 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_tool" evidenziato e aggiunto a highlightedButtons (totale: 1)
- 🔵 [HighlightCircleManager] Cerchio creato per "pulpito.Pulsante_tool" (size: 80px, opacity: 0.2)
- 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "pulpito.Pulsante_tool" con opacità 0.2
- 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 2 - Scarica l'utensile" con opacità 0.2
- 📹 CAMERA: Posizione assoluta (0.97, 1.25, 3.92)
- 📹 CAMERA: Target assoluto (0.97, 1.15, 3.52)
- 📹 CAMERA: Distance = 0.42
+ 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_r_status" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ 🔵 [HighlightCircleManager] Cerchio creato per "remote.Pulsante_r_status" (size: 80px, opacity: 0.2)
+ 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "remote.Pulsante_r_status" con opacità 0.2
+ 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 19 - Cambia schermata sul tecpad" con opacità 0.2
+ [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
+ 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
+ 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ 🟡 [ToolsManager] ✓ Elemento tool trovato: 
+ 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon required tool-highlight
+ 📹 CAMERA: Posizione assoluta (2.78, 0.91, 2.29)
+ 📹 CAMERA: Target assoluto (2.79, 1.27, 1.99)
+ 📹 CAMERA: Zoom = 0.59
+ 📹 CAMERA: Distance = 0.47
  📹 CAMERA: FOV = 75
  📹 CAMERA: Durata transizione = 2s
  📹 CAMERA: Avvio animazione camera (durata: 2s)
  [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
  📷 [UI] CameraTransitionTime: 2s (2000ms)
  🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
- 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_tool"
- ✅ HIGHLIGHT: Trovato child "Pulsante_tool" da evidenziare
- 🔍 HIGHLIGHT: Evidenzio: Pulsante_tool
- 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_tool
- 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_tool (non bloccato, colore=0xffff00)
+ 🔍 HIGHLIGHT: TargetChild specificato: "Pulsante_r_status"
+ ✅ HIGHLIGHT: Trovato child "Pulsante_r_status" da evidenziare
+ 🔍 HIGHLIGHT: Evidenzio: Pulsante_r_status
+ 🔍 HIGHLIGHT: highlightModel() chiamata per: Pulsante_r_status
+ 🔍 HIGHLIGHT: ✅ APPLICAZIONE per Pulsante_r_status (non bloccato, colore=0xffff00)
  🔍 HIGHLIGHT: Modelli bloccati: Array(0)
- 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_tool" (originalmente invisibile, mantengo invisibile)
+ 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_r_status" (originalmente invisibile, mantengo invisibile)
  📷 [UI] Attesa completamento transizione camera: 2300ms
- 📹 CAMERA: Animazione completata
- 🎬 [UI] Animazione drammatica completata
- [Scene3D] 🚀 startCursorAnimation() chiamato
- [Scene3D] 🔍 Tool attivo: null
- [Scene3D] ⚠️ Nessun tool attivo, esco
  [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
  [Scene3D] 🧹 Pulizia classi cursore...
- [Scene3D] ✅ Classi dopo pulizia: Array(0)
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
  [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
  [Scene3D] 🧹 Pulizia classi cursore...
- [Scene3D] ✅ Classi dopo pulizia: Array(0)
- [Scene3D] 🎮 Click su figlio interattivo: Pulsante_tool
- 🖱️ [InteractiveObject3D] Click su "Pulsante_tool" (parent: pulpito)
- 🔘 [InteractiveObject3D] Button click: pulpito.Pulsante_tool (mesh: Pulsante_tool) → setVariant:schermo=schermo003
- 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_tool" dopo click
- 🔵 [HighlightCircleManager] Cerchio rimosso per "pulpito.Pulsante_tool"
- 🔵 [InteractiveObject3D] Cerchio rimosso per "pulpito.Pulsante_tool" dopo click
- [StepController] 🎯 Trigger ricevuto: source="physical", id="pulpito.Pulsante_tool"
- [StepController] 🔍 currentStepIndex=1
- [StepController] 🔍 stepConfigs.size=2
- [StepController] 🔍 stepConfigs.keys=[0, 1]
- [StepController] 🔍 Configurazione trovata: Object
- [StepController] ✅ Trigger "pulpito.Pulsante_tool" accettato da sorgente "physical"
- [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
- [StepController]    1. setVariant: Object
- [StepController] 🔀 setVariant: schermo=schermo003
- 🔀 [InteractiveObject3D] StateGroup "schermo": "schermo002" → "schermo003"
- [StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni
- [StepController] ⏭️ Auto-avanzamento schedulato per step 1
-    ✓ Gestito da StepController
-    ⏭️ Azione locale "setVariant:schermo=schermo003" ignorata (già gestito da StepController)
- [Scene3D] ✅ Click gestito da InteractiveObject3D
- [Scene3D] 🛑 stopCursorAnimation() chiamato
- [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(0)
- [Scene3D] 🔍 Stato DOPO: body.classList= Array(0)
- [Scene3D] 📹 CAMERA INFO:
-   Position: (0.97, 1.25, 3.93)
-   Rotation: (-0.24, 0, 0)
-   Pivot Point: (0.97, 1.15, 3.52)
-   Distance to Pivot: 0.42
-   FOV: 75
-   Near/Far: 0.1/1000
- 
-📋 CVTScript v3 (copia e incolla):
-camera = position (0.97, 1.25, 3.93), target (0.97, 1.15, 3.52), pivot (0.97, 1.15, 3.52), zoom 0.42, fov 75, rotation (-0.24, 0, 0), fade 1.0
- 📷 [UI] Posizione camera memorizzata per step: Step 2 - Scarica l'utensile
- 📷 [UI] Camera state: Object
- 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
- [StepController] ⏭️ Avanzamento allo step successivo
- [DEBUG] ⏭️ GOTO STEP chiamata con index: 2
- [UI] 🚫 Cancellato timeout auto-avanzamento pendente
- [DEBUG] ⏭️ Navigazione a step: "Step 3 - Prendi il telecomando Tecpad"
- [10:32:14 PM] INFO: Navigazione a step 3: Step 3 - Prendi il telecomando Tecpad
- [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
- [UI] 🧹 Rimossa evidenziazione modello corrente
- [UI] 🧹 Rimosse evidenziazioni pulsanti
- 🔵 [HighlightCircleManager] Rimozione 0 cerchi
- [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
- 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
- [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 3 - Prendi il telecomando Tecpad"
- [DEBUG] 🚀 Step properties: Object
- [10:32:14 PM] INFO: Esecuzione step: Step 3 - Prendi il telecomando Tecpad Object
- 📷 [UI] Pulsante reset camera nascosto
- 📷 [UI] Reset stepCameraState per nuovo step
- [StepController] 📍 Step corrente: 2 Step 3 - Prendi il telecomando Tecpad
- [StepController] ⏭️ Step 2 skippato (nessun trigger definito)
- 🚦 [StepGating] Step 1 → 2 ("Step 3 - Prendi il telecomando Tecpad")
- [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
- 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
- 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
- 🟡 [ToolsManager] ✓ Elemento tool trovato: 
- 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon required tool-highlight
- 📹 CAMERA: Posizione assoluta (1.17, 1.15, 4.12)
- 📹 CAMERA: Target assoluto (1.02, 0.83, 3.63)
- 📹 CAMERA: Zoom = 0.59
- 📹 CAMERA: Distance = 0.42
- 📹 CAMERA: FOV = 75
- 📹 CAMERA: Durata transizione = 1s
- 📹 CAMERA: Avvio animazione camera (durata: 1s)
- [UI] 📝 Registrazione oggetto "remote" come holdable
- [HoldableSystem] 📝 registerHoldable chiamato per: "remote"
- [HoldableSystem] 📝 Config ricevuta: Object
- [HoldableSystem] 📝 Stato sistema: initialized=true, camera=true
- [HoldableSystem] ✅ Oggetto registrato come prendibile: "remote" Object
- [HoldableSystem] 📊 Totale holdables: 1 Array(1)
- [UI] 🤚 HoldAction=pick configurato - in attesa click utente su elemento
- [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
- 📷 [UI] CameraTransitionTime: 1s (1000ms)
- 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
- 🔍 HIGHLIGHT: Evidenzio: remote
- 🔍 HIGHLIGHT: highlightModel() chiamata per: remote
- 🔍 HIGHLIGHT: ✅ APPLICAZIONE per remote (non bloccato, colore=0xffff00)
- 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
- 🔍 HIGHLIGHT: ⏭️ Skip mesh "pulsante_r_play" (originalmente invisibile, mantengo invisibile)
- 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_r_status" (originalmente invisibile, mantengo invisibile)
- 🔍 HIGHLIGHT: ⏭️ Skip mesh "Pulsante_r_unlock" (originalmente invisibile, mantengo invisibile)
- 🔵 [HighlightCircleManager] Cerchio creato per "elemento_remote" (size: 60px, opacity: 0.7)
- [UI] 🟡 Cerchio selezione creato per Elemento "remote"
- 📷 [UI] Attesa completamento transizione camera: 1300ms
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [11:11:30 AM] INFO: [ToolsManager] Strumento attivato: mano
+ [ParticleSystem] Effetto rimosso: airJet_1780996288653
  📹 CAMERA: Animazione completata
+ 🎬 [UI] Animazione drammatica completata
  [Scene3D] 📹 CAMERA INFO:
-   Position: (1.17, 1.14, 4.11)
-   Rotation: (-0.58, 0.25, 0.16)
-   Pivot Point: (1.02, 0.83, 3.63)
+   Position: (2.78, 0.82, 2.37)
+   Rotation: (0.88, -0.02, 0.03)
+   Pivot Point: (2.79, 1.27, 1.99)
    Distance to Pivot: 0.59
    FOV: 75
    Near/Far: 0.1/1000
  
 📋 CVTScript v3 (copia e incolla):
-camera = position (1.17, 1.14, 4.11), target (1.02, 0.83, 3.63), pivot (1.02, 0.83, 3.63), zoom 0.59, fov 75, rotation (-0.58, 0.25, 0.16), fade 1.0
- 📷 [UI] Posizione camera memorizzata per step: Step 3 - Prendi il telecomando Tecpad
+camera = position (2.78, 0.82, 2.37), target (2.79, 1.27, 1.99), pivot (2.79, 1.27, 1.99), zoom 0.59, fov 75, rotation (0.88, -0.02, 0.03), fade 1.0
+ 📷 [UI] Posizione camera memorizzata per step: Step 19 - Cambia schermata sul tecpad
  📷 [UI] Camera state: Object
  📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
- 🎬 [UI] Animazione drammatica completata
- [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
- [Scene3D] 🧹 Pulizia classi cursore...
- [Scene3D] ✅ Classi dopo pulizia: Array(0)
- [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
- [Scene3D] 🧹 Pulizia classi cursore...
- [Scene3D] ✅ Classi dopo pulizia: Array(0)
- [10:32:16 PM] INFO: [ToolsManager] Strumento attivato: mano
  [Scene3D] 🚀 startCursorAnimation() chiamato
  [Scene3D] 🔍 Tool attivo: mano
  [Scene3D] 🔍 ToolRegistry config: Object
@@ -843,146 +405,525 @@ camera = position (1.17, 1.14, 4.11), target (1.02, 0.83, 3.63), pivot (1.02, 0.
  [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
  [Scene3D] 🧹 Pulizia classi cursore...
  [Scene3D] ✅ Classi dopo pulizia: Array(1)
- [Scene3D] 🌟 Modello evidenziato attivo: remote, cerco priorità...
- [Scene3D] ✨ PRIORITA' SILHOUETTE: Selezionato modello evidenziato "remote" (posizione 1/20 nel raycast)
- [Scene3D] Click su modello - ToolsManager: mano, Body class aria: false, Body class spray: false
- [Scene3D] 🎯 Click rilevato su modello: remote
- [Scene3D] 📺 Uso sistema tutorial legacy per: remote
- [DEBUG] 🎬 handleModelAction chiamato per: remote
- [DEBUG] 📋 Current step: Step 3 - Prendi il telecomando Tecpad
- [DEBUG] 🎯 Model filename: "remote", Step element: "models/remote.glb", TargetChild: "none"
- [DEBUG] 🎯 Clean model: "remote", Clean step: "remote"
- [DEBUG] 🤚 HoldAction=pick - Eseguo pickObject per: remote
- [DEBUG] 🤚 HoldableSystem stato: initialized=true, holdables=1
- [HoldableSystem] 🤚 pickObject chiamato per: "remote"
- [HoldableSystem] 📊 Stato sistema: initialized=true, camera=true
- [HoldableSystem] 📊 Holdables registrati: 1 Array(1)
- [HoldableSystem] ✅ Modello trovato: remote
- [HoldableSystem] 🎬 Animazione PICK avviata per "remote"
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_status
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_status" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_status (mesh: Pulsante_r_status) → setVariant:schermo_remote=Schermo_R001
+ 💡 [InteractiveObject3D] Evidenziazione rimossa da "Pulsante_r_status" dopo click
+ 🔵 [HighlightCircleManager] Cerchio rimosso per "remote.Pulsante_r_status"
+ 🔵 [InteractiveObject3D] Cerchio rimosso per "remote.Pulsante_r_status" dopo click
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_status"
+ [StepController] 🔍 currentStepIndex=18
+ [StepController] 🔍 stepConfigs.size=11
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_status" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 1 azioni per sorgente "physical"
+ [StepController]    1. setVariant: Object
+ [StepController] 🔀 setVariant: schermo_remote=Schermo_R001
+ 🔀 [InteractiveObject3D] StateGroup "schermo_remote": "Schermo_R000" → "Schermo_R001"
+ [StepController] ⏭️ Trigger accettato → auto-avanzamento dopo azioni
+ [StepController] ⏭️ Auto-avanzamento schedulato per step 18
+    ✓ Gestito da StepController
+    ⏭️ Azione locale "setVariant:schermo_remote=Schermo_R001" ignorata (già gestito da StepController)
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
  [Scene3D] 🛑 stopCursorAnimation() chiamato
  [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
-scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
-HoldableSystem.js?v=1000007:351 [HoldableSystem] ✅ Animazione PICK completata per "remote"
-HoldableSystem.js?v=1000007:232 [HoldableSystem] 🤚 Oggetto "remote" preso in mano
-scene3d-modular.js?nocache=1000032:2200 [DEBUG] ⏭️ Avanzo allo step successivo dopo pick
-ui.js?nocache=1000041:3813 [DEBUG] ⏭️ GOTO STEP chiamata con index: 3
-ui.js?nocache=1000041:3850 [DEBUG] ⏭️ Navigazione a step: "Step 4 - Premi il pulsante start"
-config.js?nocache=999999:242 [10:32:17 PM] INFO: Navigazione a step 4: Step 4 - Premi il pulsante start
-ui.js?nocache=1000041:3893 [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
-ui.js?nocache=1000041:3898 [UI] 🧹 Rimossa evidenziazione modello corrente
-ui.js?nocache=1000041:3904 [UI] 🧹 Rimosse evidenziazioni pulsanti
-HighlightCircleManager.js?v=1000025:163 🔵 [HighlightCircleManager] Rimozione 1 cerchi
-ui.js?nocache=1000041:3910 [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
-ui.js?nocache=1000041:5544 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
-ui.js?nocache=1000041:3950 [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 4 - Premi il pulsante start"
-ui.js?nocache=1000041:3951 [DEBUG] 🚀 Step properties: Object
-config.js?nocache=999999:242 [10:32:17 PM] INFO: Esecuzione step: Step 4 - Premi il pulsante start Object
-ui.js?nocache=1000041:6290 📷 [UI] Pulsante reset camera nascosto
-ui.js?nocache=1000041:3984 📷 [UI] Reset stepCameraState per nuovo step
-StepController.js?v=1000008:159 [StepController] 📍 Step corrente: 3 Step 4 - Premi il pulsante start
-StepController.js?v=1000008:251 [StepController] 📋 Step 3 auto-configurato da proprietà:
-StepController.js?v=1000008:252 [StepController]    Triggers Physical: [remote.pulsante_r_play]
-StepController.js?v=1000008:253 [StepController]    Actions Physical: 1 azioni
-StepController.js?v=1000008:256 [StepController]      1. setVariant: schermo=schermo004
-StepGatingManager.js?v=1000001:140 🚦 [StepGating] Step 2 → 3 ("Step 4 - Premi il pulsante start")
-StepGatingManager.js?v=1000001:143 🚦 [StepGating] Pulsanti attivi: [pulsante_r_play]
-InteractiveObject3D.js?v=1000003:1209 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
-InteractiveObject3D.js?v=1000003:1210 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
-InteractiveObject3D.js?v=1000003:1221 💡 [InteractiveObject3D] Cercando pulsante: parent="remote", button="pulsante_r_play"
-InteractiveObject3D.js?v=1000003:1230 💡 [InteractiveObject3D] ✓ Oggetto "remote" trovato in registry, childMeshes: 3
-InteractiveObject3D.js?v=1000003:1253 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
-InteractiveObject3D.js?v=1000003:1319 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
-InteractiveObject3D.js?v=1000003:1333 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: pulsante_r_play
-InteractiveObject3D.js?v=1000003:1334 💡 [InteractiveObject3D] Mesh ha material: true
-InteractiveObject3D.js?v=1000003:1335 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
-InteractiveObject3D.js?v=1000003:1336 💡 [InteractiveObject3D] Material ha emissive: true
-InteractiveObject3D.js?v=1000003:1346 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
-InteractiveObject3D.js?v=1000003:1363 💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=1, opacity=0
-InteractiveObject3D.js?v=1000003:1370 💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
-InteractiveObject3D.js?v=1000003:1402 💡 [InteractiveObject3D] ✓ Pulsante "pulsante_r_play" evidenziato e aggiunto a highlightedButtons (totale: 1)
-HighlightCircleManager.js?v=1000025:140 🔵 [HighlightCircleManager] Cerchio creato per "remote.pulsante_r_play" (size: 80px, opacity: 0.2)
-InteractiveObject3D.js?v=1000003:1408 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "remote.pulsante_r_play" con opacità 0.2
-ui.js?nocache=1000041:4027 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 4 - Premi il pulsante start" con opacità 0.2
-ToolRegistry.js?v=1000021:364 [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
-getToolByTutorialName @ ToolRegistry.js?v=1000021:364
-ToolsManager.js?nocache=1000024:304 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
-ToolsManager.js?nocache=1000024:308 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
-ToolsManager.js?nocache=1000024:319 🟡 [ToolsManager] ✓ Elemento tool trovato: <div class=​"tool-icon active required tool-highlight" data-tool=​"mano" title=​"Mano">​…​</div>​
-ToolsManager.js?nocache=1000024:328 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon active required tool-highlight
-scene3d-modular.js?nocache=1000032:4085 📹 CAMERA: Posizione assoluta (2.52, 1.3, 4.55)
-scene3d-modular.js?nocache=1000032:4106 📹 CAMERA: Target assoluto (2.37, 1.15, 3.6)
-scene3d-modular.js?nocache=1000032:4131 📹 CAMERA: Zoom = 0.59
-scene3d-modular.js?nocache=1000032:4142 📹 CAMERA: Distance = 0.98
-scene3d-modular.js?nocache=1000032:4152 📹 CAMERA: FOV = 75
-scene3d-modular.js?nocache=1000032:4161 📹 CAMERA: Durata transizione = 2s
-scene3d-modular.js?nocache=1000032:4211 📹 CAMERA: Avvio animazione camera (durata: 2s)
-ui.js?nocache=1000041:4313 [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
-ui.js?nocache=1000041:4988 📷 [UI] CameraTransitionTime: 2s (2000ms)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [StepController] ⏭️ Avanzamento allo step successivo
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 19
+ [UI] 🚫 Cancellato timeout auto-avanzamento pendente
+ [DEBUG] ⏭️ Navigazione a step: "Step 20 - Apri e chiudi"
+ [11:11:33 AM] INFO: Navigazione a step 20: Step 20 - Apri e chiudi
+ [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ [UI] 🧹 Rimossa evidenziazione modello corrente
+ [UI] 🧹 Rimosse evidenziazioni pulsanti
+ 🔵 [HighlightCircleManager] Rimozione 0 cerchi
+ [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 20 - Apri e chiudi"
+ [DEBUG] 🚀 Step properties: Object
+ [11:11:33 AM] INFO: Esecuzione step: Step 20 - Apri e chiudi Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 19 Step 20 - Apri e chiudi
+ [StepController] 📋 Step 19 auto-configurato da proprietà:
+ [StepController]    Triggers Physical: [remote.Pulsante_r_unlock]
+ [StepController]    Actions Physical: 0 azioni
+ 🚦 [StepGating] Step 18 → 19 ("Step 20 - Apri e chiudi")
+ 🚦 [StepGating] Pulsanti attivi: [Pulsante_r_unlock]
+ 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+ 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+ 💡 [InteractiveObject3D] Cercando pulsante: parent="remote", button="Pulsante_r_unlock"
+ 💡 [InteractiveObject3D] ✓ Oggetto "remote" trovato in registry, childMeshes: 3
+ 💡 [InteractiveObject3D] ✓ Mesh trovata in childMeshes diretto
+ 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+ 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: Pulsante_r_unlock
+ 💡 [InteractiveObject3D] Mesh ha material: true
+ 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+ 💡 [InteractiveObject3D] Material ha emissive: true
+ 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+ 💡 [InteractiveObject3D] Valori originali salvati per materiale 0: emissive=0, intensity=1, opacity=0
+ 💡 [InteractiveObject3D] Materiale 0 originalmente invisibile (opacity=0), skip highlight per mantenerlo invisibile
+ 💡 [InteractiveObject3D] ✓ Pulsante "Pulsante_r_unlock" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ 🔵 [HighlightCircleManager] Cerchio creato per "remote.Pulsante_r_unlock" (size: 80px, opacity: 0.2)
+ 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "remote.Pulsante_r_unlock" con opacità 0.2
+ 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 20 - Apri e chiudi" con opacità 0.2
+ [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
+ 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
+ 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ 🟡 [ToolsManager] ✓ Elemento tool trovato: 
+ 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon active required tool-highlight
+ 📹 CAMERA: Posizione assoluta (2.78, 0.91, 2.29)
+ 📹 CAMERA: Target assoluto (2.79, 1.27, 1.99)
+ 📹 CAMERA: Zoom = 0.59
+ 📹 CAMERA: Distance = 0.47
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 2s
+ 📹 CAMERA: Avvio animazione camera (durata: 2s)
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ [UI] 🖼️ AnimatedImagesFolder rilevato per step: "Step 20 - Apri e chiudi"
+ [AnimatedWindowSystem] 📋 Configurazione da step tutorial
+ [AnimatedWindowSystem] 📁 Caricamento immagini da cartella: screens/mandrino
+ [AnimatedWindowSystem] 📁 Scoperta immagini in: screens/mandrino
+:8000/screens/mandrino/0001.png:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/0001.jpg:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/0001.jpeg:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/0001.webp:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/0001.gif:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/001.png:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/001.jpg:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/001.jpeg:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/001.webp:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+:8000/screens/mandrino/001.gif:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+ [AnimatedWindowSystem] ✓ Formato trovato: 01.png
+:8000/screens/mandrino/08.png:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+ [AnimatedWindowSystem] 📁 Trovate 7 immagini in screens/mandrino
+ [AnimatedWindowSystem] ✅ Trovate 7 immagini nella cartella
+ [AnimatedWindowSystem] 🎮 Modalità trigger esterno - solo pulsante 3D può avanzare
+ [AnimatedWindowSystem] 🖼️ Mostra finestra con 7 immagini
+ [AnimatedWindowSystem] 🎮 pointer-events disabilitati - click passano al canvas 3D
+ [AnimatedWindowSystem] ✅ Finestra visibile - Clicca per avviare animazione
+ [11:11:33 AM] INFO: ✅ ANIMATED WINDOW: Finestra animata avviata per step "Step 20 - Apri e chiudi"
+ 📹 CAMERA: Animazione completata
+ 🎬 [UI] Animazione drammatica completata
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 0
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #1/8
+ [AnimatedWindowSystem] ➡️ Direzione: AVANTI (trigger dispari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione forward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 7/7
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 1
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #2/8
+ [AnimatedWindowSystem] ⬅️ Direzione: INDIETRO (trigger pari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione backward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 1/7
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 2
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #3/8
+ [AnimatedWindowSystem] ➡️ Direzione: AVANTI (trigger dispari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione forward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 7/7
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 3
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #4/8
+ [AnimatedWindowSystem] ⬅️ Direzione: INDIETRO (trigger pari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione backward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 1/7
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 4
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #5/8
+ [AnimatedWindowSystem] ➡️ Direzione: AVANTI (trigger dispari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione forward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 7/7
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 5
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #6/8
+ [AnimatedWindowSystem] ⬅️ Direzione: INDIETRO (trigger pari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione backward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 1/7
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 6
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #7/8
+ [AnimatedWindowSystem] ➡️ Direzione: AVANTI (trigger dispari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione forward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 7/7
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 7
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #8/8
+ [AnimatedWindowSystem] 🏁 Raggiunto maxTriggers - Avvio ultima animazione poi chiusura
+ [AnimatedWindowSystem] ⬅️ Direzione: INDIETRO (trigger pari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione backward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] ✅ Animazione completata - Frame finale: 1/7
+ [AnimatedWindowSystem] 🏁 Tutorial completato - Chiusura finestra
+ [Scene3D] 🚀 startCursorAnimation() chiamato
+ [Scene3D] 🔍 Tool attivo: mano
+ [Scene3D] 🔍 ToolRegistry config: Object
+ [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+ [Scene3D] 🎬 Animazione cursore avviata per: mano
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ⏹️ Interval animazione fermato
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+ [Scene3D] 🧹 Pulizia classi cursore...
+ [Scene3D] ✅ Classi dopo pulizia: Array(1)
+ [Scene3D] 🎮 Click su figlio interattivo: Pulsante_r_unlock
+ 🖱️ [InteractiveObject3D] Click su "Pulsante_r_unlock" (parent: remote)
+ 🔘 [InteractiveObject3D] Button click: remote.Pulsante_r_unlock (mesh: Pulsante_r_unlock) → undefined
+ 💡 [InteractiveObject3D] Evidenziazione MANTENUTA per "Pulsante_r_unlock" (AnimatedWindow attiva, trigger multipli)
+ [StepController] 🎯 Trigger ricevuto: source="physical", id="remote.Pulsante_r_unlock"
+ [StepController] 🔍 currentStepIndex=19
+ [StepController] 🔍 stepConfigs.size=12
+ [StepController] 🔍 stepConfigs.keys=[0, 1, 2, 3, 10, 11, 12, 13, 14, 15, 18, 19]
+ [StepController] 🔍 Configurazione trovata: Object
+ [StepController] ✅ Trigger "remote.Pulsante_r_unlock" accettato da sorgente "physical"
+ [StepController] ⚡ Esecuzione 0 azioni per sorgente "physical"
+ [StepController] 🖼️ Step ha AnimatedWindow
+ [StepController]    isVisible: true
+ [StepController]    isAnimating: false
+ [StepController]    triggerCount: 8
+ [StepController] 🖼️ Inoltro trigger ad AnimatedWindowSystem.handleTrigger()
+ [AnimatedWindowSystem] 🎯 TRIGGER #9/8
+ [AnimatedWindowSystem] 🏁 Raggiunto maxTriggers - Avvio ultima animazione poi chiusura
+ [AnimatedWindowSystem] ➡️ Direzione: AVANTI (trigger dispari)
+ [AnimatedWindowSystem] 🎬 Avvio animazione forward - 7 frame, 20ms/frame
+    ✓ Gestito da StepController
+ [Scene3D] ✅ Click gestito da InteractiveObject3D
+ [Scene3D] 🛑 stopCursorAnimation() chiamato
+ [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+ [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+ [AnimatedWindowSystem] 🚪 Chiusura finestra
+ [AnimatedWindowSystem] 📢 Callback onComplete
+ [AnimatedWindowSystem] 🚀 Avanzamento allo step successivo
+ [DEBUG] ⏭️ GOTO STEP chiamata con index: 20
+ [DEBUG] ⏭️ Navigazione a step: "Step 21 - Chiudi la porta fisicamente"
+ [11:11:39 AM] INFO: Navigazione a step 21: Step 21 - Chiudi la porta fisicamente
+ [UI] 🧹 Reset silhouette/highlight da tutti gli oggetti
+ [UI] 🧹 Rimossa evidenziazione modello corrente
+ 💡 [InteractiveObject3D] Rimozione 1 evidenziazioni pulsanti
+ 💡 [InteractiveObject3D] ✓ Materiale 0 ripristinato (opacity: 0, transparent: false)
+ 💡 [InteractiveObject3D] ✓ Evidenziazione rimossa da "Pulsante_r_unlock"
+ 🔵 [HighlightCircleManager] Cerchio rimosso per "remote.Pulsante_r_unlock"
+ 🔵 [InteractiveObject3D] Cerchio rimosso per "remote.Pulsante_r_unlock"
+ [UI] 🧹 Rimosse evidenziazioni pulsanti
+ 🔵 [HighlightCircleManager] Rimozione 0 cerchi
+ [UI] 🧹 Rimossi cerchi evidenziazione DragDrop
+ 🎬 [UI] HighlightDescription=true → Animazione drammatica fumetto
+ [DEBUG] 🚀 EXECUTE STEP chiamata per: "Step 21 - Chiudi la porta fisicamente"
+ [DEBUG] 🚀 Step properties: Object
+ [11:11:39 AM] INFO: Esecuzione step: Step 21 - Chiudi la porta fisicamente Object
+ 📷 [UI] Pulsante reset camera nascosto
+ 📷 [UI] Reset stepCameraState per nuovo step
+ [StepController] 📍 Step corrente: 20 Step 21 - Chiudi la porta fisicamente
+ [StepController] 📋 Step 20 auto-configurato da proprietà:
+ [StepController]    Triggers Physical: [a500.porta]
+ [StepController]    Actions Physical: 0 azioni
+ 🚦 [StepGating] Step 19 → 20 ("Step 21 - Chiudi la porta fisicamente")
+ 🚦 [StepGating] Pulsanti attivi: [porta]
+ 💡 [InteractiveObject3D] Evidenziazione pulsanti richiesti: Array(1)
+ 💡 [InteractiveObject3D] Opacità evidenziazione: 0.2
+ 💡 [InteractiveObject3D] Cercando pulsante: parent="a500", button="porta"
+ 💡 [InteractiveObject3D] ✓ Oggetto "a500" trovato in registry, childMeshes: 0
+ 💡 [InteractiveObject3D] Mesh non trovata in childMeshes, cercando in model.traverse...
+ 💡 [InteractiveObject3D] ✓ Trovata Mesh diretta: "porta"
+ 💡 [InteractiveObject3D] Totale child nel model: 66
+ 💡 [InteractiveObject3D] ✓ Mesh pulsante trovata, applicando evidenziazione...
+ 💡 [InteractiveObject3D] applyButtonHighlight chiamato per mesh: porta
+ 💡 [InteractiveObject3D] Mesh ha material: true
+ 💡 [InteractiveObject3D] Material type: MeshStandardMaterial
+ 💡 [InteractiveObject3D] Material ha emissive: true
+ 💡 [InteractiveObject3D] Applicazione highlight a 1 materiale/i
+ 💡 [InteractiveObject3D] ✓ Tinta applicata al materiale 0: 0xffff00, intensity=0.01
+ 💡 [InteractiveObject3D] ✓ Pulsante "porta" evidenziato e aggiunto a highlightedButtons (totale: 1)
+ 🔵 [HighlightCircleManager] Cerchio creato per "a500.porta" (size: 80px, opacity: 0.2)
+ 🔵 [InteractiveObject3D] Cerchio evidenziazione creato per "a500.porta" con opacità 0.2
+ 💡 [UI] Evidenziati 1 pulsanti richiesti per step "Step 21 - Chiudi la porta fisicamente" con opacità 0.2
+ [ToolRegistry] ⚠️ Strumento tutorial "Mani" non definito in config
+ 🟡 [ToolsManager] highlightRequiredTool chiamato per: "mano"
+ 🟡 [ToolsManager] Tool disponibili nel DOM (4): Array(4)
+ 🟡 [ToolsManager] ✓ Elemento tool trovato: 
+ 🟡 [ToolsManager] ✓ Tool evidenziato con classi: tool-icon active required tool-highlight
+ 📹 CAMERA: Posizione assoluta (2.01, 1.23, 4.78)
+ 📹 CAMERA: Target assoluto (2.27, 1.15, 4.36)
+ 📹 CAMERA: Zoom = 0.5
+ 📹 CAMERA: Distance = 0.47
+ 📹 CAMERA: FOV = 75
+ 📹 CAMERA: Durata transizione = 1s
+ 📹 CAMERA: Avvio animazione camera (durata: 1s)
+ [DEBUG] 🎯 DRAG & DROP CHECK: DragDrop="undefined", DragDropSystem=true, AssemblySystem.enabled=undefined
+ui.js?nocache=1000041:5017 📷 [UI] CameraTransitionTime: 1s (1000ms)
 scene3d-modular.js?nocache=1000032:1594 🔍 HIGHLIGHT: highlightCurrentTutorialElement() chiamata
-scene3d-modular.js?nocache=1000032:1622 🔍 HIGHLIGHT: TargetChild specificato: "pulsante_r_play"
-scene3d-modular.js?nocache=1000032:1633 ✅ HIGHLIGHT: Trovato child "pulsante_r_play" da evidenziare
-scene3d-modular.js?nocache=1000032:1644 🔍 HIGHLIGHT: Evidenzio: pulsante_r_play
-scene3d-modular.js?nocache=1000032:1470 🔍 HIGHLIGHT: highlightModel() chiamata per: pulsante_r_play
-scene3d-modular.js?nocache=1000032:1541 🔍 HIGHLIGHT: ✅ APPLICAZIONE per pulsante_r_play (non bloccato, colore=0xffff00)
+scene3d-modular.js?nocache=1000032:1622 🔍 HIGHLIGHT: TargetChild specificato: "porta"
+scene3d-modular.js?nocache=1000032:1633 ✅ HIGHLIGHT: Trovato child "porta" da evidenziare
+scene3d-modular.js?nocache=1000032:1644 🔍 HIGHLIGHT: Evidenzio: porta
+scene3d-modular.js?nocache=1000032:1470 🔍 HIGHLIGHT: highlightModel() chiamata per: porta
+scene3d-modular.js?nocache=1000032:1541 🔍 HIGHLIGHT: ✅ APPLICAZIONE per porta (non bloccato, colore=0xffff00)
 scene3d-modular.js?nocache=1000032:1543 🔍 HIGHLIGHT: Modelli bloccati: Array(0)
-scene3d-modular.js?nocache=1000032:1555 🔍 HIGHLIGHT: ⏭️ Skip mesh "pulsante_r_play" (originalmente invisibile, mantengo invisibile)
-ui.js?nocache=1000041:5033 📷 [UI] Attesa completamento transizione camera: 2300ms
-scene3d-modular.js?nocache=1000032:4471 📹 CAMERA: Animazione completata
-ui.js?nocache=1000041:5554 🎬 [UI] Animazione drammatica completata
+ui.js?nocache=1000041:5062 📷 [UI] Attesa completamento transizione camera: 1300ms
+scene3d-modular.js?nocache=1000032:4529 📹 CAMERA: Animazione completata
 scene3d-modular.js?nocache=1000032:318 [Scene3D] 📹 CAMERA INFO:
-scene3d-modular.js?nocache=1000032:319   Position: (2.46, 1.24, 4.18)
-scene3d-modular.js?nocache=1000032:320   Rotation: (-0.16, 0.15, 0.02)
-scene3d-modular.js?nocache=1000032:322   Pivot Point: (2.37, 1.15, 3.6)
-scene3d-modular.js?nocache=1000032:323   Distance to Pivot: 0.59
+scene3d-modular.js?nocache=1000032:319   Position: (2.01, 1.23, 4.78)
+scene3d-modular.js?nocache=1000032:320   Rotation: (-0.19, -0.55, -0.1)
+scene3d-modular.js?nocache=1000032:322   Pivot Point: (2.27, 1.15, 4.36)
+scene3d-modular.js?nocache=1000032:323   Distance to Pivot: 0.5
 scene3d-modular.js?nocache=1000032:325   FOV: 75
 scene3d-modular.js?nocache=1000032:326   Near/Far: 0.1/1000
 scene3d-modular.js?nocache=1000032:330 
 📋 CVTScript v3 (copia e incolla):
-camera = position (2.46, 1.24, 4.18), target (2.37, 1.15, 3.6), pivot (2.37, 1.15, 3.6), zoom 0.59, fov 75, rotation (-0.16, 0.15, 0.02), fade 1.0
-ui.js?nocache=1000041:5038 📷 [UI] Posizione camera memorizzata per step: Step 4 - Premi il pulsante start
-ui.js?nocache=1000041:5039 📷 [UI] Camera state: Object
-ui.js?nocache=1000041:6271 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: pointerup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: mouseup
-scene3d-modular.js?nocache=1000032:2042 [Scene3D] 🎯 PIVOT CLICK: punto esatto (-0.625, 0.000, 1.972) su mesh "Plane001"
-scene3d-modular.js?nocache=1000032:2079 🎯 Animazione pivot: da (2.37, 1.15, 3.60) a (-0.62, 0.00, 1.97)
-scene3d-modular.js?nocache=1000032:4507 🎯 Animazione pivot completata
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
-scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
-scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
-scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
-scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
-scene3d-modular.js?nocache=1000032:376 [Scene3D] 📹 setCameraFromInfo: Object
-scene3d-modular.js?nocache=1000032:432 [Scene3D] 🎬 Animazione camera avviata (sistema nativo, durata: 0.8s)
-ui.js?nocache=1000041:6319 📷 [UI] Camera ripristinata alla posizione iniziale dello step
-scene3d-modular.js?nocache=1000032:4471 📹 CAMERA: Animazione completata
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: pointerup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: mouseup
-scene3d-modular.js?nocache=1000032:2042 [Scene3D] 🎯 PIVOT CLICK: punto esatto (0.893, 0.092, 1.722) su mesh "A500"
-scene3d-modular.js?nocache=1000032:2079 🎯 Animazione pivot: da (2.37, 1.15, 3.60) a (0.89, 0.09, 1.72)
-scene3d-modular.js?nocache=1000032:4507 🎯 Animazione pivot completata
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
-scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
-scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
-scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
-scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
-scene3d-modular.js?nocache=1000032:376 [Scene3D] 📹 setCameraFromInfo: Object
-scene3d-modular.js?nocache=1000032:432 [Scene3D] 🎬 Animazione camera avviata (sistema nativo, durata: 0.8s)
-ui.js?nocache=1000041:6319 📷 [UI] Camera ripristinata alla posizione iniziale dello step
-scene3d-modular.js?nocache=1000032:4471 📹 CAMERA: Animazione completata
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: pointerup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 1 type: mouseup
-scene3d-modular.js?nocache=1000032:2042 [Scene3D] 🎯 PIVOT CLICK: punto esatto (0.936, 0.784, 3.650) su mesh "07L0676941A_001002_1"
-scene3d-modular.js?nocache=1000032:2079 🎯 Animazione pivot: da (2.37, 1.15, 3.60) a (0.94, 0.78, 3.65)
-scene3d-modular.js?nocache=1000032:4507 🎯 Animazione pivot completata
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: pointerup
-scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 2 type: mouseup
+camera = position (2.01, 1.23, 4.78), target (2.27, 1.15, 4.36), pivot (2.27, 1.15, 4.36), zoom 0.5, fov 75, rotation (-0.19, -0.55, -0.1), fade 1.0
+ui.js?nocache=1000041:5067 📷 [UI] Posizione camera memorizzata per step: Step 21 - Chiudi la porta fisicamente
+ui.js?nocache=1000041:5068 📷 [UI] Camera state: Object
+ui.js?nocache=1000041:6300 📷 [UI] Pulsante reset camera mostrato in posizione: bottom-left
+ui.js?nocache=1000041:5583 🎬 [UI] Animazione drammatica completata
 scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
 scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
 scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
@@ -995,17 +936,90 @@ scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(
 scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
 scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
 scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
-scene3d-modular.js?nocache=1000032:1706 [Scene3D] 🌟 Modello evidenziato attivo: pulsante_r_play, cerco priorità...
-scene3d-modular.js?nocache=1000032:1739 [Scene3D] Click su modello - ToolsManager: mano, Body class aria: false, Body class spray: false
-scene3d-modular.js?nocache=1000032:1756 [Scene3D] 🎯 Click rilevato su modello: a500
-scene3d-modular.js?nocache=1000032:1763 [Scene3D] 📺 Uso sistema tutorial legacy per: a500
-scene3d-modular.js?nocache=1000032:2115 [DEBUG] 🎬 handleModelAction chiamato per: a500
-scene3d-modular.js?nocache=1000032:2118 [DEBUG] 📋 Current step: Step 4 - Premi il pulsante start
-scene3d-modular.js?nocache=1000032:2128 [DEBUG] 🎯 Model filename: "a500", Step element: "models/remote.glb", TargetChild: "pulsante_r_play"
-scene3d-modular.js?nocache=1000032:2138 [DEBUG] 🎯 Clean model: "a500", Clean step: "remote"
-scene3d-modular.js?nocache=1000032:2141 [DEBUG] ❌ Model/element mismatch - USCITA EARLY
+scene3d-modular.js?nocache=1000032:1837 [Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "porta" tramite cerchio
 scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
 scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
 scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
+scene3d-modular.js?nocache=1000032:1018 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:1044 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:959 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:1837 [Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "porta" tramite cerchio
+scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
+scene3d-modular.js?nocache=1000032:1018 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:1044 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:959 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:1837 [Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "porta" tramite cerchio
+scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
+scene3d-modular.js?nocache=1000032:1018 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:1044 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:959 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:1837 [Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "porta" tramite cerchio
+scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
+scene3d-modular.js?nocache=1000032:1018 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:1044 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:959 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:1837 [Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "porta" tramite cerchio
+scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:983 [Scene3D] 🚀 startCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:992 [Scene3D] 🔍 Tool attivo: mano
+scene3d-modular.js?nocache=1000032:1007 [Scene3D] 🔍 ToolRegistry config: Object
+scene3d-modular.js?nocache=1000032:1018 [Scene3D] 🔍 hasPressedCursor: cursors/mano_premuto_frame1.svg
+scene3d-modular.js?nocache=1000032:1044 [Scene3D] 🎬 Animazione cursore avviata per: mano
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: pointerup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:959 [Scene3D] ⏹️ Interval animazione fermato
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:946 [Scene3D] 🎯 onGlobalMouseUp CAPTURE - button: 0 type: mouseup
+scene3d-modular.js?nocache=1000032:950 [Scene3D] 🧹 Pulizia classi cursore...
+scene3d-modular.js?nocache=1000032:966 [Scene3D] ✅ Classi dopo pulizia: Array(1)
+scene3d-modular.js?nocache=1000032:1837 [Scene3D] 🎮 FALLBACK VUOTO: Click su pulsante evidenziato "porta" tramite cerchio
+scene3d-modular.js?nocache=1000032:1049 [Scene3D] 🛑 stopCursorAnimation() chiamato
+scene3d-modular.js?nocache=1000032:1050 [Scene3D] 🔍 Stato PRIMA: isAnimating= false , intervalId= null , body.classList= Array(1)
+scene3d-modular.js?nocache=1000032:1069 [Scene3D] 🔍 Stato DOPO: body.classList= Array(1)
+
 ui.js?nocache=1000041:2136 📱 Finestra ridimensionata, controllo mobile...
-ui.js?nocache=1000041:2136 📱 Finestra ridimensionata, controllo mobile...
+
