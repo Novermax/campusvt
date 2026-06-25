@@ -107,7 +107,7 @@ class ScenarioManager {
         this.safeLog(3, '[ScenarioManager] Parsing configurazione home...');
 
         try {
-            const scenarios = [];
+            var scenarios = [];
             const lines = content.split('\n');
             let currentScenario = null;
 
