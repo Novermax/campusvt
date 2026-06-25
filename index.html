@@ -598,6 +598,7 @@
                         ? params.get('tutorials').split(',').map(function(s) { return s.trim(); }).filter(Boolean)
                         : null,
                     sequential: params.has('sequential') ? params.get('sequential') : null,
+                    noHome: params.has('noHome') ? params.get('noHome') : null,
                     completedIds: new Set()
                 };
                 // Ripristina completati da localStorage (per persistenza cross-reload in Docebo)

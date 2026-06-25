@@ -222,8 +222,13 @@ class ScenarioManager {
                 this.safeLog(3, `  ${index + 1}. ${scenario.name} (${scenario.files ? scenario.files.length : 0} files)`);
             });
 
-            // Renderizza le card scenari
-            this.renderScenarioCards();
+            // Embedded single-tutorial: auto-entra senza mostrare home
+            if (window.CVT_EMBED && window.CVT_EMBED.noHome === '1' && scenarios.length === 1) {
+                this.safeLog(2, '[ScenarioManager] Embedded single-tutorial: auto-entro scenario ' + scenarios[0].id);
+                this.loadScenario(scenarios[0]);
+            } else {
+                this.renderScenarioCards();
+            }
 
         } catch (error) {
             this.safeLog(0, '[ScenarioManager] Errore parsing home_config:', error);

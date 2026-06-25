@@ -3566,6 +3566,12 @@ const Scene3D = {
      * Visualizza il modal di congratulazioni
      */
     displayCongratulationsModal: function(userName, tutorialName) {
+        // Embedded single-tutorial: salta modal (lo gestisce il wrapper SCORM)
+        if (window.CVT_EMBED && window.CVT_EMBED.noHome === '1') {
+            console.log('🔌 Embedded: congratulations modal saltato (gestito dal wrapper SCORM)');
+            return;
+        }
+
         // Rimuovi eventuali modal esistenti
         this.removeCongratulationsModal();
 
@@ -3678,11 +3684,16 @@ const Scene3D = {
                 }
             }, 1000); // Delay per transizione smooth
         } else {
-            // Non ci sono più tutorial - torna alla home page
-            console.log('🏠 NAVIGAZIONE: Nessun tutorial successivo - torno alla home page');
-            setTimeout(() => {
-                this.goToHomePage();
-            }, 1000); // Delay per transizione smooth
+            // Non ci sono più tutorial
+            if (window.CVT_EMBED && window.CVT_EMBED.noHome === '1') {
+                // Embedded single-tutorial: non tornare alla home, lascia gestire al wrapper SCORM
+                console.log('🏠 NAVIGAZIONE: Embedded single-tutorial - nessuna navigazione (attesa SCORM overlay)');
+            } else {
+                console.log('🏠 NAVIGAZIONE: Nessun tutorial successivo - torno alla home page');
+                setTimeout(() => {
+                    this.goToHomePage();
+                }, 1000);
+            }
         }
     },
 
