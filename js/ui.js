@@ -722,7 +722,7 @@ window.UI = {
      */
     parseHomeConfig: function(content) {
         const lines = content.split('\n');
-        const scenarios = [];
+        var scenarios = [];
         let currentScenario = null;
         
         lines.forEach(line => {
