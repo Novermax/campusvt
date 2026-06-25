@@ -269,6 +269,11 @@ const UI = {
 
             this.showPage('home');
             this.updateStatus('Torna alla pagina principale');
+
+            // Ri-renderizza card scenari (per gating sequenziale embedded)
+            if (this._scenarioManager && this._scenarioManager.renderScenarioCards) {
+                this._scenarioManager.renderScenarioCards();
+            }
         }
     },
 

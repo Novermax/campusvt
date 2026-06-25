@@ -3508,8 +3508,24 @@ const Scene3D = {
             return;
         }
 
-        // VTTracker: tutorial completato (totalTimeMs, score, stepTimings[])
-        if (window.VTTracker) window.VTTracker.onTutorialComplete();
+        // VTTracker: tutorial completato (totalTimeMs, score, stepTimings[], scenarioId)
+        if (window.VTTracker) {
+            window.VTTracker._scenarioId = window.UI.currentScenario && window.UI.currentScenario.id || null;
+            window.VTTracker.onTutorialComplete();
+        }
+
+        // Embedded mode: marca lo scenario come completato per gating sequenziale
+        if (window.CVT_EMBED && window.CVT_EMBED.sequential === '1') {
+            var completedId = window.UI.currentScenario && window.UI.currentScenario.id;
+            if (completedId) {
+                window.CVT_EMBED.completedIds.add(completedId);
+                console.log('🔌 Embedded: scenario completato, id=' + completedId + ', completati=' + window.CVT_EMBED.completedIds.size);
+                // Persisti in localStorage per robustezza
+                try {
+                    localStorage.setItem('CVT_EMBED_completed', JSON.stringify(Array.from(window.CVT_EMBED.completedIds)));
+                } catch (e) {}
+            }
+        }
 
         const tutorialName = window.UI.currentTutorial.name;
         const userName = this.getCurrentUserName();

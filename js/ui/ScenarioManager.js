@@ -174,6 +174,8 @@ class ScenarioManager {
                             const lastFile = currentScenario.files[currentScenario.files.length - 1];
                             lastFile.direction = { x: coords[0], y: coords[1], z: coords[2] };
                         }
+                    } else if (key === 'id') {
+                        currentScenario.id = value;
                     } else if (key === 'model') {
                         // Modello 3D
                         currentScenario.files.push({ label: key, path: value, direction: null });
@@ -192,6 +194,23 @@ class ScenarioManager {
             // Aggiungi ultimo scenario
             if (currentScenario) {
                 scenarios.push(currentScenario);
+            }
+
+            // Filtro embedded: se CVT_EMBED.tutorials è valorizzato, mantieni solo
+            // gli scenari il cui id è nella lista, preservando l'ordine del param URL.
+            if (window.CVT_EMBED && window.CVT_EMBED.tutorials) {
+                var filterList = window.CVT_EMBED.tutorials;
+                var filtered = [];
+                for (var fi = 0; fi < filterList.length; fi++) {
+                    for (var si = 0; si < scenarios.length; si++) {
+                        if (scenarios[si].id === filterList[fi]) {
+                            filtered.push(scenarios[si]);
+                            break;
+                        }
+                    }
+                }
+                console.log('[ScenarioManager] Filtro embedded tutorials: da ' + scenarios.length + ' a ' + filtered.length + ' scenari');
+                scenarios = filtered;
             }
 
             // Salva configurazione
@@ -223,13 +242,28 @@ class ScenarioManager {
             return;
         }
 
+        // Calcola gating sequenziale per modalità embedded
+        var isSequential = window.CVT_EMBED && window.CVT_EMBED.sequential === '1';
+        var firstUnlockedIdx = 0;
+        var embed = window.CVT_EMBED;
+        if (isSequential && this.scenariosConfig && this.scenariosConfig.scenarios) {
+            for (var si = 0; si < this.scenariosConfig.scenarios.length; si++) {
+                var sid = this.scenariosConfig.scenarios[si].id;
+                if (!sid || !embed.completedIds.has(sid)) {
+                    firstUnlockedIdx = si;
+                    break;
+                }
+            }
+        }
+
         // Pulisci contenuto esistente
         scenariosList.innerHTML = '';
 
         // Crea card per ogni scenario
         if (this.scenariosConfig && this.scenariosConfig.scenarios) {
             this.scenariosConfig.scenarios.forEach((scenario, index) => {
-                const card = this.createScenarioCard(scenario, index);
+                var locked = isSequential && index > firstUnlockedIdx;
+                var card = this.createScenarioCard(scenario, index, locked);
                 scenariosList.appendChild(card);
             });
         }
@@ -241,19 +275,22 @@ class ScenarioManager {
         // Setup event listeners per le card
         this.setupScenarioCardListeners();
 
-        this.safeLog(3, '[ScenarioManager] Card scenari renderizzate');
+        this.safeLog(3, '[ScenarioManager] Card scenari renderizzate' + (isSequential ? ' (sequenziale, firstUnlocked=' + firstUnlockedIdx + ')' : ''));
     }
 
     /**
      * Crea una card scenario
      */
-    createScenarioCard(scenario, index) {
+    createScenarioCard(scenario, index, locked) {
         const card = document.createElement('div');
-        card.className = 'scenario-card';
+        card.className = 'scenario-card' + (locked ? ' scenario-card-locked' : '');
         card.setAttribute('data-scenario-index', index);
-        card.setAttribute('tabindex', '0');
+        if (locked) {
+            card.setAttribute('data-locked', 'true');
+        }
+        card.setAttribute('tabindex', locked ? '-1' : '0');
         card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', `Carica scenario ${scenario.name}`);
+        card.setAttribute('aria-label', locked ? ('Bloccato: ' + scenario.name) : ('Carica scenario ' + scenario.name));
 
         // Sezione immagine
         const imageSection = document.createElement('div');
@@ -274,6 +311,14 @@ class ScenarioManager {
         // Sezione info
         const infoSection = document.createElement('div');
         infoSection.className = 'scenario-info';
+
+        if (locked) {
+            // Aggiungi lucchetto
+            var lockBadge = document.createElement('div');
+            lockBadge.className = 'scenario-lock-badge';
+            lockBadge.textContent = '🔒';
+            infoSection.appendChild(lockBadge);
+        }
 
         const title = document.createElement('h3');
         title.textContent = scenario.name;
@@ -330,6 +375,12 @@ class ScenarioManager {
     onScenarioCardClick(event) {
         const card = event.target.closest('.scenario-card');
         if (!card) return;
+
+        // Card bloccata (gating sequenziale)
+        if (card.getAttribute('data-locked') === 'true') {
+            this.safeLog(2, '[ScenarioManager] Scenario bloccato - gating sequenziale');
+            return;
+        }
 
         // Modalità manuale
         if (card.hasAttribute('data-manual-mode')) {

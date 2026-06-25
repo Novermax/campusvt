@@ -294,6 +294,11 @@ class UICore {
         this.updateStatus('Home');
         this.showPage('home');
 
+        // Ri-renderizza card scenari (per aggiornare gating sequenziale embedded)
+        if (this.scenarioManager && this.scenarioManager.renderScenarioCards) {
+            this.scenarioManager.renderScenarioCards();
+        }
+
         this.safeLog(2, '[UICore] goHome - Reset completo terminato');
     }
 

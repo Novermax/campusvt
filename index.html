@@ -583,10 +583,95 @@
         })();
     </script>
 
+    <!-- Script per parser parametri URL (modalità embedded Docebo) -->
+    <script>
+        // CVT Embedded Mode: parametri URL per integrazione Docebo
+        // autologin=1&user=NOME&lang=eng&tutorials=id1,id2&sequential=1
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            if (params.has('autologin')) {
+                window.CVT_EMBED = {
+                    autologin: params.get('autologin'),
+                    user: params.get('user') || null,
+                    lang: params.get('lang') || null,
+                    tutorials: params.has('tutorials')
+                        ? params.get('tutorials').split(',').map(function(s) { return s.trim(); }).filter(Boolean)
+                        : null,
+                    sequential: params.has('sequential') ? params.get('sequential') : null,
+                    completedIds: new Set()
+                };
+                // Ripristina completati da localStorage (per persistenza cross-reload in Docebo)
+                try {
+                    var stored = JSON.parse(localStorage.getItem('CVT_EMBED_completed'));
+                    if (Array.isArray(stored)) {
+                        stored.forEach(function(id) { window.CVT_EMBED.completedIds.add(id); });
+                        console.log('🔌 Completati ripristinati da localStorage:', stored);
+                    }
+                } catch (e) {}
+                // Pulisci URL parametri sensibili
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+                }
+                // Ascolta sync completati dal parent SCORM wrapper
+                window.addEventListener('message', function _sync(e) {
+                    var d = e.data;
+                    if (d && d.type === 'cvt:sync_completed' && Array.isArray(d.completedIds)) {
+                        console.log('🔌 [Embed] Sync completati da SCORM:', d.completedIds);
+                        d.completedIds.forEach(function(id) {
+                            if (id) window.CVT_EMBED.completedIds.add(id);
+                        });
+                        try {
+                            localStorage.setItem('CVT_EMBED_completed', JSON.stringify(Array.from(window.CVT_EMBED.completedIds)));
+                        } catch (ex) {}
+                    }
+                });
+                console.log('🔌 Modalità embedded CVT attiva:', window.CVT_EMBED);
+            } else {
+                window.CVT_EMBED = null;
+            }
+        })();
+    </script>
+
     <!-- Script per gestione login -->
     <script>
         // Gestione del login
         document.addEventListener('DOMContentLoaded', function() {
+            // ===== AUTOLOGIN (modalità embedded Docebo) =====
+            if (window.CVT_EMBED) {
+                var embed = window.CVT_EMBED;
+                // Costruisci currentUser con data scadenza +1 anno
+                var expDate = new Date();
+                expDate.setFullYear(expDate.getFullYear() + 1);
+                window.currentUser = {
+                    name: embed.user || 'Utente',
+                    loginTime: new Date(),
+                    expiration: expDate,
+                    language: embed.lang || 'eng',
+                    role: 'user'
+                };
+                localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
+                console.log('🔌 Autologin embedded per:', window.currentUser.name);
+                // VTTracker: notifica sessione
+                if (window.VTTracker) window.VTTracker.onSessionInit();
+                // Mostra container, nascondi login e loader
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('container').classList.remove('hidden');
+                document.getElementById('init-loader').classList.add('hidden');
+                updateUserBar();
+                // Ricarica home_config con lingua
+                (function reloadConfig() {
+                    var uiReady = window.UI && typeof window.UI.loadHomeConfigFromServer === 'function'
+                        && (window.UI._scenarioManager || window.UI.homeConfig !== undefined);
+                    if (uiReady) {
+                        console.log('🔌 [Embed] Ricaricamento config per lingua:', window.currentUser.language);
+                        window.UI.loadHomeConfigFromServer();
+                    } else {
+                        setTimeout(reloadConfig, 500);
+                    }
+                })();
+                return; // Salta completamente il login normale
+            }
+
             // Verifica se l'utente era già loggato (da localStorage)
             const storedUser = localStorage.getItem('currentUser');
             if (storedUser) {

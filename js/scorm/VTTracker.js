@@ -237,8 +237,10 @@
             this.emit('vt:tutorial_complete', {
                 totalTimeMs: totalTimeMs,
                 score: scoreValue,
-                stepTimings: this.stepTimings.slice()
+                stepTimings: this.stepTimings.slice(),
+                scenarioId: this._scenarioId || null
             });
+            this._scenarioId = null;
 
             this._started = false;
         },

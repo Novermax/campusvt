@@ -253,6 +253,11 @@ window.UI = {
         this.showPage('home');
         this._scheduleUICleanup();
 
+        // Ri-renderizza card scenari (per aggiornare gating sequenziale embedded)
+        if (this.renderScenarioCards) {
+            this.renderScenarioCards();
+        }
+
         AppConfig.log(2, '[goHome] ✅ Reset completo terminato - ritorno alla home');
     },
 
@@ -794,6 +799,10 @@ window.UI = {
                     currentScenario.configuration = line.substring(14).trim();
                     AppConfig.log(3, `  ⚙️ Configuration (legacy): ${currentScenario.configuration}`);
 
+                } else if (line.startsWith('id=')) {
+                    currentScenario.id = line.substring(3);
+                    AppConfig.log(3, `  🆔 ID: ${currentScenario.id}`);
+
                 } else if (line.startsWith('position=')) {
                     // Posizione modello (formato: position=x,y,z)
                     const positionStr = line.substring(9);
@@ -807,9 +816,13 @@ window.UI = {
                     
                 } else if (line.includes('=')) {
                     // File da caricare (formato: label=path) o direzione (formato: direzione = x,y,z)
-                    const [label, path] = line.split('=', 2).map(s => s.trim());
+                    const eqIndex = line.indexOf('=');
+                    const label = line.substring(0, eqIndex).trim();
+                    const path = line.substring(eqIndex + 1).trim();
                     
-                    if (label === 'direzione' || label === 'direction') {
+                    if (label === 'id') {
+                        currentScenario.id = path;
+                    } else if (label === 'direzione' || label === 'direction') {
                         // Parsing direzione per l'ultimo file aggiunto
                         const coords = path.split(',').map(n => parseFloat(n.trim()));
                         if (coords.length === 3 && currentScenario.files.length > 0) {
@@ -854,6 +867,23 @@ window.UI = {
             
             scenarios.push(currentScenario);
         }
+
+        // Filtro embedded: se CVT_EMBED.tutorials è valorizzato, mantieni solo
+        // gli scenari il cui id è nella lista, preservando l'ordine del param URL.
+        if (window.CVT_EMBED && window.CVT_EMBED.tutorials) {
+            var filterList = window.CVT_EMBED.tutorials;
+            var filtered = [];
+            for (var fi = 0; fi < filterList.length; fi++) {
+                for (var si = 0; si < scenarios.length; si++) {
+                    if (scenarios[si].id === filterList[fi]) {
+                        filtered.push(scenarios[si]);
+                        break;
+                    }
+                }
+            }
+            console.log('[ui.js] Filtro embedded tutorials: da ' + scenarios.length + ' a ' + filtered.length + ' scenari');
+            scenarios = filtered;
+        }
         
         this.scenariosConfig = scenarios;
         this.renderScenarioCards();
@@ -866,13 +896,28 @@ window.UI = {
      */
     renderScenarioCards: function() {
         if (!this.elements.scenariosList || !this.scenariosConfig) return;
+
+        // Calcola gating sequenziale per modalità embedded
+        var isSequential = window.CVT_EMBED && window.CVT_EMBED.sequential === '1';
+        var firstUnlockedIdx = 0;
+        var embed = window.CVT_EMBED;
+        if (isSequential && this.scenariosConfig) {
+            for (var si = 0; si < this.scenariosConfig.length; si++) {
+                var sid = this.scenariosConfig[si].id;
+                if (!sid || !embed.completedIds.has(sid)) {
+                    firstUnlockedIdx = si;
+                    break;
+                }
+            }
+        }
         
         // Pulisci lista esistente
         this.elements.scenariosList.innerHTML = '';
         
         // Crea card per ogni scenario
         this.scenariosConfig.forEach((scenario, index) => {
-            const card = this.createScenarioCard(scenario, index);
+            var locked = isSequential && index > firstUnlockedIdx;
+            const card = this.createScenarioCard(scenario, index, locked);
             this.elements.scenariosList.appendChild(card);
         });
 
@@ -886,10 +931,11 @@ window.UI = {
     /**
      * Crea una singola card scenario
      */
-    createScenarioCard: function(scenario, index) {
+    createScenarioCard: function(scenario, index, locked) {
         const card = document.createElement('div');
-        card.className = 'scenario-card';
+        card.className = 'scenario-card' + (locked ? ' scenario-card-locked' : '');
         card.dataset.scenarioIndex = index;
+        if (locked) card.dataset.locked = 'true';
         
         // Sezione immagine
         const imageSection = document.createElement('div');
@@ -911,6 +957,13 @@ window.UI = {
         // Sezione info
         const infoSection = document.createElement('div');
         infoSection.className = 'scenario-info';
+        
+        if (locked) {
+            var lockBadge = document.createElement('div');
+            lockBadge.className = 'scenario-lock-badge';
+            lockBadge.textContent = '🔒';
+            infoSection.appendChild(lockBadge);
+        }
         
         const title = document.createElement('h3');
         title.textContent = scenario.name;
@@ -975,6 +1028,12 @@ window.UI = {
     onScenarioCardClick: function(event) {
         const card = event.target.closest('.scenario-card');
         if (!card) return;
+
+        // Card bloccata (gating sequenziale)
+        if (card.dataset.locked === 'true') {
+            AppConfig.log(2, '[ui.js] Scenario bloccato - gating sequenziale');
+            return;
+        }
         
         // Se è la card placeholder, non fare nulla (è solo informativa)
         if (card.classList.contains('placeholder')) {
