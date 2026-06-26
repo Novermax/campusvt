@@ -3092,7 +3092,21 @@ window.UI = {
                 window.Scene3D.resetTutorialTracker();
             }
 
-            this.selectTutorial(0);
+            // Se presente CVT_EMBED.section, usa quello come indice (SCORM sezioni separate)
+            var sectionIdx = 0;
+            if (window.CVT_EMBED && window.CVT_EMBED.section) {
+                var secParam = window.CVT_EMBED.section;
+                var numIdx = parseInt(secParam, 10);
+                if (!isNaN(numIdx) && numIdx >= 0 && numIdx < tutorials.length) {
+                    sectionIdx = numIdx;
+                } else {
+                    var nameIdx = tutorials.findIndex(function(t) {
+                        return t.name.toLowerCase() === secParam.toLowerCase();
+                    });
+                    if (nameIdx >= 0) sectionIdx = nameIdx;
+                }
+            }
+            this.selectTutorial(sectionIdx);
             // L'evidenziazione del primo elemento ora avviene dopo il caricamento dei modelli
             // in onModelLoadComplete() per garantire che i modelli siano disponibili
         }
@@ -3810,6 +3824,15 @@ window.UI = {
                 console.log(`🔥 Tutorial button state updated for index: ${index}`);
             };
             
+            // In modalità SCORM con sezione predefinita, disabilita gli altri
+            var lockedSection = window.CVT_EMBED && window.CVT_EMBED.section;
+            if (lockedSection) {
+                var secNum = parseInt(lockedSection, 10);
+                if (isNaN(secNum) ? tutorial.name.toLowerCase() !== lockedSection.toLowerCase() : index !== secNum) {
+                    tutorialBtn.classList.add('disabled');
+                }
+            }
+            
             // Applica classi speciali per forma
             if (this.availableTutorials.length === 1) {
                 tutorialBtn.classList.add('single');
@@ -3922,9 +3945,23 @@ window.UI = {
 
         console.log(`🔥 updateTutorialButtonsState: activeIndex=${activeIndex}, totalButtons=${allButtons.length}`);
 
+        var lockedSection = window.CVT_EMBED && window.CVT_EMBED.section;
         allButtons.forEach((button, index) => {
             // Rimuovi tutti gli stati
             button.classList.remove('active');
+
+            // In modalità SCORM con sezione predefinita, mantieni disabled
+            if (lockedSection) {
+                var secNum = parseInt(lockedSection, 10);
+                var isTarget = isNaN(secNum)
+                    ? this.availableTutorials[index].name.toLowerCase() === lockedSection.toLowerCase()
+                    : index === secNum;
+                if (isTarget) {
+                    button.classList.remove('disabled');
+                } else {
+                    button.classList.add('disabled');
+                }
+            }
 
             // Aggiungi 'active' solo al pulsante selezionato
             if (index === activeIndex) {

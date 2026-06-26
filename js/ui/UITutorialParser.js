@@ -441,7 +441,21 @@
                 window.Scene3D.resetTutorialTracker();
             }
 
-            this.selectTutorial(0);
+            // Se presente CVT_EMBED.section, usa quello come indice (SCORM sezioni separate)
+            var sectionIdx = 0;
+            if (window.CVT_EMBED && window.CVT_EMBED.section) {
+                var secParam = window.CVT_EMBED.section;
+                var numIdx = parseInt(secParam, 10);
+                if (!isNaN(numIdx) && numIdx >= 0 && numIdx < tutorials.length) {
+                    sectionIdx = numIdx;
+                } else {
+                    var nameIdx = tutorials.findIndex(function(t) {
+                        return t.name.toLowerCase() === secParam.toLowerCase();
+                    });
+                    if (nameIdx >= 0) sectionIdx = nameIdx;
+                }
+            }
+            this.selectTutorial(sectionIdx);
             // L'evidenziazione del primo elemento ora avviene dopo il caricamento dei modelli
             // in onModelLoadComplete() per garantire che i modelli siano disponibili
         }

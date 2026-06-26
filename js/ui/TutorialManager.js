@@ -85,8 +85,23 @@ class TutorialManager {
                 this.showTutorialStepsBar();
 
                 // Auto-seleziona la prima sessione (o l'unica): l'utente non deve cliccare manualmente.
-                // selectTutorial(0) applica camera, aggiorna barra/fumetto e parte dallo step 0.
-                this.selectTutorial(0);
+                // Se presente CVT_EMBED.section, usa quello come indice (SCORM sezioni separate)
+                var sectionIndex = 0;
+                if (window.CVT_EMBED && window.CVT_EMBED.section) {
+                    var secParam = window.CVT_EMBED.section;
+                    // Prova come indice numerico
+                    var numIdx = parseInt(secParam, 10);
+                    if (!isNaN(numIdx) && numIdx >= 0 && numIdx < this.availableTutorials.length) {
+                        sectionIndex = numIdx;
+                    } else {
+                        // Prova match per nome
+                        var nameIdx = this.availableTutorials.findIndex(function(t) {
+                            return t.name.toLowerCase() === secParam.toLowerCase();
+                        });
+                        if (nameIdx >= 0) sectionIndex = nameIdx;
+                    }
+                }
+                this.selectTutorial(sectionIndex);
 
                 this.safeLog(2, `[TutorialManager] Tutorial disponibili: ${this.availableTutorials.length} - Auto-selezionata sessione 0`);
             } else {
@@ -352,12 +367,22 @@ class TutorialManager {
         tutorialStepsBar.innerHTML = '';
 
         // Crea pulsanti per ogni tutorial disponibile
+        var lockedSection = window.CVT_EMBED && window.CVT_EMBED.section;
         this.availableTutorials.forEach((tutorial, index) => {
             const button = document.createElement('button');
             button.className = 'tutorial-btn';
             button.textContent = tutorial.name;
             button.title = `Avvia tutorial: ${tutorial.name}`;
             button.onclick = () => this.selectTutorial(index);
+
+            // In modalità SCORM con sezione predefinita, disabilita gli altri
+            if (lockedSection) {
+                var secNum = parseInt(lockedSection, 10);
+                if (isNaN(secNum) ? tutorial.name.toLowerCase() !== lockedSection.toLowerCase() : index !== secNum) {
+                    button.disabled = true;
+                    button.classList.add('disabled');
+                }
+            }
 
             tutorialStepsBar.appendChild(button);
         });
@@ -445,8 +470,24 @@ class TutorialManager {
         if (!tutorialStepsBar) return;
 
         const buttons = tutorialStepsBar.querySelectorAll('.tutorial-btn');
+        var lockedSection = window.CVT_EMBED && window.CVT_EMBED.section;
         buttons.forEach((button, index) => {
             button.classList.remove('active', 'completed');
+
+            // In modalità SCORM con sezione predefinita, disabilita gli altri
+            if (lockedSection) {
+                var secNum = parseInt(lockedSection, 10);
+                var isTarget = isNaN(secNum)
+                    ? this.availableTutorials[index].name.toLowerCase() === lockedSection.toLowerCase()
+                    : index === secNum;
+                if (isTarget) {
+                    button.disabled = false;
+                    button.classList.remove('disabled');
+                } else {
+                    button.disabled = true;
+                    button.classList.add('disabled');
+                }
+            }
 
             if (this.currentTutorial && this.availableTutorials[index] === this.currentTutorial) {
                 button.classList.add('active');
