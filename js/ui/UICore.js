@@ -155,10 +155,17 @@ class UICore {
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
 
-        // Mostra il pulsante Cambia utente nella home
+        // Mostra il pulsante Cambia utente SOLO se ci sono più scenari (home completa)
+        // Con un solo scenario la home si comporta come schermata di dettaglio/conferma
         const changeUserBtn = document.getElementById('changeUserBtn');
         if (changeUserBtn) {
-            changeUserBtn.style.display = '';
+            var scenarioCount = 0;
+            if (window.UI && window.UI.scenarioManager
+                && window.UI.scenarioManager.scenariosConfig
+                && window.UI.scenarioManager.scenariosConfig.scenarios) {
+                scenarioCount = window.UI.scenarioManager.scenariosConfig.scenarios.length;
+            }
+            changeUserBtn.style.display = scenarioCount >= 2 ? '' : 'none';
         }
 
         this.safeLog(3, '[UICore] Home page mostrata');

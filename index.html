@@ -236,7 +236,7 @@
                     <span id="userBarName"></span>
                     <button id="openEditorBtn" style="display:none;">✏️ Editor</button>
                     <button id="manageUsersBtn" onclick="openUserManager()" style="display:none;">👥 Gestione Utenti</button>
-                    <button id="changeUserBtn" onclick="logoutUser()">🔄 Cambia utente</button>
+                    <button id="changeUserBtn" onclick="logoutUser()" style="display:none">🔄 Cambia utente</button>
                 </div>
             </div>
 
@@ -880,6 +880,17 @@
                 if (manageBtn) {
                     const isAdmin = window.currentUser && window.currentUser.role === 'admin';
                     manageBtn.style.display = (isAdmin && isElectron()) ? 'inline-block' : 'none';
+                }
+                // Nasconde il pulsante Cambia utente se siamo in un contesto con un solo scenario
+                const changeUserBtn = document.getElementById('changeUserBtn');
+                if (changeUserBtn) {
+                    var scenarioCount = 0;
+                    if (window.UI && window.UI.scenarioManager
+                        && window.UI.scenarioManager.scenariosConfig
+                        && window.UI.scenarioManager.scenariosConfig.scenarios) {
+                        scenarioCount = window.UI.scenarioManager.scenariosConfig.scenarios.length;
+                    }
+                    changeUserBtn.style.display = (scenarioCount >= 2) ? '' : 'none';
                 }
             }
 
