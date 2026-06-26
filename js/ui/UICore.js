@@ -155,6 +155,12 @@ class UICore {
         this.hideTutorialStepsBar();
         this.hideStepSpeechBubble();
 
+        // Mostra il pulsante Cambia utente nella home
+        const changeUserBtn = document.getElementById('changeUserBtn');
+        if (changeUserBtn) {
+            changeUserBtn.style.display = '';
+        }
+
         this.safeLog(3, '[UICore] Home page mostrata');
     }
 
@@ -162,6 +168,12 @@ class UICore {
      * Callback quando viene mostrata la pagina scenario
      */
     onScenarioPageShown() {
+        // Nasconde il pulsante Cambia utente quando si entra in uno scenario
+        const changeUserBtn = document.getElementById('changeUserBtn');
+        if (changeUserBtn) {
+            changeUserBtn.style.display = 'none';
+        }
+
         // Inizializza il cursore del canvas quando si entra nella pagina scenario
         setTimeout(() => {
             if (window.UI && window.UI.toolsManager) {

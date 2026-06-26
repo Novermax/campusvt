@@ -216,6 +216,11 @@ window.UI = {
             this.currentPage = 'home';
             // Pulisce controlli mobile
             this.cleanupMobileControls();
+            // Mostra il pulsante Cambia utente nella home
+            const changeUserBtn = document.getElementById('changeUserBtn');
+            if (changeUserBtn) {
+                changeUserBtn.style.display = '';
+            }
         } else if (page === 'scenario' && this.elements.scenarioPage) {
             this.elements.scenarioPage.classList.remove('hidden');
             this.currentPage = 'scenario';
@@ -418,6 +423,12 @@ window.UI = {
      * Callback quando viene mostrata la pagina scenario
      */
     onScenarioPageShown: function() {
+        // Nasconde il pulsante Cambia utente quando si entra in uno scenario
+        const changeUserBtn = document.getElementById('changeUserBtn');
+        if (changeUserBtn) {
+            changeUserBtn.style.display = 'none';
+        }
+
         // Inizializza la scena 3D se non già fatto
         if (window.Scene3D && !window.Scene3D.scene) {
             try {

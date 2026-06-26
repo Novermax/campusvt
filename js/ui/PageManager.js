@@ -116,6 +116,12 @@ window.PageManager = {
     onHomePageShown: function() {
         console.log('[PageManager] Home page mostrata');
         
+        // Mostra il pulsante Cambia utente nella home
+        const changeUserBtn = document.getElementById('changeUserBtn');
+        if (changeUserBtn) {
+            changeUserBtn.style.display = '';
+        }
+        
         // Cleanup scena 3D
         if (window.Scene3D && window.Scene3D.clearAllModels) {
             window.Scene3D.clearAllModels();
@@ -132,6 +138,12 @@ window.PageManager = {
      */
     onScenarioPageShown: function() {
         console.log('[PageManager] Scenario page mostrata');
+        
+        // Nasconde il pulsante Cambia utente quando si entra in uno scenario
+        const changeUserBtn = document.getElementById('changeUserBtn');
+        if (changeUserBtn) {
+            changeUserBtn.style.display = 'none';
+        }
 
         // Inizializza la scena 3D se non già fatto
         if (window.Scene3D && !window.Scene3D.scene) {
