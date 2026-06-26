@@ -1,4 +1,4 @@
-﻿# Tutorial per Manutenzione Pompa del Vuoto
+# Tutorial per Manutenzione Pompa del Vuoto
 # Sequenza guidata per la sostituzione del filtro e l'ingrassaggio della pompa del vuoto Pompa Becker U5.40
 # Sintassi: CVTScript v3
 
@@ -93,6 +93,7 @@ do          : rotate around (-0.1, 0, 0) by (0, 0, 90) duration 0.8
 do          : move by (-0.2, 0, 0) duration 0.8
 do          : place duration 0.5
 
+camera = position (-0.47, 0.27, -0.37), target (-0.2, 0.16, -0.36), pivot (-0.2, 0.16, -0.36), zoom 0.29, fov 75, rotation (-1.65, -1.19, -1.65), fade 1.0
 [step "Ingrassatore destra" highlight]
 camera      = position (-0.42, 0.33, 0.3), target (-0.28, 0.25, -0.16)
 element     = ingrassatore
