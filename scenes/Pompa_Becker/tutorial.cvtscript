@@ -85,6 +85,7 @@ do          : move by (-0.3, 0, 0) duration 1.0
 do          : place duration 0.5
 
 [step "Ingrassatore"]
+camera      = position (-0.47, 0.27, -0.37), target (-0.2, 0.16, -0.36), pivot (-0.2, 0.16, -0.36), zoom 0.29, fov 75, rotation (-1.65, -1.19, -1.65), fade 1.0
 element     = ingrassatore
 tool        = hand
 description = Prendi la pompetta del grasso
