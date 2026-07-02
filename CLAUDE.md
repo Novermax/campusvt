@@ -576,6 +576,36 @@ TouchSystem.setEnabled(false)
 
 ---
 
+## Editor Tutorial (js/editor/)
+
+Editor visuale dei tutorial, riservato agli utenti admin (pulsante ✏️ Editor in home). Il testo `.cvtscript` è l'unica fonte di verità; i moduli sono separati per responsabilità:
+
+| Modulo | Ruolo | API globale |
+|---|---|---|
+| `ScenarioEditor.js` | Controller: coordina moduli, dirty-tracking, salvataggio | `window.ScenarioEditor` |
+| `V3Document.js` | Modello dati: parsing a blocchi, mutazioni step/sezioni, `validate()` | `window.V3Document` |
+| `StepTimeline.js` | Outline sezioni/step con azioni (sposta/copia/incolla/elimina) | `window.EditorStepTimeline` |
+| `StepWizard.js` | Form guidato per lo step selezionato | `window.EditorStepWizard` |
+| `CodeView.js` | Editor testo con syntax highlighting v3 | `window.EditorCodeView` |
+| `PreviewBridge.js` | Anteprima 3D reale (riusa Scene3D/UI del runtime) | `window.EditorPreviewBridge` |
+| `AfterPicker.js` | Picker grafico varianti StateGroup per il campo `after` | `window.EditorAfterPicker` |
+| `ScreenPanel.js` | Tab Schermate (PNG→GLB); `refresh()` aggiorna la lista ScreenSnap | `window.EditorScreenPanel` |
+| `EditorUI.js` | Dialog riutilizzabili: `confirm()`, `prompt()`, `report()` (Promise-based) | `window.EditorUI` |
+| `HelpSystem.js` | Help contestuale: registry contenuti + icone "?" + popover | `window.HelpSystem` |
+
+**Funzionalità chiave**:
+- **Sezioni**: crea (＋ Sezione, inserita a fine sezione corrente, mai in mezzo), rinomina (✎), sposta (▲▼), elimina con conferma, aggiungi step in coda — tutto dalla timeline.
+- **Proprietà di sezione**: click sul titolo della sezione nella timeline → editor con titolo, camera (con cattura 📷), stato iniziale (`do :`) e posizioni iniziali (`position/rotation/companion`). API: `getSectionInfo`, `setSectionField`, `setSectionDoLines`, `setSectionExtraLines`.
+- **Proprietà scena**: riga "🎬 Proprietà scena" in cima alla timeline → editor del blocco `[scene]` (camera iniziale, creato automaticamente se assente). API: `getSceneInfo`, `setSceneField`.
+- **Copertura campi step completa**: oltre ai campi base il wizard gestisce `view`, `sound`, `animation` (in Avanzate). Un tutorial reale completo (es. Manutenzione_Elettromandrino) è ricreabile da zero interamente da UI, senza scheda Codice — verificato con equivalenza semantica e output del preprocessore v3 identico.
+- **Validazione**: `V3Document.validate()` → lista `{level, where, msg, stepIdx}` (tool/verbi/flag sconosciuti, parentesi sbilanciate, step/sezioni vuoti, `button=` deprecato). Toolbar "✔ Verifica" mostra il report; badge ⚠/❌ sulle card della timeline; il salvataggio con errori richiede conferma.
+- **Modifiche non salvate**: flag dirty centralizzato (`_touch()`); pulsante Salva evidenziato con ●; conferma prima di chiudere l'editor, cambiare scena o chiudere la pagina (beforeunload).
+- **Operazioni distruttive** (elimina step/sezione, perdita modifiche): sempre confermate via `EditorUI.confirm`.
+- **Help contestuale**: ogni controllo ha un'icona "?" (`HelpSystem.icon(key)` nei template, `HelpSystem.inject(el, key)` per l'HTML statico); i contenuti stanno nel registry `HELP` in `HelpSystem.js` con struttura uniforme (a cosa serve / quando / effetti / limitazioni / esempio).
+- **File mancante**: se il tutorial di uno scenario non è leggibile, l'editor parte vuoto e segnala che il file verrà creato al salvataggio.
+
+---
+
 ## PNG→GLB utility (schermate software macchina)
 
 **Obiettivo**: una schermata 2D del software macchina (PNG screen-grab) viene trasformata in un quad 3D (`PlaneGeometry(1, 1/aspect)`) con `MeshBasicMaterial` map+`toneMapped:false`+`SRGBColorSpace` → schermo sempre "acceso", non oscurato dalle luci di scena. Il quad viene poi agganciato automaticamente al frame del monitor di un modello macchina già in scena, con fit "contain".

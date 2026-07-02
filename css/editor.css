@@ -167,6 +167,9 @@
     line-height: 1.5;
 }
 .tl-section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: .5px;
@@ -174,6 +177,36 @@
     margin: 10px 6px 4px;
     font-weight: 700;
 }
+.tl-section-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.tl-section-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity .12s;
+}
+.tl-section:hover .tl-section-actions { opacity: 1; }
+.tl-section-actions button {
+    background: transparent;
+    border: 1px solid var(--ed-border);
+    border-radius: 4px;
+    color: var(--ed-muted);
+    font-size: 10px;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+}
+.tl-section-actions button:hover { border-color: var(--ed-accent); color: var(--ed-text); }
+.tl-section-actions button.danger:hover { border-color: var(--ed-danger); color: var(--ed-danger); }
+.tl-section-actions button:disabled { opacity: .3; cursor: default; }
 .tl-card {
     display: flex;
     align-items: center;
@@ -904,3 +937,224 @@
     font-size: 14px;
 }
 #openEditorBtn:hover { background: #3a7fc0; }
+
+/* ============================================================================
+   Badge di validazione nella timeline
+   ============================================================================ */
+.tl-badge.issue-error { background: #4a1c22; color: #ff8a8a; }
+.tl-badge.issue-warn  { background: #4a3d1c; color: #ffd77a; }
+
+/* Pulsante Salva con modifiche in sospeso */
+#editorSaveBtn.has-changes {
+    background: #c47b1d;
+    border-color: #c47b1d;
+    box-shadow: 0 0 6px rgba(196, 123, 29, .6);
+}
+#editorSaveBtn.has-changes:hover { background: #d98f2e; }
+
+/* ============================================================================
+   Dialog riutilizzabili (EditorUI: confirm / prompt / report)
+   ============================================================================ */
+.ed-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60000;
+    background: rgba(0, 0, 0, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ed-dialog {
+    background: var(--ed-panel);
+    border: 1px solid var(--ed-border);
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .6);
+    padding: 18px 20px;
+    width: min(520px, calc(100vw - 40px));
+    max-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    color: var(--ed-text);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.ed-dialog-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--ed-accent-2);
+}
+.ed-dialog-body {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ed-text);
+    margin-bottom: 14px;
+    white-space: pre-line;
+}
+.ed-dialog-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ed-panel-2);
+    border: 1px solid var(--ed-border);
+    border-radius: 6px;
+    color: var(--ed-text);
+    font-size: 13px;
+    padding: 8px 10px;
+    margin-bottom: 14px;
+    outline: none;
+}
+.ed-dialog-input:focus { border-color: var(--ed-accent); }
+.ed-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.ed-dialog-list {
+    overflow-y: auto;
+    margin-bottom: 14px;
+    border: 1px solid var(--ed-border);
+    border-radius: 6px;
+    background: var(--ed-panel-2);
+    max-height: 50vh;
+}
+.ed-dialog-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 7px 10px;
+    font-size: 12px;
+    line-height: 1.45;
+    border-bottom: 1px solid var(--ed-border);
+}
+.ed-dialog-item:last-child { border-bottom: none; }
+.ed-dialog-item-icon { flex: 0 0 auto; }
+.ed-dialog-item-msg  { flex: 1 1 auto; min-width: 0; }
+.ed-dialog-item.lvl-error { background: rgba(231, 76, 60, .07); }
+.ed-dialog-item.lvl-warn  { background: rgba(241, 196, 15, .05); }
+
+/* ============================================================================
+   Help contestuale (HelpSystem: icone "?" + popover)
+   ============================================================================ */
+.hlp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin-left: 4px;
+    border-radius: 50%;
+    border: 1px solid var(--ed-border);
+    background: var(--ed-panel-2);
+    color: var(--ed-muted);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: help;
+    vertical-align: middle;
+    flex: 0 0 auto;
+}
+.hlp-btn:hover {
+    border-color: var(--ed-accent);
+    color: var(--ed-accent-2);
+    background: var(--ed-panel);
+}
+.hlp-popover {
+    position: fixed;
+    z-index: 70000;
+    width: min(380px, calc(100vw - 24px));
+    background: var(--ed-panel);
+    border: 1px solid var(--ed-accent);
+    border-radius: 10px;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, .65);
+    color: var(--ed-text);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow: hidden;
+}
+.hlp-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 12px;
+    background: var(--ed-panel-2);
+    border-bottom: 1px solid var(--ed-border);
+}
+.hlp-title { font-size: 13px; font-weight: 700; color: var(--ed-accent-2); }
+.hlp-close {
+    background: transparent;
+    border: none;
+    color: var(--ed-muted);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+.hlp-close:hover { color: var(--ed-text); }
+.hlp-body {
+    padding: 10px 12px;
+    max-height: min(420px, 60vh);
+    overflow-y: auto;
+}
+.hlp-sec { margin-bottom: 10px; }
+.hlp-sec:last-child { margin-bottom: 0; }
+.hlp-sec-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+    color: var(--ed-accent-2);
+    margin-bottom: 2px;
+}
+.hlp-sec-text { font-size: 12px; line-height: 1.5; color: var(--ed-text); }
+.hlp-sec-text.hlp-mono {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11px;
+    background: var(--ed-panel-2);
+    border: 1px solid var(--ed-border);
+    border-radius: 5px;
+    padding: 6px 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* ============================================================================
+   Selezione sezione / scena (editor proprietà)
+   ============================================================================ */
+.tl-scene {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--ed-muted);
+    margin: 2px 2px 6px;
+    padding: 6px 8px;
+    border: 1px dashed var(--ed-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color .12s, color .12s, background .12s;
+}
+.tl-scene:hover { border-color: var(--ed-accent); color: var(--ed-accent-2); }
+.tl-scene.active {
+    border-style: solid;
+    border-color: var(--ed-accent);
+    background: #1c2740;
+    color: var(--ed-accent-2);
+}
+.tl-section-title { cursor: pointer; border-radius: 4px; padding: 2px 4px; margin-left: -4px; }
+.tl-section-title:hover { background: #1c2740; }
+.tl-section.active .tl-section-title {
+    background: #1c2740;
+    box-shadow: 0 0 0 1px var(--ed-accent) inset;
+    color: var(--ed-accent-2);
+}
+.wz-mode-banner {
+    font-size: 12px;
+    color: var(--ed-accent-2);
+    background: #1c2740;
+    border: 1px solid var(--ed-border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 14px;
+}

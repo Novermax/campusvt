@@ -40,9 +40,10 @@ desktop.ini
 user_data/
 logs/
 
-# CVTScript Editor (tool locale, non pubblicato)
-editor/
-neweditor/
+# CVTScript Editor standalone in root (tool locale, non pubblicato).
+# Pattern ancorati alla root: js/editor/ (editor integrato) DEVE essere versionato.
+/editor/
+/neweditor/
 admin.html
 
 # CVTScript vscode addon
