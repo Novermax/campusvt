@@ -1,0 +1,52 @@
+CONTESTO
+CVT deve supportare una "modalità embedded" OPZIONALE pilotata da parametri URL,
+usata quando lanciato da Docebo. Se NESSUN parametro è presente (apertura locale
+standalone), il comportamento deve restare IDENTICO a ora. Questo vincolo è
+prioritario: ogni parametro assente = comportamento attuale invariato.
+
+STEP 0 — LEGGI PRIMA (non modificare ancora nulla)
+Leggi e riportami funzioni + righe esatte di:
+  a) index.html — dove la password viene validata (~683-720)
+  b) index.html — dove viene costruito window.currentUser {name,language,role,...}
+  c) il codice che renderizza le card/pulsanti degli scenari nella home
+  d) il punto in cui, completato un tutorial, si torna alla home
+  e) js/ui/UIScenarioLoader.js — loadHomeConfigFromServer (selezione lingua)
+  f) js/scorm/VTTracker.js — onSessionInit, onTutorialComplete
+Fermati e mostrami il report prima di procedere.
+
+STEP 1 — Parser parametri URL
+Aggiungi un helper che legge: autologin, user, lang, tutorials (lista separata
+da virgole), sequential. Esponi window.CVT_EMBED = {...} oppure null se autologin
+non è presente.
+
+STEP 2 — Autologin (bypass password)
+Se autologin=1: salta completamente la schermata password e costruisci
+window.currentUser = {name: user||'Utente', language: lang||'ita', role:'user',
+loginTime: now, expiration: now+1anno}. Poi procedi alla home esattamente come
+dopo un login riuscito. Se autologin assente → login normale invariato.
+
+STEP 3 — Lingua
+currentUser.language già pilota la scelta dell'homeconfig. Con autologin, il
+parametro lang la imposta. Conferma il fallback a 'eng' se mancante. Nessuna
+modifica al comportamento standalone.
+
+STEP 4 — Filtro tutorial
+Aggiungi un campo id= a ogni scenario in homeconfig.ini E nelle varianti lingua
+(es. id=elettromandrino, id=pompa_becker). Dopo il caricamento dell'homeconfig,
+se CVT_EMBED.tutorials è valorizzato, mantieni solo gli scenari il cui id è nella
+lista, preservando l'ordine. Se non valorizzato → mostra tutti (standalone).
+
+STEP 5 — Gating sequenziale (visibile + lucchetto)
+Se sequential=1: nella home abilita solo il primo scenario non ancora completato
+della lista filtrata; renderizza gli altri con icona lucchetto e click disabilitato.
+Mantieni un Set in memoria degli id completati; quando un tutorial si completa
+(punto d dello STEP 0), aggiungi il suo id e ri-renderizza il gating. Il primo
+scenario è sempre sbloccato all'avvio. Se sequential assente → tutti abilitati
+(comportamento attuale).
+
+VINCOLI
+- Ogni parametro è opzionale; assente → comportamento attuale invariato.
+- L'apertura locale standalone deve restare identica come UX.
+- Non rompere VTTracker: legge window.currentUser.name, quindi autologin deve
+  impostarlo PRIMA che parta session_init.
+- Procedi uno step alla volta, mostrami le modifiche prima di committare.

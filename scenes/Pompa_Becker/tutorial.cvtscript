@@ -3,7 +3,7 @@
 # Sintassi: CVTScript v3
 
 [scene]
-camera   = position (-1.5, 0.5, -0.2), target (0, 0, 0), zoom 1.2, fade 2.5
+camera   = position (-1, 0.5, -0.2), target (0,0,0), zoom 1.2, fade 2.5
 position = planaxis at (-0.5, 0.01, -0.5)
 
 
@@ -85,7 +85,7 @@ do          : move by (-0.3, 0, 0) duration 1.0
 do          : place duration 0.5
 
 [step "Ingrassatore"]
-camera      = position (-0.47, 0.27, -0.37), target (-0.2, 0.16, -0.36), pivot (-0.2, 0.16, -0.36), zoom 0.29, fov 75, rotation (-1.65, -1.19, -1.65), fade 1.0
+camera      = position (-1.5, 0.5, -0.2), target ingrassatore, zoom 0.5, fade 2.5
 element     = ingrassatore
 tool        = hand
 description = Prendi la pompetta del grasso
@@ -94,7 +94,7 @@ do          : rotate around (-0.1, 0, 0) by (0, 0, 90) duration 0.8
 do          : move by (-0.2, 0, 0) duration 0.8
 do          : place duration 0.5
 
-camera = position (-0.47, 0.27, -0.37), target (-0.2, 0.16, -0.36), pivot (-0.2, 0.16, -0.36), zoom 0.19, fov 75, rotation (-1.65, -1.19, -1.65), fade 1.0
+
 [step "Ingrassatore destra" highlight]
 camera      = position (-0.42, 0.33, 0.3), target (-0.28, 0.25, -0.16)
 element     = ingrassatore
@@ -146,24 +146,25 @@ position = ingrassatore at (-0.208, 0.243, 0)
 rotation = ingrassatore by (0.0, 0.0, 90.0)
 
 [step "Tappino Destro" highlight]
-camera = position (-0.99, 0.26, 0.03), target (-0.17, 0.14, -0.01), pivot (-0.17, 0.14, -0.01), distance 0.83, fov 75, rotation (-1.27, -1.41, -1.27), fade 1.0
+camera = position (-1, 0.2, 0.03), target tappino_grasso_dx, pivot tappino_grasso_dx, distance 0.1, fov 75, rotation (-1.27, -1.41, -1.27), fade 1.0, zoom 0.5
 description = Monta il tappino dell'ingrassatore di destra.
 tool        = hand
 drag        = tappino_grasso_dx distance 0.2
 
 [step "Tappino Sinistro" highlight]
-camera      = target tappino_grasso_sx
+camera = position (-1, 0.2, 0.03), target tappino_grasso_sx, pivot tappino_grasso_sx, distance 0.1, fov 75, rotation (-1.27, -1.41, -1.27), fade 1.0, zoom 0.5
 description = Monta il tappino dell'ingrassatore di sinistra.
 tool        = hand
 drag        = tappino_grasso_sx distance 0.2
 
 [step "Filtro" highlight]
-camera      = position (-1.38, 0.5, 0.27), target (-0.58, 0.01, -0.16), rotation (-0.86, -0.88, -0.73), pivot (-0.58, 0.01, -0.16), distance 1.03, fov 75, fade 1.0
+camera      = position (-1.38, 0.5, 0.27), target filtro, rotation (-0.86, -0.88, -0.73), pivot filtro, distance 1.03, fov 75, fade 1.0,zoom 1
 description = Inserisci il filtro nella sua sede.
 tool        = hand
 drag        = filtro distance 0.3
 
 [step "Coperchio" highlight]
+camera      = position (-1.38, 0.5, 0.27), target coperchio, rotation (-0.86, -0.88, -0.73), pivot coperchio, distance 1.03, fov 75, fade 1.0,zoom 1
 description = Posiziona il coperchio sopra il filtro.
 tool        = hand
 drag        = coperchio distance 0.3
@@ -336,6 +337,7 @@ companion   = tubograsso follows master
 do          : move by (0, 0, 0.2) duration 0.5
 
 [step "Staccare il tubo del grasso" highlight]
+camera      = position (-0.01, 0.54, 0.61), target (-0.03, 0.24, 0.27), pivot (-0.03, 0.24, 0.27), zoom 0.57, fov 75, rotation (-0.64, 0.13, 0.09), fade 1.0
 element     = tubograsso
 description = Stacca il tubo del grasso dalla flangia.
 tool        = hand
@@ -518,13 +520,14 @@ tool        = hand
 camera      = position (0, 0.45, 0.89), target (0, 0, 0), zoom 1.2, fade 1.5
 drag        = flangia distance 0.3 snap pivot (0.000, 0.0, 0.3)
 
-[step "Abbassa la flangia" highlight]
+[step "Abbassa la flangia"]
 description = La flangia verrà ora avvicinata automaticamente nella sua sede finale.
 tool        = hand
 element     = flangia
 do          : move by (0.0, 0.0, -0.3) duration 0.8
 
 [step "Posiziona vite flangia 1" highlight]
+camera      = position (-0.01, 0.34, 0.41), target (-0.03, 0.24, 0.27), pivot (-0.03, 0.24, 0.27), zoom 0.7, fov 75, rotation (-0.64, 0.13, 0.09), fade 1.0
 description = Posiziona la prima vite della flangia nella sua sede.
 tool        = hand
 camera      = position (0.01, 0.54, 0.79), target (0, 0.15, 0.19), rotation (-0.58, 0.02, 0.01), pivot (0, 0.15, 0.19), distance 0.72, fov 60, fade 1.0
@@ -566,6 +569,7 @@ tool        = hand
 drag        = vite_flangia_8 distance 1.5 snap offset (0, 0, 0.01)
 
 [step "Avvita vite flangia 1" highlight]
+camera      = position (-0.01, 0.24, 0.41), target (-0.03, 0.24, 0.27), pivot (-0.03, 0.24, 0.27), zoom 0.2, fov 75, rotation (-0.64, 0.13, 0.09), fade 1.0
 element     = vite_flangia_1
 description = Sequenza a croce (1/8): stringi la vite 1 con la chiave inglese da 10mm.
 tool        = wrench
@@ -577,26 +581,26 @@ description = Sequenza a croce (2/8): stringi la vite 5 — opposta alla 1.
 tool        = wrench
 do          : screw distance 0.01
 
-[step "Avvita vite flangia 3"]
-element     = vite_flangia_3
-description = Sequenza a croce (3/8): stringi la vite 3.
-tool        = wrench
-do          : screw distance 0.01
-
-[step "Avvita vite flangia 7"]
-element     = vite_flangia_7
-description = Sequenza a croce (4/8): stringi la vite 7 — opposta alla 3.
-tool        = wrench
-do          : screw distance 0.01
-
 [step "Avvita vite flangia 2"]
 element     = vite_flangia_2
-description = Sequenza a croce (5/8): stringi la vite 2.
+description = Sequenza a croce (3/8): stringi la vite 3.
 tool        = wrench
 do          : screw distance 0.01
 
 [step "Avvita vite flangia 6"]
 element     = vite_flangia_6
+description = Sequenza a croce (4/8): stringi la vite 7 — opposta alla 3.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Avvita vite flangia 3"]
+element     = vite_flangia_3
+description = Sequenza a croce (5/8): stringi la vite 2.
+tool        = wrench
+do          : screw distance 0.01
+
+[step "Avvita vite flangia 7"]
+element     = vite_flangia_7
 description = Sequenza a croce (6/8): stringi la vite 6 — opposta alla 2.
 tool        = wrench
 do          : screw distance 0.01
@@ -614,27 +618,31 @@ tool        = wrench
 do          : screw distance 0.01
 
 [step "Riattacca il tubo del grasso"]
+camera = position (0.15, 0.4, 0.28), target (0.03, 0.32, 0.2), pivot (0.03, 0.32, 0.2), zoom 0.17, fov 75, rotation (-0.73, 0.82, 0.58), fade 1.0
 description = Collega il tubo del grasso alla flangia. Richiede che la flangia sia già montata.
 tool        = hand
 drag        = tubograsso distance 0.3
 
 [step "Rimonta la culatta" highlight]
-camera      = position (-0.35, 0.42, 0.92), target (0.3, 0.12, 0.1), rotation (-0.35, -0.64, -0.22), pivot (0.3, 0.12, 0.1), distance 1.08, fov 75
+camera = position (-0.33, 0.41, 0.89), target (0.3, 0.12, 0.1), pivot (0.3, 0.12, 0.1), zoom 1.05, fov 75, rotation (-0.35, -0.64, -0.22), fade 1.0
 description = Posiziona la culatta sul corpo pompa. Richiede che tutte le viti della flangia siano state avvitate.
 tool        = hand
 drag        = culatta distance 0.3
 
 [step "Posiziona Viti Culatta lunghe" highlight]
+camera = position (-0.43, 0.16, 0.45), target (-0.05, 0.05, 0.3), pivot (-0.05, 0.05, 0.3), zoom 0.42, fov 75, rotation (-0.62, -1.11, -0.57), fade 1.0
 description = Posiziona le 2 viti della culatta lunghe nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
 tool        = hand
 drag        = vite_culatta_1, vite_culatta_2 distance 1.5 snap offset (0, 0, 0.02)
 
 [step "Posiziona Viti Culatta corte" highlight]
+camera = position (-0.3, 0.15, 0.65), target (-0.2, 0.01, 0.48), pivot (-0.2, 0.01, 0.48), zoom 0.24, fov 75, rotation (-0.71, -0.41, -0.33), fade 1.0
 description = Posiziona le 2 viti della culatta corte nelle loro sedi in qualsiasi ordine. Le viti non sono ancora avvitate.
 tool        = hand
 drag        = vite_culatta_3, vite_culatta_4 distance 1.5 snap offset (0, 0, 0.02)
 
 [step "Avvita vite culatta 1" highlight]
+camera = position (-0.35, 0.23, 0.68), target (-0.05, 0.15, 0.28), pivot (-0.05, 0.15, 0.28), zoom 0.5, fov 75, rotation (-0.19, -0.62, -0.11), fade 1.0
 element     = vite_culatta_1
 description = Stringi la prima vite della culatta con la chiave a brugola da 6mm.
 tool        = hex_key

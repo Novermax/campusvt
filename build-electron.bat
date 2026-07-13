@@ -37,12 +37,12 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo [1/4] Verifica Node.js...
 node --version
-npm --version
+call npm --version
 echo.
 
-REM Installa dipendenze se non già presenti
-if not exist "node_modules\" (
-    echo [2/4] Installazione dipendenze (prima volta, richiede qualche minuto)...
+REM Installa dipendenze se non gia presenti
+if not exist "node_modules" (
+    echo [2/4] Installazione dipendenze - prima volta, richiede qualche minuto...
     call npm install
     if %ERRORLEVEL% NEQ 0 (
         color 0C
@@ -53,7 +53,7 @@ if not exist "node_modules\" (
         exit /b 1
     )
 ) else (
-    echo [2/4] Dipendenze gia installate (skip)
+    echo [2/4] Dipendenze gia installate - skip
 )
 echo.
 
@@ -69,6 +69,7 @@ if not exist "build\icon.ico" (
 REM Build
 echo [3/4] Build applicazione Electron (richiede qualche minuto)...
 echo.
+set CSC_IDENTITY_AUTO_DISCOVERY=false
 call npm run build
 if %ERRORLEVEL% NEQ 0 (
     color 0C

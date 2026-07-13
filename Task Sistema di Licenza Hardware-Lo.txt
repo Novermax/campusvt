@@ -1,0 +1,203 @@
+Task: Sistema di Licenza Hardware-Locked per Cabinet Designer
+Obiettivo
+
+Implementare un sistema di protezione della versione Full di Cabinet Designer basato su una licenza legata all'hardware del computer.
+
+L'applicazione non deve avviarsi se non è presente una licenza valida.
+
+Il sistema è composto da due applicazioni completamente separate:
+
+License Client (distribuita insieme a Cabinet Designer)
+License Generator (utilizzata esclusivamente dallo sviluppatore)
+Architettura
+1. Cabinet Designer (Client)
+
+Alla prima esecuzione:
+
+controllare se esiste un file di licenza valido;
+se la licenza non esiste oppure non è valida:
+impedire completamente l'avvio del programma;
+mostrare esclusivamente la finestra di attivazione.
+
+La finestra deve permettere di:
+
+visualizzare l'Hardware ID della macchina;
+salvarlo su file;
+copiarlo negli appunti;
+eventualmente esportarlo come file di richiesta licenza.
+
+L'utente invia questo file tramite email o altro metodo.
+
+2. Hardware ID
+
+La chiave deve essere dipendente dall'hardware.
+
+Non deve essere casuale.
+
+Va costruita utilizzando una combinazione di identificativi relativamente stabili, ad esempio:
+
+UUID della scheda madre
+CPU ID
+Seriale del disco principale
+Machine GUID del sistema operativo
+
+I valori devono essere:
+
+concatenati;
+normalizzati;
+sottoposti ad hash (SHA-256).
+
+Il risultato costituisce il Machine ID.
+
+L'obiettivo è ottenere un identificativo:
+
+stabile nel tempo;
+difficile da falsificare;
+diverso su ogni PC.
+3. License Generator (solo sviluppatore)
+
+Applicazione separata.
+
+Funzionamento:
+
+lo sviluppatore apre il file ricevuto dal cliente.
+
+Il programma genera una licenza definitiva contenente almeno:
+
+Machine ID
+nome del prodotto
+versione
+tipo licenza
+data di emissione
+eventuale data di scadenza (opzionale)
+firma digitale
+
+La licenza viene salvata in un file.
+
+Esempio:
+
+license.dat
+
+oppure
+
+license.json
+
+oppure altro formato equivalente.
+
+4. Firma digitale
+
+La licenza non deve poter essere modificata manualmente.
+
+Utilizzare una firma digitale.
+
+Architettura consigliata:
+
+chiave privata conservata SOLO nello strumento License Generator;
+chiave pubblica incorporata dentro Cabinet Designer.
+
+La chiave privata non deve mai essere distribuita.
+
+Cabinet Designer dovrà soltanto verificare la firma.
+
+In questo modo nessun utente può generare autonomamente una licenza valida.
+
+5. Installazione della licenza
+
+L'utente riceve il file licenza.
+
+Dalla schermata di attivazione deve poter:
+
+selezionare il file;
+importarlo.
+
+Il programma:
+
+verifica la firma;
+verifica il Machine ID;
+verifica il prodotto;
+verifica eventuale scadenza.
+
+Se tutto è valido:
+
+salva la licenza nella cartella prevista;
+consente l'avvio del programma.
+6. Controlli ad ogni avvio
+
+Ad ogni avvio Cabinet Designer deve:
+
+leggere la licenza;
+verificare la firma digitale;
+rigenerare il Machine ID;
+confrontarlo con quello presente nella licenza.
+
+Se uno qualsiasi dei controlli fallisce:
+
+la licenza è considerata non valida;
+il software non parte.
+7. Requisiti di sicurezza
+
+Evitare di utilizzare:
+
+semplici file di testo
+checksum banali
+password hardcoded
+confronti facilmente aggirabili.
+
+La verifica deve essere realizzata con crittografia asimmetrica (RSA o ECC).
+
+La chiave pubblica può essere incorporata nell'applicazione.
+
+La chiave privata deve esistere esclusivamente nel programma License Generator.
+
+8. Struttura del progetto
+
+Creare tre progetti distinti:
+
+CabinetDesigner
+
+Applicazione principale.
+
+CabinetLicenseClient
+
+Gestione attivazione.
+
+Compiti:
+
+generazione Machine ID;
+import licenza;
+verifica licenza.
+CabinetLicenseGenerator
+
+Uso esclusivo dello sviluppatore.
+
+Compiti:
+
+caricamento richiesta cliente;
+generazione licenza;
+firma digitale.
+9. Estendibilità futura
+
+Il sistema dovrà essere progettato per poter aggiungere facilmente:
+
+licenze Trial;
+licenze annuali;
+licenze perpetue;
+numero massimo di postazioni;
+licenze offline;
+revoca della licenza;
+aggiornamenti automatici della licenza;
+supporto ad un futuro server di attivazione online.
+
+L'architettura deve quindi essere modulare e facilmente estendibile.
+
+10. Tecnologie consigliate
+.NET 8 / C#
+SHA-256 per l'impronta hardware
+RSA-4096 oppure ECC (ECDSA) per la firma
+JSON come formato interno della licenza
+Firma digitale del file JSON
+Nessuna dipendenza da servizi cloud
+
+Il sistema deve funzionare completamente offline
+
+Una raccomandazione aggiuntiva: non basare la protezione esclusivamente sull'Hardware ID. Per rendere il sistema molto più robusto, fai in modo che il license.json venga firmato digitalmente e che Cabinet Designer contenga solo la chiave pubblica. In questo modo anche se un utente scoprisse il formato del file, non potrebbe crearne uno valido senza possedere la tua chiave privata. È l'architettura adottata dalla maggior parte dei software professionali che prevedono attivazione offline.

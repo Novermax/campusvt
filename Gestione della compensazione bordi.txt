@@ -1,0 +1,161 @@
+Gestione della compensazione bordi e del momento delle lavorazioni
+
+La presenza dei bordi non è solamente un'informazione tecnologica, ma modifica concretamente la geometria del pezzo e la posizione delle lavorazioni.
+
+Occorre distinguere due parametri:
+
+Metodo di compensazione del bordo
+Momento delle lavorazioni
+Regola fondamentale
+
+La compensazione deve essere applicata solo quando le lavorazioni vengono eseguite prima della bordatura.
+
+Se invece le lavorazioni vengono eseguite dopo la bordatura, il sistema deve considerare il pannello già finito e non deve effettuare alcuna compensazione.
+
+1. Momento delle lavorazioni = Prima della bordatura
+
+In questo scenario il pezzo viene lavorato grezzo e successivamente bordato.
+
+Pertanto:
+
+la geometria del pannello deve essere compensata;
+le quote delle lavorazioni devono essere adattate;
+deve essere generata la contornatura necessaria per ottenere il pezzo grezzo.
+Metodo: Bordo aggiunto alla dimensione
+
+Significa che il bordo aumenta la dimensione finale del pezzo.
+
+Esempio:
+
+larghezza finita = 600 mm
+bordo = 2 mm per lato
+
+Il pannello grezzo dovrà essere:
+
+596 mm
+
+perché dopo l'applicazione dei due bordi si tornerà a 600 mm.
+
+Effetto sulle lavorazioni
+
+Tutte le lavorazioni quotate dal lato bordato devono essere compensate.
+
+Esempio:
+
+Dimensione finale:
+
+larghezza = 600 mm
+foro a 37 mm dal lato sinistro
+
+Poiché il pannello grezzo è stato ridotto di 2 mm sul lato sinistro:
+
+il foro dovrà essere eseguito a 35 mm
+
+in modo che dopo l'applicazione del bordo si ritrovi a 37 mm rispetto al pezzo finito.
+
+Regola generale
+
+Per ogni lato bordato:
+
+quota_lavorazione_grezzo =
+quota_lavorazione_finita -
+compensazione_lato
+
+La compensazione è pari allo spessore del bordo.
+
+Metodo: Prefresatura fissa
+
+In questo caso esiste una prefresatura costante impostata nella tecnologia.
+
+Esempio:
+
+bordo = 2 mm
+prefresatura = 0,5 mm
+
+La compensazione reale non è 2 mm ma:
+
+2 - 0,5 = 1,5 mm
+
+perché parte del materiale viene già eliminata dalla prefresatura.
+
+Formula
+compensazione = spessore_bordo - prefresatura
+
+Tutte le quote e le dimensioni devono utilizzare questo valore anziché lo spessore del bordo.
+
+Metodo: Fresatura uguale allo spessore del bordo
+
+In questo caso il materiale asportato è esattamente uguale allo spessore del bordo.
+
+Esempio:
+
+bordo = 2 mm
+fresatura = 2 mm
+
+L'effetto netto è zero.
+
+Il pezzo grezzo e il pezzo finito hanno la stessa geometria utile.
+
+Conseguenza
+
+Non deve essere effettuata alcuna compensazione:
+
+compensazione = 0
+
+Le quote delle lavorazioni restano invariate.
+
+È come se il bordo non esistesse dal punto di vista geometrico.
+
+2. Momento delle lavorazioni = Dopo la bordatura
+
+In questo scenario il pezzo viene prima portato a misura finale e bordato.
+
+Successivamente vengono eseguite le lavorazioni.
+
+Pertanto il CAD/CAM deve assumere che:
+
+il pezzo sia già nelle dimensioni definitive;
+i bordi siano già presenti;
+tutte le quote delle lavorazioni siano già riferite al pezzo finito.
+Conseguenze
+
+Non deve essere applicata alcuna compensazione.
+
+compensazione = 0
+
+Le quote delle forature e delle fresature non devono essere modificate.
+
+Inoltre:
+
+NON deve essere generata la contornatura
+
+Poiché il pannello è già a misura finale, non è necessario eseguire alcuna lavorazione di contornatura per compensare il bordo.
+
+Il sistema deve quindi:
+
+usare le dimensioni finali del pezzo;
+mantenere inalterate le coordinate delle lavorazioni;
+non creare alcuna operazione di contornatura o compensazione geometrica.
+Algoritmo sintetico
+SE MomentoLavorazioni = DopoBordatura
+
+    compensazione = 0
+    non generare contornatura
+    usare quote originali
+
+ALTRIMENTI (PrimaBordatura)
+
+    SE Metodo = BordoAggiuntoDimensione
+        compensazione = spessore_bordo
+
+    SE Metodo = PrefresaturaFissa
+        compensazione = spessore_bordo - prefresatura
+
+    SE Metodo = FresaturaUgualeSpessoreBordo
+        compensazione = 0
+
+    ridurre la geometria del pezzo
+    compensare tutte le quote riferite ai lati bordati
+    generare la contornatura del pezzo grezzo
+
+L'obiettivo finale è che tutte le quote delle lavorazioni siano sempre corrette rispetto al mobile finito, indipendentemente dal fatto che il bordo venga applicato prima o dopo le lavorazioni.

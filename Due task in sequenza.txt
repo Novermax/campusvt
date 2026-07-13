@@ -1,0 +1,69 @@
+Due task in sequenza. Non modificare nulla per il task 1.
+
+## TASK 1 — Analisi (solo lettura)
+
+In scene3d-modular.js, nella funzione handleModelAction (riga ~1684):
+1. Esiste logica che distingue "click su oggetto corretto" da "click su oggetto sbagliato"?
+2. Se sì, dove esattamente e come viene gestito il caso "sbagliato"?
+3. Esiste già un contatore di errori/tentativi falliti da qualche parte?
+
+Rispondimi prima di procedere al task 2.
+
+## TASK 2 — Implementazione VTTracker
+
+Crea js/scorm/VTTracker.js con questa logica:
+
+### Timer
+- start() → salva Date.now() in _tutorialStart e _stepStart
+- stopStep() → ritorna durationMs dallo _stepStart, aggiorna _stepStart
+- stopTutorial() → ritorna totalMs da _tutorialStart
+- pause/resume su document visibilitychange (accumula _pausedMs)
+
+### Stato interno
+- stepTimings: [] → array di { stepIndex, stepTitle, durationMs, errors }
+- wrongActions: counter per step corrente, resettato a ogni step
+- tutorialId, userId presi da window.UI?.currentTutorial?.name e window.currentUser?.name
+
+### Metodo emit(type, extraPayload)
+Emette window.parent.postMessage con schema base:
+{
+  type,
+  ts: Date.now(),
+  userId: this.userId,
+  tutorialId: this.tutorialId,
+  ...extraPayload
+}
+
+### Metodo score()
+Calcola: 100 - (totalErrors * 5) - Math.floor(totalMs / 60000)
+Clamp tra 0 e 100.
+
+### Hook da aggiungere (minimo 4 righe nei file esistenti):
+
+1. index.html:~719 (dopo window.currentUser assegnato a login):
+   VTTracker.onSessionInit()
+   → emit 'vt:session_init' con userId, userName, role
+
+2. js/ui.js:3284 (inizio UI.selectTutorial, dopo che currentTutorial è impostato):
+   VTTracker.onTutorialStart()
+   → emit 'vt:tutorial_start' con tutorialId, tutorialName, stepCount
+
+3. js/ui.js:3899 (inizio UI.goToStep, prima della logica esistente):
+   VTTracker.onStepChange(newIndex, UI.getCurrentStep()?.title)
+   → emit 'vt:step_complete' per lo step PRECEDENTE con durationMs, errors
+   → poi resetta contatore errors e _stepStart
+
+4. js/scene3d-modular.js:3499 (inizio showTutorialCompletionCongratulations):
+   VTTracker.onTutorialComplete()
+   → emit 'vt:tutorial_complete' con totalTimeMs, score, stepTimings[]
+
+5. Se dal Task 1 esiste un punto chiaro per "click errato":
+   VTTracker.onWrongAction()
+   → incrementa wrongActions, emit 'vt:wrong_action' con stepIndex
+
+### Caricamento
+Aggiungi <script src="js/scorm/VTTracker.js"></script> in index.html 
+DOPO gli altri script (prima della chiusura </body>).
+VTTracker deve essere un oggetto globale (window.VTTracker).
+
+Alla fine mostrami un riepilogo delle righe modificate per ogni file.
