@@ -133,16 +133,29 @@
 }
 
 /* Card placeholder (quando non ci sono scenari caricati) */
+/* pointer-events:none: i click su questa card sono ignorati da JS (vedi ui.js
+   onScenarioCardClick) — disabilitarla anche visivamente evita click a vuoto
+   se l'utente clicca prima che le card reali sostituiscano il placeholder. */
 .scenario-card.placeholder {
     cursor: default;
     opacity: 0.8;
     border: 2px dashed #dee2e6;
     background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    pointer-events: none;
 }
 
 .scenario-card.placeholder:hover {
     transform: none;
     box-shadow: var(--shadow-medium);
+}
+
+.scenario-card.placeholder .placeholder-image {
+    animation: placeholderSpin 1.2s linear infinite;
+}
+
+@keyframes placeholderSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* Card bloccata (gating sequenziale modalità embedded) */
